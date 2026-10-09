@@ -1,0 +1,65 @@
+{
+  "name": "@surea11y/pack-rgaa",
+  "version": "0.1.0",
+  "private": true,
+  "description": "RGAA 4.1.2, the French accessibility standard, as a pack for @surea11y/core",
+  "keywords": [
+    "accessibility",
+    "a11y",
+    "rgaa",
+    "wcag",
+    "surea11y",
+    "surea11y-pack"
+  ],
+  "license": "MPL-2.0",
+  "author": "Jorge Rumoroso",
+  "homepage": "https://github.com/SureA11y/pack-rgaa#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SureA11y/pack-rgaa.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SureA11y/pack-rgaa/issues"
+  },
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./public": "./public.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "map.js",
+    "mappings.js",
+    "public.js",
+    "rule-map.js",
+    "rules/**/*.js",
+    "i18n/*.json",
+    "data",
+    "docs/*.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": "^20.19.0 || ^22.13.0 || >=24.0.0"
+  },
+  "scripts": {
+    "format": "prettier --write \"*.js\" \"rules/**/*.js\" \"scripts/**/*.js\" \"tests/**/*.js\"",
+    "format:check": "prettier --check \"*.js\" \"rules/**/*.js\" \"scripts/**/*.js\" \"tests/**/*.js\"",
+    "map": "node scripts/generate-map.js",
+    "map:check": "node scripts/generate-map.js --check",
+    "mapping-doc": "node scripts/generate-mapping-doc.js",
+    "mapping-doc:check": "node scripts/generate-mapping-doc.js --check",
+    "pretest": "playwright install chromium",
+    "test": "npm run format:check && npm run map:check && npm run mapping-doc:check && node scripts/run-tests.js"
+  },
+  "peerDependencies": {
+    "@surea11y/core": ">=1.11.0"
+  },
+  "devDependencies": {
+    "@surea11y/core": "github:SureA11y/core#profiles-as-packages",
+    "jsdom": "^29.1.1",
+    "playwright": "^1.62.1",
+    "prettier": "^3.9.6"
+  }
+}
