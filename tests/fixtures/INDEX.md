@@ -1,6 +1,6 @@
 # Fixture Index
 
-This profile's rules and their scenario pages. Every rule should have a `tests/fixtures/<slug>-all-scenarios.html` scenario page (numbered `case_NN` blocks, each marked PASS/FAIL/CANTTELL in its `.case-title`) and a "fixture coverage" test in its `tests/rules/**/<rule>.test.js` asserting the exact expected ids. Paths are relative to the profile's folder. Core's rules have their own index, in core's `tests/fixtures/INDEX.md`.
+This pack's rules and their scenario pages. Every rule should have a `tests/fixtures/<slug>-all-scenarios.html` scenario page (numbered `case_NN` blocks, each marked PASS/FAIL/CANTTELL in its `.case-title`) and a "fixture coverage" test in its `tests/rules/**/<rule>.test.js` asserting the exact expected ids. Paths are relative to the pack's folder. Core's rules have their own index, in core's `tests/fixtures/INDEX.md`.
 
 ## Summary
 

@@ -53,8 +53,8 @@ const meta = {
   type: 'automatic',
   defaultConfidence: 'high',
   coverage: {},
-  // Reason codes built at runtime, which scripts/generate-finding-ids.js
-  // can't read from the source.
+  // Reason codes built at runtime, so not found by reading the source: the
+  // finding identities a baseline holds include them.
   reasonCodes: ['SOURCE_LACKS_VISIBLE_LABEL']
 };
 

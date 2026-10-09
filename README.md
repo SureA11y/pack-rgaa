@@ -52,7 +52,7 @@ From the command line: `surea11y scan ./index.html --pack @surea11y/pack-rgaa --
 
 ## Tests
 
-`npm test` checks the formatting and the generated files, then runs `tests/`: a test per rule, in jsdom and, for the rules that need a real browser, in Chromium, with each rule's scenario page in `tests/fixtures/`, and tests of the map, the mapping, the rollups and the margins. They scan with the pack through `@surea11y/core/testing` (`tests/helpers/run.js`). The pack gives the results RGAA built into core gives, on every scenario page.
+`npm test` checks the formatting, lints the rules with core's own lint rules (`@surea11y/core/eslint-plugin`), checks the generated files and the docs (`surea11y-pack docs --check`: `docs/RULE_CATALOG.md`, and each example of `docs/RULE_EXAMPLES.md` run in Chromium), then runs `tests/`: a test per rule, in jsdom and, for the rules that need a real browser, in Chromium, with each rule's scenario page in `tests/fixtures/`, and tests of the map, the mapping, the rollups and the margins. They scan with the pack through `@surea11y/core/testing` (`tests/helpers/run.js`). The pack gives the results RGAA built into core gives, on every scenario page.
 
 ## Licence
 

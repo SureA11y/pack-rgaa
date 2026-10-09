@@ -1,11 +1,11 @@
 # Rule examples: RGAA
 
 `Passed`/`Failed` (or, for manual rules, `Flagged`/`Not applicable`) example
-pairs for every rule of the RGAA profile, the rules in `rules/`
+pairs for every rule of the RGAA pack, the rules in `rules/`
 for requirements RGAA makes and WCAG does not. Companion to
 [`RULE_CATALOG.md`](./RULE_CATALOG.md), which carries each rule's title,
 applicability and expectation. Core's rules have theirs in core's
-[`docs/RULE_EXAMPLES.md`](../../../docs/RULE_EXAMPLES.md), which describes how
+[`docs/RULE_EXAMPLES.md`](https://github.com/SureA11y/core/blob/main/docs/RULE_EXAMPLES.md), which describes how
 the examples were verified.
 
 These rules are opt-in, tagged `rgaa`: a scan runs them under the `rgaa-4.1.2`

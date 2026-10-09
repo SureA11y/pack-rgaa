@@ -37,11 +37,11 @@ function renderDoc({ rules, versions, themes, criteria, tests, ruleTests }) {
   );
   out.push('');
   out.push(
-    "Which RGAA tests each rule checks, and which rules speak to each RGAA criterion. A scan names these tests on its results when asked (`engineOptions.mappings: ['rgaa']`, see [`ENGINE_OPTIONS.md`](../../../docs/ENGINE_OPTIONS.md#other-standards-mappings)); [`WCAG_CONFORMANCE.md`](../../../docs/WCAG_CONFORMANCE.md#rgaa) explains how the mapping is made."
+    "Which RGAA tests each rule checks, and which rules speak to each RGAA criterion. A scan names these tests on its results when asked (`engineOptions.mappings: ['rgaa']`, see [`ENGINE_OPTIONS.md`](https://github.com/SureA11y/core/blob/main/docs/ENGINE_OPTIONS.md#other-standards-mappings) in core); the notes below say how the mapping is made."
   );
   out.push('');
   out.push(
-    '> **Review status:** drafted from the RGAA test wording and official methodology, then checked row by row against how other RGAA tools map and flag the same checks; not yet reviewed by an RGAA auditor. Corrections go in `src/coverage/rgaa-rule-map.js`; this page is regenerated from it.'
+    '> **Review status:** drafted from the RGAA test wording and official methodology, then checked row by row against how other RGAA tools map and flag the same checks; not yet reviewed by an RGAA auditor. Corrections go in `rule-map.js`; this page is regenerated from it.'
   );
   out.push('');
   out.push(
