@@ -93,6 +93,14 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-th-scope-row-col`](#rgaa-th-scope-row-col) | Table headers use scope="row" or scope="col" | — | — | medium | moderate |
 | [`rgaa-viewport-zoom-review`](#rgaa-viewport-zoom-review) | Text can reach 200% zoom despite a viewport meta tag that limits zoom | — | — | medium | serious |
 
+## Profiles (1)
+
+What a scan runs under each profile (`engineOptions.profile`): the rules its tags select, those its standard maps for its version, and those it names, less those it leaves out. A severity column gives a rule another severity under the profile.
+
+| Profile | Tags | Mapped rules | Rules by id | Leaves out | Severity |
+|---|---|---|---|---|---|
+| `rgaa-4.1.2` | `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `rgaa` | version 4.1.2 | — | — | — |
+
 ## Rollups (51)
 
 Each groups rules into one result, as a WCAG rollup does; the standard's own report sections show them.
