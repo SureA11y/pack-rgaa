@@ -107,7 +107,7 @@ test(`${RULE_ID}: opt-in, so a default, WCAG or EN 301 549 run does not include 
 // WCAG 2.4.1 needs one bypass mechanism for the page; RGAA 12.6.1 one per area.
 test(`${RULE_ID}: WCAG 2.4.1 finds a bypass in <main>, RGAA 12.6 asks about the unmarked header`, () => {
   const result = runa11yCoreOnHtml(page('<div class="header">Logo</div>' + MAIN), {
-    engineOptions: { profile: 'rgaa-4.1.2' }
+    engineOptions: { profile: 'rgaa-4.1.2-wcag' }
   });
   const rollup = (id) => result.rulesResults.find((r) => r.ruleId === id);
   assert.notEqual(rollup('wcag-2.4.1-bypass-blocks').outcome, 'cantTell');

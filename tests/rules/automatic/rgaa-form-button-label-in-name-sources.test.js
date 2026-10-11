@@ -114,7 +114,7 @@ test(`${RULE_ID}: opt-in, so a default run, a WCAG profile and an EN 301 549 pro
 
 test(`${RULE_ID}: the rgaa-4.1.2 profile, the rgaa tag and the 11.9 rollup run it`, () => {
   for (const options of [
-    { engineOptions: { profile: 'rgaa-4.1.2' } },
+    { engineOptions: { profile: 'rgaa-4.1.2-wcag' } },
     { engineOptions: { tags: { include: 'rgaa' } } },
     { engineOptions: { rules: { include: 'rgaa-4.1.2-11.9' } } }
   ]) {
@@ -135,7 +135,7 @@ test(`${RULE_ID}: the map links it to 11.9.2, and label-in-name to no RGAA test`
 // --- RGAA and WCAG rollups in one run --------------------------------------------
 
 function rollups(body) {
-  const result = runa11yCoreOnHtml(page(body), { engineOptions: { profile: 'rgaa-4.1.2' } });
+  const result = runa11yCoreOnHtml(page(body), { engineOptions: { profile: 'rgaa-4.1.2-wcag' } });
   const outcome = (ruleId) => {
     const r = result.rulesResults.find((x) => x.ruleId === ruleId);
     return r ? r.outcome : 'missing';

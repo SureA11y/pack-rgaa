@@ -10,7 +10,7 @@ const { runa11yCoreOnHtml } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-orientation-content-parity';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
-const RGAA = { engineOptions: { profile: 'rgaa-4.1.2' } };
+const RGAA = { engineOptions: { profile: 'rgaa-4.1.2-wcag' } };
 
 function page(css, body, headExtra = '') {
   return `<!doctype html><html lang="en"><head><title>t</title><style>${css}</style>${headExtra}</head><body><main>${body}</main></body></html>`;

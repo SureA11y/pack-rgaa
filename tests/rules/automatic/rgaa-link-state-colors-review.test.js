@@ -105,7 +105,7 @@ test(`${RULE_ID}: opt-in, so a default run, a WCAG profile and an EN 301 549 pro
 
 test(`${RULE_ID}: the rgaa-4.1.2 profile, the rgaa tag and the 10.6 rollup run it`, () => {
   for (const options of [
-    { engineOptions: { profile: 'rgaa-4.1.2' } },
+    { engineOptions: { profile: 'rgaa-4.1.2-wcag' } },
     { engineOptions: { tags: { include: 'rgaa' } } },
     { engineOptions: { rules: { include: 'rgaa-4.1.2-10.6' } } }
   ]) {
@@ -127,7 +127,7 @@ test(`${RULE_ID}: the map links it to 10.6.1, and link-in-text-block keeps it`, 
 
 function rollups(css, body = TEXT_LINK) {
   const result = runa11yCoreOnHtml(page(css, body), {
-    engineOptions: { profile: 'rgaa-4.1.2' }
+    engineOptions: { profile: 'rgaa-4.1.2-wcag' }
   });
   const outcome = (ruleId) => {
     const r = result.rulesResults.find((x) => x.ruleId === ruleId);

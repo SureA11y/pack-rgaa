@@ -103,7 +103,7 @@ test(`${RULE_ID}: opt-in, so a default run and a WCAG profile do not include it`
     );
   }
   for (const engineOptions of [
-    { profile: 'rgaa-4.1.2' },
+    { profile: 'rgaa-4.1.2-wcag' },
     { tags: { include: 'rgaa' } },
     { rules: { include: 'rgaa-4.1.2-5.6' } }
   ]) {
@@ -124,7 +124,7 @@ test(`${RULE_ID}: the map links it to 5.6.1 and 5.6.2`, () => {
 // data table.
 test(`${RULE_ID}: WCAG 1.3.1 fails a large headerless table, RGAA 5.6 asks`, () => {
   const result = runa11yCoreOnHtml(page(`<table>${rows(4, 4)}</table>`), {
-    engineOptions: { profile: 'rgaa-4.1.2' }
+    engineOptions: { profile: 'rgaa-4.1.2-wcag' }
   });
   const outcome = (id) => (result.rulesResults.find((r) => r.ruleId === id) || {}).outcome;
   assert.equal(outcome('wcag-1.3.1-info-and-relationships'), 'fail');
@@ -133,7 +133,7 @@ test(`${RULE_ID}: WCAG 1.3.1 fails a large headerless table, RGAA 5.6 asks`, () 
 
 test(`${RULE_ID}: RGAA 5.6 is not applicable when every table has header cells`, () => {
   const body = '<table><tr><th>Name</th><th>Age</th></tr><tr><td>Ann</td><td>34</td></tr></table>';
-  const result = runa11yCoreOnHtml(page(body), { engineOptions: { profile: 'rgaa-4.1.2' } });
+  const result = runa11yCoreOnHtml(page(body), { engineOptions: { profile: 'rgaa-4.1.2-wcag' } });
   const r = result.rulesResults.find((x) => x.ruleId === 'rgaa-4.1.2-5.6');
   assert.equal(r ? r.outcome : 'notApplicable', 'notApplicable');
 });

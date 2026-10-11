@@ -21,17 +21,29 @@ const { definePack, wcagTags } = require('@surea11y/core/pack');
 const { RGAA_VERSIONS } = require('./map');
 const { rgaaMappingsFor, rgaaComposites, validateRgaaRuleTests } = require('./mappings');
 
-// The WCAG A and AA tags of the WCAG version an RGAA version is built on.
-const wcagTagsOf = (version) =>
-  wcagTags(RGAA_VERSIONS.find((v) => v.version === version).wcagVersion);
+// The WCAG version an RGAA version is built on, and its WCAG A and AA tags.
+const wcagVersionOf = (version) => RGAA_VERSIONS.find((v) => v.version === version).wcagVersion;
+const wcagTagsOf = (version) => wcagTags(wcagVersionOf(version));
 
 const standard = {
   key: 'rgaa',
   standard: 'RGAA',
   versions: RGAA_VERSIONS.map((v) => v.version),
-  // The profile also runs the opt-in rules for RGAA's own requirements.
   profiles: {
+    // RGAA alone: the pack's own rules (the rgaa tag) and the core rules
+    // rule-map.js gives an RGAA test (mappedRules), and nothing else, so
+    // results hold RGAA's criteria and no WCAG ones. With no WCAG tag to
+    // imply it, the profile names the WCAG version RGAA is built on, where
+    // 4.1.1 Parsing still counts: a duplicate id fails 8.2.1.
     'rgaa-4.1.2': {
+      version: '4.1.2',
+      tags: ['rgaa'],
+      mappedRules: true,
+      wcagVersion: wcagVersionOf('4.1.2')
+    },
+    // RGAA and WCAG together: the same, plus every core rule for WCAG A and
+    // AA of that version, with WCAG's criteria in the results too.
+    'rgaa-4.1.2-wcag': {
       version: '4.1.2',
       tags: wcagTagsOf('4.1.2').concat(['rgaa']),
       mappedRules: true

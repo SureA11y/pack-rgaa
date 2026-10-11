@@ -188,7 +188,9 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
   });
 
   await t.test('under the RGAA profile: WCAG 1.4.1 does not fail, RGAA 10.6 does', async () => {
-    const { result } = await scan(page('a:hover{color:#222}', LINK), { profile: 'rgaa-4.1.2' });
+    const { result } = await scan(page('a:hover{color:#222}', LINK), {
+      profile: 'rgaa-4.1.2-wcag'
+    });
     const rollup = (id) => result.rulesResults.find((r) => r.ruleId === id).outcome;
     assert.equal(rule(result).outcome, 'fail');
     assert.notEqual(rollup('wcag-1.4.1-use-of-color'), 'fail');

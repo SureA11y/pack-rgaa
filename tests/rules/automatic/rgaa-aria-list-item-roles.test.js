@@ -10,7 +10,7 @@ const { runa11yCoreOnHtml } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-aria-list-item-roles';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
-const RGAA = { engineOptions: { profile: 'rgaa-4.1.2' } };
+const RGAA = { engineOptions: { profile: 'rgaa-4.1.2-wcag' } };
 
 function page(body) {
   return `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`;

@@ -196,7 +196,7 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
   });
 
   await t.test('under the RGAA profile: WCAG 1.3.4 does not fail, RGAA 13.9 does', async () => {
-    const [result] = await scan(FIXTURE, { profile: 'rgaa-4.1.2' });
+    const [result] = await scan(FIXTURE, { profile: 'rgaa-4.1.2-wcag' });
     const rollup = (id) => result.rulesResults.find((r) => r.ruleId === id).outcome;
     assert.notEqual(rollup('wcag-1.3.4-orientation'), 'fail');
     assert.equal(rollup('rgaa-4.1.2-13.9'), 'fail');

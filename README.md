@@ -1,6 +1,6 @@
 # @surea11y/pack-rgaa
 
-RGAA 4.1.2, the French accessibility standard, as a pack for [`@surea11y/core`](https://github.com/SureA11y/core#readme): its criteria and tests, the RGAA tests each of core's rules checks, one result per RGAA criterion, the `rgaa-4.1.2` profile, 69 rules for what RGAA requires beyond WCAG or judges differently, and their messages in English, French, German, Spanish and Japanese.
+RGAA 4.1.2, the French accessibility standard, as a pack for [`@surea11y/core`](https://github.com/SureA11y/core#readme): its criteria and tests, the RGAA tests each of core's rules checks, one result per RGAA criterion, the `rgaa-4.1.2` profile for RGAA alone and `rgaa-4.1.2-wcag` for RGAA with WCAG, 69 rules for what RGAA requires beyond WCAG or judges differently, and their messages in English, French, German, Spanish and Japanese.
 
 It automates what can be checked in the page, not an RGAA audit: a scan gives results for 51 of RGAA's 106 criteria, many rules ask (`cantTell`) where only a person can judge, and 15 of the pack's rules are manual, finding what a person must review without ever failing it. A conformance claim still needs an auditor to check every criterion.
 
@@ -16,7 +16,7 @@ npm installs it as `@surea11y/pack-rgaa`, so the examples below, and the CLI's `
 
 ## Using it
 
-The pack runs wherever core runs: in Node on a jsdom page, in a real browser driven by Playwright or Puppeteer, from the command line, and in core's browser bindings. In each, give the scan the pack and choose its profile, `rgaa-4.1.2`.
+The pack runs wherever core runs: in Node on a jsdom page, in a real browser driven by Playwright or Puppeteer, from the command line, and in core's browser bindings. In each, give the scan the pack and choose its profile: `rgaa-4.1.2` for RGAA alone, or `rgaa-4.1.2-wcag` for WCAG's results as well.
 
 ### In Node, on a jsdom page
 
@@ -115,7 +115,7 @@ surea11y scan ./index.html --pack @surea11y/pack-rgaa --profile rgaa-4.1.2 --loc
 
 ### Reading the results
 
-Under the profile, `checksResults` holds a result per rule, core's and the pack's (their ids start with `rgaa-`), and `rulesResults` holds the WCAG criteria, then one result per RGAA criterion, with ids such as `rgaa-4.1.2-8.1`:
+Under `rgaa-4.1.2`, `checksResults` holds a result per rule that checks an RGAA test, core's and the pack's (their ids start with `rgaa-`), and `rulesResults` holds one result per RGAA criterion, with ids such as `rgaa-4.1.2-8.1`, and nothing of WCAG. Under `rgaa-4.1.2-wcag`, both also hold every WCAG 2.1 A and AA rule and criterion (`wcag-1.1.1-non-text-content`), with the same RGAA results:
 
 ```js
 const criteria = result.rulesResults.filter((r) => r.meta && r.meta.standard === 'RGAA');
@@ -171,9 +171,11 @@ runDomRulesInPage(url, null, {
 ## What it brings
 
 - **The standard:** RGAA 4.1.2's themes, criteria and tests (`map.js`), generated from DINUM's own criteria file (`data/`), and published for tools that work in RGAA's terms (`public.js`).
-- **The mapping:** for each of core's rules, the RGAA tests it checks, with the reason (`rule-map.js`, documented in [`docs/RGAA_MAPPING.md`](./docs/RGAA_MAPPING.md)). Results name those tests next to WCAG's criteria under the profile, or with `engineOptions.mappings: ['rgaa']`.
+- **The mapping:** for each of core's rules, the RGAA tests it checks, with the reason (`rule-map.js`, documented in [`docs/RGAA_MAPPING.md`](./docs/RGAA_MAPPING.md)). Results name those tests under the pack's profiles, or with `engineOptions.mappings: ['rgaa']`.
 - **One result per RGAA criterion** that a rule checks (`mappings.js`), in its own section of the HTML report, with RGAA's French wording.
-- **The `rgaa-4.1.2` profile:** WCAG 2.1 A and AA, every rule mapped to an RGAA test, and the pack's own rules.
+- **Two profiles:**
+  - `rgaa-4.1.2`, RGAA alone: the pack's own rules and the core rules mapped to an RGAA test, and nothing else. No rule runs that counts for no RGAA test, results hold no WCAG criteria, and it is judged by WCAG 2.1, the version RGAA 4.1.2 is built on, so a duplicate id fails 8.2.1. For a tool or a test that evaluates RGAA.
+  - `rgaa-4.1.2-wcag`, RGAA with WCAG: the same, plus every WCAG 2.1 A and AA rule, and both standards' criteria in the results.
 - **69 rules,** each id starting with `rgaa-`: for what RGAA requires and WCAG doesn't (a doctype, presentational markup, a skip link's place across pages, say), and where RGAA judges differently, among them `rgaa-contrast-minimum`, a variant of core's `contrast-minimum`. They are opt-in: they run under the profile, or with `engineOptions.optInRules: ['rgaa']`, never in a scan that targets WCAG.
 - **Probes:** four of its rules read evidence the host supplies in `engineOptions.probes` (other pages' titles and skip links, the page's source as sent, a validator report); `describePacks([rgaa])` lists them with what each holds.
 

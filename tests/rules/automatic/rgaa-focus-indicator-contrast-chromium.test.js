@@ -182,7 +182,7 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
       /<body>[\s\S]*<\/body>/,
       '<body><div class="case"><a id="var_low" href="/1">One</a></div></body>'
     );
-    const { result } = await scan(html, { profile: 'rgaa-4.1.2' });
+    const { result } = await scan(html, { profile: 'rgaa-4.1.2-wcag' });
     const rollup = (id) => result.rulesResults.find((r) => r.ruleId === id);
     assert.equal(result.checksResults.find((r) => r.ruleId === RULE_ID).outcome, 'fail');
     assert.notEqual(rollup('wcag-2.4.7-focus-visible').outcome, 'fail');

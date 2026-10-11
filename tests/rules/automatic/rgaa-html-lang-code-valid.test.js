@@ -10,7 +10,7 @@ const { runa11yCoreOnHtml } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-html-lang-code-valid';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
-const RGAA = { engineOptions: { profile: 'rgaa-4.1.2' } };
+const RGAA = { engineOptions: { profile: 'rgaa-4.1.2-wcag' } };
 
 function page(htmlAttrs, body = '<main><p>Hello</p></main>') {
   return `<!doctype html><html${htmlAttrs}><head><title>t</title></head><body>${body}</body></html>`;

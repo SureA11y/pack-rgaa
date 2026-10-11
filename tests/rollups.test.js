@@ -45,8 +45,14 @@ test('the RGAA profile produces one rollup per criterion a rule is linked to', (
       .sort(),
     catalog.map((c) => c.id).sort()
   );
-  // The WCAG rollups are still there.
-  assert.ok(result.rulesResults.some((r) => r.ruleId === 'wcag-1.1.1-non-text-content'));
+  // RGAA alone: no WCAG rollup. The WCAG profile has both, with the same RGAA ones.
+  assert.ok(!result.rulesResults.some((r) => r.ruleId.startsWith('wcag-')));
+  const both = scan({ profile: 'rgaa-4.1.2-wcag' });
+  assert.ok(both.rulesResults.some((r) => r.ruleId === 'wcag-1.1.1-non-text-content'));
+  assert.deepEqual(
+    rgaaRollups(both).map((r) => [r.ruleId, r.outcome]),
+    rgaaRollups(result).map((r) => [r.ruleId, r.outcome])
+  );
 });
 
 test("an RGAA rollup names its standard, version and criterion, with RGAA's wording as title", () => {
@@ -80,7 +86,10 @@ test('each rule result lists the rollups that group it; an empty list means none
 
   const rgaa = scan({ profile: 'rgaa-4.1.2' });
   assert.deepEqual(byId(rgaa, 'heading-order').rollupIds, ['rgaa-4.1.2-9.1']);
-  assert.deepEqual(byId(rgaa, 'img-alt-present').rollupIds, [
+  assert.deepEqual(byId(rgaa, 'img-alt-present').rollupIds, ['rgaa-4.1.2-1.1', 'rgaa-4.1.2-1.2']);
+  // With WCAG too, a rule is also grouped under its WCAG criterion.
+  const both = scan({ profile: 'rgaa-4.1.2-wcag' });
+  assert.deepEqual(byId(both, 'img-alt-present').rollupIds, [
     'wcag-1.1.1-non-text-content',
     'rgaa-4.1.2-1.1',
     'rgaa-4.1.2-1.2'
@@ -144,10 +153,14 @@ test('text-spacing-content-loss, a WCAG rule, reports RGAA 10.12.1 and joins its
   const html =
     '<!doctype html><html lang="en"><head><title>t</title><style>body{font-size:16px} ' +
     'p{letter-spacing:0 !important}</style></head><body><p>Opening hours today</p></body></html>';
-  const result = runa11yCoreOnHtml(html, { engineOptions: { profile: 'rgaa-4.1.2' } });
+  const result = runa11yCoreOnHtml(html, { engineOptions: { profile: 'rgaa-4.1.2-wcag' } });
   const check = result.checksResults.find((r) => r.ruleId === 'text-spacing-content-loss');
   assert.equal(check.outcome, 'cantTell');
   assert.ok(check.rollupIds.includes('wcag-1.4.12-text-spacing'));
   assert.ok(check.rollupIds.includes('rgaa-4.1.2-10.12'));
+  // RGAA alone runs it too, since it checks an RGAA test, under RGAA only.
+  const rgaa = runa11yCoreOnHtml(html, { engineOptions: { profile: 'rgaa-4.1.2' } });
+  const own = rgaa.checksResults.find((r) => r.ruleId === 'text-spacing-content-loss');
+  assert.deepEqual(own.rollupIds, ['rgaa-4.1.2-10.12']);
   assert.deepEqual(RGAA_RULE_TESTS['4.1.2']['text-spacing-content-loss'].tests, ['10.12.1']);
 });

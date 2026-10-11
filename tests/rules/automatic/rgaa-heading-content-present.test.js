@@ -134,7 +134,7 @@ test(`${RULE_ID}: opt-in, so a default, WCAG or EN 301 549 run does not include 
 test(`${RULE_ID}: the RGAA profile, the rgaa tag and the 9.1 rollup id run it`, () => {
   const html = page('<main><h2></h2></main>');
   for (const opts of [
-    { engineOptions: { profile: 'rgaa-4.1.2' } },
+    { engineOptions: { profile: 'rgaa-4.1.2-wcag' } },
     { engineOptions: { tags: { include: 'rgaa' } } },
     { engineOptions: { rules: { include: 'rgaa-4.1.2-9.1' } } }
   ]) {
@@ -145,7 +145,7 @@ test(`${RULE_ID}: the RGAA profile, the rgaa tag and the 9.1 rollup id run it`, 
 });
 
 function rgaaRun(body) {
-  const result = runa11yCoreOnHtml(page(body), { engineOptions: { profile: 'rgaa-4.1.2' } });
+  const result = runa11yCoreOnHtml(page(body), { engineOptions: { profile: 'rgaa-4.1.2-wcag' } });
   const rollup = (prefix) => result.rulesResults.find((r) => r.ruleId.startsWith(prefix));
   return { result, rollup };
 }

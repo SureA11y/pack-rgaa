@@ -11,7 +11,7 @@ const { runa11yCoreOnHtml } = require('../../helpers/run.js');
 const RULE_ID = 'rgaa-contrast-minimum';
 const WCAG_RULE = 'contrast-minimum';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
-const RGAA = { engineOptions: { profile: 'rgaa-4.1.2' } };
+const RGAA = { engineOptions: { profile: 'rgaa-4.1.2-wcag' } };
 const FIXTURES = path.join(__dirname, '../..', 'fixtures');
 
 function page(style, text = 'Opening hours') {

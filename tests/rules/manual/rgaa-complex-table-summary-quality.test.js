@@ -10,7 +10,7 @@ const { runa11yCoreOnHtml } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-complex-table-summary-quality';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
-const RGAA = { engineOptions: { profile: 'rgaa-4.1.2' } };
+const RGAA = { engineOptions: { profile: 'rgaa-4.1.2-wcag' } };
 
 const HTML5 = '<!doctype html>';
 const HTML401 =

@@ -11,7 +11,7 @@ const { runa11yCoreOnHtml } = require('../../helpers/run.js');
 const RULE_ID = 'rgaa-focus-indicator-contrast';
 const WCAG_RULE = 'css-focus-indicator-suppressed';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
-const RGAA = { engineOptions: { profile: 'rgaa-4.1.2' } };
+const RGAA = { engineOptions: { profile: 'rgaa-4.1.2-wcag' } };
 
 function page(
   css,

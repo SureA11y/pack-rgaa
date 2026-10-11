@@ -11,7 +11,7 @@ const { runa11yCoreOnHtml } = require('../../helpers/run.js');
 const RULE_ID = 'rgaa-media-transcript-adjacent';
 const WCAG_RULE = 'media-alternative-transcript-evidence';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
-const RGAA = { engineOptions: { profile: 'rgaa-4.1.2' } };
+const RGAA = { engineOptions: { profile: 'rgaa-4.1.2-wcag' } };
 const WCAG_ROLLUP = 'wcag-1.2.1-audio-only-video-only-prerecorded';
 
 function page(body) {
