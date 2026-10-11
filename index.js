@@ -17,13 +17,12 @@
 const fs = require('fs');
 const path = require('path');
 
-const { definePack, wcagTags } = require('@surea11y/core/pack');
+const { definePack } = require('@surea11y/core/pack');
 const { RGAA_VERSIONS } = require('./map');
 const { rgaaMappingsFor, rgaaComposites, validateRgaaRuleTests } = require('./mappings');
 
-// The WCAG version an RGAA version is built on, and its WCAG A and AA tags.
+// The WCAG version an RGAA version is built on.
 const wcagVersionOf = (version) => RGAA_VERSIONS.find((v) => v.version === version).wcagVersion;
-const wcagTagsOf = (version) => wcagTags(wcagVersionOf(version));
 
 const standard = {
   key: 'rgaa',
@@ -40,13 +39,6 @@ const standard = {
       tags: ['rgaa'],
       mappedRules: true,
       wcagVersion: wcagVersionOf('4.1.2')
-    },
-    // RGAA and WCAG together: the same, plus every core rule for WCAG A and
-    // AA of that version, with WCAG's criteria in the results too.
-    'rgaa-4.1.2-wcag': {
-      version: '4.1.2',
-      tags: wcagTagsOf('4.1.2').concat(['rgaa']),
-      mappedRules: true
     }
   },
   ruleTag: 'rgaa',

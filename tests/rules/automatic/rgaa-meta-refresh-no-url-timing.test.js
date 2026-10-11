@@ -10,7 +10,7 @@ const { runa11yCoreOnHtml } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-meta-refresh-no-url-timing';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
-const RGAA = { engineOptions: { profile: 'rgaa-4.1.2-wcag' } };
+const RGAA = { engineOptions: { profile: 'rgaa-4.1.2-with-wcag' } };
 
 function page(content, extraHead = '') {
   const meta = content == null ? '' : `<meta http-equiv="refresh" content="${content}">`;

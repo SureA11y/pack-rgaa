@@ -13,7 +13,7 @@ const { rgaa } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-page-language-present';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
-const RGAA = { engineOptions: { profile: 'rgaa-4.1.2-wcag' } };
+const RGAA = { engineOptions: { profile: 'rgaa-4.1.2-with-wcag' } };
 
 const XHTML11 =
   '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">';

@@ -10,7 +10,7 @@ const { runa11yCoreOnHtml } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-html-elements-attributes-valid';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
-const RGAA = { engineOptions: { profile: 'rgaa-4.1.2-wcag' } };
+const RGAA = { engineOptions: { profile: 'rgaa-4.1.2-with-wcag' } };
 
 const XHTML10 =
   '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';

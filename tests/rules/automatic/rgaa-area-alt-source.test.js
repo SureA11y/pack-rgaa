@@ -80,7 +80,7 @@ test(`${RULE_ID}: opt-in, so a default run, a WCAG profile and an EN 301 549 pro
 
 function verdicts(body) {
   const html = page(body);
-  const rgaa = runa11yCoreOnHtml(html, { engineOptions: { profile: 'rgaa-4.1.2-wcag' } });
+  const rgaa = runa11yCoreOnHtml(html, { engineOptions: { profile: 'rgaa-4.1.2-with-wcag' } });
   const wcag = runa11yCoreOnHtml(html, { engineOptions: { profile: 'wcag22-aa' } });
   const rollup = (r, id) => (r.rulesResults.find((x) => x.ruleId === id) || {}).outcome;
   const check = (r, id) => (r.checksResults.find((x) => x.ruleId === id) || {}).outcome;

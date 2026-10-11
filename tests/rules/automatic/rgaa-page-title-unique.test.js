@@ -111,7 +111,7 @@ test(`${RULE_ID}: WCAG 2.4.2 does not fail a duplicated title, RGAA 8.6 does`, (
   const result = runa11yCoreOnHtml(page('Horaires – Médiathèque'), {
     url: HERE,
     engineOptions: {
-      profile: 'rgaa-4.1.2-wcag',
+      profile: 'rgaa-4.1.2-with-wcag',
       probes: {
         'crawl.pageTitles': {
           pages: [{ url: 'https://example.test/b', title: 'Horaires – Médiathèque' }]

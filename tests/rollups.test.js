@@ -45,9 +45,9 @@ test('the RGAA profile produces one rollup per criterion a rule is linked to', (
       .sort(),
     catalog.map((c) => c.id).sort()
   );
-  // RGAA alone: no WCAG rollup. The WCAG profile has both, with the same RGAA ones.
+  // RGAA alone: no WCAG rollup. The tests' profile with WCAG has both, with the same RGAA ones.
   assert.ok(!result.rulesResults.some((r) => r.ruleId.startsWith('wcag-')));
-  const both = scan({ profile: 'rgaa-4.1.2-wcag' });
+  const both = scan({ profile: 'rgaa-4.1.2-with-wcag' });
   assert.ok(both.rulesResults.some((r) => r.ruleId === 'wcag-1.1.1-non-text-content'));
   assert.deepEqual(
     rgaaRollups(both).map((r) => [r.ruleId, r.outcome]),
@@ -87,8 +87,8 @@ test('each rule result lists the rollups that group it; an empty list means none
   const rgaa = scan({ profile: 'rgaa-4.1.2' });
   assert.deepEqual(byId(rgaa, 'heading-order').rollupIds, ['rgaa-4.1.2-9.1']);
   assert.deepEqual(byId(rgaa, 'img-alt-present').rollupIds, ['rgaa-4.1.2-1.1', 'rgaa-4.1.2-1.2']);
-  // With WCAG too, a rule is also grouped under its WCAG criterion.
-  const both = scan({ profile: 'rgaa-4.1.2-wcag' });
+  // Under the tests' profile with WCAG, a rule is also grouped under its WCAG criterion.
+  const both = scan({ profile: 'rgaa-4.1.2-with-wcag' });
   assert.deepEqual(byId(both, 'img-alt-present').rollupIds, [
     'wcag-1.1.1-non-text-content',
     'rgaa-4.1.2-1.1',
@@ -153,7 +153,7 @@ test('text-spacing-content-loss, a WCAG rule, reports RGAA 10.12.1 and joins its
   const html =
     '<!doctype html><html lang="en"><head><title>t</title><style>body{font-size:16px} ' +
     'p{letter-spacing:0 !important}</style></head><body><p>Opening hours today</p></body></html>';
-  const result = runa11yCoreOnHtml(html, { engineOptions: { profile: 'rgaa-4.1.2-wcag' } });
+  const result = runa11yCoreOnHtml(html, { engineOptions: { profile: 'rgaa-4.1.2-with-wcag' } });
   const check = result.checksResults.find((r) => r.ruleId === 'text-spacing-content-loss');
   assert.equal(check.outcome, 'cantTell');
   assert.ok(check.rollupIds.includes('wcag-1.4.12-text-spacing'));

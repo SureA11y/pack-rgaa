@@ -1,12 +1,12 @@
 'use strict';
 
 /**
- * The pack's two profiles. rgaa-4.1.2 is RGAA alone: the pack's own rules
- * and the core rules rule-map.js gives an RGAA test, judged by WCAG 2.1, the
- * version RGAA 4.1.2 is built on, and results with RGAA's criteria only.
- * rgaa-4.1.2-wcag adds every WCAG 2.1 A and AA rule and WCAG's criteria. The
- * WCAG rules it adds count for no RGAA test, so both give the same RGAA
- * results, which every scenario page checks.
+ * The pack's profile, rgaa-4.1.2: RGAA alone, the pack's own rules and the
+ * core rules rule-map.js gives an RGAA test, whether WCAG or best-practice
+ * rules, judged by WCAG 2.1, the version RGAA 4.1.2 is built on, with RGAA's
+ * criteria only in the results. The tests' own profile, which adds every
+ * WCAG 2.1 A and AA rule (tests/helpers/run.js), must give the same RGAA
+ * results on every scenario page: the rules it adds count for no RGAA test.
  */
 
 const test = require('node:test');
@@ -14,7 +14,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const { runa11yCoreOnHtml } = require('./helpers/run.js');
+const { runa11yCoreOnHtml, TEST_PROFILE } = require('./helpers/run.js');
 const { CHECK_DEFS } = require('@surea11y/core');
 const rgaa = require('..');
 const { RGAA_RULE_TESTS } = require('../rule-map');
@@ -62,10 +62,14 @@ test('rgaa-4.1.2 is judged by WCAG 2.1, so a duplicate id fails RGAA 8.2.1', () 
   assert.equal(result.rulesResults.find((r) => r.ruleId === 'rgaa-4.1.2-8.2').outcome, 'fail');
 });
 
-test('rgaa-4.1.2-wcag adds every WCAG 2.1 A and AA rule, and WCAG’s criteria', () => {
+test('the published pack has one profile, rgaa-4.1.2', () => {
+  assert.deepEqual(Object.keys(rgaa.standard.profiles), ['rgaa-4.1.2']);
+});
+
+test('the tests’ own profile adds every WCAG 2.1 A and AA rule, and WCAG’s criteria', () => {
   const only = scan('rgaa-4.1.2');
-  const both = scan('rgaa-4.1.2-wcag');
-  assert.equal(both.engine.profile, 'rgaa-4.1.2-wcag');
+  const both = scan(TEST_PROFILE);
+  assert.equal(both.engine.profile, TEST_PROFILE);
   assert.equal(both.engine.wcagVersion, '2.1');
   for (const id of ran(only)) assert.ok(ran(both).includes(id), `${id} runs with WCAG too`);
   assert.ok(ran(both).includes('contrast-minimum'));
@@ -73,7 +77,7 @@ test('rgaa-4.1.2-wcag adds every WCAG 2.1 A and AA rule, and WCAG’s criteria',
   assert.ok(both.rulesResults.some((r) => r.ruleId === 'wcag-1.4.3-contrast-minimum'));
 });
 
-test('both profiles give the same RGAA results on every scenario page', () => {
+test('rgaa-4.1.2 and the tests’ profile give the same RGAA results on every scenario page', () => {
   const dir = path.join(__dirname, 'fixtures');
   const pages = fs.readdirSync(dir).filter((f) => f.endsWith('-all-scenarios.html'));
   assert.ok(pages.length > 60);
@@ -88,6 +92,6 @@ test('both profiles give the same RGAA results on every scenario page', () => {
   });
   for (const page of pages) {
     const html = fs.readFileSync(path.join(dir, page), 'utf8');
-    assert.deepEqual(rgaaOf(scan('rgaa-4.1.2', html)), rgaaOf(scan('rgaa-4.1.2-wcag', html)), page);
+    assert.deepEqual(rgaaOf(scan('rgaa-4.1.2', html)), rgaaOf(scan(TEST_PROFILE, html)), page);
   }
 });

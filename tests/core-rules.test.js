@@ -14,7 +14,7 @@ const assert = require('node:assert/strict');
 
 const { runa11yCoreOnHtml } = require('./helpers/run.js');
 
-const RGAA = { engineOptions: { profile: 'rgaa-4.1.2-wcag' } };
+const RGAA = { engineOptions: { profile: 'rgaa-4.1.2-with-wcag' } };
 const page = (body) =>
   `<!doctype html><html lang="en"><head><title>t</title></head><body>${body}</body></html>`;
 const rgaaTestsOf = (rule) =>

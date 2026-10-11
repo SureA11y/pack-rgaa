@@ -8,8 +8,29 @@
 
 const helpers = require('@surea11y/core/testing');
 const main = require('@surea11y/core');
-const { preparePacks } = require('@surea11y/core/pack');
-const rgaa = require('../..');
+const { preparePacks, definePack, wcagTags } = require('@surea11y/core/pack');
+const published = require('../..');
+
+// The pack as published, plus one profile for the tests alone:
+// rgaa-4.1.2-with-wcag runs what rgaa-4.1.2 runs and every WCAG 2.1 A and AA
+// rule, so a test can compare RGAA's verdict with WCAG's in one scan. The
+// published pack has only rgaa-4.1.2; tests/profiles.test.js checks that the
+// two give the same RGAA results.
+const TEST_PROFILE = 'rgaa-4.1.2-with-wcag';
+const rgaa = definePack({
+  ...published,
+  standard: {
+    ...published.standard,
+    profiles: {
+      ...published.standard.profiles,
+      [TEST_PROFILE]: {
+        version: '4.1.2',
+        tags: wcagTags('2.1').concat(['rgaa']),
+        mappedRules: true
+      }
+    }
+  }
+});
 
 const withPack = (engineOptions) => ({ ...(engineOptions || {}), packs: [rgaa] });
 
@@ -57,6 +78,8 @@ module.exports = {
   runa11yCoreOnDom,
   core,
   rgaa,
+  published,
+  TEST_PROFILE,
   PACK_NAMES,
   BROWSER_BUNDLE
 };
