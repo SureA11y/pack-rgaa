@@ -559,5 +559,8 @@
   "autocompleteUserField_summary_cantTell_noFieldName": "Ce champ semble demander une donnée personnelle et sa valeur autocomplete « {{value}} » ne nomme aucun champ de la liste du RGAA.",
   "autocompleteUserField_hint_cantTell": "Si le champ demande une information concernant l’utilisateur, donnez-lui la valeur autocomplete de la liste qui lui correspond, par exemple « email », « tel » ou « family-name ».",
   "skipLinkPlacement_summary_cantTell_positionMayDiffer": "Ce lien d’évitement est à une autre place sur d’autres pages du site, mesurées à la même largeur de fenêtre : {{pages}}. On ne sait pas si elles appartiennent au même ensemble de pages.",
-  "skipLinkPlacement_hint_cantTell_positionMayDiffer": "Vérifiez si ces pages appartiennent au même ensemble de pages que celle-ci, la page d’accueil pouvant en constituer un à elle seule ; au sein d’un ensemble, le lien d’évitement doit être à la même place (RGAA 12.7.2)."
+  "skipLinkPlacement_hint_cantTell_positionMayDiffer": "Vérifiez si ces pages appartiennent au même ensemble de pages que celle-ci, la page d’accueil pouvant en constituer un à elle seule ; au sein d’un ensemble, le lien d’évitement doit être à la même place (RGAA 12.7.2).",
+  "orientationContentParity_summary_cantTell_mayDiffer_portrait": "En portrait, cet élément <{{element}}> est masqué, et son contenu (« {{text}} ») n’est pas affiché ailleurs dans les mêmes termes.",
+  "orientationContentParity_summary_cantTell_mayDiffer_landscape": "En paysage, cet élément <{{element}}> est masqué, et son contenu (« {{text}} ») n’est pas affiché ailleurs dans les mêmes termes.",
+  "orientationContentParity_hint_cantTell_mayDiffer": "Vérifiez que le même contenu est proposé dans les deux orientations, quels que soient sa présentation ou le moyen d’y accéder, comme un bouton de menu (RGAA 13.9.1)."
 }

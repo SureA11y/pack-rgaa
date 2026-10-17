@@ -18,9 +18,15 @@
  *   moyen d’y accéder peut différer ».
  *   - Where the page has a layout (a browser), it is laid out as portrait
  *     and as landscape, and the text and image alternatives shown in each
- *     are compared. Content shown in one orientation fails when it is
- *     hidden in the other and the same text is not shown anywhere else
- *     there (CONTENT_MISSING), reported on the outermost element hidden.
+ *     are compared, leaving out the text of buttons and disclosure triggers,
+ *     which is « le moyen d'y accéder ». Content shown in one orientation
+ *     and hidden in the other, with its text shown nowhere else there, is
+ *     reported on the outermost element hidden. It fails (CONTENT_MISSING)
+ *     when it is content in its own right (2 words of 4 characters or
+ *     more), no menu button or disclosure is shown in that orientation,
+ *     and no more than a fifth of the hidden block's words are shown there; otherwise its presentation may
+ *     just differ (a table shown as cards, a menu behind a button, another
+ *     image alternative), and it is asked about (CONTENT_MAY_DIFFER).
  *     It is asked about when what is hidden holds the main content (a
  *     "rotate your device" page, which the essential-orientation exception
  *     may allow; MAIN_CONTENT_HIDDEN), and when an element an orientation
@@ -203,6 +209,32 @@ function runInPage(ctx) {
   }
 
   // The content items of the page: text nodes and image alternatives.
+  const ACCESS_MEANS =
+    'button, summary, [role~="button" i], [aria-expanded], [aria-controls], [aria-haspopup]';
+  // Words of 4 characters or more: short ones ("to", "de") are found on any
+  // page, and would say nothing of where the content went.
+  const words = (t) =>
+    (
+      String(t || '')
+        .toLowerCase()
+        .match(/[\p{L}\p{N}]+/gu) || []
+    ).filter((w) => Array.from(w).length >= 4);
+  // Enough words to be content in its own right, not a label.
+  const MIN_WORDS = 2;
+  // Below this share of its words shown elsewhere, the content is gone.
+  const MAX_FOUND = 0.2;
+
+  // The text under `el`, its text nodes joined by spaces: textContent runs
+  // table cells together into one word.
+  function spacedText(el) {
+    const parts = [];
+    try {
+      const walker = dom.createTreeWalker(document, el, 4);
+      for (let n = walker.nextNode(); n; n = walker.nextNode()) parts.push(dom.nodeValue(n));
+    } catch {}
+    return parts.join(' ');
+  }
+
   function contentItems() {
     const SKIP = new Set(['script', 'style', 'noscript', 'template']);
     const items = [];
@@ -213,6 +245,9 @@ function runInPage(ctx) {
       if (!/[\p{L}\p{N}]/u.test(text)) continue;
       const parent = dom.parentElement(n);
       if (!parent || SKIP.has(String(dom.localName(parent)))) continue;
+      // The text of a button or disclosure trigger is « le moyen d'y
+      // accéder », which 13.9.1 lets differ, not content.
+      if (dom.closest(parent, ACCESS_MEANS)) continue;
       items.push({
         node: n,
         el: parent,
@@ -224,7 +259,7 @@ function runInPage(ctx) {
       const text = norm(dom.getAttribute(img, 'alt'));
       if (text) {
         const display = String(dom.getAttribute(img, 'alt')).replace(/\s+/g, ' ').trim();
-        items.push({ node: img, el: img, text, display });
+        items.push({ node: img, el: img, text, display, image: true });
       }
     }
     return items;
@@ -268,7 +303,12 @@ function runInPage(ctx) {
       .filter((_, i) => states[i].shown)
       .map((item) => item.text)
       .join(' \n ');
-    return { states, joined };
+    // A menu button or disclosure shown in this orientation may give access
+    // to what it hides.
+    const trigger = Array.from(
+      dom.querySelectorAll(dom.body(document), '[aria-expanded], [aria-controls], summary')
+    ).some((el) => shown(el));
+    return { states, joined, words: new Set(words(joined)), trigger };
   }
 
   function emulate(orientation) {
@@ -362,8 +402,11 @@ function runInPage(ctx) {
         judged.add(root);
         // The same text shown elsewhere in that orientation is the same content.
         if (to.joined.includes(item.text)) return;
-        if (!missing.has(root)) missing.set(root, { orientation: hiddenIn, texts: [] });
+        if (!missing.has(root)) {
+          missing.set(root, { orientation: hiddenIn, texts: [], words: [], to });
+        }
         missing.get(root).texts.push(item.display);
+        if (!item.image) missing.get(root).words.push(...words(item.text));
       });
     }
 
@@ -395,6 +438,42 @@ function runInPage(ctx) {
               evidence: { reasonCode: 'MAIN_CONTENT_HIDDEN', orientation: m.orientation }
             },
             data: { details: { reasonCode: 'MAIN_CONTENT_HIDDEN', orientation: m.orientation } }
+          })
+        );
+        continue;
+      }
+      // 13.9.1 lets the presentation and the way to reach it differ: a
+      // menu behind a button, a table shown as cards, another wording. A
+      // block fails only when it is content in its own right, nothing in
+      // that orientation may open it, and almost none of its words are
+      // shown there.
+      // The share is measured on the whole hidden block: a table shown as
+      // cards keeps its data and loses only its header cells.
+      const all = words(spacedText(root));
+      const found = all.filter((w) => m.to.words.has(w)).length;
+      const gone = m.words.length >= MIN_WORDS && !m.to.trigger && found <= all.length * MAX_FOUND;
+      if (!gone) {
+        questions.push(
+          helpers.reportOccurrence(root, {
+            summary: `In ${m.orientation}, this <${element}> is hidden, and its content ("${text}") is not shown in the same words elsewhere.`,
+            hint: 'Check that the same content is offered in both orientations, whatever its presentation or the way to reach it, such as a menu button (RGAA 13.9.1).',
+            i18n: {
+              summaryKey: `orientationContentParity_summary_cantTell_mayDiffer_${m.orientation}`,
+              hintKey: 'orientationContentParity_hint_cantTell_mayDiffer',
+              params: { orientation: m.orientation, element, text }
+            },
+            uncertainty: {
+              code: 'judgement-required',
+              needed: 'Whether the content is offered in the other orientation in another form.',
+              evidence: { reasonCode: 'CONTENT_MAY_DIFFER', orientation: m.orientation }
+            },
+            data: {
+              details: {
+                reasonCode: 'CONTENT_MAY_DIFFER',
+                orientation: m.orientation,
+                texts: m.texts
+              }
+            }
           })
         );
         continue;

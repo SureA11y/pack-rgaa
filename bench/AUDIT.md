@@ -145,7 +145,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 
 | # | Test | Kind | Finding | Status |
 |---|---|---|---|---|
-| T12-01 | 13.9.1 | FP | A change of presentation between orientations (burger menu, table vs cards) counts as missing content. | open |
+| T12-01 | 13.9.1 | FP | A change of presentation between orientations (burger menu, table vs cards) counts as missing content. | done |
 | T12-02 | 12.7.2 | FP | `SKIP_LINK_NOT_VISIBLE` while an ancestor is transitioning into view. | done |
 | T12-03 | 12.7.2 | FP | The position is compared with pages of another ensemble (the home page). | done |
 | T12-04 | 12.7.1 | FP | A broken first link that is not about the main content fails `skipLinkTargetMissing`. | done |

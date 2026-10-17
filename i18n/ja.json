@@ -559,5 +559,8 @@
   "autocompleteUserField_summary_cantTell_noFieldName": "このフィールドは個人情報を求めているようですが、autocomplete 値「{{value}}」は RGAA のリストのどのフィールドも示していません。",
   "autocompleteUserField_hint_cantTell": "フィールドがユーザーに関する情報を求める場合は、対応するリストの autocomplete 値（「email」「tel」「family-name」など）を指定してください。",
   "skipLinkPlacement_summary_cantTell_positionMayDiffer": "このスキップリンクは、同じウィンドウ幅で測定したサイトの他のページでは別の位置にあります: {{pages}}。それらが同じページ群に属するかは不明です。",
-  "skipLinkPlacement_hint_cantTell_positionMayDiffer": "これらのページがこのページと同じページ群に属するか確認してください（トップページは単独でページ群になる場合があります）。ページ群の中では、スキップリンクは同じ位置になければなりません（RGAA 12.7.2）。"
+  "skipLinkPlacement_hint_cantTell_positionMayDiffer": "これらのページがこのページと同じページ群に属するか確認してください（トップページは単独でページ群になる場合があります）。ページ群の中では、スキップリンクは同じ位置になければなりません（RGAA 12.7.2）。",
+  "orientationContentParity_summary_cantTell_mayDiffer_portrait": "縦向きでは、この <{{element}}> は非表示で、その内容（「{{text}}」）は他の場所に同じ言葉で表示されていません。",
+  "orientationContentParity_summary_cantTell_mayDiffer_landscape": "横向きでは、この <{{element}}> は非表示で、その内容（「{{text}}」）は他の場所に同じ言葉で表示されていません。",
+  "orientationContentParity_hint_cantTell_mayDiffer": "表示方法やメニューボタンなどのアクセス手段が違っても、両方の向きで同じ内容が提供されているか確認してください（RGAA 13.9.1）。"
 }

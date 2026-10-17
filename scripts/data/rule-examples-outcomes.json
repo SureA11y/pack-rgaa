@@ -34,7 +34,7 @@
       "ruleId": "rgaa-orientation-content-parity",
       "label": "Fails (in a browser)",
       "engine": "unknown label",
-      "example": "<style>@media (orientation: portrait) { .prices { display: none } }</style> <table class=\"prices\"><t…"
+      "example": "<style>@media (orientation: portrait) { .prices { display: none } }</style> <table class=\"prices\"> <…"
     },
     {
       "ruleId": "rgaa-orientation-content-parity",

@@ -1111,9 +1111,12 @@ The option group has no `label` attribute.
 **Fails (in a browser)**
 ```html
 <style>@media (orientation: portrait) { .prices { display: none } }</style>
-<table class="prices"><tr><th>Adult</th><td>12 €</td></tr></table>
+<table class="prices">
+  <tr><th>Adult ticket</th><td>12 €</td></tr>
+  <tr><th>Child ticket</th><td>6 €</td></tr>
+</table>
 ```
-The price table disappears in portrait and its text is shown nowhere else there. The page still works in both orientations, so WCAG 1.3.4 passes, but RGAA 13.9.1 asks that the content stays the same. In jsdom, which cannot lay the page out, the rule asks about the table instead.
+The price table disappears in portrait and its text is shown nowhere else there. The page still works in both orientations, so WCAG 1.3.4 passes, but RGAA 13.9.1 asks that the content stays the same. When the presentation may just differ (a menu behind a button, the table shown as cards, another wording) the rule asks instead, since 13.9.1 lets « sa présentation et le moyen d’y accéder » differ. In jsdom, which cannot lay the page out, the rule asks about the table.
 
 **Passes (in a browser)**
 ```html
