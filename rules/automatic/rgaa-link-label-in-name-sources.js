@@ -24,6 +24,9 @@
  *   punctuation and capital letters are ignored. Accents are not folded.
  *   A source that does not contain the visible label fails.
  * @implementation-notes
+ * - Screen-reader-only text inside the element or its label (clipped
+ *   away, 1x1 px with its overflow hidden, transparent:
+ *   helpers.isVisuallyHidden) is not part of the visible label.
  * - Asks (cantTell) instead of failing when the visible label may be a
  *   symbol, which the particular cases let the name express by its function
  *   rather than literally: a single character absent from the source, or
@@ -203,6 +206,28 @@ function runInPage(ctx) {
     );
   }
 
+  // Screen-reader-only text (clipped away, 1x1 px with its overflow hidden,
+  // transparent) is in the accessibility tree but not on screen, so it is
+  // no part of the visible label: on unistra.fr, "Page" in
+  // <span class="sr-only">Page</span>2 made "Page2" the visible label.
+  const hiddenCache = new Map();
+  function srOnly(el, container) {
+    if (typeof helpers.isVisuallyHidden !== 'function') return false;
+    // The container itself is left alone: a skip link is screen-reader-only
+    // until it is focused, and its text is its visible label then.
+    for (let a = el; a && a !== container; a = dom.parentElement(a)) {
+      if (!hiddenCache.has(a)) {
+        let hidden = false;
+        try {
+          hidden = !!helpers.isVisuallyHidden(a);
+        } catch {}
+        hiddenCache.set(a, hidden);
+      }
+      if (hiddenCache.get(a)) return true;
+    }
+    return false;
+  }
+
   const SHOW_TEXT = 4;
 
   // The text a person sees in `container`, in document order. With
@@ -236,7 +261,7 @@ function runInPage(ctx) {
         }
       }
       if (skip || isNonRenderedTag(tagOf(p))) continue;
-      if (visibleOnly && !isAccEligible(p)) continue;
+      if (visibleOnly && (!isAccEligible(p) || srOnly(p, container))) continue;
       parts.push(t);
       if (!elements.includes(p)) elements.push(p);
     }

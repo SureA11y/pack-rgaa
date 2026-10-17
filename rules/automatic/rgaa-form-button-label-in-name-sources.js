@@ -22,6 +22,9 @@
  *   particular cases of 11.2, which 11.9.2 refers to); accents are not
  *   folded. An accessible name that does not contain it fails.
  * @implementation-notes
+ * - Screen-reader-only text inside the element or its label (clipped
+ *   away, 1x1 px with its overflow hidden, transparent:
+ *   helpers.isVisuallyHidden) is not part of the visible label.
  * - The conditions of 11.9.2 check every source present, but its
  *   methodology checks only the accessible name. So a title, or an
  *   aria-label that loses to aria-labelledby, that does not contain the
@@ -198,6 +201,28 @@ function runInPage(ctx) {
     );
   }
 
+  // Screen-reader-only text (clipped away, 1x1 px with its overflow hidden,
+  // transparent) is in the accessibility tree but not on screen, so it is
+  // no part of the visible label: on unistra.fr, "Page" in
+  // <span class="sr-only">Page</span>2 made "Page2" the visible label.
+  const hiddenCache = new Map();
+  function srOnly(el, container) {
+    if (typeof helpers.isVisuallyHidden !== 'function') return false;
+    // The container itself is left alone: a skip link is screen-reader-only
+    // until it is focused, and its text is its visible label then.
+    for (let a = el; a && a !== container; a = dom.parentElement(a)) {
+      if (!hiddenCache.has(a)) {
+        let hidden = false;
+        try {
+          hidden = !!helpers.isVisuallyHidden(a);
+        } catch {}
+        hiddenCache.set(a, hidden);
+      }
+      if (hiddenCache.get(a)) return true;
+    }
+    return false;
+  }
+
   const SHOW_TEXT = 4;
 
   // The text a person sees in `container`, in document order. With
@@ -231,7 +256,7 @@ function runInPage(ctx) {
         }
       }
       if (skip || isNonRenderedTag(tagOf(p))) continue;
-      if (visibleOnly && !isAccEligible(p)) continue;
+      if (visibleOnly && (!isAccEligible(p) || srOnly(p, container))) continue;
       parts.push(t);
       if (!elements.includes(p)) elements.push(p);
     }

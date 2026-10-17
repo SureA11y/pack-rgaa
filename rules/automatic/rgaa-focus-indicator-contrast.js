@@ -66,9 +66,14 @@
  *   cascade, so those are no longer asked about there. The colors outside
  *   the indicator are read from what is painted on each side
  *   (document.elementsFromPoint), so a positioned layer behind the element
- *   counts; a side outside the viewport falls back to the ancestors'
- *   background. An image or gradient on any side, or an animation started
- *   by focus, is still asked about. Focus and the style attribute are put
+ *   counts; a side outside the viewport falls back to the background of
+ *   the first ancestor larger than the element (a parent with the
+ *   element's own box has the color under it, not around it). An image or
+ *   gradient on any side, a ::before or ::after over most of the element
+ *   with a fill of its own (it may be the visible background), an element
+ *   something else is painted over (a cookie consent overlay, whose colors
+ *   would be read instead), or an animation started by focus, is still
+ *   asked about. Focus and the style attribute are put
  *   back afterwards. jsdom keeps the stylesheet reading described above.
  * - Opt-in (tag `rgaa`): the rule runs only under the rgaa-4.1.2 profile,
  *   the `rgaa` tag or its own id.
@@ -1012,9 +1017,25 @@ function runInPage(ctx) {
     return backgroundAt(!rootPainted && dom.body(document) ? dom.body(document) : root);
   }
 
+  // What is around an element whose surroundings are outside the viewport:
+  // the background of the first ancestor larger than the element. A parent
+  // with the element's own box (a button filling its <li>) has the color
+  // under the element, not around it. null when there is none.
+  function backgroundBeyond(el, rect) {
+    for (let a = parentOf(el), guard = 0; a && guard < 50; a = parentOf(a), guard++) {
+      if (a === dom.documentElement(document)) return canvasColor();
+      let r = null;
+      try {
+        r = dom.getBoundingClientRect(a);
+      } catch {}
+      if (r && (r.width > rect.width + 1 || r.height > rect.height + 1)) return backgroundAt(a);
+    }
+    return null;
+  }
+
   // The colors next to the element on the given sides, `dist` pixels
   // outside its border box. A side outside the viewport falls back to the
-  // background of the element's ancestors.
+  // background of the first ancestor larger than the element.
   function colorsAround(el, rect, dist, sides) {
     const midX = rect.left + rect.width / 2;
     const midY = rect.top + rect.height / 2;
@@ -1029,7 +1050,7 @@ function runInPage(ctx) {
     for (const side of sides) {
       let c = paintedAt(el, points[side][0], points[side][1]);
       if (c === undefined) {
-        if (fallback === undefined) fallback = backgroundAt(parentOf(el));
+        if (fallback === undefined) fallback = backgroundBeyond(el, rect);
         c = fallback;
       }
       if (!c) return null;
@@ -1038,12 +1059,38 @@ function runInPage(ctx) {
     return colors;
   }
 
+  // A ::before or ::after positioned over most of the element with a fill of
+  // its own (a color other than the element's, an image): what it paints
+  // may be the element's visible background, so the inner color is unknown.
+  function pseudoFill(el, rect, bg) {
+    for (const pseudo of ['::before', '::after']) {
+      let ps;
+      try {
+        ps = view.getComputedStyle(el, pseudo);
+      } catch {
+        continue;
+      }
+      const content = ps.getPropertyValue('content');
+      if (!content || content === 'none' || content === 'normal') continue;
+      if (!['absolute', 'fixed'].includes(ps.getPropertyValue('position'))) continue;
+      if (px(ps.width) < rect.width * 0.9 || px(ps.height) < rect.height * 0.9) continue;
+      if (helpers.contrast.hasBackgroundImageOrGradient(ps)) return true;
+      const fill = helpers.contrast.parseCssColorToRgba(ps.backgroundColor);
+      if (!fill || !fill.a) continue;
+      if (!bg || fill.r !== bg.r || fill.g !== bg.g || fill.b !== bg.b || fill.a !== bg.a) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   // The element's own background while focused, over what is behind it.
   // What is behind it is read at its center, like the colors around it.
   function focusedBackground(el, rect) {
     const cs = view.getComputedStyle(el);
     if (helpers.contrast.hasBackgroundImageOrGradient(cs)) return null;
     const bg = helpers.contrast.parseCssColorToRgba(cs.backgroundColor);
+    if (pseudoFill(el, rect, bg)) return null;
     if (bg && bg.a >= 1) return { r: bg.r, g: bg.g, b: bg.b, a: 1 };
     let behind = paintedAt(el, rect.left + rect.width / 2, rect.top + rect.height / 2);
     if (behind === undefined) behind = backgroundAt(parentOf(el));
@@ -1073,6 +1120,25 @@ function runInPage(ctx) {
     return { ratios, color: helpers.contrast.rgbToHex(painted) };
   }
 
+  // Whether something else is painted over the element's center, such as a
+  // cookie consent overlay: the colors read around it would be the
+  // overlay's. Not known for a center outside the viewport, or an element
+  // hit testing skips (pointer-events: none).
+  function covered(el, rect) {
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    if (!(x >= 0 && y >= 0 && x < view.innerWidth && y < view.innerHeight)) return false;
+    if (view.getComputedStyle(el).pointerEvents === 'none') return false;
+    let stack;
+    try {
+      stack = dom.elementsFromPoint(document, x, y) || [];
+    } catch {
+      return false;
+    }
+    const top = stack[0];
+    return !!top && top !== el && !dom.contains(el, top);
+  }
+
   function evaluateRendered(el) {
     return whileFocused(el, (before, after) => {
       if (after['outline-style'] === 'auto') return null; // the browser's outline
@@ -1091,6 +1157,9 @@ function runInPage(ctx) {
       }
 
       const rect = dom.getBoundingClientRect(el);
+      if (covered(el, rect)) {
+        return { verdict: 'cantTell', reasonCode: 'notComputable', details: { cause: 'covered' } };
+      }
       const inner = focusedBackground(el, rect);
       const indicators = [];
       let unmeasured = null;

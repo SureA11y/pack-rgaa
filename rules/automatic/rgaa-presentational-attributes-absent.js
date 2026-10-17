@@ -17,14 +17,20 @@
  *   vlink or vspace; size is allowed only on <select>, and width and height
  *   only on <img>, <object>, <embed>, <canvas> and <svg>. That is RGAA
  *   10.1.2's list as written, so width and height on an <iframe> or a
- *   <video>, and size on an <input>, are reported too. One occurrence per
- *   element, naming every such attribute it carries.
+ *   <video>, and size on an <input>, are reported too. One exception: a
+ *   <source> in a <picture> gives the <img> its width and height for its
+ *   art direction (HTML added them in 2021, after the list was written),
+ *   so it is treated as the <img> is. One occurrence per element, naming
+ *   every such attribute it carries.
  * @implementation-notes
  * - Opt-in (tag `rgaa`): WCAG does not forbid these attributes, so the rule
  *   runs only under the rgaa-4.1.2 profile, the `rgaa` tag or its own id.
  * - Only elements in the HTML namespace are checked: inside SVG and MathML,
  *   attributes such as width, height and color are the content's geometry
  *   and paint, not HTML presentation.
+ * - Custom elements (a name with a hyphen, such as <calcite-button>) are not
+ *   checked: their attributes are the component's own API, which HTML does
+ *   not define, not HTML presentational attributes.
  * - Hidden content is checked too (helpers.queryAllSource): 10.1.2 judges
  *   the generated source, and markup inside `hidden` or display:none is part
  *   of it. includeHiddenElements makes no difference here. <template>
@@ -97,9 +103,15 @@ function runInPage(ctx) {
     if (dom.namespaceURI(el) && dom.namespaceURI(el) !== HTML_NS) continue;
 
     const element = String(dom.tagName(el)).toLowerCase();
+    if (element.includes('-')) continue;
     const found = ALWAYS.filter((a) => dom.hasAttribute(el, a));
     if (dom.hasAttribute(el, 'size') && !SIZE_ALLOWED_ON.includes(element)) found.push('size');
-    if (!DIMENSIONS_ALLOWED_ON.includes(element)) {
+    const parent = dom.parentElement(el);
+    const pictureSource =
+      element === 'source' &&
+      !!parent &&
+      String(dom.tagName(parent) || '').toLowerCase() === 'picture';
+    if (!DIMENSIONS_ALLOWED_ON.includes(element) && !pictureSource) {
       if (dom.hasAttribute(el, 'width')) found.push('width');
       if (dom.hasAttribute(el, 'height')) found.push('height');
     }

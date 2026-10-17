@@ -37,13 +37,13 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-form-button-label-in-name-sources`](#rgaa-form-button-label-in-name-sources) | The accessible name of a button in a form contains its visible label | — | — | high | serious |
 | [`rgaa-form-button-name-present`](#rgaa-form-button-name-present) | Buttons in a form have a label | — | — | high | serious |
 | [`rgaa-frame-title-attribute-present`](#rgaa-frame-title-attribute-present) | Frames have a title attribute | — | — | high | serious |
-| [`rgaa-frame-title-not-empty`](#rgaa-frame-title-not-empty) | Frame titles are not empty | — | — | high | serious |
 | [`rgaa-heading-content-present`](#rgaa-heading-content-present) | Headings have content | — | — | high | moderate |
 | [`rgaa-heading-role-level-present`](#rgaa-heading-role-level-present) | ARIA headings have an aria-level attribute | — | — | high | moderate |
 | [`rgaa-html-elements-attributes-valid`](#rgaa-html-elements-attributes-valid) | HTML elements and attribute values are valid | — | — | high | moderate |
 | [`rgaa-html-lang-code-valid`](#rgaa-html-lang-code-valid) | Default language code is valid | — | — | high | serious |
 | [`rgaa-html-nesting-valid`](#rgaa-html-nesting-valid) | HTML elements are nested as HTML allows | — | — | high | moderate |
 | [`rgaa-img-decorative-no-alternative`](#rgaa-img-decorative-no-alternative) | Decorative images have no aria-labelledby, aria-label or title | — | — | high | minor |
+| [`rgaa-img-no-alt-decorative`](#rgaa-img-no-alt-decorative) | Decorative images with no alt attribute | — | — | high | minor |
 | [`rgaa-label-for-target-valid`](#rgaa-label-for-target-valid) | Labels point to a form field | — | — | high | serious |
 | [`rgaa-layout-table-no-data-markup`](#rgaa-layout-table-no-data-markup) | Layout tables use no data table markup | — | — | high | moderate |
 | [`rgaa-link-content-label-present`](#rgaa-link-content-label-present) | Links have a label in their content | — | — | high | serious |
@@ -101,14 +101,14 @@ What a scan runs under each profile (`engineOptions.profile`): the rules its tag
 |---|---|---|---|---|---|---|
 | `rgaa-4.1.2` | `rgaa` | version 4.1.2 | — | — | — | 2.1 |
 
-## Rollups (51)
+## Rollups (50)
 
 Each groups rules into one result, as a WCAG rollup does; the standard's own report sections show them.
 
 | Rollup ID | Title | Rules |
 |---|---|---|
 | `rgaa-4.1.2-1.1` | Chaque image porteuse d’information a-t-elle une alternative textuelle ? | `area-alt-present`, `img-alt-decorative`, `img-alt-present`, `input-image-alt-present`, `rgaa-area-alt-source`, `rgaa-canvas-role-img`, `rgaa-embed-image-role-img`, `rgaa-object-image-role-img`, `rgaa-role-img-aria-name`, `rgaa-svg-hidden-no-alternative`, `rgaa-svg-role-img`, `server-side-image-map-absent`, `svg-text-alternative-present` |
-| `rgaa-4.1.2-1.2` | Chaque image de décoration est-elle correctement ignorée par les technologies d’assistance ? | `img-alt-present`, `rgaa-canvas-decorative-aria-hidden`, `rgaa-img-decorative-no-alternative`, `rgaa-svg-hidden-no-alternative` |
+| `rgaa-4.1.2-1.2` | Chaque image de décoration est-elle correctement ignorée par les technologies d’assistance ? | `rgaa-canvas-decorative-aria-hidden`, `rgaa-img-decorative-no-alternative`, `rgaa-img-no-alt-decorative`, `rgaa-svg-hidden-no-alternative` |
 | `rgaa-4.1.2-1.3` | Pour chaque image porteuse d’information ayant une alternative textuelle, cette alternative est-elle pertinente (hors cas particuliers) ? | `area-alt-quality`, `canvas-text-alternative-quality`, `embed-text-alternative-quality`, `image-redundant-alt`, `img-alt-quality`, `input-image-alt-decorative`, `input-image-alt-quality`, `object-text-alternative-quality`, `rgaa-image-alt-long`, `svg-text-alternative-quality` |
 | `rgaa-4.1.2-1.9` | Chaque légende d’image est-elle, si nécessaire, correctement reliée à l’image correspondante ? | `rgaa-figure-caption-structure` |
 | `rgaa-4.1.2-10.1` | Dans le site web, des feuilles de styles sont-elles utilisées pour contrôler la présentation de l’information ? | `rgaa-letters-spaced-with-spaces`, `rgaa-presentational-attributes-absent`, `rgaa-presentational-elements-absent` |
@@ -121,7 +121,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-11.13` | La finalité d’un champ de saisie peut-elle être déduite pour faciliter le remplissage automatique des champs avec les données de l’utilisateur ? | `autocomplete-valid` |
 | `rgaa-4.1.2-11.2` | Chaque étiquette associée à un champ de formulaire est-elle pertinente (hors cas particuliers) ? | `form-control-label-quality`, `form-control-programmatic-label-quality`, `rgaa-field-label-in-name-sources`, `rgaa-title-placeholder-identical` |
 | `rgaa-4.1.2-11.5` | Dans chaque formulaire, les champs de même nature sont-ils regroupés, si nécessaire ? | `rgaa-radio-group-present` |
-| `rgaa-4.1.2-11.6` | Dans chaque formulaire, chaque regroupement de champs de même nature a-t-il une légende ? | `aria-role-name-present`, `rgaa-field-group-legend` |
+| `rgaa-4.1.2-11.6` | Dans chaque formulaire, chaque regroupement de champs de même nature a-t-il une légende ? | `rgaa-field-group-legend` |
 | `rgaa-4.1.2-11.8` | Dans chaque formulaire, les items de même nature d’une liste de choix sont-ils regroupés de manière pertinente ? | `rgaa-listbox-option-groups-absent`, `rgaa-optgroup-label-not-empty`, `rgaa-optgroup-label-present` |
 | `rgaa-4.1.2-11.9` | Dans chaque formulaire, l’intitulé de chaque bouton est-il pertinent (hors cas particuliers) ? | `rgaa-form-button-label-in-name-sources`, `rgaa-form-button-name-present` |
 | `rgaa-4.1.2-12.6` | Les zones de regroupement de contenus présentes dans plusieurs pages web (zones d’en-tête, de navigation principale, de contenu principal, de pied de page et de moteur de recherche) peuvent-elles être atteintes ou évitées ? | `rgaa-page-zones-reachable` |
@@ -132,7 +132,6 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-13.3` | Dans chaque page web, chaque document bureautique en téléchargement possède-t-il, si nécessaire, une version accessible (hors cas particuliers) ? | `rgaa-office-document-link` |
 | `rgaa-4.1.2-13.9` | Dans chaque page web, le contenu proposé est-il consultable quelle que soit l’orientation de l’écran (portrait ou paysage) (hors cas particuliers) ? | `css-orientation-lock`, `rgaa-orientation-content-parity` |
 | `rgaa-4.1.2-2.1` | Chaque cadre a-t-il un titre de cadre ? | `rgaa-frame-title-attribute-present` |
-| `rgaa-4.1.2-2.2` | Pour chaque cadre ayant un titre de cadre, ce titre de cadre est-il pertinent ? | `rgaa-frame-title-not-empty` |
 | `rgaa-4.1.2-3.2` | Dans chaque page web, le contraste entre la couleur du texte et la couleur de son arrière-plan est-il suffisamment élevé (hors cas particuliers) ? | `contrast-computable`, `rgaa-contrast-minimum` |
 | `rgaa-4.1.2-4.1` | Chaque média temporel pré-enregistré a-t-il, si nécessaire, une transcription textuelle ou une audiodescription (hors cas particuliers) ? | `rgaa-media-transcript-adjacent` |
 | `rgaa-4.1.2-4.10` | Chaque son déclenché automatiquement est-il contrôlable par l’utilisateur ? | `no-autoplay-audio` |
@@ -550,23 +549,11 @@ Checks that each button inside a form (a &lt;form&gt; or role="form") has a labe
 
 automatic · no formal WCAG SC mapping · confidence high · default severity serious
 
-Checks that every &lt;iframe&gt; and &lt;frame&gt; has a title attribute, unless it is hidden with aria-hidden="true".
+Checks that every &lt;iframe&gt; and &lt;frame&gt; has a title attribute that is not empty, unless it is hidden with aria-hidden="true".
 
 **Applies to.** Applies to every &lt;iframe&gt; and &lt;frame&gt; in the scan scope that is not hidden from assistive technologies by aria-hidden="true", on itself or on an ancestor. The RGAA glossary "Titre de cadre", note 2, makes criteria 2.1 and 2.2 not applicable to such a frame. A frame removed from the tab order (tabindex="-1") is still in scope. Frames hidden by the default hidden-content policy (display:none, hidden) are not checked. A page with no applicable frame is notApplicable.
 
-**Expectation.** The frame has a title attribute (RGAA 2.1.1: « Chaque cadre (balise &lt;iframe&gt; ou &lt;frame&gt;) a-t-il un attribut title ? »). An accessible name from aria-label or aria-labelledby does not replace it. An empty title is present, so it passes here; it cannot be relevant, which is what rgaa-frame-title-not-empty reports under 2.2.1.
-
-### `rgaa-frame-title-not-empty`
-
-**Frame titles are not empty**
-
-automatic · no formal WCAG SC mapping · confidence high · default severity serious
-
-Checks that the title attribute of every &lt;iframe&gt; and &lt;frame&gt; that has one is not empty.
-
-**Applies to.** Applies to every &lt;iframe&gt; and &lt;frame&gt; in the scan scope that has a title attribute and is not hidden from assistive technologies by aria-hidden="true", on itself or on an ancestor (RGAA glossary "Titre de cadre", note 2). Frames hidden by the default hidden-content policy are not checked. A frame with no title attribute is left to rgaa-frame-title-attribute-present (2.1.1). A page with no applicable frame is notApplicable.
-
-**Expectation.** The title is not empty and not only whitespace. RGAA 2.2.1 asks whether the content of the title attribute is relevant, and an empty one says nothing about the frame. That is all this rule decides: whether a non-empty title is relevant is for a person.
+**Expectation.** The frame has a title attribute (RGAA 2.1.1: « Chaque cadre (balise &lt;iframe&gt; ou &lt;frame&gt;) a-t-il un attribut title ? »), and it is not empty. Criterion 2.1 asks for a « titre de cadre », which the glossary defines as the content of that attribute, so an empty or blank title gives the frame no title: it fails here, as auditors report it, and 2.2.1 (the title's relevance, for frames that have one) does not apply to it. An accessible name from aria-label or aria-labelledby does not replace the title.
 
 ### `rgaa-heading-content-present`
 
@@ -682,6 +669,23 @@ Checks that an &lt;img&gt; marked decorative (alt="", aria-hidden="true" or role
 **Applies to.** Applies to &lt;img&gt; elements marked decorative: alt="", aria-hidden="true" on the element, or role="presentation"/"none". An &lt;img&gt; inside a &lt;figure&gt; that has a &lt;figcaption&gt; is left out: criterion 1.2 does not apply to an image with a caption (légende). Content hidden with CSS or the hidden attribute is left out too. A page with none is notApplicable.
 
 **Expectation.** RGAA 1.2.1 step 2: "vérifier que l'image ne possède pas d'attributs aria-labelledby, aria-label ou title". An image marked decorative that has none of them, with a non-empty value, passes. Fails: aria-hidden="true" together with one of them. The image is hidden from assistive technologies, so it is decorative for them; if it carries information after all, hiding it fails 1.1.1 instead. Either way the page fails. Asks (cantTell): alt="" or role="presentation"/"none", without aria-hidden="true", together with one of them. The image may be informative, and then 1.2.1 does not apply and 1.1.1 accepts aria-label, aria-labelledby or title as its alternative. A person decides which.
+
+### `rgaa-img-no-alt-decorative`
+
+**Decorative images with no alt attribute**
+
+automatic · no formal WCAG SC mapping · confidence high · default severity minor
+
+Checks each &lt;img&gt; with no alt attribute and no alternative: fails a spacer image, and asks whether the others are decorative.
+
+**Applies to.** Applies to &lt;img&gt; elements with no alt attribute and no alternative (no non-empty aria-label, aria-labelledby or title), not marked decorative (aria-hidden="true", role="presentation"/"none"), and not in a &lt;figure&gt; with a &lt;figcaption&gt; (criterion 1.2 does not apply to an image with a caption). An image that is the only content of a link or a button is left out: it carries the control's information, so it is not decorative, and img-alt-present fails it under 1.1.1. Content hidden with CSS or the hidden attribute is left out too. A page with none is notApplicable.
+
+**Expectation.**
+
+Such an image fails one criterion, and which one depends on what it is: 1.1.1 if it carries information (img-alt-present fails it there), 1.2.1 if it is decorative, since 1.2.1 step 2 asks a decorative &lt;img&gt; for alt="" (or aria-hidden="true", or role="presentation"). This rule reports the 1.2.1 side:
+
+- Fails a spacer: an image 2 px wide or high, or less, as rendered or, with no layout, by its width or height attribute. A line or a pixel carries no information.
+- Asks (cantTell) about the others: if the image is decorative, it fails 1.2.1; if it carries information, 1.1.1 only. A person decides.
 
 ### `rgaa-keyboard-only-event-handlers`
 
@@ -1011,7 +1015,7 @@ Checks that no HTML element carries one of the presentational attributes RGAA li
 
 **Applies to.** Applies to any scan scope; whether an HTML element in it carries one of the attributes RGAA 10.1.2 lists is always an answerable question.
 
-**Expectation.** No HTML element carries align, alink, background, basefont, bgcolor, border, cellpadding, cellspacing, char, charoff, clear, color, compact, frameborder, hspace, link, marginheight, marginwidth, text, valign, vlink or vspace; size is allowed only on &lt;select&gt;, and width and height only on &lt;img&gt;, &lt;object&gt;, &lt;embed&gt;, &lt;canvas&gt; and &lt;svg&gt;. That is RGAA 10.1.2's list as written, so width and height on an &lt;iframe&gt; or a &lt;video&gt;, and size on an &lt;input&gt;, are reported too. One occurrence per element, naming every such attribute it carries.
+**Expectation.** No HTML element carries align, alink, background, basefont, bgcolor, border, cellpadding, cellspacing, char, charoff, clear, color, compact, frameborder, hspace, link, marginheight, marginwidth, text, valign, vlink or vspace; size is allowed only on &lt;select&gt;, and width and height only on &lt;img&gt;, &lt;object&gt;, &lt;embed&gt;, &lt;canvas&gt; and &lt;svg&gt;. That is RGAA 10.1.2's list as written, so width and height on an &lt;iframe&gt; or a &lt;video&gt;, and size on an &lt;input&gt;, are reported too. One exception: a &lt;source&gt; in a &lt;picture&gt; gives the &lt;img&gt; its width and height for its art direction (HTML added them in 2021, after the list was written), so it is treated as the &lt;img&gt; is. One occurrence per element, naming every such attribute it carries.
 
 ### `rgaa-presentational-elements-absent`
 
@@ -1092,12 +1096,12 @@ Checks that a page with navigation before its main content has a working same-pa
 
 **Expectation.**
 
-A same-page link outside the main content zone leads to it: its fragment resolves to &lt;main&gt;, or to an element inside it or before it with no navigation block, link or other focusable element between that element and the start of the zone. RGAA 12.7.1 accepts a skip link just before the zone or a quick-access link to it; a main landmark or headings alone do not count. The rule fails:
+A same-page link outside the main content zone leads to it: its fragment resolves to &lt;main&gt;, to an element before it with no navigation block, link or other focusable element between that element and the start of the zone, or to an element inside it with nothing focusable before it in the zone but navigation blocks (a breadcrumb at the top of &lt;main&gt; is part of the zone, and the link still reaches it). RGAA 12.7.1 accepts a skip link just before the zone or a quick-access link to it; a main landmark or headings alone do not count. The rule fails:
 
 - when a navigation block (&lt;nav&gt; or role="navigation") comes before the main zone and no link leads to it; the 12.7 particular case, a one-page site, turns on the presence of navigation, so with navigation the link is needed;
 - on a skip link whose target does not exist, whether or not the page has navigation.
 
-It asks instead of failing when no navigation block comes before the main zone and no link leads to it (a one-page site may not need one), and on a skip link whose target exists but is hidden, or sits before the zone with links or other focusable elements, but no navigation block, between the two. A skip link to a target inside navigation, after the zone, or with navigation between it and the zone leads elsewhere (to a menu, a search form, the footer) and does not count.
+It asks instead of failing when no navigation block comes before the main zone and no link leads to it (a one-page site may not need one), and on a skip link whose target exists but is hidden, sits before the zone with links or other focusable elements, but no navigation block, between the two, or sits inside the zone after links or other focusable elements outside navigation. A skip link to a target inside navigation, after the zone, or with navigation between it and the zone leads elsewhere (to a menu, a search form, the footer) and does not count.
 
 ### `rgaa-svg-hidden-no-alternative`
 

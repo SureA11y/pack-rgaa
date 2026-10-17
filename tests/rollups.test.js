@@ -86,13 +86,13 @@ test('each rule result lists the rollups that group it; an empty list means none
 
   const rgaa = scan({ profile: 'rgaa-4.1.2' });
   assert.deepEqual(byId(rgaa, 'heading-order').rollupIds, ['rgaa-4.1.2-9.1']);
-  assert.deepEqual(byId(rgaa, 'img-alt-present').rollupIds, ['rgaa-4.1.2-1.1', 'rgaa-4.1.2-1.2']);
+  assert.deepEqual(byId(rgaa, 'img-alt-present').rollupIds, ['rgaa-4.1.2-1.1']);
+  assert.deepEqual(byId(rgaa, 'rgaa-img-no-alt-decorative').rollupIds, ['rgaa-4.1.2-1.2']);
   // Under the tests' profile with WCAG, a rule is also grouped under its WCAG criterion.
   const both = scan({ profile: 'rgaa-4.1.2-with-wcag' });
   assert.deepEqual(byId(both, 'img-alt-present').rollupIds, [
     'wcag-1.1.1-non-text-content',
-    'rgaa-4.1.2-1.1',
-    'rgaa-4.1.2-1.2'
+    'rgaa-4.1.2-1.1'
   ]);
 });
 
@@ -163,4 +163,19 @@ test('text-spacing-content-loss, a WCAG rule, reports RGAA 10.12.1 and joins its
   const own = rgaa.checksResults.find((r) => r.ruleId === 'text-spacing-content-loss');
   assert.deepEqual(own.rollupIds, ['rgaa-4.1.2-10.12']);
   assert.deepEqual(RGAA_RULE_TESTS['4.1.2']['text-spacing-content-loss'].tests, ['10.12.1']);
+});
+
+// aria-role-name-present checks trees, grids and progressbars as well as
+// radiogroups, and a mapping applies to every finding of a rule: linked to
+// 11.6.1, an unnamed tree failed the criterion on field groups.
+test('an unnamed tree or progressbar fails 7.1 and leaves 11.6 alone', () => {
+  const result = runa11yCoreOnHtml(
+    '<html lang="en"><head><title>t</title></head><body><main>' +
+      '<ul role="tree"><li role="treeitem" aria-selected="false">Reports</li></ul>' +
+      '<div role="progressbar" aria-valuenow="40"></div></main></body></html>',
+    { engineOptions: { profile: 'rgaa-4.1.2' } }
+  );
+  assert.equal(rollup(result, 'rgaa-4.1.2-7.1').outcome, 'fail');
+  const fields = rollup(result, 'rgaa-4.1.2-11.6');
+  assert.ok(!fields || fields.outcome !== 'fail', fields && fields.outcome);
 });

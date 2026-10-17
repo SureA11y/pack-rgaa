@@ -103,6 +103,25 @@ test(`${RULE_ID}: SVG and MathML content is not checked`, () => {
   assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'pass', { maxOccurrences: 0 });
 });
 
+// A custom element's attributes are its own API (calcite-button's width is
+// the button's size option), not HTML presentational attributes.
+test(`${RULE_ID}: custom elements are not checked`, () => {
+  const html = page('<calcite-button width="full" align="center">Valider</calcite-button>');
+  assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'pass', { maxOccurrences: 0 });
+});
+
+// HTML gives <source> in <picture> the <img>'s width and height, for art
+// direction; elsewhere a <source> has none.
+test(`${RULE_ID}: width and height on a <picture>'s <source> are allowed, as on <img>`, () => {
+  const pictured = page(
+    '<picture><source srcset="a.avif" type="image/avif" width="800" height="600">' +
+      '<img src="a.jpg" alt="Vue" width="800" height="600"></picture>'
+  );
+  assertRule(runa11yCoreOnHtml(pictured, RUN), RULE_ID, 'pass', { maxOccurrences: 0 });
+  const video = page('<video><source src="a.mp4" type="video/mp4" width="800"></video>');
+  assertRule(runa11yCoreOnHtml(video, RUN), RULE_ID, 'fail', { minOccurrences: 1 });
+});
+
 test(`${RULE_ID}: hidden content is part of the generated source and is checked`, () => {
   const html = page(
     '<div hidden><p id="h1" align="center">x</p></div>' +

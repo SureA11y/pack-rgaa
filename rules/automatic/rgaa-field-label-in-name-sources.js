@@ -26,11 +26,15 @@
  *   particular cases of 11.2); accents are not folded. A source that does
  *   not contain it fails.
  * @implementation-notes
+ * - Screen-reader-only text inside the element or its label (clipped
+ *   away, 1x1 px with its overflow hidden, transparent:
+ *   helpers.isVisuallyHidden) is not part of the visible label.
  * - Its runInPage is the one of rgaa-link-label-in-name-sources, apart from the
  *   `family` constant and the messages; the four label-in-name files are
  *   changed together. That file documents the comparison and the cases
  *   asked about instead of failed (a possible symbol, an abbreviation, text
- *   in parentheses).
+ *   in parentheses, a word that differs only by its ending, such as
+ *   "Recherche" for "Rechercher").
  * - Opt-in (tag `rgaa`): WCAG 2.5.3 compares only the accessible name,
  *   which label-in-name checks; this rule runs only under the rgaa-4.1.2
  *   profile, the `rgaa` tag or its own id.
@@ -198,6 +202,28 @@ function runInPage(ctx) {
     );
   }
 
+  // Screen-reader-only text (clipped away, 1x1 px with its overflow hidden,
+  // transparent) is in the accessibility tree but not on screen, so it is
+  // no part of the visible label: on unistra.fr, "Page" in
+  // <span class="sr-only">Page</span>2 made "Page2" the visible label.
+  const hiddenCache = new Map();
+  function srOnly(el, container) {
+    if (typeof helpers.isVisuallyHidden !== 'function') return false;
+    // The container itself is left alone: a skip link is screen-reader-only
+    // until it is focused, and its text is its visible label then.
+    for (let a = el; a && a !== container; a = dom.parentElement(a)) {
+      if (!hiddenCache.has(a)) {
+        let hidden = false;
+        try {
+          hidden = !!helpers.isVisuallyHidden(a);
+        } catch {}
+        hiddenCache.set(a, hidden);
+      }
+      if (hiddenCache.get(a)) return true;
+    }
+    return false;
+  }
+
   const SHOW_TEXT = 4;
 
   // The text a person sees in `container`, in document order. With
@@ -231,7 +257,7 @@ function runInPage(ctx) {
         }
       }
       if (skip || isNonRenderedTag(tagOf(p))) continue;
-      if (visibleOnly && !isAccEligible(p)) continue;
+      if (visibleOnly && (!isAccEligible(p) || srOnly(p, container))) continue;
       parts.push(t);
       if (!elements.includes(p)) elements.push(p);
     }
@@ -373,6 +399,22 @@ function runInPage(ctx) {
     return false;
   }
 
+  // The same words but for an ending: each word of the visible label is the
+  // source's word or starts it, or the reverse, the shorter one of 4
+  // letters or more ("Recherche" for "Rechercher").
+  function containsInflectedRun(needle, hay) {
+    if (!needle.length) return false;
+    const close = (a, b) => {
+      if (a === b) return true;
+      const [short, long] = a.length < b.length ? [a, b] : [b, a];
+      return Array.from(short).length >= 4 && long.indexOf(short) === 0;
+    };
+    for (let i = 0; i + needle.length <= hay.length; i++) {
+      if (needle.every((w, j) => close(w, hay[i + j]))) return true;
+    }
+    return false;
+  }
+
   function abbreviatedWords(s) {
     // A word directly followed by a period that ends it ("av." in "l'av. Foch").
     const found = new Set();
@@ -433,7 +475,8 @@ function runInPage(ctx) {
   }
 
   // 'yes' when the source contains the visible label; otherwise why it may
-  // still be acceptable ('abbreviation', 'parentheses', 'symbol'), or 'no'.
+  // still be acceptable ('abbreviation', 'parentheses', 'inflection',
+  // 'symbol'), or 'no'.
   function compare(label, sourceText) {
     const labelTokens = tokenize(label.text, false);
     const sourceTokens = tokenize(sourceText, false);
@@ -450,6 +493,9 @@ function runInPage(ctx) {
       containsWordRun(withoutParentheses, sourceTokens, null)
     ) {
       return 'parentheses';
+    }
+    if (containsInflectedRun(tokenize(label.text, true), tokenize(sourceText, true))) {
+      return 'inflection';
     }
     if (label.elements.some(isIconFontElement)) return 'symbol';
     const whole = label.text.toLowerCase();
@@ -476,6 +522,7 @@ function runInPage(ctx) {
   const UNCERTAIN_CODES = {
     abbreviation: 'POSSIBLE_ABBREVIATION',
     parentheses: 'PARENTHESISED_TEXT_MISSING',
+    inflection: 'POSSIBLE_INFLECTION',
     symbol: 'POSSIBLE_SYMBOL'
   };
 
@@ -515,6 +562,16 @@ function runInPage(ctx) {
         'A label source of this form field differs from its visible label only by an abbreviation or by text in parentheses.',
       hint: 'Check whether the source still contains the visible label as a user would say it. RGAA excuses only punctuation and capital letters.',
       needed: 'Whether the source says the visible label, abbreviation or parenthesised text aside.'
+    },
+    POSSIBLE_INFLECTION: {
+      reasonCode: 'POSSIBLE_INFLECTION',
+      outcome: 'cantTell',
+      summaryKey: 'fieldLabelInNameSources_summary_cantTell_inflection',
+      hintKey: 'fieldLabelInNameSources_hint_cantTell_nearMatch',
+      summary:
+        'A label source of this form field differs from its visible label only by the ending of a word, such as "Recherche" and "Rechercher".',
+      hint: 'Check whether the source still contains the visible label as a user would say it. RGAA excuses only punctuation and capital letters.',
+      needed: 'Whether the source says the visible label, a word ending aside.'
     },
     PARENTHESISED_TEXT_MISSING: {
       reasonCode: 'PARENTHESISED_TEXT_MISSING',

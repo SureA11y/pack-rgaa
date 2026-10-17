@@ -161,3 +161,13 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-widget-label-in-name-all
     ['wlin_case_03', 'cantTell', 'POSSIBLE_SYMBOL']
   ]);
 });
+
+// Screen-reader-only text is not on screen, so it is no part of the visible
+// label (unistra.fr's pagination: <span class="sr-only">Page2</span>2).
+test(`${RULE_ID}: screen-reader-only text is left out of the visible label`, () => {
+  const result = run(
+    '<div role="tablist"><div role="tab" tabindex="0" aria-label="Tarifs">Tarifs<span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)"> de l’offre</span></div></div>'
+  );
+  const rule = result.checksResults.find((r) => r.ruleId === RULE_ID);
+  assert.ok(rule && rule.outcome !== 'fail', rule && JSON.stringify(reasons(rule)));
+});

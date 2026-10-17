@@ -188,3 +188,35 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-field-label-in-name-sour
     ['fins_case_05', 'cantTell', 'PARENTHESISED_TEXT_MISSING']
   ]);
 });
+
+// Screen-reader-only text is not on screen, so it is no part of the visible
+// label (unistra.fr's pagination: <span class="sr-only">Page2</span>2).
+test(`${RULE_ID}: screen-reader-only text is left out of the visible label`, () => {
+  const result = run(
+    '<label for="q">Rechercher<span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)"> dans le site</span></label><input id="q" aria-label="Rechercher">'
+  );
+  const rule = result.checksResults.find((r) => r.ruleId === RULE_ID);
+  assert.ok(rule && rule.outcome !== 'fail', rule && JSON.stringify(reasons(rule)));
+});
+
+// RGAA excuses punctuation and capitals only, so a word that differs by its
+// ending is not excused, but it is not certainly another label either
+// (nantes: "Recherche" shown, "Rechercher" as the name).
+test(`${RULE_ID}: a word that differs only by its ending is asked about`, () => {
+  for (const body of [
+    '<label for="q">Recherche</label><input id="q" title="Rechercher">',
+    '<label for="q">Rechercher</label><input id="q" title="Recherche sur le site">'
+  ]) {
+    const rule = assertRule(run(body), RULE_ID, 'cantTell', {
+      minOccurrences: 1,
+      maxOccurrences: 1
+    });
+    assert.deepEqual(reasons(rule), [['cantTell', 'POSSIBLE_INFLECTION']], body);
+    assert.equal(
+      rule.occurrences[0].i18n.summaryKey,
+      'fieldLabelInNameSources_summary_cantTell_inflection'
+    );
+  }
+  // Short words are not stretched: "Nom" is not "Nombre".
+  assertRule(run('<label for="n">Nom</label><input id="n" title="Nombre">'), RULE_ID, 'fail');
+});

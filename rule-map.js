@@ -121,12 +121,8 @@ const RGAA_RULE_TESTS = {
       note: 'Fails, hidden content included, what the W3C validator (version 26.9.27) reports about role attributes: an empty value, a token that is not a role it accepts (misspelt, abstract, written with capitals, alone or in a list), a role not allowed on the element (tab on nav, navigation on main, any role on a native td), and an img with a role and an empty or missing alt. That is 8.2.1 step 2, attribute values following the writing rules. An img with role="presentation" and an empty or missing alt is asked about: the validator reports it, but RGAA 1.2.1 names that markup for decorative images.'
     },
     'aria-role-name-present': {
-      tests: ['7.1.1', '11.6.1'],
-      note: 'Fails when role grid, meter, progressbar, radiogroup or tree has no aria-label, aria-labelledby or title, and no name from its host element (the legend of a fieldset, the caption of a table, the label of a <progress> or <meter>). For radiogroup, this is 11.6.1 step 2 (group has aria-label or aria-labelledby); for grid and tree widgets, 7.1.1 step 2 (component has an explicit name), which no other test covers. 11.6.1 can still pass through per-field labels (step 3). Not mapped to 11.1.1: an unnamed meter or progressbar is a form field without a label, which rgaa-field-label-listed-source reports under 11.1.1 for every field, so a link here would count the same field twice.',
-      outsideCorrespondence: {
-        '11.6.1':
-          'For role="radiogroup" only: 11.6.1 step 2 requires a radiogroup to have aria-label or aria-labelledby. RGAA relates 11.6 to WCAG 1.3.1 and 3.3.2, while the engine files naming under 4.1.2.'
-      }
+      tests: ['7.1.1'],
+      note: 'Fails when role grid, meter, progressbar, radiogroup or tree has no aria-label, aria-labelledby or title, and no name from its host element (the legend of a fieldset, the caption of a table, the label of a <progress> or <meter>). For grid and tree widgets, this is 7.1.1 step 2 (component has an explicit name), which no other test covers. Not linked to 11.6.1: mappings apply to every finding of a rule, so an unnamed tree or progressbar would fail 11.6 too, and an unnamed radiogroup can still pass 11.6.1 through per-field labels (step 3); rgaa-field-group-legend asks about it under 11.6.1. Not mapped to 11.1.1: an unnamed meter or progressbar is a form field without a label, which rgaa-field-label-listed-source reports under 11.1.1 for every field, so a link here would count the same field twice.'
     },
     'aria-roles-valid': {
       tests: [],
@@ -342,11 +338,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-frame-title-attribute-present': {
       tests: ['2.1.1'],
-      note: 'Fails an <iframe> or <frame> with no title attribute, which is 2.1.1 step 2 as written. aria-label or aria-labelledby does not replace it, and a frame with tabindex="-1" is still checked. A frame with aria-hidden="true" on itself or an ancestor is left out, since the glossary "Titre de cadre" (note 2) makes 2.1 not applicable to it. An empty title passes here: it is 2.2.1\'s matter.'
-    },
-    'rgaa-frame-title-not-empty': {
-      tests: ['2.2.1'],
-      note: 'Fails an <iframe> or <frame> whose title attribute is empty or only spaces: 2.2.1 step 2 asks whether the title\'s content is relevant, and an empty one cannot be. Frames with aria-hidden="true" are left out (glossary "Titre de cadre", note 2). Whether a non-empty title is relevant is not judged, so a pass covers only that case.'
+      note: 'Fails an <iframe> or <frame> with no title attribute, which is 2.1.1 step 2 as written, or with an empty or blank one: criterion 2.1 asks for a « titre de cadre », which the glossary defines as the content of the title attribute, so an empty attribute gives the frame no title. Auditors report an empty title under 2.1, and 2.2.1 applies only to frames that have a title. aria-label or aria-labelledby does not replace it, and a frame with tabindex="-1" is still checked. A frame with aria-hidden="true" on itself or an ancestor is left out, since the glossary "Titre de cadre" (note 2) makes 2.1 not applicable to it.'
     },
     'rgaa-heading-content-present': {
       tests: ['9.1.2'],
@@ -386,7 +378,7 @@ const RGAA_RULE_TESTS = {
     },
     'identical-iframes-same-purpose': {
       tests: [],
-      note: 'Flags iframe/frame elements that share an accessible name but embed different resources (WCAG 4.1.2). Not linked to 2.2.1, which judges only the title attribute: this rule groups frames by accessible name, which may come from aria-label. rgaa-frame-title-not-empty fails an empty title under 2.2.1; whether a non-empty title is relevant is for a person.'
+      note: 'Flags iframe/frame elements that share an accessible name but embed different resources (WCAG 4.1.2). Not linked to 2.2.1, which judges only the title attribute: this rule groups frames by accessible name, which may come from aria-label. rgaa-frame-title-attribute-present fails an empty title under 2.1.1; whether a non-empty title is relevant is for a person.'
     },
     'identical-links-same-purpose': {
       tests: [],
@@ -417,12 +409,16 @@ const RGAA_RULE_TESTS = {
       note: 'Asks whether an <img>, <svg> or <canvas> left out of the accessibility tree (alt="", aria-hidden, role none/presentation, unlabeled svg/canvas) is really decorative. That is step 2 (does the image carry information?) of 1.1.1, 1.1.5 and 1.1.8, and a \'no\' means an informative image with no alternative. It does not check the 1.2.x conditions for correctly ignoring decorative images.'
     },
     'img-alt-present': {
-      tests: ['1.1.1', '1.2.1'],
-      note: 'Fails an exposed <img> (not hidden, not a non-focusable role none/presentation) that has no alt, no ARIA name and no title. If the image is informative, that fails 1.1.1 step 3. If it is decorative, it lacks the alt="" / aria-hidden / role=presentation that 1.2.1 step 2 requires.'
+      tests: ['1.1.1'],
+      note: 'Fails an exposed <img> (not hidden, not a non-focusable role none/presentation) that has no alt, no ARIA name and no title. If the image is informative, that fails 1.1.1 step 3. If it is decorative, it lacks the alt="" / aria-hidden / role=presentation that 1.2.1 step 2 requires instead, which rgaa-img-no-alt-decorative reports. Not linked to 1.2.1 as well: a mapping applies to every finding, and such an image fails one of the two criteria, not both (an image that is the only content of a link carries information).'
     },
     'img-alt-quality': {
       tests: ['1.3.1'],
       note: 'Asks a human to judge the relevance of a non-empty <img> alt, which is 1.3.1 step 2.'
+    },
+    'rgaa-img-no-alt-decorative': {
+      tests: ['1.2.1'],
+      note: 'Fails an <img> with no alt and no alternative that is 2 px wide or high, or less (a spacer, so decorative): 1.2.1 step 2 asks a decorative <img> for alt="". Asks about the other <img> with no alt and no alternative, which fail 1.2.1 if decorative and 1.1.1 (img-alt-present) if not. An image that is the only content of a link or button is left out: it carries the control\'s information. An image with a caption is left out, as 1.2 does not apply to it.'
     },
     'rgaa-img-decorative-no-alternative': {
       tests: ['1.2.1'],
@@ -682,7 +678,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-presentational-attributes-absent': {
       tests: ['10.1.2'],
-      note: 'Fails on each HTML element carrying an attribute 10.1.2 step 1 lists, with its exceptions: size allowed on <select>, width and height on <img>, <object>, <embed>, <canvas> and <svg>. SVG and MathML content is not checked, where those attributes are geometry rather than presentation. Hidden content is checked too, since 10.1.2 judges the generated source.'
+      note: "Fails on each HTML element carrying an attribute 10.1.2 step 1 lists, with its exceptions: size allowed on <select>, width and height on <img>, <object>, <embed>, <canvas> and <svg>. SVG and MathML content is not checked, where those attributes are geometry rather than presentation, and neither are custom elements, whose attributes are the component's own. A <source> in a <picture> may carry width and height as the <img> does: they are the image's dimensions, added to HTML after the list was written. Hidden content is checked too, since 10.1.2 judges the generated source."
     },
     'presentational-children-focusable-absent': {
       tests: [],

@@ -1,4 +1,8 @@
 {
-  "missing": [],
-  "stale": []
+  "missing": [
+    "rgaa-img-no-alt-decorative"
+  ],
+  "stale": [
+    "rgaa-frame-title-not-empty"
+  ]
 }

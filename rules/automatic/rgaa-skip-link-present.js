@@ -16,9 +16,11 @@
  *   contextSelector or engineOptions.fragment is notApplicable.
  * @expectation
  *   A same-page link outside the main content zone leads to it: its
- *   fragment resolves to <main>, or to an element inside it or before it
- *   with no navigation block, link or other focusable element between that
- *   element and the start of the zone. RGAA
+ *   fragment resolves to <main>, to an element before it with no navigation
+ *   block, link or other focusable element between that element and the
+ *   start of the zone, or to an element inside it with nothing focusable
+ *   before it in the zone but navigation blocks (a breadcrumb at the top of
+ *   <main> is part of the zone, and the link still reaches it). RGAA
  *   12.7.1 accepts a skip link just before the zone or a quick-access link
  *   to it; a main landmark or headings alone do not count. The rule fails:
  *   - when a navigation block (<nav> or role="navigation") comes before
@@ -29,11 +31,13 @@
  *     has navigation.
  *   It asks instead of failing when no navigation block comes before the
  *   main zone and no link leads to it (a one-page site may not need one),
- *   and on a skip link whose target exists but is hidden, or sits before
+ *   and on a skip link whose target exists but is hidden, sits before
  *   the zone with links or other focusable elements, but no navigation
- *   block, between the two. A skip link to a target inside navigation,
- *   after the zone, or with navigation between it and the zone leads
- *   elsewhere (to a menu, a search form, the footer) and does not count.
+ *   block, between the two, or sits inside the zone after links or other
+ *   focusable elements outside navigation. A skip link to a target inside
+ *   navigation, after the zone, or with navigation between it and the zone
+ *   leads elsewhere (to a menu, a search form, the footer) and does not
+ *   count.
  * @implementation-notes
  * - A skip link is recognised as skip-link recognises one: its accessible
  *   name follows a common skip-link wording in one of the shipped locales
@@ -204,34 +208,41 @@ function runInPage(ctx) {
     return ce != null && ce.toLowerCase() !== 'false';
   }
 
+  // What lies between `from` and `to`: a navigation block, and focusable
+  // elements outside navigation blocks (a navigation block's own links are
+  // counted as the block).
   function scan(from, to, stopAtTo, found) {
     const walker = dom.createTreeWalker(document, document, 1);
     walker.currentNode = from;
     let count = 0;
+    let nav = null;
     for (let n = walker.nextNode(); n && n !== to; n = walker.nextNode()) {
       if (++count > 5000) {
         found.navigation = true;
+        found.focusable = true;
         break;
       }
       if (stopAtTo && dom.contains(n, to)) continue;
+      if (nav && dom.contains(nav, n)) continue;
       if (!isEligible(n)) continue;
-      if (isNavigation(n)) found.navigation = true;
-      else if (isFocusable(n)) found.focusable = true;
+      if (isNavigation(n)) {
+        found.navigation = true;
+        nav = n;
+      } else if (isFocusable(n)) found.focusable = true;
     }
     return found;
   }
 
   // What keyboard navigation passes between `target` and the start of the
   // main content: null when `target` is after `main`. For a target inside
-  // `main`, what lies between the start of `main` and the target.
+  // `main` (`inside`), what lies between the start of `main` and the target.
   function between(target, main) {
-    const found = { navigation: false, focusable: false };
+    const found = { navigation: false, focusable: false, inside: false };
     if (target === main) return found;
-    let inside = false;
     try {
-      inside = dom.contains(main, target);
+      found.inside = dom.contains(main, target);
     } catch {}
-    if (inside) return scan(main, target, true, found);
+    if (found.inside) return scan(main, target, true, found);
     let pos = 0;
     try {
       pos = dom.compareDocumentPosition(target, main);
@@ -305,7 +316,9 @@ function runInPage(ctx) {
     const target = resolveTarget(el, fragment);
     const usable = !!target && isEligible(target);
     const path = target ? between(target, main) : null;
-    if (usable && path && !path.navigation && !path.focusable) {
+    // Inside the zone, a navigation block before the target (a breadcrumb)
+    // is still main content: the link reaches the zone.
+    if (usable && path && (path.inside || !path.navigation) && !path.focusable) {
       reached = true;
       break;
     }
@@ -338,7 +351,7 @@ function runInPage(ctx) {
       }
       return false;
     })();
-    if (!usable || (path && !path.navigation && !inNavigation)) {
+    if (!usable || (path && (path.inside || !path.navigation) && !inNavigation)) {
       const reasonCode = usable ? 'skipLinkTargetNotMain' : 'skipLinkTargetHidden';
       questions.push(
         helpers.reportOccurrence(el, {

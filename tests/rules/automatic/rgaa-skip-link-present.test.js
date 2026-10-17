@@ -103,6 +103,45 @@ test(`${RULE_ID}: a skip link that stops short of main, or to a hidden target, i
   assert.deepEqual(reasons(hidden), [['cantTell', 'skipLinkTargetHidden']]);
 });
 
+// A breadcrumb at the top of <main> is part of the zone: a skip link to the
+// content after it still reaches the zone (as on unistra.fr, where it was
+// dropped and the page failed as having no skip link).
+test(`${RULE_ID}: a link into main past a breadcrumb passes`, () => {
+  const crumbs =
+    '<nav aria-label="Fil d’Ariane"><a href="/">Accueil</a><a href="/fr">Université</a></nav>';
+  for (const body of [
+    '<a href="#c">Passer au contenu principal</a>' +
+      NAV +
+      '<main>' +
+      crumbs +
+      '<a id="c" tabindex="-1"></a><h1>Contact</h1></main>',
+    '<a href="#c">Passer au contenu principal</a>' +
+      NAV +
+      '<main><div>' +
+      crumbs +
+      '</div><h1 id="c">Contact</h1></main>'
+  ]) {
+    assertRule(run(body), RULE_ID, 'pass', { maxOccurrences: 0 });
+  }
+});
+
+// Other focusable content before the target, in the zone, may be what the
+// link skips: a person checks, with or without a breadcrumb too.
+test(`${RULE_ID}: a link into main past links outside navigation is asked about`, () => {
+  for (const inside of [
+    '<p><a href="/a">A</a></p><h1 id="c">Titre</h1>',
+    '<nav><a href="/">Accueil</a></nav><p><a href="/a">A</a></p><h1 id="c">Titre</h1>'
+  ]) {
+    const rule = assertRule(
+      run('<a href="#c">Aller au contenu</a>' + NAV + '<main>' + inside + '</main>'),
+      RULE_ID,
+      'cantTell',
+      { minOccurrences: 1, maxOccurrences: 1 }
+    );
+    assert.deepEqual(reasons(rule), [['cantTell', 'skipLinkTargetNotMain']], inside);
+  }
+});
+
 // A target inside navigation, after main, or with navigation between it and
 // main leads elsewhere.
 test(`${RULE_ID}: a skip link that leads to navigation or past main does not count`, () => {

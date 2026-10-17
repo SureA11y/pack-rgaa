@@ -368,7 +368,7 @@
       "type": "automatic",
       "wcagSc": [],
       "ruleFile": "rules/automatic/rgaa-focus-indicator-contrast.js",
-      "testFile": "tests/rules/automatic/focus-indicator-contrast-chromium.test.js",
+      "testFile": "tests/rules/automatic/rgaa-focus-indicator-contrast-chromium.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-focus-indicator-contrast-all-scenarios.html",
       "totalCases": 11,
@@ -422,29 +422,12 @@
       "testFile": "tests/rules/automatic/rgaa-frame-title-attribute-present.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-frame-title-attribute-present-all-scenarios.html",
-      "totalCases": 9,
-      "caseCounts": {
-        "PASS": 2,
-        "FAIL": 4,
-        "CANTTELL": 0,
-        "OTHER": 3
-      }
-    },
-    {
-      "ruleId": "rgaa-frame-title-not-empty",
-      "title": "Frame titles are not empty",
-      "type": "automatic",
-      "wcagSc": [],
-      "ruleFile": "rules/automatic/rgaa-frame-title-not-empty.js",
-      "testFile": "tests/rules/automatic/rgaa-frame-title-not-empty.test.js",
-      "hasFixture": true,
-      "fixtureFile": "tests/fixtures/rgaa-frame-title-not-empty-all-scenarios.html",
-      "totalCases": 5,
+      "totalCases": 10,
       "caseCounts": {
         "PASS": 1,
-        "FAIL": 2,
+        "FAIL": 6,
         "CANTTELL": 0,
-        "OTHER": 2
+        "OTHER": 3
       }
     },
     {
@@ -564,6 +547,23 @@
         "FAIL": 2,
         "CANTTELL": 2,
         "OTHER": 2
+      }
+    },
+    {
+      "ruleId": "rgaa-img-no-alt-decorative",
+      "title": "Decorative images with no alt attribute",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-img-no-alt-decorative.js",
+      "testFile": "tests/rules/automatic/rgaa-img-no-alt-decorative.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-img-no-alt-decorative-all-scenarios.html",
+      "totalCases": 8,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 2,
+        "CANTTELL": 2,
+        "OTHER": 4
       }
     },
     {
@@ -691,7 +691,7 @@
       "type": "automatic",
       "wcagSc": [],
       "ruleFile": "rules/automatic/rgaa-link-state-colors-review.js",
-      "testFile": "tests/rules/automatic/link-state-colors-review-chromium.test.js",
+      "testFile": "tests/rules/automatic/rgaa-link-state-colors-review-chromium.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-link-state-colors-review-all-scenarios.html",
       "totalCases": 7,
@@ -878,7 +878,7 @@
       "type": "automatic",
       "wcagSc": [],
       "ruleFile": "rules/automatic/rgaa-orientation-content-parity.js",
-      "testFile": "tests/rules/automatic/orientation-content-parity-chromium.test.js",
+      "testFile": "tests/rules/automatic/rgaa-orientation-content-parity-chromium.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-orientation-content-parity-all-scenarios.html",
       "totalCases": 7,
@@ -1031,7 +1031,7 @@
       "type": "automatic",
       "wcagSc": [],
       "ruleFile": "rules/automatic/rgaa-skip-link-placement.js",
-      "testFile": "tests/rules/automatic/skip-link-placement-chromium.test.js",
+      "testFile": "tests/rules/automatic/rgaa-skip-link-placement-chromium.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-skip-link-placement-all-scenarios.html",
       "totalCases": 1,

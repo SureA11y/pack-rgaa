@@ -38,8 +38,7 @@ None — every rule has a fixture.
 | rgaa-focus-indicator-contrast | automatic | `tests/fixtures/rgaa-focus-indicator-contrast-all-scenarios.html` | 11 | 2 | 3 | 4 | 2 |
 | rgaa-form-button-label-in-name-sources | automatic | `tests/fixtures/rgaa-form-button-label-in-name-sources-all-scenarios.html` | 9 | 2 | 3 | 2 | 2 |
 | rgaa-form-button-name-present | automatic | `tests/fixtures/rgaa-form-button-name-present-all-scenarios.html` | 9 | 3 | 3 | 2 | 1 |
-| rgaa-frame-title-attribute-present | automatic | `tests/fixtures/rgaa-frame-title-attribute-present-all-scenarios.html` | 9 | 2 | 4 | 0 | 3 |
-| rgaa-frame-title-not-empty | automatic | `tests/fixtures/rgaa-frame-title-not-empty-all-scenarios.html` | 5 | 1 | 2 | 0 | 2 |
+| rgaa-frame-title-attribute-present | automatic | `tests/fixtures/rgaa-frame-title-attribute-present-all-scenarios.html` | 10 | 1 | 6 | 0 | 3 |
 | rgaa-heading-content-present | automatic | `tests/fixtures/rgaa-heading-content-present-all-scenarios.html` | 11 | 3 | 3 | 4 | 1 |
 | rgaa-heading-role-level-present | automatic | `tests/fixtures/rgaa-heading-role-level-present-all-scenarios.html` | 6 | 1 | 3 | 0 | 2 |
 | rgaa-html-elements-attributes-valid | automatic | `tests/fixtures/rgaa-html-elements-attributes-valid-all-scenarios.html` | 16 | 4 | 12 | 0 | 0 |
@@ -47,6 +46,7 @@ None — every rule has a fixture.
 | rgaa-html-nesting-valid | automatic | `tests/fixtures/rgaa-html-nesting-valid-all-scenarios.html` | 17 | 5 | 12 | 0 | 0 |
 | rgaa-image-alt-long | manual | `tests/fixtures/rgaa-image-alt-long-all-scenarios.html` | 6 | 0 | 0 | 0 | 6 |
 | rgaa-img-decorative-no-alternative | automatic | `tests/fixtures/rgaa-img-decorative-no-alternative-all-scenarios.html` | 9 | 3 | 2 | 2 | 2 |
+| rgaa-img-no-alt-decorative | automatic | `tests/fixtures/rgaa-img-no-alt-decorative-all-scenarios.html` | 8 | 0 | 2 | 2 | 4 |
 | rgaa-keyboard-only-event-handlers | manual | `tests/fixtures/rgaa-keyboard-only-event-handlers-all-scenarios.html` | 10 | 0 | 0 | 4 | 6 |
 | rgaa-label-for-target-valid | automatic | `tests/fixtures/rgaa-label-for-target-valid-all-scenarios.html` | 8 | 3 | 4 | 0 | 1 |
 | rgaa-layout-table-no-data-markup | automatic | `tests/fixtures/rgaa-layout-table-no-data-markup-all-scenarios.html` | 11 | 3 | 6 | 1 | 1 |
