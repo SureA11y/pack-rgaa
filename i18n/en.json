@@ -557,5 +557,7 @@
   "autocompleteUserField_summary_cantTell_noAutocomplete": "This field looks like personal data and has no autocomplete attribute.",
   "autocompleteUserField_summary_cantTell_onOff": "This field looks like personal data and has autocomplete=\"{{value}}\", which is not in RGAA's list of values.",
   "autocompleteUserField_summary_cantTell_noFieldName": "This field looks like personal data and its autocomplete value \"{{value}}\" names no field of RGAA's list.",
-  "autocompleteUserField_hint_cantTell": "If the field asks for information about the user, give it the autocomplete value of the list that matches it, such as \"email\", \"tel\" or \"family-name\"."
+  "autocompleteUserField_hint_cantTell": "If the field asks for information about the user, give it the autocomplete value of the list that matches it, such as \"email\", \"tel\" or \"family-name\".",
+  "skipLinkPlacement_summary_cantTell_positionMayDiffer": "This skip link is at another place on other pages of the site, measured at the same window width: {{pages}}. Whether they belong to the same set of pages is not known.",
+  "skipLinkPlacement_hint_cantTell_positionMayDiffer": "Check whether these pages belong to the same set of pages as this one, such as the home page, which may form one on its own; within a set, the skip link must be at the same place (RGAA 12.7.2)."
 }

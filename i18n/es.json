@@ -557,5 +557,7 @@
   "autocompleteUserField_summary_cantTell_noAutocomplete": "Este campo parece pedir un dato personal y no tiene atributo autocomplete.",
   "autocompleteUserField_summary_cantTell_onOff": "Este campo parece pedir un dato personal y tiene autocomplete=\"{{value}}\", que no está en la lista del RGAA.",
   "autocompleteUserField_summary_cantTell_noFieldName": "Este campo parece pedir un dato personal y su valor autocomplete «{{value}}» no nombra ningún campo de la lista del RGAA.",
-  "autocompleteUserField_hint_cantTell": "Si el campo pide información sobre el usuario, dele el valor autocomplete de la lista que le corresponde, como «email», «tel» o «family-name»."
+  "autocompleteUserField_hint_cantTell": "Si el campo pide información sobre el usuario, dele el valor autocomplete de la lista que le corresponde, como «email», «tel» o «family-name».",
+  "skipLinkPlacement_summary_cantTell_positionMayDiffer": "Este enlace de salto está en otro lugar en otras páginas del sitio, medidas con el mismo ancho de ventana: {{pages}}. No se sabe si pertenecen al mismo conjunto de páginas.",
+  "skipLinkPlacement_hint_cantTell_positionMayDiffer": "Compruebe si esas páginas pertenecen al mismo conjunto de páginas que esta, como la página de inicio, que puede formar uno por sí sola; dentro de un conjunto, el enlace de salto debe estar en el mismo lugar (RGAA 12.7.2)."
 }

@@ -144,6 +144,19 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
     }
   });
 
+  // A container that slides the link in on :focus-within is measured where
+  // its transition ends.
+  await t.test('shown on focus by a transitioning container: visible', async () => {
+    for (const prop of ['transform .3s', 'opacity .3s']) {
+      const css =
+        `.sk{position:absolute;top:0;left:0;transform:translateY(-100%);opacity:0;transition:${prop}}` +
+        '.sk:focus-within{transform:none;opacity:1}';
+      const html = `<!doctype html><html lang="fr"><head><title>t</title><style>body{margin:0} ${css}</style></head><body><div class="sk"><a id="skip" href="#main">Aller au contenu</a></div><nav><a href="/a">A</a></nav><main id="main"><h1>Titre</h1></main></body></html>`;
+      const { rule } = await scan(html);
+      assert.deepEqual(reasons(rule), [['cantTell', 'SKIP_LINK_SINGLE_PAGE']], prop);
+    }
+  });
+
   await t.test('covered by another element: asked about', async () => {
     const { rule } = await scan(
       page(
@@ -161,9 +174,21 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
       const { rule: first } = await scan(page(''));
       const box = boxOf(first);
 
-      const moved = await scan(page(''), other({ ...box, y: box.y + 200 }));
+      // 12.7.2 compares the pages of one ensemble: with the crawler's names,
+      // the same ensemble fails and another one is not compared; without
+      // them, the difference is asked about.
+      const inEnsemble = (pageEnsemble) => {
+        const o = other({ ...box, y: box.y + 200 }, { ensemble: pageEnsemble });
+        o.probes['crawl.skipLinks'].ensemble = 'articles';
+        return o;
+      };
+      const moved = await scan(page(''), inEnsemble('articles'));
       assert.deepEqual(reasons(moved.rule), [['fail', 'SKIP_LINK_POSITION_DIFFERS']]);
       assert.equal(moved.rule.occurrences[0].i18n.params.pages, 'https://example.test/other');
+      const home = await scan(page(''), inEnsemble('home'));
+      assert.equal(home.rule.outcome, 'pass');
+      const unnamed = await scan(page(''), other({ ...box, y: box.y + 200 }));
+      assert.deepEqual(reasons(unnamed.rule), [['cantTell', 'SKIP_LINK_POSITION_MAY_DIFFER']]);
 
       const reordered = await scan(page(''), {
         probes: {

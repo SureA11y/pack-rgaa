@@ -557,5 +557,7 @@
   "autocompleteUserField_summary_cantTell_noAutocomplete": "Dieses Feld scheint persönliche Daten abzufragen und hat kein autocomplete-Attribut.",
   "autocompleteUserField_summary_cantTell_onOff": "Dieses Feld scheint persönliche Daten abzufragen und hat autocomplete=\"{{value}}\", einen Wert, der nicht in der RGAA-Liste steht.",
   "autocompleteUserField_summary_cantTell_noFieldName": "Dieses Feld scheint persönliche Daten abzufragen, und sein autocomplete-Wert „{{value}}“ nennt kein Feld der RGAA-Liste.",
-  "autocompleteUserField_hint_cantTell": "Wenn das Feld nach Informationen über den Nutzer fragt, geben Sie ihm den passenden autocomplete-Wert der Liste, etwa „email“, „tel“ oder „family-name“."
+  "autocompleteUserField_hint_cantTell": "Wenn das Feld nach Informationen über den Nutzer fragt, geben Sie ihm den passenden autocomplete-Wert der Liste, etwa „email“, „tel“ oder „family-name“.",
+  "skipLinkPlacement_summary_cantTell_positionMayDiffer": "Dieser Sprunglink steht auf anderen Seiten der Website, gemessen bei gleicher Fensterbreite, an anderer Stelle: {{pages}}. Ob sie zur selben Seitengruppe gehören, ist nicht bekannt.",
+  "skipLinkPlacement_hint_cantTell_positionMayDiffer": "Prüfen Sie, ob diese Seiten zur selben Seitengruppe gehören wie diese, etwa die Startseite, die allein eine bilden kann; innerhalb einer Gruppe muss der Sprunglink an derselben Stelle stehen (RGAA 12.7.2)."
 }
