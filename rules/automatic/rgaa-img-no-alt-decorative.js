@@ -8,9 +8,12 @@
  * @summary An <img> with no alt attribute fails 1.2.1 if it is decorative
  * @standard RGAA 4.1.2 (no WCAG Success Criterion)
  * @applicability
- *   Applies to <img> elements with no alt attribute and no alternative
+ *   Applies to <img> elements with no alt attribute, or an alt of only
+ *   spaces, which is not the empty alt 1.2.1 asks for, and no alternative
  *   (no non-empty aria-label, aria-labelledby or title), not marked
- *   decorative (aria-hidden="true", role="presentation"/"none"), and not in
+ *   decorative (role="presentation"/"none"), not hidden with
+ *   aria-hidden="true" on itself or an ancestor (assistive technologies
+ *   then ignore it, which is what criterion 1.2 asks), and not in
  *   a <figure> with a <figcaption> (criterion 1.2 does not apply to an
  *   image with a caption). An image that is the only content of a link or a
  *   button is left out: it carries the control's information, so it is not
@@ -91,6 +94,15 @@ function runInPage(ctx) {
     }
   }
 
+  // aria-hidden="true" on the image or an ancestor: it is ignored by
+  // assistive technologies, which is what criterion 1.2 asks.
+  function insideAriaHidden(el) {
+    for (let n = el; n && dom.nodeType(n) === 1; n = dom.parentElement(n)) {
+      if (trim(attr(n, 'aria-hidden')).toLowerCase() === 'true') return true;
+    }
+    return false;
+  }
+
   function hasCaption(el) {
     const figure = dom.get(el, 'closest') ? dom.closest(el, 'figure') : null;
     if (!figure) return false;
@@ -152,8 +164,11 @@ function runInPage(ctx) {
 
   for (const el of nodes) {
     if (!el || !dom.get(el, 'getAttribute')) continue;
-    if (dom.hasAttribute(el, 'alt')) continue;
-    if (trim(attr(el, 'aria-hidden')).toLowerCase() === 'true') continue;
+    // alt="" is the decorative marker; an alt of only spaces is not, and
+    // 1.2.1 asks a decorative <img> for an empty one.
+    const blank = dom.hasAttribute(el, 'alt');
+    if (blank && (attr(el, 'alt') === '' || trim(attr(el, 'alt')))) continue;
+    if (insideAriaHidden(el)) continue;
     const role = trim(attr(el, 'role')).toLowerCase().split(' ')[0];
     if (role === 'none' || role === 'presentation') continue;
     if (['aria-labelledby', 'aria-label', 'title'].some((n) => trim(attr(el, n)))) continue;
@@ -167,14 +182,21 @@ function runInPage(ctx) {
       const height = s.height == null ? null : Math.round(s.height);
       fails.push(
         helpers.reportOccurrence(el, {
-          summary: `This image is ${width ?? '?'} by ${height ?? '?'} px, so it is decorative, and it has no alt attribute.`,
+          summary: blank
+            ? `This image is ${width ?? '?'} by ${height ?? '?'} px, so it is decorative, and its alt is only spaces, not empty.`
+            : `This image is ${width ?? '?'} by ${height ?? '?'} px, so it is decorative, and it has no alt attribute.`,
           hint: 'Give a decorative image an empty alt (alt=""), or draw it with CSS.',
           i18n: {
-            summaryKey: 'imgNoAltDecorative_summary_fail',
+            summaryKey: blank
+              ? 'imgNoAltDecorative_summary_fail_blank'
+              : 'imgNoAltDecorative_summary_fail',
             hintKey: 'imgNoAltDecorative_hint_fail',
             params: { width: width ?? '?', height: height ?? '?' }
           },
-          data: { details: { reasonCode: 'spacerNoAlt', width, height }, visibilityFilter: VF }
+          data: {
+            details: { reasonCode: blank ? 'spacerBlankAlt' : 'spacerNoAlt', width, height },
+            visibilityFilter: VF
+          }
         })
       );
       continue;
@@ -182,20 +204,26 @@ function runInPage(ctx) {
 
     cantTells.push(
       helpers.reportOccurrence(el, {
-        summary:
-          'This image has no alt attribute. If it is decorative, it fails 1.2.1; if it carries information, 1.1.1.',
+        summary: blank
+          ? 'This image has an alt of only spaces. If it is decorative, it fails 1.2.1; if it carries information, 1.1.1.'
+          : 'This image has no alt attribute. If it is decorative, it fails 1.2.1; if it carries information, 1.1.1.',
         hint: 'If the image is decorative, give it an empty alt (alt=""). If it carries information, give it an alt text that says what it shows.',
         i18n: {
-          summaryKey: 'imgNoAltDecorative_summary_cantTell',
+          summaryKey: blank
+            ? 'imgNoAltDecorative_summary_cantTell_blank'
+            : 'imgNoAltDecorative_summary_cantTell',
           hintKey: 'imgNoAltDecorative_hint_cantTell',
           params: {}
         },
         uncertainty: {
           code: 'judgement-required',
           needed: 'Whether the image is decorative or carries information.',
-          evidence: { reasonCode: 'noAltUnknownRole' }
+          evidence: { reasonCode: blank ? 'blankAltUnknownRole' : 'noAltUnknownRole' }
         },
-        data: { details: { reasonCode: 'noAltUnknownRole' }, visibilityFilter: VF }
+        data: {
+          details: { reasonCode: blank ? 'blankAltUnknownRole' : 'noAltUnknownRole' },
+          visibilityFilter: VF
+        }
       })
     );
   }

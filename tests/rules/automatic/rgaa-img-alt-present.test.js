@@ -20,7 +20,6 @@ const rollup = (result, id) => result.rulesResults.find((r) => r.ruleId === id);
 test(`${RULE_ID}: an image with no text alternative fails`, () => {
   for (const body of [
     '<img src="photo.jpg">',
-    '<img src="chart.png" alt=" ">',
     '<img src="photo.jpg" width="300" height="200" role="presentation" tabindex="0">',
     // The only content of a link carries its information, spacer or not.
     '<a href="/home"><img src="pixel.gif" width="1" height="1"></a>',
@@ -85,4 +84,20 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
   const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 3, maxOccurrences: 3 });
   const byId = rule.occurrences.map((o) => (o.html.match(/id="([^"]+)"/) || [])[1]);
   assert.deepEqual(byId, ['iap_case_01', 'iap_case_02', 'iap_case_03']);
+});
+
+test(`${RULE_ID}: an alt of only spaces fails with its own message, and a spacer with one is left to 1.2`, () => {
+  const rule = assertRule(
+    runa11yCoreOnHtml(page('<img src="chart.png" alt=" " width="300" height="200">'), RUN),
+    RULE_ID,
+    'fail'
+  );
+  assert.equal(rule.occurrences[0].data.details.reasonCode, 'blankAlt');
+  assert.equal(rule.occurrences[0].i18n.summaryKey, 'imgAltPresent_summary_blank');
+  const result = runa11yCoreOnHtml(page('<img src="pixel.gif" alt=" " width="1" height="1">'), {
+    engineOptions: { profile: 'rgaa-4.1.2' }
+  });
+  const images = rollup(result, 'rgaa-4.1.2-1.1');
+  assert.ok(!images || images.outcome !== 'fail', images && images.outcome);
+  assert.equal(rollup(result, 'rgaa-4.1.2-1.2').outcome, 'fail');
 });

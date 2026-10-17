@@ -11,7 +11,8 @@
  *   Applies to <img> elements included in the accessibility tree, as
  *   img-alt-present does: role="presentation" or role="none" leaves an image
  *   out only when it is not focusable, and hidden images are left out. A
- *   spacer is left out too: an image 2 px wide or high, or less, as rendered
+ *   spacer with no alt, or an alt of only spaces, is left out too: an image
+ *   2 px wide or high, or less, as rendered
  *   or, with no layout, by its width or height attribute, unless it is in a
  *   <figure> with a <figcaption> or is the only content of a link or a
  *   button. A page with none is notApplicable.
@@ -187,9 +188,13 @@ function runInPage(ctx) {
     if (!inAccTree(el)) continue;
     const role = helpers.aria.getExplicitRole(el);
     if ((role === 'presentation' || role === 'none') && !focusable(el)) continue;
-    // A spacer is decorative: rgaa-img-no-alt-decorative fails it under 1.2.1.
+    // alt="" marks a decorative image; an alt of only spaces names nothing.
+    const alt = attr(el, 'alt');
+    const blank = alt != null && alt !== '' && !trim(alt);
+    // A spacer is decorative: rgaa-img-no-alt-decorative fails it under 1.2.1,
+    // with no alt or an alt of only spaces.
     if (
-      !dom.hasAttribute(el, 'alt') &&
+      (alt == null || blank) &&
       !hasCaption(el) &&
       !onlyContentOfControl(el) &&
       isSpacer(size(el, layout))
@@ -198,23 +203,23 @@ function runInPage(ctx) {
     }
     applicableCount += 1;
 
-    // alt="" marks a decorative image; an alt of only spaces names nothing.
-    const alt = attr(el, 'alt');
     if (alt === '' || (alt != null && trim(alt))) continue;
     if (ariaNamed(el)) continue;
     if (trim(attr(el, 'title'))) continue;
 
     occurrences.push(
       helpers.reportOccurrence(el, {
-        summary: 'This <img> has no alt attribute.',
+        summary: blank
+          ? 'This <img> has an alt of only spaces.'
+          : 'This <img> has no alt attribute.',
         hint: 'Add an alt attribute that says what the image shows, or alt="" if the image is decorative.',
         i18n: {
-          summaryKey: 'imgAltPresent_summary_fail',
+          summaryKey: blank ? 'imgAltPresent_summary_blank' : 'imgAltPresent_summary_fail',
           hintKey: 'imgAltPresent_hint_fail',
           params: {}
         },
         data: {
-          details: { reasonCode: 'missingAlt' },
+          details: { reasonCode: blank ? 'blankAlt' : 'missingAlt' },
           visibilityFilter: { targetSet: 'acc', accEligible: null, reasons: [] }
         }
       })

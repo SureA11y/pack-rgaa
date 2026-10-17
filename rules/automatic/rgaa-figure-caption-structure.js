@@ -10,7 +10,9 @@
  * @applicability
  *   Applies to <figure> elements that contain an image (<img>,
  *   <input type="image"> or an element with role="img") and a <figcaption>
- *   with text. A page with none is notApplicable.
+ *   with text, both rendered: a caption or an image hidden with CSS or the
+ *   hidden attribute is none to a user (glossary « Contenu caché »). A
+ *   page with none is notApplicable.
  * @expectation
  *   The <figure> has role="figure" or role="group", and an aria-label whose
  *   text is the same as the caption's, whitespace collapsed (RGAA 1.9.1).
@@ -56,6 +58,20 @@ function runInPage(ctx) {
       .replace(/\s+/g, ' ')
       .trim();
 
+  // Rendered: a caption or an image hidden with CSS or the hidden attribute
+  // is no caption or image to a user (glossary « Contenu caché »).
+  function shown(el) {
+    try {
+      if (helpers.isDomVisibleEligible) {
+        return !!helpers.isDomVisibleEligible(el, ctx, { targetSet: 'dom' }).eligible;
+      }
+      if (helpers.getEligibilityInfo) {
+        return !!helpers.getEligibilityInfo(el, ctx, { targetSet: 'dom' }).eligible;
+      }
+    } catch {}
+    return true;
+  }
+
   const figures = helpers.queryAllSmart
     ? helpers.queryAllSmart('figure')
     : helpers.queryAll('figure');
@@ -66,7 +82,7 @@ function runInPage(ctx) {
   for (const figure of figures) {
     if (!figure || !dom.get(figure, 'getAttribute')) continue;
     const caption = Array.from(dom.querySelectorAll(figure, ':scope > *')).find(
-      (c) => String(dom.tagName(c)).toLowerCase() === 'figcaption'
+      (c) => String(dom.tagName(c)).toLowerCase() === 'figcaption' && shown(c)
     );
     const captionText = caption ? collapse(dom.textContent(caption)) : '';
     // An element with role img is one whose role resolves to img: role="link img" is a link.
@@ -75,6 +91,7 @@ function runInPage(ctx) {
     ).find(
       (el) =>
         dom.closest(el, 'figure') === figure &&
+        shown(el) &&
         (dom.matches(el, 'img, input[type="image" i]') ||
           helpers.aria.getExplicitRole(el) === 'img')
     );

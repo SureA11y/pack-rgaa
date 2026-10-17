@@ -25,7 +25,7 @@
  *   threshold. Fallback content of <canvas> and <object> is not measured.
  * @implementation-notes
  * - Manual (cantTell): a long alternative can be right, and a detailed
- *   description belongs in a separate long description (RGAA 1.8).
+ *   description belongs in a separate long description (RGAA 1.6).
  * - Opt-in (tag `rgaa`): WCAG sets no length for a text alternative.
  */
 
@@ -107,6 +107,22 @@ function runInPage(ctx) {
     return out;
   }
 
+  // aria-hidden="true" on the image or an ancestor, or role none or
+  // presentation on an image that cannot take focus.
+  function hiddenFromAT(el) {
+    for (let n = el; n && dom.nodeType(n) === 1; n = dom.parentElement(n)) {
+      if (collapse(dom.getAttribute(n, 'aria-hidden')).toLowerCase() === 'true') return true;
+    }
+    const role = explicitRole(el);
+    if (role !== 'none' && role !== 'presentation') return false;
+    let focusable = false;
+    try {
+      const fi = helpers.getFocusableInfo ? helpers.getFocusableInfo(el, ctx) : null;
+      focusable = !!(fi && (fi.focusable || fi.tabbable));
+    } catch {}
+    return !focusable;
+  }
+
   const nodes = helpers.queryAllSmart
     ? helpers.queryAllSmart(SELECTOR)
     : helpers.queryAll(SELECTOR);
@@ -122,6 +138,9 @@ function runInPage(ctx) {
         ? collapse(dom.getAttribute(el, 'type')).toLowerCase() === 'image'
         : IMAGE_TAGS.includes(tag) || explicitRole(el) === 'img';
     if (!isImage) continue;
+    // A hidden image has no alternative restituted (glossary « Alternative
+    // textuelle (image) »), so 1.3.9 does not apply to it.
+    if (hiddenFromAT(el)) continue;
     const found = alternatives(el, tag);
     if (!found.length) continue;
     applicableCount += 1;
@@ -132,7 +151,7 @@ function runInPage(ctx) {
     occurrences.push(
       helpers.reportOccurrence(el, {
         summary: `This image's text alternative is ${text.length} characters long.`,
-        hint: 'Check that the alternative is short and concise for what the image conveys in context. A longer one can be right in the particular cases RGAA 1.3.9 allows. Put a detailed description in a long description next to the image or linked from it (RGAA 1.8).',
+        hint: 'Check that the alternative is short and concise for what the image conveys in context. A longer one can be right in the particular cases RGAA 1.3.9 allows. Put a detailed description in a long description next to the image or linked from it (RGAA 1.6).',
         i18n: {
           summaryKey: 'imageAltLong_summary_cantTell',
           hintKey: 'imageAltLong_hint_cantTell',

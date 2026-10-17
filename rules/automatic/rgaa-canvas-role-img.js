@@ -11,6 +11,8 @@
  *   Applies to <canvas> elements. One with aria-hidden="true", on itself or
  *   an ancestor, or with role="none"/"presentation", is left out: it is
  *   marked decorative, which rgaa-canvas-decorative-aria-hidden checks (1.2.5).
+ *   A canvas 0 px wide or high, rendered or by its width or height
+ *   attribute, draws nothing and is no image, so it is left out too.
  *   Content hidden with CSS or the hidden attribute is left out too. A page
  *   with none is notApplicable.
  * @expectation
@@ -151,6 +153,20 @@ function runInPage(ctx) {
     return null;
   }
 
+  // 0 px wide or high: rendered, or by the width or height attribute.
+  function drawsNothing(el) {
+    const zero = (v) => /^\s*0+(\.0+)?\s*(px)?\s*$/i.test(String(v == null ? '' : v));
+    if (zero(attr(el, 'width')) || zero(attr(el, 'height'))) return true;
+    try {
+      const html = dom.documentElement(ctx.document);
+      if (!html || !(dom.getClientRects(html) || []).length) return false;
+      const r = dom.getBoundingClientRect(el);
+      return r.width === 0 || r.height === 0;
+    } catch {
+      return false;
+    }
+  }
+
   const nodes = helpers.queryAllSmart
     ? helpers.queryAllSmart('canvas')
     : helpers.queryAll('canvas');
@@ -184,6 +200,8 @@ function runInPage(ctx) {
   for (const el of nodes) {
     if (!el || !dom.get(el, 'getAttribute')) continue;
     if (insideAriaHidden(el)) continue;
+    // A canvas 0 px wide or high draws nothing, so it is no image.
+    if (drawsNothing(el)) continue;
     const role = firstRole(el);
     if (role === 'none' || role === 'presentation') continue;
     applicableCount += 1;

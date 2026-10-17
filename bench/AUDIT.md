@@ -11,12 +11,12 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 
 | # | Test | Kind | Finding | Status |
 |---|---|---|---|---|
-| T1-01 | 1.1.5, 1.2.4 | FP | An `aria-hidden` sprite sheet whose `<symbol>`s have a `<title>` fails 1.1 and 1.2 on every page, though it draws nothing. | done (this commit) |
-| T1-02 | 1.1.5, 1.2.4 | WM | `rgaa-svg-hidden-no-alternative` is linked to both tests, though an image fails one of them, not both. Now 1.2.4 only. | done |
+| T1-01 | 1.1.5, 1.2.4 | FP | An `aria-hidden` sprite sheet whose `<symbol>`s have a `<title>` fails 1.1 and 1.2 on every page, though it draws nothing. | done (631a8d8) |
+| T1-02 | 1.1.5, 1.2.4 | WM | `rgaa-svg-hidden-no-alternative` is linked to both tests, though an image fails one of them, not both. Now 1.2.4 only. | done (631a8d8) |
 | T1-03 | 1.1.1 | WO | `rgaa-img-alt-present` fails every non-spacer `<img>` with no alt under 1.1.1, including images the glossary calls decorative (one before each list item). | decide |
 | T1-04 | 1.1.5 | WO | An exposed SVG with a `<title>` and no `role="img"` fails 1.1.5 even beside text, where it may be decorative (then 1.2.4). | decide |
-| T1-05 | 1.1.6–1.1.8 | FP/WO | A 0×0 `<canvas>` fails 1.1.8; a bare canvas, object or embed image fails 1.1 though it may be decorative. | open |
-| T1-06 | 1.1.1, 1.2.1 | WO | `alt=" "` is reported as no alt; a spacer with `alt=" "` fails 1.1.1 instead of 1.2.1. | open |
+| T1-05 | 1.1.6–1.1.8 | FP/WO | A 0×0 `<canvas>` fails 1.1.8; a bare canvas, object or embed image fails 1.1 though it may be decorative. | done for 0×0; bare canvas, object, embed: decide |
+| T1-06 | 1.1.1, 1.2.1 | WO | `alt=" "` is reported as no alt; a spacer with `alt=" "` fails 1.1.1 instead of 1.2.1. | done |
 | T1-07 | 1.2.4 | MISS | An exposed decorative SVG without `aria-hidden` (including `role="presentation"`) is never checked against 1.2.4. | open |
 | T1-08 | 1.9.2–1.9.5 | MISS | Captioned svg, canvas, object and embed images are not checked. | open |
 | T1-09 | 1.1.1 | MISS | `alt=""` images in a named figure or nav are never asked about (C7). | core |
@@ -25,9 +25,9 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T1-12 | 1.6, 1.7 | MISS | No rule; a broken `aria-describedby` on an image should fail 1.6.9. | open |
 | T1-13 | 1.8 | MISS | Images of text: no question. | open |
 | T1-14 | 1.2.2, 1.2.3, 1.2.6 | MISS | `<area>` without href, decorative object and embed: no check. | open |
-| T1-15 | 1.2.1 | FP | A spacer inside an `aria-hidden="true"` container fails 1.2.1. | open |
-| T1-16 | 1.3.9 | WO | `rgaa-image-alt-long` asks about `aria-hidden` images; its hint cites 1.8 for 1.6. | open |
-| T1-17 | 1.9.1 | FP | A `<figure>` with a hidden `<figcaption>` fails 1.9.1. | open |
+| T1-15 | 1.2.1 | FP | A spacer inside an `aria-hidden="true"` container fails 1.2.1. | done |
+| T1-16 | 1.3.9 | WO | `rgaa-image-alt-long` asks about `aria-hidden` images; its hint cites 1.8 for 1.6. | done |
+| T1-17 | 1.9.1 | FP | A `<figure>` with a hidden `<figcaption>` fails 1.9.1. | done |
 
 ## Themes 2–5, Frames, Colours, Multimedia, Tables
 

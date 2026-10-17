@@ -154,3 +154,33 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
     ['inad_case_04', 'cantTell']
   ]);
 });
+
+// alt="" is the decorative marker; an alt of only spaces is not.
+test(`${RULE_ID}: an alt of only spaces is not the empty alt 1.2.1 asks for`, () => {
+  const spacer = assertRule(
+    runa11yCoreOnHtml(page('<img src="pixel.gif" alt=" " width="1" height="1">'), RUN),
+    RULE_ID,
+    'fail'
+  );
+  assert.deepEqual(reasons(spacer), [['fail', 'spacerBlankAlt']]);
+  assert.equal(spacer.occurrences[0].i18n.summaryKey, 'imgNoAltDecorative_summary_fail_blank');
+  const photo = assertRule(
+    runa11yCoreOnHtml(page('<img src="photo.jpg" alt="  " width="300" height="200">'), RUN),
+    RULE_ID,
+    'cantTell'
+  );
+  assert.deepEqual(reasons(photo), [['cantTell', 'blankAltUnknownRole']]);
+});
+
+// Criterion 1.2 asks that a decorative image be ignored by assistive
+// technologies, which an aria-hidden ancestor already does.
+test(`${RULE_ID}: an image inside an aria-hidden container is left out`, () => {
+  assertRule(
+    runa11yCoreOnHtml(
+      page('<div aria-hidden="true"><img src="pixel.gif" width="1" height="1"></div>'),
+      RUN
+    ),
+    RULE_ID,
+    'notApplicable'
+  );
+});

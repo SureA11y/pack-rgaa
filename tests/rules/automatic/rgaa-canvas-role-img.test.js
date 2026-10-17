@@ -163,3 +163,12 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-canvas-role-img-all-scen
     ]
   );
 });
+
+test(`${RULE_ID}: a canvas 0 px wide or high draws nothing and is left out`, () => {
+  for (const body of [
+    '<canvas width="0" height="0"></canvas>',
+    '<canvas width="300" height="0"></canvas>'
+  ]) {
+    assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'notApplicable');
+  }
+});

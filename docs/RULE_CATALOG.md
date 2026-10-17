@@ -260,7 +260,7 @@ automatic · no formal WCAG SC mapping · confidence medium · default severity 
 
 Checks each &lt;canvas&gt; against RGAA 1.1.8: role="img" named by aria-labelledby or aria-label, or fallback content, or a link or button to an alternative content right after it.
 
-**Applies to.** Applies to &lt;canvas&gt; elements. One with aria-hidden="true", on itself or an ancestor, or with role="none"/"presentation", is left out: it is marked decorative, which rgaa-canvas-decorative-aria-hidden checks (1.2.5). Content hidden with CSS or the hidden attribute is left out too. A page with none is notApplicable.
+**Applies to.** Applies to &lt;canvas&gt; elements. One with aria-hidden="true", on itself or an ancestor, or with role="none"/"presentation", is left out: it is marked decorative, which rgaa-canvas-decorative-aria-hidden checks (1.2.5). A canvas 0 px wide or high, rendered or by its width or height attribute, draws nothing and is no image, so it is left out too. Content hidden with CSS or the hidden attribute is left out too. A page with none is notApplicable.
 
 **Expectation.**
 
@@ -504,7 +504,7 @@ automatic · no formal WCAG SC mapping · confidence high · default severity mi
 
 Checks that a &lt;figure&gt; holding an image and a &lt;figcaption&gt; has role="figure" or "group" and an aria-label matching the caption.
 
-**Applies to.** Applies to &lt;figure&gt; elements that contain an image (&lt;img&gt;, &lt;input type="image"&gt; or an element with role="img") and a &lt;figcaption&gt; with text. A page with none is notApplicable.
+**Applies to.** Applies to &lt;figure&gt; elements that contain an image (&lt;img&gt;, &lt;input type="image"&gt; or an element with role="img") and a &lt;figcaption&gt; with text, both rendered: a caption or an image hidden with CSS or the hidden attribute is none to a user (glossary « Contenu caché »). A page with none is notApplicable.
 
 **Expectation.** The &lt;figure&gt; has role="figure" or role="group", and an aria-label whose text is the same as the caption's, whitespace collapsed (RGAA 1.9.1). The caption being inside a &lt;figcaption&gt; is what makes the figure applicable.
 
@@ -681,7 +681,7 @@ automatic · no formal WCAG SC mapping · confidence high · default severity se
 
 Checks that each exposed &lt;img&gt; has an alt attribute or another text alternative, except a spacer image, which is decorative.
 
-**Applies to.** Applies to &lt;img&gt; elements included in the accessibility tree, as img-alt-present does: role="presentation" or role="none" leaves an image out only when it is not focusable, and hidden images are left out. A spacer is left out too: an image 2 px wide or high, or less, as rendered or, with no layout, by its width or height attribute, unless it is in a &lt;figure&gt; with a &lt;figcaption&gt; or is the only content of a link or a button. A page with none is notApplicable.
+**Applies to.** Applies to &lt;img&gt; elements included in the accessibility tree, as img-alt-present does: role="presentation" or role="none" leaves an image out only when it is not focusable, and hidden images are left out. A spacer with no alt, or an alt of only spaces, is left out too: an image 2 px wide or high, or less, as rendered or, with no layout, by its width or height attribute, unless it is in a &lt;figure&gt; with a &lt;figcaption&gt; or is the only content of a link or a button. A page with none is notApplicable.
 
 **Expectation.** Each applicable &lt;img&gt; has an alt attribute (alt="" included), a non-empty aria-label or aria-labelledby, or a non-empty title. One with none of these fails 1.1.1 step 1: RGAA 1.1.1 asks each image carrying information for a text alternative. A spacer carries none, so it is decorative, and the alt="" it lacks is 1.2.1's matter, which rgaa-img-no-alt-decorative fails.
 
@@ -705,7 +705,7 @@ automatic · no formal WCAG SC mapping · confidence high · default severity mi
 
 Checks each &lt;img&gt; with no alt attribute and no alternative: fails a spacer image, and asks whether the others are decorative.
 
-**Applies to.** Applies to &lt;img&gt; elements with no alt attribute and no alternative (no non-empty aria-label, aria-labelledby or title), not marked decorative (aria-hidden="true", role="presentation"/"none"), and not in a &lt;figure&gt; with a &lt;figcaption&gt; (criterion 1.2 does not apply to an image with a caption). An image that is the only content of a link or a button is left out: it carries the control's information, so it is not decorative, and rgaa-img-alt-present fails it under 1.1.1. Content hidden with CSS or the hidden attribute is left out too. A page with none is notApplicable.
+**Applies to.** Applies to &lt;img&gt; elements with no alt attribute, or an alt of only spaces, which is not the empty alt 1.2.1 asks for, and no alternative (no non-empty aria-label, aria-labelledby or title), not marked decorative (role="presentation"/"none"), not hidden with aria-hidden="true" on itself or an ancestor (assistive technologies then ignore it, which is what criterion 1.2 asks), and not in a &lt;figure&gt; with a &lt;figcaption&gt; (criterion 1.2 does not apply to an image with a caption). An image that is the only content of a link or a button is left out: it carries the control's information, so it is not decorative, and rgaa-img-alt-present fails it under 1.1.1. Content hidden with CSS or the hidden attribute is left out too. A page with none is notApplicable.
 
 **Expectation.**
 
