@@ -549,5 +549,13 @@
   "scriptedComponentsReview_hint_cantTell_contentEditable": "Comprobar con tecnologías de asistencia que esta zona de edición expone un rol, un nombre y un estado pertinentes, y que sus cambios se transmiten (RGAA 7.1).",
   "scriptedComponentsReview_summary_cantTell_stateAttribute": "Este <{{element}}> tiene {{attribute}}, que normalmente actualiza un script.",
   "scriptedComponentsReview_hint_cantTell_stateAttribute": "Comprobar con tecnologías de asistencia que el estado que describe este atributo se actualiza y se transmite cuando el componente cambia (RGAA 7.1).",
-  "report_rgaaRollup_note": "Una fila por cada criterio del RGAA 4.1.2 al que está vinculada alguna regla, que agrupa esas reglas. Ningún auditor del RGAA ha revisado aún los vínculos, y una fila superada nunca significa que el criterio sea conforme."
+  "report_rgaaRollup_note": "Una fila por cada criterio del RGAA 4.1.2 al que está vinculada alguna regla, que agrupa esas reglas. Ningún auditor del RGAA ha revisado aún los vínculos, y una fila superada nunca significa que el criterio sea conforme.",
+  "autocompleteUserField_title": "Los campos sobre el usuario tienen un valor autocomplete válido",
+  "autocompleteUserField_description": "Comprueba el valor autocomplete de cada campo que puede referirse al usuario: no supera un valor mal formado que nombra un campo de usuario, y pregunta por los campos de datos personales sin un valor válido.",
+  "autocompleteUserField_summary_fail": "El valor autocomplete «{{value}}» de este campo nombra un dato del usuario pero no está bien formado, así que el navegador no puede usarlo.",
+  "autocompleteUserField_hint_fail": "Escriba el valor como lo da la lista: section-* opcional, shipping o billing, home, work o mobile solo delante de un campo de contacto, y luego un nombre de campo, como «shipping postal-code» o «work email».",
+  "autocompleteUserField_summary_cantTell_noAutocomplete": "Este campo parece pedir un dato personal y no tiene atributo autocomplete.",
+  "autocompleteUserField_summary_cantTell_onOff": "Este campo parece pedir un dato personal y tiene autocomplete=\"{{value}}\", que no está en la lista del RGAA.",
+  "autocompleteUserField_summary_cantTell_noFieldName": "Este campo parece pedir un dato personal y su valor autocomplete «{{value}}» no nombra ningún campo de la lista del RGAA.",
+  "autocompleteUserField_hint_cantTell": "Si el campo pide información sobre el usuario, dele el valor autocomplete de la lista que le corresponde, como «email», «tel» o «family-name»."
 }

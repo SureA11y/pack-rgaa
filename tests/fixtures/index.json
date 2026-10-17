@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 71,
-    "withFixture": 71,
+    "total": 72,
+    "withFixture": 72,
     "withoutFixture": 0
   },
   "rows": [
@@ -71,6 +71,23 @@
         "FAIL": 14,
         "CANTTELL": 1,
         "OTHER": 0
+      }
+    },
+    {
+      "ruleId": "rgaa-autocomplete-user-field",
+      "title": "Fields about the user have a valid autocomplete value",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-autocomplete-user-field.js",
+      "testFile": "tests/rules/automatic/rgaa-autocomplete-user-field.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-autocomplete-user-field-all-scenarios.html",
+      "totalCases": 6,
+      "caseCounts": {
+        "PASS": 1,
+        "FAIL": 1,
+        "CANTTELL": 2,
+        "OTHER": 2
       }
     },
     {
@@ -645,8 +662,8 @@
       "fixtureFile": "tests/fixtures/rgaa-layout-table-no-data-markup-all-scenarios.html",
       "totalCases": 11,
       "caseCounts": {
-        "PASS": 3,
-        "FAIL": 6,
+        "PASS": 4,
+        "FAIL": 5,
         "CANTTELL": 1,
         "OTHER": 1
       }
@@ -1170,10 +1187,10 @@
       "testFile": "tests/rules/automatic/rgaa-video-captions-track-kind.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-video-captions-track-kind-all-scenarios.html",
-      "totalCases": 8,
+      "totalCases": 9,
       "caseCounts": {
         "PASS": 2,
-        "FAIL": 3,
+        "FAIL": 4,
         "CANTTELL": 1,
         "OTHER": 2
       }

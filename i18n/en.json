@@ -549,5 +549,13 @@
   "scriptedComponentsReview_hint_cantTell_contentEditable": "Check with assistive technologies that this editing area exposes a relevant role, name and state, and that its changes are rendered (RGAA 7.1).",
   "scriptedComponentsReview_summary_cantTell_stateAttribute": "This <{{element}}> has {{attribute}}, which a script usually updates.",
   "scriptedComponentsReview_hint_cantTell_stateAttribute": "Check with assistive technologies that the state this attribute describes is updated and rendered when the component changes (RGAA 7.1).",
-  "report_rgaaRollup_note": "One row per RGAA 4.1.2 criterion that a rule is linked to, grouping those rules. The links have not yet been reviewed by an RGAA auditor, and a passing row never means the criterion is conforme."
+  "report_rgaaRollup_note": "One row per RGAA 4.1.2 criterion that a rule is linked to, grouping those rules. The links have not yet been reviewed by an RGAA auditor, and a passing row never means the criterion is conforme.",
+  "autocompleteUserField_title": "Fields about the user have a valid autocomplete value",
+  "autocompleteUserField_description": "Checks the autocomplete value of each field that may concern the user: fails a malformed value naming a user field, and asks about personal-data fields without a valid one.",
+  "autocompleteUserField_summary_fail": "This field's autocomplete value \"{{value}}\" names a field about the user but is not well formed, so the browser cannot use it.",
+  "autocompleteUserField_hint_fail": "Write the value as the list gives it: an optional section-*, shipping or billing, home, work or mobile before a contact field only, then one field name, such as \"shipping postal-code\" or \"work email\".",
+  "autocompleteUserField_summary_cantTell_noAutocomplete": "This field looks like personal data and has no autocomplete attribute.",
+  "autocompleteUserField_summary_cantTell_onOff": "This field looks like personal data and has autocomplete=\"{{value}}\", which is not in RGAA's list of values.",
+  "autocompleteUserField_summary_cantTell_noFieldName": "This field looks like personal data and its autocomplete value \"{{value}}\" names no field of RGAA's list.",
+  "autocompleteUserField_hint_cantTell": "If the field asks for information about the user, give it the autocomplete value of the list that matches it, such as \"email\", \"tel\" or \"family-name\"."
 }

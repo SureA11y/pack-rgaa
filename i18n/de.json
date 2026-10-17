@@ -549,5 +549,13 @@
   "scriptedComponentsReview_hint_cantTell_contentEditable": "Prüfen Sie mit assistiven Technologien, ob dieser Bearbeitungsbereich eine zutreffende Rolle, einen Namen und einen Zustand bereitstellt und ob seine Änderungen ausgegeben werden (RGAA 7.1).",
   "scriptedComponentsReview_summary_cantTell_stateAttribute": "Dieses <{{element}}> hat {{attribute}}, das normalerweise ein Skript aktualisiert.",
   "scriptedComponentsReview_hint_cantTell_stateAttribute": "Prüfen Sie mit assistiven Technologien, ob der Zustand, den dieses Attribut beschreibt, aktualisiert und ausgegeben wird, wenn sich die Komponente ändert (RGAA 7.1).",
-  "report_rgaaRollup_note": "Eine Zeile pro RGAA-4.1.2-Kriterium, mit dem eine Regel verknüpft ist; sie fasst diese Regeln zusammen. Die Verknüpfungen sind noch nicht von einem RGAA-Auditor geprüft, und eine bestandene Zeile bedeutet nie, dass das Kriterium konform ist."
+  "report_rgaaRollup_note": "Eine Zeile pro RGAA-4.1.2-Kriterium, mit dem eine Regel verknüpft ist; sie fasst diese Regeln zusammen. Die Verknüpfungen sind noch nicht von einem RGAA-Auditor geprüft, und eine bestandene Zeile bedeutet nie, dass das Kriterium konform ist.",
+  "autocompleteUserField_title": "Felder zum Nutzer haben einen gültigen autocomplete-Wert",
+  "autocompleteUserField_description": "Prüft den autocomplete-Wert jedes Felds, das den Nutzer betreffen kann: verletzt einen fehlerhaften Wert, der ein Nutzerfeld nennt, und fragt bei Feldern mit persönlichen Daten ohne gültigen Wert nach.",
+  "autocompleteUserField_summary_fail": "Der autocomplete-Wert „{{value}}“ dieses Felds nennt ein Feld zum Nutzer, ist aber nicht richtig aufgebaut, sodass der Browser ihn nicht nutzen kann.",
+  "autocompleteUserField_hint_fail": "Schreiben Sie den Wert wie in der Liste: optional section-*, shipping oder billing, home, work oder mobile nur vor einem Kontaktfeld, dann ein Feldname, etwa „shipping postal-code“ oder „work email“.",
+  "autocompleteUserField_summary_cantTell_noAutocomplete": "Dieses Feld scheint persönliche Daten abzufragen und hat kein autocomplete-Attribut.",
+  "autocompleteUserField_summary_cantTell_onOff": "Dieses Feld scheint persönliche Daten abzufragen und hat autocomplete=\"{{value}}\", einen Wert, der nicht in der RGAA-Liste steht.",
+  "autocompleteUserField_summary_cantTell_noFieldName": "Dieses Feld scheint persönliche Daten abzufragen, und sein autocomplete-Wert „{{value}}“ nennt kein Feld der RGAA-Liste.",
+  "autocompleteUserField_hint_cantTell": "Wenn das Feld nach Informationen über den Nutzer fragt, geben Sie ihm den passenden autocomplete-Wert der Liste, etwa „email“, „tel“ oder „family-name“."
 }

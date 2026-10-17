@@ -549,5 +549,13 @@
   "scriptedComponentsReview_hint_cantTell_contentEditable": "この編集領域が適切な役割、名前、状態を公開し、その変化が伝えられることを支援技術で確認してください (RGAA 7.1)。",
   "scriptedComponentsReview_summary_cantTell_stateAttribute": "この <{{element}}> には {{attribute}} があり、通常はスクリプトで更新されます。",
   "scriptedComponentsReview_hint_cantTell_stateAttribute": "この属性が表す状態が、コンポーネントの変化に応じて更新され、支援技術で伝えられることを確認してください (RGAA 7.1)。",
-  "report_rgaaRollup_note": "ルールが関連付けられている RGAA 4.1.2 の基準ごとに 1 行を表示し、それらのルールをまとめます。関連付けはまだ RGAA の監査担当者の確認を受けておらず、合格の行があっても基準に適合していることを意味しません。"
+  "report_rgaaRollup_note": "ルールが関連付けられている RGAA 4.1.2 の基準ごとに 1 行を表示し、それらのルールをまとめます。関連付けはまだ RGAA の監査担当者の確認を受けておらず、合格の行があっても基準に適合していることを意味しません。",
+  "autocompleteUserField_title": "ユーザーに関するフィールドに有効な autocomplete 値がある",
+  "autocompleteUserField_description": "ユーザーに関わる可能性のある各フィールドの autocomplete 値を確認します。ユーザー情報のフィールド名を含むが形式が誤った値は不適合とし、有効な値のない個人情報フィールドは確認を求めます。",
+  "autocompleteUserField_summary_fail": "このフィールドの autocomplete 値「{{value}}」はユーザーに関するフィールドを示していますが、形式が正しくないためブラウザーが利用できません。",
+  "autocompleteUserField_hint_fail": "リストのとおりに値を書いてください: 任意の section-*、shipping または billing、連絡先フィールドの前にのみ home・work・mobile、そしてフィールド名を 1 つ（例: 「shipping postal-code」「work email」）。",
+  "autocompleteUserField_summary_cantTell_noAutocomplete": "このフィールドは個人情報を求めているようですが、autocomplete 属性がありません。",
+  "autocompleteUserField_summary_cantTell_onOff": "このフィールドは個人情報を求めているようですが、autocomplete=\"{{value}}\" は RGAA のリストにない値です。",
+  "autocompleteUserField_summary_cantTell_noFieldName": "このフィールドは個人情報を求めているようですが、autocomplete 値「{{value}}」は RGAA のリストのどのフィールドも示していません。",
+  "autocompleteUserField_hint_cantTell": "フィールドがユーザーに関する情報を求める場合は、対応するリストの autocomplete 値（「email」「tel」「family-name」など）を指定してください。"
 }

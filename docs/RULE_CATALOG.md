@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**71 rules total: 55 automatic (decide deterministically; can return `fail`), 16 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**72 rules total: 56 automatic (decide deterministically; can return `fail`), 16 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -14,7 +14,7 @@ Under **What a finding reports**, a rule lists the fields its findings carry in 
 
 See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_SCHEMA.md) for what `type`/`confidence`/`severity` mean on a scan result, and [`WCAG_CONFORMANCE.md`](https://github.com/SureA11y/core/blob/main/docs/WCAG_CONFORMANCE.md) for how these roll up to an SC-level conformance claim.
 
-## Automatic rules (55), can return `fail`
+## Automatic rules (56), can return `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -22,6 +22,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-aria-attribute-conformance`](#rgaa-aria-attribute-conformance) | aria-* attributes are valid for the W3C validator | — | — | high | moderate |
 | [`rgaa-aria-list-item-roles`](#rgaa-aria-list-item-roles) | ARIA lists use role="listitem" for their items | — | — | medium | moderate |
 | [`rgaa-aria-role-conformance`](#rgaa-aria-role-conformance) | Role attributes are valid for the W3C validator | — | — | high | moderate |
+| [`rgaa-autocomplete-user-field`](#rgaa-autocomplete-user-field) | Fields about the user have a valid autocomplete value | — | — | high | moderate |
 | [`rgaa-canvas-decorative-aria-hidden`](#rgaa-canvas-decorative-aria-hidden) | Decorative &lt;canvas&gt; images have aria-hidden="true" and no alternative | — | — | medium | minor |
 | [`rgaa-canvas-role-img`](#rgaa-canvas-role-img) | &lt;canvas&gt; images have role="img" with an ARIA name, or fallback content | — | — | medium | serious |
 | [`rgaa-contrast-minimum`](#rgaa-contrast-minimum) | Text meets RGAA minimum color contrast | — | — | high | serious |
@@ -120,7 +121,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-10.7` | Dans chaque page web, pour chaque élément recevant le focus, la prise de focus est-elle visible ? | `css-focus-indicator-suppressed`, `css-hidden-focus`, `manual-review`, `rgaa-focus-indicator-contrast` |
 | `rgaa-4.1.2-10.8` | Pour chaque page web, les contenus cachés ont-ils vocation à être ignorés par les technologies d’assistance ? | `aria-hidden-body`, `aria-hidden-focus` |
 | `rgaa-4.1.2-11.1` | Chaque champ de formulaire a-t-il une étiquette ? | `form-control-programmatic-label-quality`, `option-name-present`, `rgaa-field-label-listed-source`, `rgaa-label-for-target-valid` |
-| `rgaa-4.1.2-11.13` | La finalité d’un champ de saisie peut-elle être déduite pour faciliter le remplissage automatique des champs avec les données de l’utilisateur ? | `autocomplete-valid` |
+| `rgaa-4.1.2-11.13` | La finalité d’un champ de saisie peut-elle être déduite pour faciliter le remplissage automatique des champs avec les données de l’utilisateur ? | `rgaa-autocomplete-user-field` |
 | `rgaa-4.1.2-11.2` | Chaque étiquette associée à un champ de formulaire est-elle pertinente (hors cas particuliers) ? | `form-control-label-quality`, `form-control-programmatic-label-quality`, `rgaa-field-label-in-name-sources`, `rgaa-title-placeholder-identical` |
 | `rgaa-4.1.2-11.5` | Dans chaque formulaire, les champs de même nature sont-ils regroupés, si nécessaire ? | `rgaa-radio-group-present` |
 | `rgaa-4.1.2-11.6` | Dans chaque formulaire, chaque regroupement de champs de même nature a-t-il une légende ? | `rgaa-field-group-legend` |
@@ -232,6 +233,26 @@ Each role attribute passes the W3C validator (Nu HTML Checker), which RGAA 8.2.1
 - `imgRoleNoName`: an &lt;img&gt; with a role and no alt, aria-label or aria-labelledby attribute.
 
 It asks (cantTell) in one case, `imgPresentationRole`: an &lt;img&gt; with role="presentation" and an empty or missing alt. The validator reports an error there, but RGAA 1.2.1 names role="presentation" on an &lt;img&gt; as a way to mark a decorative image, so whether the audit counts it against 8.2.1 is left to the auditor.
+
+### `rgaa-autocomplete-user-field`
+
+**Fields about the user have a valid autocomplete value**
+
+automatic · no formal WCAG SC mapping · confidence high · default severity moderate
+
+Checks the autocomplete value of each field that may concern the user: fails a malformed value naming a user field, and asks about personal-data fields without a valid one.
+
+**Applies to.** Applies to the &lt;input&gt;, &lt;select&gt; and &lt;textarea&gt; fields that take a value (not disabled, not of type hidden, button, checkbox, file, image, radio, reset or submit), outside search forms, that may concern the user: the author gave them an autocomplete value, or they look like personal data (type email, tel or password, or a label, name, id or placeholder naming a name, an address, a telephone, an email, a birth date, an identifier or a password). Content hidden with CSS or the hidden attribute is left out. A page with none is notApplicable.
+
+**Expectation.**
+
+RGAA 11.13.1 applies to each field « dont l'objet se rapporte à une information concernant l'utilisateur », and asks for an autocomplete attribute whose value is in the list of the glossary « Liste des valeurs de l'attribut autocomplete » (on and off are not in it):
+
+- fails a value that names a field of that list (email, tel, postal-code…) but is not well formed (« email home », « work photo »): the author says the field is about the user, and the browser cannot use the value;
+- asks (cantTell) about a field that looks like personal data with no autocomplete, on, off, or a value naming no field of the list: only a person can say whether the information concerns the user (an email to send a page to a friend does not);
+- passes a well-formed value. Whether it suits the field is the relevance condition of 11.13.1, which a person judges.
+
+A field with an invalid value that does not look like personal data (autocomplete="nope" on a filter) is not about the user, so 11.13 does not apply to it.
 
 ### `rgaa-canvas-decorative-aria-hidden`
 

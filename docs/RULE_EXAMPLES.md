@@ -96,6 +96,24 @@ Both roles are ones the W3C validator accepts, and allowed on their elements; th
 ```
 The validator reports the unknown token `bogus` even though `button` follows it as a fallback (WCAG's `aria-roles-valid` passes on one valid token), and `role="tab"` is not allowed on `<nav>`. Both fail RGAA 8.2.1. An `<img alt="" role="presentation">` is asked about instead: the validator reports it, but RGAA 1.2.1 names `role="presentation"` for decorative images.
 
+## rgaa-autocomplete-user-field
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Passed**
+```html
+<label for="e">Courriel</label>
+<input id="e" type="email" autocomplete="email">
+```
+The field asks for the user's email and its value is in RGAA's list (11.13.1). Whether the value suits the field is for a person.
+
+**Failed**
+```html
+<label for="e">Courriel</label>
+<input id="e" type="email" autocomplete="email home">
+```
+The value names a field of the list, so the author says it is about the user, but it is not well formed and the browser cannot use it. A field that looks like personal data with no autocomplete, `on` or `off` is asked about instead, and an invalid value on a field that does not concern the user, such as a search field, is out of scope.
+
 ## rgaa-canvas-decorative-aria-hidden
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
