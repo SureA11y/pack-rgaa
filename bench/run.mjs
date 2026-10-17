@@ -40,54 +40,120 @@ function serve(root) {
 let USER_AGENT;
 const BLOCKED_TITLE = /access denied|forbidden|just a moment|attention required|captcha|request rejected|403|blocked/i;
 
+// What a load got: enough to tell the page from a block page, and one
+// engine's visit from another's.
+async function loadState(page, response) {
+  const status = response ? response.status() : null;
+  const s = await page.evaluate(() => ({
+    title: document.title,
+    doctype: Boolean(document.doctype),
+    lang: document.documentElement.getAttribute('lang'),
+    textLength: document.body ? document.body.innerText.length : 0
+  }));
+  return { status, ...s, finalUrl: page.url(), blocked: (status !== null && status >= 400) || BLOCKED_TITLE.test(s.title) || s.textLength < 200 };
+}
+const sameDocument = (a, b) => !a.blocked && a.title === b.title && a.doctype === b.doctype && a.lang === b.lang;
+
+// Lazy content loads as it scrolls into view, so the page is scrolled down
+// and back before an engine runs, and given time to settle.
+async function settle(page) {
+  await page.evaluate(async () => {
+    const step = Math.max(innerHeight * 0.8, 400);
+    for (let y = step; y < Math.min(document.documentElement.scrollHeight, 30000); y += step) {
+      scrollTo(0, y);
+      await new Promise((r) => setTimeout(r, 150));
+    }
+    scrollTo(0, 0);
+  });
+  await page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => {});
+  await page.waitForTimeout(800);
+}
+
 async function scanPage(browser, url) {
   const out = {};
   let loaded = null;
   for (const name of engines) {
-    // A fresh page per engine, so no engine sees another's injected script.
-    const context = await browser.newContext({ locale: 'fr-FR', viewport: { width: 1280, height: 900 }, userAgent: USER_AGENT });
-    const page = await context.newPage();
-    const started = Date.now();
-    try {
-      const response = await page.goto(url, { waitUntil: 'load', timeout: 45000 });
-      await page.waitForTimeout(800);
-      if (!loaded) {
-        const status = response ? response.status() : null;
-        const title = await page.title();
-        const textLength = await page.evaluate(() => (document.body ? document.body.innerText.length : 0));
-        loaded = { status, title, finalUrl: page.url(), textLength, blocked: (status !== null && status >= 400) || BLOCKED_TITLE.test(title) || textLength < 200 };
-      }
-      const r = await RUNNERS[name](page);
-      if (r.findings.length) r.findings = await placeInCases(page, r.findings);
-      out[name] = { ...r, ms: Date.now() - started };
-    } catch (e) {
-      out[name] = { error: String(e.message || e).split('\n')[0], ms: Date.now() - started };
+    if (loaded && loaded.blocked) {
+      out[name] = { error: 'not scanned: the page is blocked' };
+      continue;
     }
-    await context.close();
+    // Each engine gets a fresh page, so no engine sees another's injected
+    // script; one that gets another document than the first engine did (a
+    // block page, an error page) tries once more, then is marked failed.
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      const context = await browser.newContext({ locale: 'fr-FR', viewport: { width: 1280, height: 900 }, userAgent: USER_AGENT });
+      const page = await context.newPage();
+      const started = Date.now();
+      let retry = false;
+      try {
+        const response = await page.goto(url, { waitUntil: 'load', timeout: 45000 });
+        await settle(page);
+        const state = await loadState(page, response);
+        if (!loaded && (!state.blocked || attempt === 2)) loaded = state;
+        if (!loaded || !sameDocument(state, loaded)) {
+          retry = attempt === 1;
+          if (!retry && state.blocked) throw new Error(`blocked: ${state.status} ${JSON.stringify(state.title.slice(0, 60))}`);
+          if (!retry) throw new Error(`got another document than the first engine: ${JSON.stringify({ status: state.status, title: state.title.slice(0, 60), doctype: state.doctype, lang: state.lang })}`);
+        } else {
+          const r = await RUNNERS[name](page);
+          if (r.findings.length) r.findings = await placeInCases(page, r.findings);
+          out[name] = { ...r, ms: Date.now() - started };
+        }
+      } catch (e) {
+        const error = String(e.message || e).split('\n')[0];
+        out[name] = { error, ms: Date.now() - started };
+        // A failed navigation is tried again; an engine's own error isn't.
+        retry = attempt === 1 && /^page\.goto|net::ERR_/.test(error);
+      }
+      await context.close();
+      if (!retry) break;
+      await new Promise((r) => setTimeout(r, 3000));
+    }
   }
   return { results: out, loaded };
 }
 
 // Each finding's element is found in the page, by its selector or else by
-// the start of its HTML, and named by its path from the root (child indexes),
-// so findings of engines whose selectors differ can be matched. A fixture's
-// cases are .case blocks; a finding also belongs to the case that holds its
-// element.
+// its HTML, and named by its path from the root (child indexes), so
+// findings of engines whose selectors differ can be matched. Findings of
+// one rule with the same HTML (repeated markup) take the matching elements
+// in document order, one each. A fixture's cases are .case blocks; a
+// finding also belongs to the case that holds its element.
 async function placeInCases(page, findings) {
   return page.evaluate((findings) => {
     const cases = [...document.querySelectorAll('.case[id]')];
-    const all = [...document.querySelectorAll('*')];
     const pathOf = (el) => {
       const parts = [];
       for (let e = el; e && e.parentElement; e = e.parentElement) parts.unshift([...e.parentElement.children].indexOf(e));
       return parts.join('/');
     };
+    const byHtml = new Map();
+    const candidates = (html) => {
+      if (!byHtml.has(html)) {
+        const tag = /^<([a-zA-Z][\w:-]*)/.exec(html);
+        const pool = tag ? [...document.getElementsByTagName(tag[1])] : [];
+        // Engines shorten long markup; the start before an ellipsis still
+        // has to match.
+        const starts = [html, html.replace(/(\.\.\.|…)$/, ''), html.slice(0, 120)];
+        let found = [];
+        for (const start of starts) {
+          found = pool.filter((e) => e.outerHTML.startsWith(start));
+          if (found.length) break;
+        }
+        byHtml.set(html, found);
+      }
+      return byHtml.get(html);
+    };
+    const taken = new Map();
     return findings.map((f) => {
       let el = null;
       try { el = f.selector ? document.querySelector(f.selector) : null; } catch { el = null; }
       if (!el && f.html) {
-        const start = f.html.slice(0, 120);
-        el = all.find((e) => e.outerHTML.startsWith(start)) || null;
+        const found = candidates(f.html);
+        const key = `${f.rule}\u0000${f.html}`;
+        const n = taken.get(key) || 0;
+        taken.set(key, n + 1);
+        el = found[Math.min(n, found.length - 1)] || null;
       }
       let c = el && el.closest('.case[id]');
       if (!c && f.html && cases.length) c = cases.find((k) => k.outerHTML.includes(f.html.slice(0, 200)));

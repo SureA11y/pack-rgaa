@@ -124,6 +124,9 @@ export async function runAxe(page) {
 // ---- @uuv/a11y's RgaaChecker -------------------------------------------------
 
 const UUV_BUNDLE = readFileSync(require.resolve('@uuv/a11y/bundle'), 'utf8');
+// Rules whose query never returns an element, so their success checked
+// nothing: 11.1.1's FormQuery.execute() returns [] (dist/lib/query/form.query.js).
+const UUV_NOT_RUN = new Set(['11.1.1']);
 
 export async function runUuv(page) {
   await page.evaluate(UUV_BUNDLE);
@@ -145,6 +148,7 @@ export async function runUuv(page) {
   const criteria = {};
   const findings = [];
   for (const i of issues) {
+    if (UUV_NOT_RUN.has(i.code)) continue;
     for (const v of i.validations) {
       if (v.errorNodes.length) {
         criteria[i.criterion] = worst(criteria[i.criterion], 'fail');
@@ -197,7 +201,9 @@ export async function runArneo(page) {
     if (!outcome) continue;
     criteria[criterion] = outcome;
     if (outcome === 'fail' || outcome === 'cantTell') {
-      for (const el of r.elements.length ? r.elements : [{}]) {
+      // A criterion can list an element once per thing wrong with it.
+      const elements = [...new Map(r.elements.map((el) => [el.selector, el])).values()];
+      for (const el of elements.length ? elements : [{}]) {
         findings.push({ criterion, outcome, selector: el.selector || null, html: el.html || null, rule: `arneo-${criterion}`, message: r.message });
       }
     }
@@ -208,7 +214,8 @@ export async function runArneo(page) {
 // ---- RGAA Audit (Le Singe Du Numérique), the rules of its CLI ---------------
 // Its rules run in the page through page.evaluate. A probable error fails
 // its criterion, a heuristic warning asks, a good signal passes; a
-// manual-only result (often: nothing on the page to check) says nothing.
+// manual-only result (often: nothing on the page to check) says nothing,
+// and so does a good signal it still wants checked by hand.
 
 const stanLogger = require(path.join(vendor, 'stan/cli/src/logger.js'));
 stanLogger.log = () => {};
@@ -220,7 +227,7 @@ export async function runStan(page) {
   const criteria = {};
   const findings = [];
   for (const r of results) {
-    const outcome = STAN[r.resultType];
+    const outcome = r.resultType === 'good_signal' && r.manualReviewRecommended ? null : STAN[r.resultType];
     if (!outcome || !/^\d+\.\d+$/.test(r.id)) continue;
     criteria[r.id] = worst(criteria[r.id], outcome);
     if (outcome !== 'pass') findings.push({ criterion: r.id, outcome, selector: null, html: r.snippet || null, rule: `stan-${r.id}`, message: r.message });

@@ -1,6 +1,6 @@
 # Triage
 
-This file covers every place where the pack and another engine say different things about a criterion on a page. `npm run disagreements` lists them in `results/disagreements.json`, as 587 groups:
+This file covers every place where the pack and another engine say different things about a criterion on a page. `npm run disagreements` lists them in `results/disagreements.json`, as 587 groups on the scan this triage was done on (574 since the bench fixes below):
 
 | Kind | Groups |
 |---|---:|
@@ -57,32 +57,41 @@ What was already known:
 
 **Where** says where each change belongs: the pack, core, or the bench. Each theme file explains the evidence and how the other engine does it, with file and line.
 
-### The bench, first: these fixes change the numbers above
+### The bench: done
 
-| # | Change | Why |
+These fixes were made, and the corpora were rescanned with every engine. The triage above was done on the scan before them. After them there are 574 groups, against 587.
+
+| # | Change | Effect |
 |---|---|---|
-| B1 | Detect a block page on every engine's load, not just the first, and retry or mark that engine errored | On Insee and Caisse d'Epargne, later engines got an empty document. This caused 11 false groups on 8.1, 8.3 and 8.5. |
-| B2 | Place findings using their full stored HTML and the order of occurrence, each element at most once | Matching on the first 120 characters merges repeated markup. About a third of the elements counted as failed by one side only are this. |
-| B3 | Scroll each page down and back, and wait longer, before an engine runs | Lazy images stay invisible until scrolled to (Caisse d'Epargne: 39 to 54 questions), and some menus aren't ready after 800 ms. |
-| B4 | Fix how other engines' results are read | Their verdicts are counted under the wrong criteria or with the wrong outcome; the itemized list follows the table. |
-| B5 | Rescan the pages marked blocked | Caisse d'Epargne's newsletter page loads now, and it holds the audit's 2.1 failure. |
-| B6 | Optionally, run the W3C HTML validator once per page and pass its report to the pack | This decides the 20 pages where the pack asks about 8.2. |
+| B1 | Each engine's load is checked against the first engine's: title, doctype, `lang`, and whether it is a block page. An engine that got another document loads the page once more, and then fails for that page. A failed navigation is also tried once more. | 4 pages where a later engine got a 403 or 429 are now left out, instead of being scored on an error page. |
+| B2 | A finding is placed on the element its full stored HTML starts, and findings of one rule with the same HTML take the matching elements in document order, one each. `elements.mjs` matches two engines' elements by path, or else by the start of their HTML. | Repeated markup is no longer merged into one element. |
+| B3 | The page is scrolled down and back before each engine runs, then given time to settle (network idle, at most 5 s, then 800 ms). | Lazy images and late menus are there for every engine. |
+| B4 | The bench's own misreadings are fixed. | Listed below the table. |
+| B5 | Rescanned the pages marked blocked. | 162 usable audited pages, against 157. Caisse d'Epargne's newsletter page loads now. |
 
-What B4 fixes in each engine's results:
+The misreadings B4 fixes:
 
-- **`@uuv/a11y`:**
-  - Drop its 11.1, which is a stub.
-  - Leave out elements that aren't rendered on 6.1 and 6.2.
-- **RGAA Audit:**
-  - A `meta charset` isn't an 8.2 pass.
-  - A "good signal" that still recommends a manual check gives no verdict.
-  - Count its 12.1 under 12.7.
-  - Count its link-name results under 6.2.
+- **`@uuv/a11y`:** its 11.1.1 is left out, because its query is a stub.
+- **RGAA Audit:** a "good signal" that still recommends a manual check gives no verdict.
 - **ARNEO:**
-  - Take the highlighted elements, not every element on the page, when it fails.
-  - Pick up the elements it highlights for criteria it leaves to the auditor (2.1, 3.2, 13.3).
-  - Count its 1.1 "inapplicable" as no verdict.
-- **`@a11ylint/core`:** give it visible, rendered text only.
+  - It takes the elements the extension highlights: the elements at fault, where the criterion says which (6.2 on BAD went from 193 elements to 19).
+  - It now picks up the elements it highlights for criteria it leaves to the auditor (13.3, 10.7, 5.2).
+  - Each element is counted once.
+- **`@a11ylint/core`:** it is given shown text only, and its SVG `<style>` is excluded.
+
+What changed in the scores:
+
+- Against the audits, precision rose by 1 to 3 points for every engine: the pack 65%, RGAA Audit 77%, ARNEO 57%, `@uuv/a11y` 61%, `@a11ylint/core` 56%.
+- Recall barely moved.
+- The BAD demo and the fixtures are the same, except ARNEO now asks where it failed on 3 fixture cases.
+
+**Not changed, on purpose:** the bench reads each engine's verdicts as the engine gives them, wrong ones included. These still count against the engines, as their own results:
+
+- RGAA Audit's 12.1 (a skip-link check) and its 8.2 pass (a `meta charset`);
+- ARNEO's 1.1 "inapplicable";
+- `@uuv/a11y`'s failures of hidden links.
+
+**Not done:** running the W3C HTML validator once per page, to decide the 20 pages where the pack asks about 8.2.
 
 ### Pack false positives
 

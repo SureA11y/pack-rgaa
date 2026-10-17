@@ -11,14 +11,15 @@
 //   PACK_ONLY           only the pack gives it a verdict: out of the other's scope
 //   OTHER_ONLY          only the other gives it a verdict
 //
-// For AGREE_FAIL, the elements each failed are matched by their path in the
-// page (run.mjs), to tell whether they fail the same elements.
+// For AGREE_FAIL, the elements each failed are matched (elements.mjs), to
+// tell whether they fail the same elements.
 // The fixtures aren't diffed: they were written for the pack, and
 // summarize.mjs scores every engine on their cases instead.
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { matchElements } from './elements.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const load = (name) => {
@@ -55,8 +56,7 @@ function verdict(r, criterion) {
   return undefined;
 }
 
-const failedPaths = (r, criterion) =>
-  new Set(r.findings.filter((f) => f.criterion === criterion && f.outcome === 'fail' && f.path).map((f) => f.path));
+const failed = (r, criterion) => r.findings.filter((f) => f.criterion === criterion && f.outcome === 'fail');
 
 function diffCorpus(data) {
   const engines = Object.keys(data.meta.engines).filter((e) => !data.meta.engines[e].reference);
@@ -85,10 +85,10 @@ function diffCorpus(data) {
         totals[b]++;
         (byCriterion[c] = byCriterion[c] || Object.fromEntries(BUCKETS.map((k) => [k, 0])))[b]++;
         if (b === 'AGREE_FAIL') {
-          const pp = failedPaths(pack, c);
-          const op = failedPaths(other, c);
-          for (const x of pp) if (op.has(x)) elements.shared++; else elements.packOnly++;
-          for (const x of op) if (!pp.has(x)) elements.otherOnly++;
+          const m = matchElements(failed(pack, c), failed(other, c));
+          elements.shared += m.shared.length;
+          elements.packOnly += m.aOnly.length;
+          elements.otherOnly += m.bOnly.length;
         }
         if (examples[b].length < EXAMPLES && b !== 'AGREE_NO_FAIL' && !b.endsWith('_ONLY')) {
           const pick = (r, outcome) =>

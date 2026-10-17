@@ -59,7 +59,11 @@ const cssPath = (el: Element): string => {
   for (const [key, criterion] of Object.entries<any>(tester.criterionList)) {
     try {
       const status = criterion.runTest();
-      const elements = (criterion.querySelectorList || criterion.elementList || [])
+      // What the extension highlights: a criterion that overrides
+      // getHighlightedElements() lists the elements at fault there; the
+      // others list what they checked in elementList.
+      const own = Object.getPrototypeOf(criterion).hasOwnProperty('getHighlightedElements');
+      const elements = ((own ? criterion.getHighlightedElements() : criterion.elementList) || [])
         .filter((el: any) => el && el.nodeType === 1)
         .map((el: any) => ({ selector: cssPath(el), html: el.outerHTML.slice(0, 300) }));
       out[key] = { status, tests: criterion.testList || {}, message: (criterion.messageList || {})[status] || '', elements };
@@ -91,6 +95,12 @@ writeFileSync(
   a11ylintEntry,
   `import { Core } from '@a11ylint/core/build/core.js';
 const hasOwnText = (el) => [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
+// Text a person sees: rendered, and not clipped away as screen-reader-only text.
+const shown = (el) => {
+  if (!el.checkVisibility({ visibilityProperty: true, opacityProperty: true })) return false;
+  const r = el.getBoundingClientRect();
+  return r.width > 1 && r.height > 1;
+};
 const backgroundOf = (el) => {
   for (let e = el; e; e = e.parentElement) {
     const bg = getComputedStyle(e).backgroundColor;
@@ -100,7 +110,7 @@ const backgroundOf = (el) => {
 };
 window.__a11ylintRun = () => {
   const all = (s) => [...document.querySelectorAll(s)];
-  const texts = all('body *').filter((el) => hasOwnText(el) && !['SCRIPT', 'STYLE', 'NOSCRIPT', 'TEMPLATE'].includes(el.tagName));
+  const texts = all('body *').filter((el) => hasOwnText(el) && !['script', 'style', 'noscript', 'template'].includes(el.localName) && shown(el));
   return new Core().run({
     mode: 'dom',
     document,

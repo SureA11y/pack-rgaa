@@ -19,6 +19,7 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { matchElements } from './elements.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const EXAMPLES = 6;
@@ -66,14 +67,10 @@ function collect(corpus, data, groups) {
         let otherFindings = of;
         const kinds = [];
         if (kind === 'BOTH_FAIL') {
-          // Elements are matched by their path in the page; a finding with no
-          // path (no element, or one not found again) can't be matched.
-          const pp = new Set(pf.filter((f) => f.outcome === 'fail' && f.path).map((f) => f.path));
-          const op = new Set(of.filter((f) => f.outcome === 'fail' && f.path).map((f) => f.path));
-          const packOnly = pf.filter((f) => f.outcome === 'fail' && f.path && !op.has(f.path));
-          const otherOnly = of.filter((f) => f.outcome === 'fail' && f.path && !pp.has(f.path));
-          if (packOnly.length) kinds.push(['PACK_MORE_ELEMENTS', packOnly, of.filter((f) => f.outcome === 'fail')]);
-          if (otherOnly.length) kinds.push(['OTHER_MORE_ELEMENTS', pf.filter((f) => f.outcome === 'fail' || f.outcome === 'cantTell'), otherOnly]);
+          // Elements are matched as diff.mjs matches them (elements.mjs).
+          const m = matchElements(pf.filter((f) => f.outcome === 'fail'), of.filter((f) => f.outcome === 'fail'));
+          if (m.aOnly.length) kinds.push(['PACK_MORE_ELEMENTS', m.aOnly, of.filter((f) => f.outcome === 'fail')]);
+          if (m.bOnly.length) kinds.push(['OTHER_MORE_ELEMENTS', pf.filter((f) => f.outcome === 'fail' || f.outcome === 'cantTell'), m.bOnly]);
         } else {
           kinds.push([kind, packFindings, otherFindings]);
         }
