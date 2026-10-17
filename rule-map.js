@@ -754,7 +754,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-skip-link-present': {
       tests: ['12.7.1'],
-      note: 'Fails a page whose navigation block comes before the visible <main> when no same-page link leads to the main content zone (to <main>, or to an element just before or at the start of it), and a skip link whose target does not exist. That is 12.7.1 step 2: the zone can be skipped or reached by a link. Asks when no navigation comes before the zone (the one-page particular case), and on a skip link whose target is hidden or not at the start of the zone. Whether the link is visible on focus is left to 12.7.2.'
+      note: 'Fails a page whose navigation block comes before the visible <main> when no same-page link leads to the main content zone (to <main>, or to an element just before or at the start of it), and a skip link to the content (by its name or fragment) whose target does not exist; a broken first link that names something else, such as cookie settings, is no skip link. That is 12.7.1 step 2: the zone can be skipped or reached by a link. Asks when no navigation comes before the zone (the one-page particular case), and on a skip link whose target is hidden or not at the start of the zone. Whether the link is visible on focus is left to 12.7.2.'
     },
     'slider-name-present': {
       tests: [],

@@ -29,12 +29,18 @@
  *     the link is needed;
  *   - on a skip link whose target does not exist, whether or not the page
  *     has navigation.
+ *   A link whose target does not exist fails as a broken skip link only
+ *   when its name or fragment says it leads to the content (« contenu »,
+ *   content, main, principal…); a broken first link that names something
+ *   else (cookie settings, a menu) is no skip link to the content.
  *   It asks instead of failing when no navigation block comes before the
  *   main zone and no link leads to it (a one-page site may not need one),
  *   and on a skip link whose target exists but is hidden, sits before
  *   the zone with links or other focusable elements, but no navigation
  *   block, between the two, or sits inside the zone after links or other
- *   focusable elements outside navigation. A skip link to a target inside
+ *   focusable elements outside navigation, and on a link to the content
+ *   whose target lies before a navigation block that precedes the zone (a
+ *   wrapper around a section menu and <main>). A skip link to a target inside
  *   navigation, after the zone, or with navigation between it and the zone
  *   leads elsewhere (to a menu, a search form, the footer) and does not
  *   count.
@@ -126,6 +132,10 @@ function runInPage(ctx) {
   // Skip-link wording in the shipped locales, the same list core's skip-link
   // rule uses (helpers.hasSkipLinkWording, docs/RULE_HELPERS.md).
   const hasSkipWording = (name) => helpers.hasSkipLinkWording(name);
+  // Words naming the main content, in the shipped locales, and the usual
+  // fragments for it.
+  const CONTENT_WORDS = /contenu|content|principal|main|inhalt|contenido|本文|コンテンツ|メイン/i;
+  const CONTENT_FRAGMENT = /main|content|contenu|principal|inhalt|contenido/i;
 
   function linkName(el) {
     const al = norm(attr(el, 'aria-label'));
@@ -325,8 +335,13 @@ function runInPage(ctx) {
     const name = linkName(el);
     if (el !== positional && !hasSkipWording(name)) continue;
     const href = String(attr(el, 'href') || '').trim();
+    // The link says it leads to the content, by its name or its fragment.
+    const aboutContent = CONTENT_WORDS.test(name) || CONTENT_FRAGMENT.test(fragment);
 
     if (!target) {
+      // A broken first link that names something else (cookie settings, a
+      // menu) is no skip link to the content: 12.7.1 is about that zone.
+      if (!aboutContent) continue;
       fails.push(
         helpers.reportOccurrence(el, {
           summary: `This skip link points to "${href}", which does not exist in the page.`,
@@ -351,7 +366,13 @@ function runInPage(ctx) {
       }
       return false;
     })();
-    if (!usable || (path && (path.inside || !path.navigation) && !inNavigation)) {
+    // A link to the content whose target lies before a section menu at the
+    // top of the zone may still reach it: a person judges.
+    if (
+      !usable ||
+      (path && (path.inside || !path.navigation) && !inNavigation) ||
+      (path && aboutContent && !inNavigation)
+    ) {
       const reasonCode = usable ? 'skipLinkTargetNotMain' : 'skipLinkTargetHidden';
       questions.push(
         helpers.reportOccurrence(el, {

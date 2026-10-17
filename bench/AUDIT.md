@@ -148,9 +148,9 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T12-01 | 13.9.1 | FP | A change of presentation between orientations (burger menu, table vs cards) counts as missing content. | open |
 | T12-02 | 12.7.2 | FP | `SKIP_LINK_NOT_VISIBLE` while an ancestor is transitioning into view. | open |
 | T12-03 | 12.7.2 | FP | The position is compared with pages of another ensemble (the home page). | open |
-| T12-04 | 12.7.1 | FP | A broken first link that is not about the main content fails `skipLinkTargetMissing`. | open |
-| T12-05 | 12.7.1 | WO | A skip link landing before a section menu is dropped, then the page fails as having none. | open |
-| T12-06 | 12.7 | FN | A skip link that is never visible passes: `rgaa-skip-link-placement` lacks the breadcrumb fix (P2). | open |
+| T12-04 | 12.7.1 | FP | A broken first link that is not about the main content fails `skipLinkTargetMissing`. | done |
+| T12-05 | 12.7.1 | WO | A skip link landing before a section menu is dropped, then the page fails as having none. | done |
+| T12-06 | 12.7 | FN | A skip link that is never visible passes: `rgaa-skip-link-placement` lacks the breadcrumb fix (P2). | done |
 | T12-07 | 12.6.1 | FN | Passes when no zone is recognised. | open |
 | T12-08 | 13.1, 13.3, 13.9 | WO | A criterion rolls up notApplicable or pass though some of its tests are not checked. | core |
 | T12-09 | 12.6.1 | WO | Untargeted questions on blocks inside other landmarks. | open |

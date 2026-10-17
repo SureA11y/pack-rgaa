@@ -57,14 +57,16 @@ test(`${RULE_ID}: a skip link whose target does not exist fails, with or without
     '<a href="#contenu">Aller au contenu</a><main><p>x</p></main>',
     '<a href="#inhalt">Zum Inhalt springen</a>' + NAV + MAIN,
     '<a href="#contenido">Saltar al contenido</a>' + NAV + MAIN,
-    '<a href="#honbun">本文へスキップ</a>' + NAV + MAIN,
-    // The page's first link, before main, is a skip link whatever its wording.
-    '<a href="#x">Menu</a>' + NAV + MAIN
+    '<a href="#honbun">本文へスキップ</a>' + NAV + MAIN
   ]) {
     const rule = assertRule(run(body), RULE_ID, 'fail', { minOccurrences: 1, maxOccurrences: 1 });
     assert.deepEqual(reasons(rule), [['fail', 'skipLinkTargetMissing']], body);
     assert.equal(rule.occurrences[0].i18n.summaryKey, 'skipLinkPresent_summary_fail_targetMissing');
   }
+  // A broken first link that names something else is no skip link to the
+  // content: with navigation before main, the page has none.
+  const menu = assertRule(run('<a href="#x">Menu</a>' + NAV + MAIN), RULE_ID, 'fail');
+  assert.deepEqual(reasons(menu), [['fail', 'noSkipLink']]);
 });
 
 test(`${RULE_ID}: an ordinary link to a missing id is not a skip link`, () => {
@@ -285,4 +287,37 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-skip-link-present-all-sc
   const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 1, maxOccurrences: 1 });
   assert.deepEqual(reasons(rule), [['fail', 'skipLinkTargetMissing']]);
   assert.match(rule.occurrences[0].html, /id="slp_case_01"/);
+});
+
+// 12.7.1 is about the main content zone: a broken first link that names
+// something else is no skip link to it, so the page is judged as having none.
+test(`${RULE_ID}: a broken link that is not about the content is not a broken skip link`, () => {
+  const cookies =
+    '<header><a href="#tarteaucitron">Gestion des cookies</a><ul><li><a href="/a">A</a></li></ul></header>';
+  const rule = assertRule(run(cookies + MAIN), RULE_ID, 'cantTell');
+  assert.deepEqual(reasons(rule), [['cantTell', 'noNavigationBeforeMain']]);
+  const withNav = assertRule(
+    run('<a href="#menu">Aller au menu</a>' + NAV + MAIN),
+    RULE_ID,
+    'fail'
+  );
+  assert.deepEqual(reasons(withNav), [['fail', 'noSkipLink']]);
+  // A broken link to the content still fails as such, by its name or its fragment.
+  for (const link of [
+    '<a href="#contenu">Aller au contenu</a>',
+    '<a href="#main-content">Passer</a>'
+  ]) {
+    const broken = assertRule(run(link + NAV + '<main><h1>T</h1></main>'), RULE_ID, 'fail');
+    assert.deepEqual(reasons(broken), [['fail', 'skipLinkTargetMissing']], link);
+  }
+});
+
+// A link to the content landing on a wrapper before a section menu may
+// still reach the zone: a person judges, instead of the page failing.
+test(`${RULE_ID}: a content link whose target lies before a section menu is asked about`, () => {
+  const body =
+    '<header><a href="#contenu">Aller au contenu</a><nav><a href="/a">A</a></nav></header>' +
+    '<div id="contenu"><nav aria-label="Rubrique"><a href="/r1">R1</a></nav><main><h1>T</h1></main></div>';
+  const rule = assertRule(run(body), RULE_ID, 'cantTell');
+  assert.deepEqual(reasons(rule), [['cantTell', 'skipLinkTargetNotMain']]);
 });

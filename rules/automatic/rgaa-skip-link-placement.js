@@ -188,37 +188,43 @@ function runInPage(ctx) {
     return ce != null && ce.toLowerCase() !== 'false';
   }
 
-  function scan(from, to, found) {
+  // What lies between `from` and `to`: a navigation block, and focusable
+  // elements outside navigation blocks, as rgaa-skip-link-present reads it.
+  function scan(from, to, stopAtTo, found) {
     const walker = dom.createTreeWalker(document, document, 1);
     walker.currentNode = from;
     let count = 0;
+    let nav = null;
     for (let n = walker.nextNode(); n && n !== to; n = walker.nextNode()) {
       if (++count > 5000) {
         found.navigation = true;
+        found.focusable = true;
         break;
       }
-      if (dom.contains(n, to)) continue;
+      if (stopAtTo && dom.contains(n, to)) continue;
+      if (nav && dom.contains(nav, n)) continue;
       if (!isEligible(n)) continue;
-      if (isNavigation(n)) found.navigation = true;
-      else if (isFocusable(n)) found.focusable = true;
+      if (isNavigation(n)) {
+        found.navigation = true;
+        nav = n;
+      } else if (isFocusable(n)) found.focusable = true;
     }
     return found;
   }
 
   function between(target, main) {
-    const found = { navigation: false, focusable: false };
+    const found = { navigation: false, focusable: false, inside: false };
     if (target === main) return found;
-    let inside = false;
     try {
-      inside = dom.contains(main, target);
+      found.inside = dom.contains(main, target);
     } catch {}
-    if (inside) return scan(main, target, found);
+    if (found.inside) return scan(main, target, true, found);
     let pos = 0;
     try {
       pos = dom.compareDocumentPosition(target, main);
     } catch {}
     if (!(pos & FOLLOWING) && !(pos & CONTAINED_BY)) return null;
-    return scan(target, main, found);
+    return scan(target, main, true, found);
   }
 
   const mains = query('main').filter(isEligible);
@@ -237,7 +243,9 @@ function runInPage(ctx) {
       const target = resolveTarget(el, fragment);
       if (!target || !isEligible(target)) continue;
       const path = between(target, main);
-      if (path && !path.navigation && !path.focusable) {
+      // Inside the zone, a navigation block before the target (a breadcrumb)
+      // is still main content, as rgaa-skip-link-present accepts it.
+      if (path && (path.inside || !path.navigation) && !path.focusable) {
         skipLink = el;
         break;
       }
