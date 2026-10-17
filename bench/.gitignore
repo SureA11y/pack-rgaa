@@ -2,6 +2,7 @@
 results/fixtures.json
 results/neutral.json
 results/audited.json
+results/disagreements.json
 results/*.log
 # The engines vendor.mjs fetches and builds.
 vendor/

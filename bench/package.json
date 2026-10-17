@@ -8,6 +8,7 @@
     "scan": "node run.mjs",
     "summarize": "node summarize.mjs",
     "diff": "node diff.mjs",
+    "disagreements": "node disagreements.mjs",
     "report": "node report.mjs"
   },
   "dependencies": {

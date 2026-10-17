@@ -11,7 +11,8 @@ npm run scan                 # all corpora; or: node run.mjs fixtures neutral
 node run.mjs fixtures --engines pack  # rescan one engine; the others' results are kept
 npm run summarize            # results/summary.json: each engine against what is known of the pages
 npm run diff                 # results/diff.json: the pack against each engine, criterion by criterion
-npm run report               # RESULTS.md, from both
+npm run disagreements        # results/disagreements.json: every difference, grouped for triage (TRIAGE.md)
+npm run report               # RESULTS.md, from summary and diff
 ```
 
 ## The engines
