@@ -31,6 +31,10 @@
  *   aria-labelledby or title. Hidden text with no such name leaves the link
  *   with no label at all, and fails.
  * @implementation-notes
+ * - The content walked is the one rendered (the flat tree): a shadow host's
+ *   shadow root, and the nodes assigned to a <slot>, or its fallback
+ *   content when none are. A link inside a web component whose text is
+ *   slotted into it failed as empty.
  * - Content inside hidden, display:none or visibility:hidden elements is not
  *   content: nobody sees or hears it.
  * - CSS-generated text is read from the computed ::before and ::after
@@ -206,6 +210,21 @@ function runInPage(ctx) {
     'canvas'
   ]);
 
+  // The children as rendered (the flat tree): a shadow host shows its
+  // shadow root, and a <slot> the nodes assigned to it, or its fallback
+  // content when none are.
+  function renderedChildren(node) {
+    try {
+      const shadow = dom.nodeType(node) === 1 ? dom.shadowRoot(node) : null;
+      if (shadow) return Array.from(dom.childNodes(shadow) || []);
+      if (dom.nodeType(node) === 1 && tagOf(node) === 'slot') {
+        const assigned = Array.from(dom.assignedNodes(node, { flatten: true }) || []);
+        if (assigned.length) return assigned;
+      }
+    } catch {}
+    return Array.from(dom.childNodes(node) || []);
+  }
+
   function analyse(root) {
     const found = {
       text: false,
@@ -220,7 +239,7 @@ function runInPage(ctx) {
 
     function walk(node, atHidden, depth) {
       if (depth > 200) return;
-      for (const child of Array.from(dom.childNodes(node) || [])) {
+      for (const child of renderedChildren(node)) {
         if (dom.nodeType(child) === 3) {
           if (!norm(child.data)) continue;
           if (isVisibilityHidden(dom.parentElement(child))) continue;

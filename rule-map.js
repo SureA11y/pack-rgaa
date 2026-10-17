@@ -690,7 +690,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-presentational-attributes-absent': {
       tests: ['10.1.2'],
-      note: "Fails on each HTML element carrying an attribute 10.1.2 step 1 lists, with its exceptions: size allowed on <select>, width and height on <img>, <object>, <embed>, <canvas> and <svg>. SVG and MathML content is not checked, where those attributes are geometry rather than presentation, and neither are custom elements, whose attributes are the component's own. A <source> in a <picture> may carry width and height as the <img> does: they are the image's dimensions, added to HTML after the list was written. Hidden content is checked too, since 10.1.2 judges the generated source."
+      note: "Fails on each HTML element carrying an attribute 10.1.2 step 1 lists, with its exceptions: size allowed on <select>, width and height on <img>, <object>, <embed>, <canvas> and <svg>. SVG and MathML content is not checked, where those attributes are geometry rather than presentation, and neither are custom elements, whose attributes are the component's own, nor color on <link rel=\"mask-icon\">, the colour of the site's pinned-tab icon. A <source> in a <picture> may carry width and height as the <img> does: they are the image's dimensions, added to HTML after the list was written. Hidden content is checked too, since 10.1.2 judges the generated source."
     },
     'presentational-children-focusable-absent': {
       tests: [],

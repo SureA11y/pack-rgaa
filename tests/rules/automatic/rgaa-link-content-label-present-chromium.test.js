@@ -1,0 +1,83 @@
+'use strict';
+
+/**
+ * rgaa-link-content-label-present in a real browser, with web components:
+ * a link's content is what renders, the nodes slotted into it included.
+ *
+ * Skipped when Playwright or its Chromium build is not installed. Set
+ * CHROMIUM_EXECUTABLE_PATH to use another Chromium build.
+ */
+
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+
+const { BROWSER_BUNDLE } = require('../../helpers/run.js');
+
+const RULE_ID = 'rgaa-link-content-label-present';
+
+function page(body) {
+  return `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`;
+}
+
+let chromium;
+try {
+  ({ chromium } = require('playwright'));
+} catch {
+  chromium = null;
+}
+const executablePath = (() => {
+  if (!chromium) return null;
+  const candidates = [];
+  try {
+    candidates.push(chromium.executablePath());
+  } catch {}
+  if (process.env.CHROMIUM_EXECUTABLE_PATH) candidates.push(process.env.CHROMIUM_EXECUTABLE_PATH);
+  return candidates.find((p) => p && fs.existsSync(p)) || null;
+})();
+const skip = !chromium
+  ? 'playwright not installed'
+  : !executablePath
+    ? 'no Chromium build found (set CHROMIUM_EXECUTABLE_PATH)'
+    : false;
+
+// The content of a link is what renders (the flat tree): a <slot> shows
+// the nodes assigned to it, and a shadow host its shadow root.
+test(
+  `${RULE_ID} in Chromium: slotted and shadow content is the link's content`,
+  { skip },
+  async (t) => {
+    const browser = await chromium.launch({ executablePath });
+    t.after(() => browser.close());
+    const define = (name, inner) =>
+      `<script>customElements.define('${name}', class extends HTMLElement { constructor() { super(); this.attachShadow({ mode: 'open' }).innerHTML = ${JSON.stringify(inner)}; } });</script>`;
+    async function outcome(body) {
+      const p = await browser.newPage();
+      try {
+        await p.setContent(page(body));
+        await p.addScriptTag({ content: BROWSER_BUNDLE });
+        const result = await p.evaluate(
+          (opts) => window.a11ycore.runa11yCoreInPage(null, null, opts, null),
+          { rules: { include: RULE_ID } }
+        );
+        const rule = result.checksResults.find((r) => r.ruleId === RULE_ID);
+        return [rule.outcome, rule.occurrences.map((o) => o.data.details.reasonCode)];
+      } finally {
+        await p.close();
+      }
+    }
+    for (const body of [
+      '<x-a>Rapport annuel</x-a>' + define('x-a', '<a href="/r"><slot></slot></a>'),
+      '<x-b><img slot="i" src="data:," alt="Accueil"></x-b>' +
+        define('x-b', '<a href="/"><slot name="i"></slot></a>'),
+      '<a href="/s"><x-t></x-t></a>' + define('x-t', '<span>Rechercher</span>'),
+      '<x-f></x-f>' + define('x-f', '<a href="/"><slot>Accueil</slot></a>')
+    ]) {
+      assert.deepEqual(await outcome(body), ['pass', []], body);
+    }
+    assert.deepEqual(
+      await outcome('<x-e></x-e>' + define('x-e', '<a href="/"><slot></slot></a>')),
+      ['fail', ['noContentLabel']]
+    );
+  }
+);

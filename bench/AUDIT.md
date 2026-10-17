@@ -60,7 +60,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 
 | # | Test | Kind | Finding | Status |
 |---|---|---|---|---|
-| T67-01 | 6.2.1 | FP | Links whose content comes through a shadow-DOM `<slot>` fail as empty; the label-in-name rules miss them. | open |
+| T67-01 | 6.2.1 | FP | Links whose content comes through a shadow-DOM `<slot>` fail as empty; the label-in-name rules miss them. | done for 6.2.1; label-in-name rules still miss slotted labels: open |
 | T67-02 | 7.1.1, 7.1.3 | MISS | Buttons outside a form are not checked for a name or label-in-name. | open |
 | T67-03 | 7.3.1 | MISS | `onclick` on a non-interactive element (M2). | open |
 | T67-04 | 6.1.5, 7.1.3, 11.2.5, 11.9.2 | MISS | Visible text inside `aria-hidden="true"` is left out of the visible label. | open |
@@ -73,7 +73,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T67-11 | 7.2.1 | MISS | `<noscript>` alternatives are not asked about. | open |
 | T67-12 | 7.5 | MISS | Status messages get no targeted question. | open |
 | T67-13 | 7.1.1, 7.1.3 | MISS | Links used as buttons (`href="#"` with a click handler) are not listed. | open |
-| T67-14 | 7.1.1 | FP | Unnamed dialog, tab and menuitem roles fail 7.1 on a page with no script. | open |
+| T67-14 | 7.1.1 | FP | Unnamed dialog, tab and menuitem roles fail 7.1 on a page with no script. | won't (an ARIA widget only works through script, so a page with one and no script is a snapshot, not a page RGAA audits; gating core rules on script needs the engine) |
 | T67-15 | 6.1.1–6.1.3 | WM | 6.1.5 failures also fail 6.1.1–6.1.3 by note 1; only the test reported changes. | won't (the criterion already fails) |
 
 ## Themes 8–9, Mandatory elements, Structure
@@ -116,7 +116,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T10-11 | 10.14 | MISS | Content revealed on `:hover` only. | open |
 | T10-12 | 10.13 | MISS | Author tooltips: no question. | open |
 | T10-13 | 10.2, 10.3, 10.11 | MISS | CSS-reordered content, CSS-only content, reflow at 320 px. | open |
-| T10-14 | 10.1.2 | FP | `<link rel="mask-icon" color>` in `<head>` fails 10.1.2. | open |
+| T10-14 | 10.1.2 | FP | `<link rel="mask-icon" color>` in `<head>` fails 10.1.2. | done |
 | T10-15 | 10.1.2 | WO | `width`/`height` on `<source>` in `<picture>` is exempted though RGAA's list is closed (P8). | decide |
 
 ## Theme 11, Forms

@@ -180,3 +180,20 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-presentational-attribute
     'pat_case_11'
   ]);
 });
+
+// HTML defines color on <link rel="mask-icon"> as the colour of the site's
+// pinned-tab icon: it presents none of the page's information.
+test(`${RULE_ID}: color on a mask-icon link is not presentation`, () => {
+  const html = (link) =>
+    `<!doctype html><html lang="fr"><head><title>t</title>${link}</head><body><p>x</p></body></html>`;
+  assertRule(
+    runa11yCoreOnHtml(html('<link rel="mask-icon" href="/s.svg" color="#5bbad5">'), RUN),
+    RULE_ID,
+    'pass'
+  );
+  assertRule(
+    runa11yCoreOnHtml(html('<link rel="stylesheet" href="/s.css" color="#5bbad5">'), RUN),
+    RULE_ID,
+    'fail'
+  );
+});

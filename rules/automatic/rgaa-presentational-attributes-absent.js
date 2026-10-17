@@ -28,6 +28,9 @@
  * - Only elements in the HTML namespace are checked: inside SVG and MathML,
  *   attributes such as width, height and color are the content's geometry
  *   and paint, not HTML presentation.
+ * - color on <link rel="mask-icon"> is not reported: HTML defines it as the
+ *   colour of the site's pinned-tab icon, which is no presentation of the
+ *   page's information.
  * - Custom elements (a name with a hyphen, such as <calcite-button>) are not
  *   checked: their attributes are the component's own API, which HTML does
  *   not define, not HTML presentational attributes.
@@ -104,7 +107,16 @@ function runInPage(ctx) {
 
     const element = String(dom.tagName(el)).toLowerCase();
     if (element.includes('-')) continue;
-    const found = ALWAYS.filter((a) => dom.hasAttribute(el, a));
+    // color on <link rel="mask-icon"> is the colour HTML gives the browser
+    // for the site's pinned-tab icon, which presents none of the page's
+    // information.
+    const maskIcon =
+      element === 'link' &&
+      String(dom.getAttribute(el, 'rel') || '')
+        .toLowerCase()
+        .split(/\s+/)
+        .includes('mask-icon');
+    const found = ALWAYS.filter((a) => dom.hasAttribute(el, a) && !(maskIcon && a === 'color'));
     if (dom.hasAttribute(el, 'size') && !SIZE_ALLOWED_ON.includes(element)) found.push('size');
     const parent = dom.parentElement(el);
     const pictureSource =
