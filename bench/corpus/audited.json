@@ -1,0 +1,1245 @@
+[
+ {
+  "site": "Région Île-de-France (iledefrance.fr)",
+  "declarationUrl": "https://www.iledefrance.fr/accessibilite-numerique",
+  "auditDate": "2024-03",
+  "rgaaVersion": "4.1.2",
+  "auditor": "Numerik-ea",
+  "complianceRate": "69.23%",
+  "pages": [
+   {
+    "name": "Actualités (article)",
+    "url": "https://www.iledefrance.fr/toutes-les-actualites/trophees-ellesdefrance-decouvrez-le-palmares-de-ledition-2023"
+   },
+   {
+    "name": "Plan du site",
+    "url": "https://www.iledefrance.fr/plan-du-site"
+   },
+   {
+    "name": "Article",
+    "url": "https://www.iledefrance.fr/professionnels-construire-ou-renforcer-un-projet/promobilite/teletravail"
+   },
+   {
+    "name": "Home",
+    "url": "https://www.iledefrance.fr/"
+   },
+   {
+    "name": "Hub personnalisation",
+    "url": "https://www.iledefrance.fr/professionnels-construire-ou-renforcer-un-projet"
+   },
+   {
+    "name": "Hub navigation",
+    "url": "https://www.iledefrance.fr/franciliens-vivre-en-ile-de-France"
+   },
+   {
+    "name": "Action régionale",
+    "url": "https://www.iledefrance.fr/franciliens-vivre-en-ile-de-france/sport-et-loisirs/jeux-olympiques-et-paralympiques-de-paris-2024/laction-regionale-pour-les-jeux-2024"
+   },
+   {
+    "name": "Média podcast",
+    "url": "https://www.iledefrance.fr/participer-la-vie-citoyenne/je-participe-la-vie-de-la-region/budget-participatif-ecologique-et-solidaire"
+   },
+   {
+    "name": "Dossier",
+    "url": "https://www.iledefrance.fr/professionnels-construire-ou-renforcer-un-projet/promobilite"
+   },
+   {
+    "name": "Contact",
+    "url": "https://www.iledefrance.fr/form/contact"
+   },
+   {
+    "name": "Service",
+    "url": "https://www.iledefrance.fr/tous-les-services/mes-produits-locaux"
+   },
+   {
+    "name": "Accessibilité",
+    "url": "https://www.iledefrance.fr/accessibilite"
+   },
+   {
+    "name": "Evènement",
+    "url": "https://www.iledefrance.fr/tous-les-evenements/expo-spirou-dans-la-tourmente-de-la-shoah"
+   },
+   {
+    "name": "Toutes les actualités",
+    "url": "https://www.iledefrance.fr/toutes-les-actualites"
+   },
+   {
+    "name": "Agendas",
+    "url": "https://www.iledefrance.fr/tous-les-evenements"
+   }
+  ],
+  "nonConformCriteria": [
+   "1.1",
+   "1.2",
+   "1.3",
+   "1.9",
+   "2.1",
+   "2.2",
+   "3.2",
+   "4.1",
+   "4.3",
+   "6.2",
+   "7.1",
+   "8.9",
+   "9.1",
+   "9.3",
+   "10.1",
+   "10.7",
+   "10.8",
+   "10.12"
+  ],
+  "notes": "Criteria listed by number. Declaration says 20 non-conforming criteria but lists only 18, so 2 are missing. No audit date is given; 2024-03 is the declaration date (2024-03-13), and the audit came before it. Some sample pages are dated content from 2023-2024. Checked 2026-10-11: all pages respond, but 4 URLs redirect to renamed slugs, and mes-produits-locaux returned 403 to curl (possibly bot blocking)."
+ },
+ {
+  "site": "Haute Autorité de santé (has-sante.fr)",
+  "declarationUrl": "https://www.has-sante.fr/jcms/p_3396083/fr/declaration-d-accessibilite",
+  "auditDate": "2025-11",
+  "rgaaVersion": "4.1.2",
+  "auditor": "Access-Man",
+  "complianceRate": "81.69% (average per page 92.5%)",
+  "pages": [
+   {
+    "name": "Accueil",
+    "url": "https://www.has-sante.fr/"
+   },
+   {
+    "name": "Contacter la HAS",
+    "url": "https://www.has-sante.fr/jcms/c_432678/fr/contacter-la-has"
+   },
+   {
+    "name": "Mentions légales",
+    "url": "https://www.has-sante.fr/jcms/c_518191/fr/mentions-legales"
+   },
+   {
+    "name": "Déclaration d’accessibilité",
+    "url": "https://www.has-sante.fr/jcms/p_3396083/fr/declaration-d-accessibilite"
+   },
+   {
+    "name": "Nous rejoindre",
+    "url": "https://www.has-sante.fr/jcms/p_3107968/fr/nous-rejoindre"
+   },
+   {
+    "name": "Rechercher une recommandation, un avis",
+    "url": "https://www.has-sante.fr/jcms/fc_2875208/fr/rechercher-une-recommandation-un-avis"
+   },
+   {
+    "name": "La HAS en bref",
+    "url": "https://www.has-sante.fr/jcms/c_452559/fr/la-has-en-bref"
+   },
+   {
+    "name": "Comprendre la sécurité du patient",
+    "url": "https://www.has-sante.fr/jcms/c_2582468/fr/comprendre-la-securite-du-patient"
+   },
+   {
+    "name": "Contribuer aux travaux de la HAS",
+    "url": "https://www.has-sante.fr/jcms/r_1482317/fr/contribuer-aux-travaux-de-la-has"
+   },
+   {
+    "name": "Abonnement Newsletter",
+    "url": "https://www.has-sante.fr/jcms/fc_2876176/fr/abonnement-newsletter"
+   },
+   {
+    "name": "Agenda des commissions",
+    "url": "https://www.has-sante.fr/jcms/fc_2875478/fr/agenda-des-commissions"
+   },
+   {
+    "name": "Panorama de la qualité des établissements",
+    "url": "https://www.has-sante.fr/jcms/p_3346187/fr/panorama-de-la-qualite-des-etablissements"
+   },
+   {
+    "name": "Actualités",
+    "url": "https://www.has-sante.fr/jcms/fc_2874943/fr/actualites"
+   },
+   {
+    "name": "Évaluation des ESSMS : quel bilan pour cette 2e année de déploiement du dispositif ?",
+    "url": "https://www.has-sante.fr/jcms/p_3634529/fr/evaluation-des-essms-quel-bilan-pour-cette-2e-annee-de-deploiement-du-dispositif"
+   },
+   {
+    "name": "Comprendre l'évaluation économique des produits de santé",
+    "url": "https://www.has-sante.fr/jcms/r_1502595/fr/comprendre-l-evaluation-economique-des-produits-de-sante"
+   },
+   {
+    "name": "Évaluation de l’endoscopie sous sommeil induit dans le syndrome d’apnées hypopnées obstructives du sommeil (SAHOS) chez les adultes",
+    "url": "https://www.has-sante.fr/jcms/p_3424326/fr/evaluation-de-l-endoscopie-sous-sommeil-induit-dans-le-syndrome-d-apnees-hypopnees-obstructives-du-sommeil-sahos-chez-les-adultes"
+   },
+   {
+    "name": "KAFTRIO (ivacaftor/tezacaftor/elexacaftor) / KALYDECO (ivacaftor)",
+    "url": "https://www.has-sante.fr/jcms/p_3220496/fr/kaftrio-ivacaftor/tezacaftor/elexacaftor-/-kalydeco-ivacaftor"
+   }
+  ],
+  "nonConformCriteria": [
+   "1.2",
+   "1.3",
+   "2.2",
+   "3.2",
+   "3.3",
+   "4.1",
+   "4.5",
+   "8.2",
+   "10.1",
+   "10.4",
+   "10.11",
+   "10.12",
+   "13.3"
+  ],
+  "notes": "INFERRED: failures are described by theme, not by number. I mapped them one-to-one to criteria, and the 13 criteria match the declared count of 13 non-conformities. No audit date is given; the declaration date is 2025-11-07."
+ },
+ {
+  "site": "Insee (insee.fr)",
+  "declarationUrl": "https://www.insee.fr/fr/information/2386135",
+  "auditDate": "2025-10",
+  "rgaaVersion": "4.1.2",
+  "auditor": "Koena",
+  "complianceRate": "48% (50% after Dec 2025 fixes; average per page 72%→73%)",
+  "pages": [
+   {
+    "name": "Page d'accueil",
+    "url": "https://www.insee.fr/fr/accueil"
+   },
+   {
+    "name": "Page d'aide et contacts",
+    "url": "https://www.insee.fr/fr/information/2411108"
+   },
+   {
+    "name": "Mentions légales et crédits",
+    "url": "https://www.insee.fr/fr/information/2008466"
+   },
+   {
+    "name": "Délaration d’accessibilité",
+    "url": "https://www.insee.fr/fr/information/2386135"
+   },
+   {
+    "name": "Plan du site",
+    "url": "https://www.insee.fr/fr/plan-du-site/"
+   },
+   {
+    "name": "Page contact",
+    "url": "https://www.insee.fr/fr/information/8390985"
+   },
+   {
+    "name": "Rubrique \"Statistiques et études\"",
+    "url": "https://www.insee.fr/fr/statistiques"
+   },
+   {
+    "name": "Indice des prix des logements : vue tableau",
+    "url": "https://www.insee.fr/fr/statistiques/serie/010001868"
+   },
+   {
+    "name": "Indice des prix des logements : vue graphique",
+    "url": "https://www.insee.fr/fr/statistiques/serie/010001868#Graphique"
+   },
+   {
+    "name": "Indice des prix des logements : téléchargement",
+    "url": "https://www.insee.fr/fr/statistiques/serie/010001868#Telechargement"
+   },
+   {
+    "name": "Insee Première n o 2032 : infographie",
+    "url": "https://www.insee.fr/fr/statistiques/8310621#onglet-1"
+   },
+   {
+    "name": "Insee Première n o 2032 : graphiques / tableaux",
+    "url": "https://www.insee.fr/fr/statistiques/8310621#onglet-2"
+   },
+   {
+    "name": "Convertisseur franc euro",
+    "url": "https://www.insee.fr/fr/information/2417794"
+   },
+   {
+    "name": "Comptes nationaux – Espace thématique",
+    "url": "https://www.insee.fr/fr/statistiques/8071406"
+   },
+   {
+    "name": "Vidéos : Qu'est-ce qu'une entreprise ?",
+    "url": "https://www.insee.fr/fr/statistiques/7938181?sommaire=7667330"
+   },
+   {
+    "name": "Bilan Formation-Emploi 2023",
+    "url": "https://www.insee.fr/fr/statistiques/7712072?sommaire=7712082"
+   },
+   {
+    "name": "Définitions, méthodes et qualité",
+    "url": "https://www.insee.fr/fr/information/2016815"
+   },
+   {
+    "name": "Consulter la NAF Rév.2 (section A)",
+    "url": "https://www.insee.fr/fr/metadonnees/nafr2/section/A?champRecherche=true"
+   },
+   {
+    "name": "Modifier son code APE",
+    "url": "https://www.insee.fr/fr/information/6435934"
+   },
+   {
+    "name": "Recherche dossier complet",
+    "url": "https://www.insee.fr/fr/statistiques/zones/2011101?geo=COM-31555+COM-06088&debut=0"
+   },
+   {
+    "name": "Page d'aide: FAQ",
+    "url": "https://www.insee.fr/fr/information/1302169"
+   },
+   {
+    "name": "Demander une information Sirene",
+    "url": "https://www.insee.fr/fr/information/2387873"
+   },
+   {
+    "name": "Travailleurs handicapés",
+    "url": "https://www.insee.fr/fr/information/1892939"
+   }
+  ],
+  "nonConformCriteria": [
+   "1.1",
+   "1.6",
+   "3.2",
+   "3.3",
+   "5.6",
+   "6.1",
+   "6.2",
+   "7.1",
+   "7.3",
+   "7.4",
+   "7.5",
+   "8.2",
+   "8.6",
+   "8.9",
+   "9.1",
+   "9.2",
+   "9.3",
+   "10.1",
+   "10.3",
+   "10.7",
+   "10.13",
+   "11.1",
+   "11.2",
+   "11.5",
+   "11.10",
+   "12.8",
+   "13.3"
+  ],
+  "notes": "INFERRED: failures are described in prose, not by number. Ambiguous mappings: 'pas d'alternative ou de description détaillée' -> 1.1+1.6; scripted components and keyboard -> 7.1+7.3; context changes and content updates -> 7.4+7.5; labels missing or not relevant -> 11.1+11.2; content shown on hover not reachable by keyboard -> 10.13 (could be 10.14 or 12.11). Three criteria were fixed in Dec 2025 but are not named. Interactive tools (outils interactifs) were outside this audit. Some sample URLs use #fragment tabs. Checked 2026-10-11: plan-du-site and the dossier-complet search returned HTTP 500 to curl; all other pages returned 200."
+ },
+ {
+  "site": "Caisse d'Epargne (caisse-epargne.fr)",
+  "declarationUrl": "https://www.caisse-epargne.fr/votre-banque/reglementation/declaration-accessibilite/",
+  "auditDate": "2026-03",
+  "rgaaVersion": "4.1.2",
+  "auditor": "Ideance",
+  "complianceRate": "66.2% (average per page 82.9%)",
+  "pages": [
+   {
+    "name": "Accueil",
+    "url": "https://www.caisse-epargne.fr/"
+   },
+   {
+    "name": "Mentions légales",
+    "url": "https://www.caisse-epargne.fr/votre-banque/reglementation/mentions-legales/"
+   },
+   {
+    "name": "Déclaration d’accessibilité",
+    "url": "https://www.caisse-epargne.fr/votre-banque/reglementation/declaration-accessibilite/"
+   },
+   {
+    "name": "Gérer vos comptes et moyens de paiement au quotidien",
+    "url": "https://www.caisse-epargne.fr/comptes-cartes/"
+   },
+   {
+    "name": "Choisir votre région",
+    "url": "https://www.caisse-epargne.fr/votre-banque/choisir-une-caisse/"
+   },
+   {
+    "name": "Les cartes Visa Caisse d’Épargne",
+    "url": "https://www.caisse-epargne.fr/comptes-cartes/cartes-bancaires-visa/"
+   },
+   {
+    "name": "Devenez sociétaire !",
+    "url": "https://www.caisse-epargne.fr/votre-banque/nos-engagements/etre-societaire/"
+   },
+   {
+    "name": "Le titre-restaurant",
+    "url": "https://www.caisse-epargne.fr/professionnels/motiver-fideliser-salaries/titre-restaurant/"
+   },
+   {
+    "name": "Sécurité de vos comptes et opérations",
+    "url": "https://www.caisse-epargne.fr/votre-banque/securite/"
+   },
+   {
+    "name": "Tour d’Horizon, la newsletter utile aux professionnels et dirigeants !",
+    "url": "https://www.caisse-epargne.fr/professionnels/les-e-newsletters-pour-les-entrepreneurs/"
+   },
+   {
+    "name": "Assurance Habitation",
+    "url": "https://www.caisse-epargne.fr/assurer/assurance-habitation/"
+   },
+   {
+    "name": "Vous constituer une épargne",
+    "url": "https://www.caisse-epargne.fr/epargner/epargner-sans-risque/"
+   },
+   {
+    "name": "Conditions générales des produits et services",
+    "url": "https://www.caisse-epargne.fr/aquitaine-poitou-charentes/votre-banque/reglementation/conditions-generales/"
+   },
+   {
+    "name": "Vos simulations & souscriptions en ligne",
+    "url": "https://www.caisse-epargne.fr/simulations-souscriptions/"
+   },
+   {
+    "name": "Votre banque à distance",
+    "url": "https://www.caisse-epargne.fr/banque-a-distance/"
+   },
+   {
+    "name": "SECUR’ Famille 2",
+    "url": "https://www.caisse-epargne.fr/assurer/secur-famille-2/"
+   }
+  ],
+  "nonConformCriteria": [
+   "1.1",
+   "1.2",
+   "2.1",
+   "3.2",
+   "4.1",
+   "4.2",
+   "4.4",
+   "4.5",
+   "4.7",
+   "6.1",
+   "6.2",
+   "7.1",
+   "7.3",
+   "7.4",
+   "8.9",
+   "9.1",
+   "9.3",
+   "10.1",
+   "10.7",
+   "12.8",
+   "12.11",
+   "13.3"
+  ],
+  "notes": "Criteria listed by number. This is a counter-audit (Mar 2026) of an initial audit from Dec 2024. The auditor deliberately marked 8.2 as conforming even though the code is invalid (WCAG 2.2 removed 4.1.1), so a checker that flags 8.2 will disagree with the ground truth. The same declaration is shared across regional Caisses (e.g. /ile-de-france/...). YouTube player exempted."
+ },
+ {
+  "site": "Bordeaux Métropole (bordeaux-metropole.fr)",
+  "declarationUrl": "https://www.bordeaux-metropole.fr/accessibilite",
+  "auditDate": "2024-09-13",
+  "rgaaVersion": "4.1.2",
+  "auditor": "Sogeti / Capgemini",
+  "complianceRate": "65.1% (average per page 88.6%)",
+  "pages": [
+   {
+    "name": "Accueil",
+    "url": "https://www.bordeaux-metropole.fr/"
+   },
+   {
+    "name": "Actualités",
+    "url": "https://www.bordeaux-metropole.fr/actualites-Bordeaux-Metropole"
+   },
+   {
+    "name": "Agenda",
+    "url": "https://www.bordeaux-metropole.fr/agenda"
+   },
+   {
+    "name": "Publications",
+    "url": "https://www.bordeaux-metropole.fr/publications"
+   },
+   {
+    "name": "Recherche",
+    "url": "https://www.bordeaux-metropole.fr/recherche"
+   },
+   {
+    "name": "Annuaire des services de Bordeaux Métropole",
+    "url": "https://www.bordeaux-metropole.fr/metropole/linstitution-territoire/organisation-fonctionnement-metropole/annuaire-services-bordeaux"
+   },
+   {
+    "name": "Services aux particuliers",
+    "url": "https://www.bordeaux-metropole.fr/a-votre-service/services-aux-particuliers"
+   },
+   {
+    "name": "Bordeaux Métropole recrute",
+    "url": "https://www.bordeaux-metropole.fr/metropole/linstitution-territoire/organisation-fonctionnement-metropole/recrutement/bordeaux"
+   },
+   {
+    "name": "Mes bacs, mes poubelles",
+    "url": "https://www.bordeaux-metropole.fr/a-votre-service/services-aux-particuliers/gerer-reduire-mes-dechets/mes-bacs-mes-poubelles"
+   },
+   {
+    "name": "Le Printemps de la Biodiversité",
+    "url": "https://www.bordeaux-metropole.fr/actualites/printemps-biodiversite"
+   },
+   {
+    "name": "Les 28 communes de la métropole",
+    "url": "https://www.bordeaux-metropole.fr/metropole/linstitution-territoire/28-communes-metropole"
+   },
+   {
+    "name": "Documents du Conseil",
+    "url": "https://www.bordeaux-metropole.fr/actes/recherche"
+   },
+   {
+    "name": "Le Conseil de Métropole – Composition, séances, documents et actes",
+    "url": "https://www.bordeaux-metropole.fr/metropole/linstitution-territoire/conseil-metropole-composition-seances-documents-actes"
+   },
+   {
+    "name": "Les 4 saisons des boulevards : le printemps",
+    "url": "https://www.bordeaux-metropole.fr/metropole/projets-en-cours/amenagement-territoire/grands-projets-damenagement/inventer-boulevards-2"
+   }
+  ],
+  "nonConformCriteria": [
+   "1.2",
+   "1.6",
+   "2.1",
+   "3.2",
+   "4.1",
+   "4.3",
+   "4.4",
+   "4.7",
+   "6.1",
+   "6.2",
+   "8.6",
+   "9.1",
+   "10.1",
+   "10.3",
+   "10.7",
+   "11.1",
+   "11.9",
+   "12.8",
+   "12.11",
+   "13.3",
+   "13.10"
+  ],
+  "notes": "Criteria taken from the full audit report PDF linked from the declaration (Rapport-Audit-RGAA-v4.1.2-Bordeaux-Metropole_V1.0_2024-09-13.pdf), which has one section per non-conforming criterion; a per-page grid PDF is also published. Audit ran 2024-08-13 to 2024-09-13. The HTML declaration says 'RGAA version 4' and has typos in its sample URLs, so the URLs here come from the grid. PDFs and multimedia are claimed as dérogations. Checked 2026-10-11: printemps-biodiversite returned 403 to curl, and mes-bacs-mes-poubelles redirects to a /dechets/ slug."
+ },
+ {
+  "site": "CNIL (cnil.fr)",
+  "declarationUrl": "https://www.cnil.fr/fr/accessibilite",
+  "auditDate": "2026-04",
+  "rgaaVersion": "4.1.2",
+  "auditor": "Numerik-ea",
+  "complianceRate": "60.53%",
+  "pages": [
+   {
+    "name": "Accueil",
+    "url": "https://www.cnil.fr/"
+   },
+   {
+    "name": "Nous contacter",
+    "url": "https://www.cnil.fr/fr/webform/nous-contacter"
+   },
+   {
+    "name": "Accessibilité",
+    "url": "https://www.cnil.fr/fr/declaration-daccessibilite"
+   },
+   {
+    "name": "Mentions légales",
+    "url": "https://www.cnil.fr/fr/mentions-legales"
+   },
+   {
+    "name": "Besoin d'aide",
+    "url": "https://www.cnil.fr/fr/cnil-direct"
+   },
+   {
+    "name": "Besoin d'aide > Règlement européen : faut-il encore effectuer des déclarations à la CNIL ?",
+    "url": "https://www.cnil.fr/cnil-direct/question/reglement-europeen-faut-il-encore-effectuer-des-declarations-la-cnil"
+   },
+   {
+    "name": "Médiathèque",
+    "url": "https://www.cnil.fr/fr/mediatheque"
+   },
+   {
+    "name": "Glossaire",
+    "url": "https://www.cnil.fr/fr/glossaire"
+   },
+   {
+    "name": "Glossaire > Alertes professionnelles",
+    "url": "https://www.cnil.fr/fr/definition/alertes-professionnelles"
+   },
+   {
+    "name": "Presse",
+    "url": "https://www.cnil.fr/fr/espace-presse"
+   },
+   {
+    "name": "Mes démarches > Comprendre mes droits > Le droit d’information",
+    "url": "https://www.cnil.fr/fr/le-droit-detre-informe-sur-lutilisation-de-vos-donnees-0"
+   },
+   {
+    "name": "10 conseils pour rester net sur le web",
+    "url": "https://www.cnil.fr/fr/10-conseils-pour-rester-net-sur-le-web"
+   },
+   {
+    "name": "Thématiques > Banque-credit",
+    "url": "https://www.cnil.fr/fr/thematique/banque-credit"
+   },
+   {
+    "name": "Textes officiels > Le cadre européen > Le règlement européen sur la protection des données",
+    "url": "https://www.cnil.fr/fr/reglement-europeen-protection-donnees"
+   },
+   {
+    "name": "Textes officiels > Les décisions de la CNIL > Les sanctions > Les sanctions prononcées par la CNIL",
+    "url": "https://www.cnil.fr/les-sanctions-prononcees-par-la-cnil"
+   },
+   {
+    "name": "Ma conformité au RGPD > Le contrôle de la CNIL > La chaîne répressive de la CNIL",
+    "url": "https://www.cnil.fr/fr/la-chaine-repressive-de-la-cnil"
+   },
+   {
+    "name": "Contacter la CNIL : standard et permanences téléphoniques",
+    "url": "https://www.cnil.fr/fr/contacter-la-cnil-standard-et-permanences-telephoniques"
+   },
+   {
+    "name": "Agir > Modèles de courriers > Les courriers pour agir",
+    "url": "https://www.cnil.fr/fr/modele/courrier/supprimer-des-donnees-personnelles"
+   },
+   {
+    "name": "Collectivités territoriales > Principes clés de la protection des données",
+    "url": "https://www.cnil.fr/fr/collectivites-territoriales/les-principes-cles-de-la-protection-des-donnees"
+   },
+   {
+    "name": "Actualité > Agenda",
+    "url": "https://www.cnil.fr/fr/actualites/agenda"
+   }
+  ],
+  "nonConformCriteria": [
+   "1.2",
+   "1.3",
+   "1.5",
+   "3.1",
+   "3.2",
+   "3.3",
+   "5.4",
+   "5.5",
+   "5.6",
+   "6.1",
+   "7.1",
+   "8.6",
+   "8.7",
+   "8.9",
+   "9.1",
+   "9.2",
+   "9.3",
+   "10.1",
+   "10.2",
+   "10.4",
+   "10.7",
+   "10.8",
+   "10.9",
+   "10.11",
+   "11.5",
+   "11.10",
+   "11.13",
+   "12.7",
+   "12.8",
+   "13.3"
+  ],
+  "notes": "Criteria listed by number; the 30 listed match the declared count (46 C / 30 NC / 30 NA). Declaration dated 2026-04-17. Most recent and cleanest entry. Page P03 links to /fr/declaration-daccessibilite. Checked 2026-10-11: several sample URLs 301 to new paths (e.g. /fr/comprendre-mes-droits/...); the redirect targets are live."
+ },
+ {
+  "site": "Bouygues Telecom (bouyguestelecom.fr)",
+  "declarationUrl": "https://www.bouyguestelecom.fr/accessibilite",
+  "auditDate": "2024-11",
+  "rgaaVersion": "4.1.2",
+  "auditor": "Temesis",
+  "complianceRate": "36.99%",
+  "pages": [
+   {
+    "name": "Accueil",
+    "url": "https://www.bouyguestelecom.fr/"
+   },
+   {
+    "name": "Mur des mobiles",
+    "url": "https://www.bouyguestelecom.fr/telephones-mobiles"
+   },
+   {
+    "name": "Fiche d’un mobile",
+    "url": "https://www.bouyguestelecom.fr/telephones-mobiles/apple-iphone-15-bleu-256-go"
+   },
+   {
+    "name": "Mur des Forfaits",
+    "url": "https://www.bouyguestelecom.fr/forfaits-mobiles/avec-engagement"
+   },
+   {
+    "name": "Mur des Offres Internet",
+    "url": "https://www.bouyguestelecom.fr/offres-internet"
+   },
+   {
+    "name": "Fiche d’une offre",
+    "url": "https://www.bouyguestelecom.fr/offres-internet/bbox-ultym"
+   },
+   {
+    "name": "Panier (1ère étape)",
+    "url": "https://www.bouyguestelecom.fr/panier"
+   },
+   {
+    "name": "Réseau 5g",
+    "url": "https://www.bouyguestelecom.fr/reseau/5g"
+   },
+   {
+    "name": "Authentification (sas de connexion)",
+    "url": "https://www.bouyguestelecom.fr/mon-compte"
+   },
+   {
+    "name": "Mot de passe oublié (1ère étape)",
+    "url": "https://www.bouyguestelecom.fr/mon-compte/mot-de-passe-oublie"
+   },
+   {
+    "name": "Résultats de recherche",
+    "url": "https://www.bouyguestelecom.fr/search?q=fibre"
+   },
+   {
+    "name": "Plan du site",
+    "url": "https://www.bouyguestelecom.fr/plan-du-site"
+   },
+   {
+    "name": "Accessibilité et services",
+    "url": "https://www.bouyguestelecom.fr/accessibilite-services"
+   },
+   {
+    "name": "Déclaration d’accessibilité",
+    "url": "https://www.bouyguestelecom.fr/accessibilite"
+   },
+   {
+    "name": "Tarifs",
+    "url": "https://www.bouyguestelecom.fr/tarifs-conditions"
+   },
+   {
+    "name": "Carte de couverture du réseau",
+    "url": "https://www.bouyguestelecom.fr/reseau/cartes-de-couverture-reseau-mobile"
+   },
+   {
+    "name": "Comparateur",
+    "url": "https://www.bouyguestelecom.fr/comparateur?produits=samsungGalaxyS24,appleiPhone15"
+   }
+  ],
+  "nonConformCriteria": [
+   "1.2",
+   "1.3",
+   "2.1",
+   "3.1",
+   "3.2",
+   "3.3",
+   "4.1",
+   "4.4",
+   "4.5",
+   "4.6",
+   "5.4",
+   "5.6",
+   "5.7",
+   "6.1",
+   "7.1",
+   "7.3",
+   "7.4",
+   "7.5",
+   "8.6",
+   "8.7",
+   "8.9",
+   "9.1",
+   "9.2",
+   "9.3",
+   "10.1",
+   "10.2",
+   "10.3",
+   "10.4",
+   "10.6",
+   "10.7",
+   "10.8",
+   "10.9",
+   "10.11",
+   "10.12",
+   "10.13",
+   "10.14",
+   "11.1",
+   "11.5",
+   "11.9",
+   "11.10",
+   "11.13",
+   "12.7",
+   "12.8",
+   "12.9",
+   "13.3",
+   "13.8"
+  ],
+  "notes": "Criteria listed by number; the 46 listed match the declared count. Declaration dated 2024-11-20, updated 2024-12-11; the audit month is inferred from the test environment (Firefox 132). It is almost 2 years old, so the product pages (iPhone 15, Galaxy S24 comparator) may have changed or be gone. The sample includes cart and login pages (/panier, /mon-compte)."
+ },
+ {
+  "site": "LCL – public site (lcl.fr)",
+  "declarationUrl": "https://www.lcl.fr/accessibilite",
+  "auditDate": "2026-01-15",
+  "rgaaVersion": "4.1.2",
+  "auditor": "Atalan",
+  "complianceRate": "43%",
+  "pages": [
+   {
+    "name": "Accueil",
+    "url": "https://www.lcl.fr/"
+   },
+   {
+    "name": "Contact",
+    "url": "https://www.lcl.fr/nous-contacter"
+   },
+   {
+    "name": "Mentions légales",
+    "url": "https://www.lcl.fr/informations-legales"
+   },
+   {
+    "name": "Accessibilité",
+    "url": "https://www.lcl.fr/accessibilite"
+   },
+   {
+    "name": "Plan du site",
+    "url": "https://www.lcl.fr/plan-site"
+   },
+   {
+    "name": "FAQ",
+    "url": "https://www.lcl.fr/questions-frequentes"
+   },
+   {
+    "name": "Compte bancaire",
+    "url": "https://www.lcl.fr/compte-bancaire"
+   },
+   {
+    "name": "LCL sur Mesure",
+    "url": "https://www.lcl.fr/compte-bancaire/lcl-a-la-carte"
+   },
+   {
+    "name": "Réclamation",
+    "url": "https://www.lcl.fr/reclamation/formulaire"
+   },
+   {
+    "name": "Cartes bancaires",
+    "url": "https://www.lcl.fr/cartes-bancaires"
+   },
+   {
+    "name": "Nos agences",
+    "url": "https://www.lcl.fr/agence-banque"
+   },
+   {
+    "name": "Page d'une agence",
+    "url": "https://www.lcl.fr/agence-banque/05138-LCL-ANGERS-LA-DOUTRE"
+   },
+   {
+    "name": "Thématique Mag",
+    "url": "https://www.lcl.fr/mag/auto-moto-voiture"
+   },
+   {
+    "name": "Détail d'article",
+    "url": "https://www.lcl.fr/mag/auto-moto-voiture/voiture-electrique-comment-beneficier-de-la-prime-a-la-conversion"
+   }
+  ],
+  "nonConformCriteria": [
+   "1.1",
+   "1.2",
+   "1.3",
+   "2.1",
+   "3.1",
+   "3.2",
+   "3.3",
+   "4.1",
+   "4.4",
+   "4.5",
+   "4.7",
+   "5.4",
+   "6.1",
+   "7.1",
+   "7.3",
+   "8.6",
+   "8.7",
+   "8.9",
+   "9.1",
+   "9.2",
+   "9.3",
+   "10.3",
+   "10.4",
+   "10.5",
+   "10.6",
+   "10.7",
+   "10.9",
+   "10.11",
+   "10.12",
+   "10.13",
+   "10.14",
+   "11.1",
+   "11.10",
+   "11.11",
+   "11.13",
+   "12.6",
+   "12.7",
+   "12.8",
+   "12.11",
+   "13.3",
+   "13.4",
+   "13.8"
+  ],
+  "notes": "Use section 5 of the page ('Déclaration d'accessibilité du site public lcl.fr'). The same page also holds declarations for monespace.lcl.fr (behind login) and several mobile apps audited against RAAM. Criteria listed by number. Audit run on production; declaration dated 2026-01-20."
+ },
+ {
+  "site": "Université de Strasbourg (unistra.fr)",
+  "declarationUrl": "https://www.unistra.fr/fr/politique-daccessibilite",
+  "auditDate": "2025-12",
+  "rgaaVersion": "4.1.2",
+  "auditor": "Temesis",
+  "complianceRate": "48.28%",
+  "pages": [
+   {
+    "name": "Accueil",
+    "url": "https://www.unistra.fr"
+   },
+   {
+    "name": "Contact",
+    "url": "https://www.unistra.fr/fr/contact"
+   },
+   {
+    "name": "Questions fréquentes",
+    "url": "https://www.unistra.fr/fr/faq"
+   },
+   {
+    "name": "Plan du site",
+    "url": "https://www.unistra.fr/fr/sitemap"
+   },
+   {
+    "name": "Formulaire de recherche",
+    "url": "https://www.unistra.fr/fr/resultat-de-recherche?s=test"
+   },
+   {
+    "name": "Politique d'accessibilité",
+    "url": "https://www.unistra.fr/fr/politique-daccessibilite"
+   },
+   {
+    "name": "Crédits et mentions légales",
+    "url": "https://www.unistra.fr/fr/credits-et-mentions-legales"
+   },
+   {
+    "name": "Page avec document en téléchargement",
+    "url": "https://www.unistra.fr/fr/recherche/doctorat/se-preparer-aux-etudes-doctorales"
+   },
+   {
+    "name": "Page de 1ᵉʳ niveau (rubrique)",
+    "url": "https://www.unistra.fr/fr/formation"
+   },
+   {
+    "name": "Page de 2ᵉ niveau (intermédiaire)",
+    "url": "https://www.unistra.fr/fr/formation/sinformer"
+   },
+   {
+    "name": "Page de contenus filtrables avec affichage conditionnel",
+    "url": "https://www.unistra.fr/fr/formation/admission/candidater"
+   },
+   {
+    "name": "Page standard de contenu",
+    "url": "https://www.unistra.fr/fr/formation/sinformer/comprendre-la-formation-universitaire"
+   },
+   {
+    "name": "Page de contenu filtrable",
+    "url": "https://www.unistra.fr/fr/entites"
+   },
+   {
+    "name": "Page avec formulaire",
+    "url": "https://www.unistra.fr/fr/node/355"
+   },
+   {
+    "name": "Page type d’affichage d’un événement",
+    "url": "https://www.unistra.fr/fr/agenda/2025/ceremonie-commemoration-la-rafle-du-25-novembre-1943"
+   },
+   {
+    "name": "Page de présentation d’une entité (service, composante, etc.)",
+    "url": "https://www.unistra.fr/fr/entites/laboratoire/archeologie-et-histoire-ancienne-mediterranee-europe"
+   }
+  ],
+  "nonConformCriteria": [
+   "1.1",
+   "1.2",
+   "1.8",
+   "1.9",
+   "3.2",
+   "3.3",
+   "5.3",
+   "5.8",
+   "6.1",
+   "6.2",
+   "7.1",
+   "7.4",
+   "8.6",
+   "8.7",
+   "8.9",
+   "9.1",
+   "9.3",
+   "9.4",
+   "10.1",
+   "10.3",
+   "10.7",
+   "10.11",
+   "11.1",
+   "11.6",
+   "11.10",
+   "11.11",
+   "11.13",
+   "12.7",
+   "12.8",
+   "13.3"
+  ],
+  "notes": "Criteria listed by number; the 30 listed match the declared count (28 C / 30 NC / 48 NA). No audit date is given; the declaration date is 2025-12-10 and the test environment uses Firefox 145. The site footer still says 'en attente des résultats d'audit'."
+ },
+ {
+  "site": "Nantes Université (univ-nantes.fr)",
+  "declarationUrl": "https://www.univ-nantes.fr/accessibilite-du-site-www-univ-nantes-fr",
+  "auditDate": "2025-05-15",
+  "rgaaVersion": "4.1",
+  "auditor": "Tanaguru",
+  "complianceRate": "54% (average per page 76%)",
+  "pages": [
+   {
+    "name": "Accueil Nantes Université",
+    "url": "https://www.univ-nantes.fr/"
+   },
+   {
+    "name": "Accueil Magazine U-News",
+    "url": "https://u-news.univ-nantes.fr/"
+   },
+   {
+    "name": "Accueil d'un site de composante",
+    "url": "https://sciences-techniques.univ-nantes.fr/"
+   },
+   {
+    "name": "Fiche type actualité",
+    "url": "https://www.univ-nantes.fr/recherche-et-innovation/doctorat/fiersdenosetudiants-chloe-doctorante-et-vulgarisatrice-passionnee"
+   },
+   {
+    "name": "Fiche type page libre\"Orientation et insertion professionnelle\"",
+    "url": "https://www.univ-nantes.fr/formation/orientation-parcours-metiers"
+   },
+   {
+    "name": "Fiche type page libre en anglais \"Geoplanet Activities\"",
+    "url": "https://geoplanet-sp.eu/en/activities"
+   },
+   {
+    "name": "Fiche type page libre avec formulaire",
+    "url": "https://pratiquerleslangues.univ-nantes.fr/formulaire-de-depot-de-candidature-enseignants-vacataires-de-langues"
+   },
+   {
+    "name": "Fiche type formation",
+    "url": "https://www.univ-nantes.fr/formation/formation-continue/daeu-a"
+   },
+   {
+    "name": "Fiche type structure",
+    "url": "https://lettreslangages.univ-nantes.fr/fr/departements/departement-lettres-modernes-1"
+   },
+   {
+    "name": "Crédits et aspect légaux",
+    "url": "https://www.univ-nantes.fr/credits-et-aspects-legaux"
+   },
+   {
+    "name": "Accessibilité",
+    "url": "https://www.univ-nantes.fr/accessibilite-du-site-www-univ-nantes-fr"
+   },
+   {
+    "name": "Contact",
+    "url": "https://www.univ-nantes.fr/tous-les-contacts"
+   },
+   {
+    "name": "Résultats recherche",
+    "url": "https://www.univ-nantes.fr/search?q=licence+staps&l=0&beanKey=150bfcee-1f87-11e7-a0e0-b753bedcad22&RH=INSTITUTIONNEL_FR"
+   },
+   {
+    "name": "Page de connexion",
+    "url": "https://cas6.univ-nantes.fr/esup-cas-server/login?service=https%3A%2F%2Fwww.univ-nantes.fr%2Fservlet%2Fcom.jsbsoft.jtf.core.SG%3FPROC%3DIDENTIFICATION_FRONT"
+   },
+   {
+    "name": "Une page libre \"Transformation écologique\"",
+    "url": "https://www.univ-nantes.fr/universite/vision-strategie-et-grands-projets/transformation-ecologique"
+   },
+   {
+    "name": "Page de formulaire avec iframe de contact",
+    "url": "https://www.univ-nantes.fr/formation/scolarite-inscriptions/les-differents-contacts-de-la-scolarite-lettres-langues-sciences-humaines-et-sociales"
+   }
+  ],
+  "nonConformCriteria": [
+   "1.1",
+   "1.2",
+   "1.3",
+   "2.1",
+   "3.2",
+   "4.1",
+   "4.3",
+   "4.7",
+   "4.8",
+   "6.1",
+   "6.2",
+   "7.1",
+   "7.3",
+   "7.4",
+   "7.5",
+   "8.2",
+   "8.6",
+   "8.7",
+   "8.9",
+   "9.1",
+   "9.2",
+   "9.3",
+   "10.1",
+   "10.4",
+   "10.7",
+   "10.8",
+   "11.1",
+   "11.5",
+   "11.9",
+   "11.13",
+   "12.8"
+  ],
+  "notes": "Criteria listed by number. The declaration says 'version 4.1', not 4.1.2. It says the sample has 15 pages but lists 16. The sample spans several domains (u-news, sciences-techniques, lettreslangages, pratiquerleslangues, geoplanet-sp.eu) and includes the CAS login page. The Thématique 13 heading is empty. Checked 2026-10-11: the CAS login URL returned 500 to curl."
+ },
+ {
+  "site": "Département du Nord (lenord.fr)",
+  "declarationUrl": "https://lenord.fr/accessibilite",
+  "auditDate": "2026-07",
+  "rgaaVersion": "4.1.2",
+  "auditor": "Urbilog – Compéthance with the Département du Nord",
+  "complianceRate": "84.48%",
+  "pages": [
+   {
+    "name": "Accueil",
+    "url": "https://lenord.fr/"
+   },
+   {
+    "name": "Contact",
+    "url": "https://lenord.fr/formulaire-de-contact"
+   },
+   {
+    "name": "Mentions légales",
+    "url": "https://lenord.fr/mentions-legales"
+   },
+   {
+    "name": "Accessibilité",
+    "url": "https://lenord.fr/accessibilite"
+   },
+   {
+    "name": "Plan du site",
+    "url": "https://lenord.fr/plan-du-site"
+   },
+   {
+    "name": "Aide",
+    "url": "https://lenord.fr/glossaire"
+   },
+   {
+    "name": "Résultat recherche",
+    "url": "https://lenord.fr/recherche?search=impots&checkservices=on&checkactualites=on&checkevenements=on&checkdocuments=on"
+   },
+   {
+    "name": "Retour à l'emploi",
+    "url": "https://lenord.fr/nos-politiques/insertion-retour-a-lemploi"
+   },
+   {
+    "name": "Cartographie",
+    "url": "https://lenord.fr/cartographie"
+   },
+   {
+    "name": "Espace documentaire",
+    "url": "https://lenord.fr/espace-documentaire"
+   },
+   {
+    "name": "Nos politiques",
+    "url": "https://lenord.fr/nos-politiques"
+   },
+   {
+    "name": "Christian Poiret",
+    "url": "https://lenord.fr/l-institution/les-conseillers-departementaux/Christian-POIRET"
+   },
+   {
+    "name": "Les conseillers départementaux",
+    "url": "https://lenord.fr/l-institution/les-conseillers-departementaux"
+   },
+   {
+    "name": "Document de délibération",
+    "url": "https://lenord.fr/espace-documentaire/deliberation-dv-2023-347-conseil-departemental-du-9-octobre-2023"
+   }
+  ],
+  "nonConformCriteria": [
+   "6.1",
+   "7.1",
+   "7.5",
+   "8.2",
+   "8.9",
+   "10.14",
+   "11.2",
+   "11.9",
+   "13.3"
+  ],
+  "notes": "Criteria listed by number; the 9 listed match the declared count (49 C / 9 NC / 48 NA). auditDate is the declaration date (2026-07-16). The real audit date is not stated and may be much older: the test environment is NVDA 2021.2 / Firefox 98 and the sample includes an Oct 2023 deliberation. The rate was measured partly in-house. The Cartographie page is partly exempted (criterion 7.2)."
+ },
+ {
+  "site": "impots.gouv.fr (DGFiP)",
+  "declarationUrl": "https://www.impots.gouv.fr/accessibilite",
+  "auditDate": "2024-11",
+  "rgaaVersion": "4.1",
+  "auditor": "Access42",
+  "complianceRate": "89.83% (average per page 96.51%)",
+  "pages": [
+   {
+    "name": "Accueil",
+    "url": "https://www.impots.gouv.fr/"
+   },
+   {
+    "name": "Contact",
+    "url": "https://www.impots.gouv.fr/contacts"
+   },
+   {
+    "name": "Mentions légales",
+    "url": "https://www.impots.gouv.fr/mentions-legales"
+   },
+   {
+    "name": "Accessibilité",
+    "url": "https://www.impots.gouv.fr/accessibilite"
+   },
+   {
+    "name": "Plan du site",
+    "url": "https://www.impots.gouv.fr/sitemap"
+   },
+   {
+    "name": "Aide",
+    "url": "https://www.impots.gouv.fr/aide-sur-le-site"
+   },
+   {
+    "name": "Recherche (TVA)",
+    "url": "https://www.impots.gouv.fr/recherche?search_api_fulltext=TVA"
+   },
+   {
+    "name": "Calendrier fiscal",
+    "url": "https://www.impots.gouv.fr/calendrier-fiscal"
+   },
+   {
+    "name": "Actualités",
+    "url": "https://www.impots.gouv.fr/toutes-les-actualites"
+   },
+   {
+    "name": "Les services de la direction générale des Finances publiques accessibles aux sourds et malentendants",
+    "url": "https://www.impots.gouv.fr/les-services-de-la-direction-generale-des-finances-publiques-accessibles-aux-sourds-et"
+   },
+   {
+    "name": "Particuliers",
+    "url": "https://www.impots.gouv.fr/particulier"
+   },
+   {
+    "name": "Payer mes impôts",
+    "url": "https://www.impots.gouv.fr/particulier/payer-mes-impots-taxes"
+   },
+   {
+    "name": "Simulateurs pour les particuliers",
+    "url": "https://www.impots.gouv.fr/simulateurs"
+   },
+   {
+    "name": "Simulateur barème kilométrique",
+    "url": "https://www.impots.gouv.fr/simulateur-bareme-kilometrique"
+   },
+   {
+    "name": "Accueil international",
+    "url": "https://www.impots.gouv.fr/international"
+   },
+   {
+    "name": "Conventions internationales",
+    "url": "https://www.impots.gouv.fr/les-conventions-internationales"
+   }
+  ],
+  "nonConformCriteria": [
+   "7.1",
+   "7.4",
+   "8.7",
+   "8.9",
+   "10.2",
+   "13.3"
+  ],
+  "notes": "Criterion numbers come from the declaration, which calls them the 'principales non-conformités'. 6 NC fits 89.83% exactly (53/59 applicable), so the list is probably complete, but that is inferred. auditDate is the declaration date (2024-11-28, updated 2025-04-16); the audit date is not stated. The sample is listed by page name only. I resolved URLs myself; 3 pages (form 3517-S-SD, the CFE/IFER 2024 news item, 'Je paye mon impôt sur les revenus') could not be resolved and have url null. Dated news items may have been removed."
+ }
+]

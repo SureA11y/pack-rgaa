@@ -1,0 +1,7 @@
+# Raw scans are large; `npm run scan` makes them again.
+results/fixtures.json
+results/neutral.json
+results/audited.json
+results/*.log
+# The engines vendor.mjs fetches and builds.
+vendor/
