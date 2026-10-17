@@ -4,7 +4,7 @@ RGAA 4.1.2, the French accessibility standard, as a pack for [`@surea11y/core`](
 
 It automates what can be checked in the page, not an RGAA audit: a scan gives results for 51 of RGAA's 106 criteria, many rules ask (`cantTell`) where only a person can judge, and 15 of the pack's rules are manual, finding what a person must review without ever failing it. A conformance claim still needs an auditor to check every criterion.
 
-It needs `@surea11y/core` 1.11.1 or later, which runs packs (see [Packs in core's `ENGINE_OPTIONS.md`](https://github.com/SureA11y/core/blob/main/docs/ENGINE_OPTIONS.md#packs--rules-and-standards-from-outside-core)).
+It needs `@surea11y/core` 1.12.0 or later, which runs packs and judges a pack's profile by the WCAG version it names (see [Packs in core's `ENGINE_OPTIONS.md`](https://github.com/SureA11y/core/blob/main/docs/ENGINE_OPTIONS.md#packs--rules-and-standards-from-outside-core)).
 
 It isn't on npm: install it from this repository, with core from npm:
 

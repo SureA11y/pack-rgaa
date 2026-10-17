@@ -156,10 +156,10 @@ function emptyHeadingByDefault(body) {
   return runa11yCoreOnHtml(page(body)).checksResults.find((r) => r.ruleId === 'empty-heading');
 }
 
-// empty-heading only asks, and has no WCAG rollup; RGAA fails the heading.
-test(`${RULE_ID}: an empty heading fails 9.1 under RGAA; WCAG only asks and its rollups are unchanged`, () => {
+// empty-heading fails, and has no WCAG rollup; RGAA fails the heading.
+test(`${RULE_ID}: an empty heading fails 9.1 under RGAA; WCAG's rollups are unchanged`, () => {
   const body = '<main><h1>Title</h1><h2></h2></main>';
-  assert.equal(emptyHeadingByDefault(body).outcome, 'cantTell');
+  assert.equal(emptyHeadingByDefault(body).outcome, 'fail');
   const { result, rollup } = rgaaRun(body);
   const rgaa91 = rollup('rgaa-4.1.2-9.1');
   assert.equal(rgaa91.outcome, 'fail');

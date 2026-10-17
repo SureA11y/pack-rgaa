@@ -75,7 +75,7 @@ module.exports = definePack({
   name: '@surea11y/pack-rgaa',
   version: '0.1.0',
   namespace: 'rgaa',
-  core: '>=1.11.1',
+  core: '>=1.12.0',
   description: 'RGAA 4.1.2, the French accessibility standard',
   rules,
   standard,

@@ -131,10 +131,10 @@ function verdicts(body) {
   };
 }
 
-test(`${RULE_ID}: RGAA profile, a PDF object with no alternative: WCAG fails, RGAA 1.1 does not`, () => {
+test(`${RULE_ID}: RGAA profile, a PDF object with no alternative: neither WCAG nor RGAA 1.1 fails`, () => {
   const v = verdicts('<object type="application/pdf" data="d.pdf"></object>');
-  assert.equal(v.wcagRule, 'fail');
-  assert.equal(v.wcag, 'fail');
+  assert.equal(v.wcagRule, 'notApplicable');
+  assert.equal(v.wcag, 'notApplicable');
   assert.equal(v.rule, 'notApplicable');
   assert.notEqual(v.rgaa, 'fail');
 });

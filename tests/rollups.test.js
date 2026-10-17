@@ -112,7 +112,7 @@ test('the catalog lists RGAA rollups only when the options ask for RGAA', () => 
 
 test('the HTML report shows RGAA rollups in their own section, only when there are some', () => {
   const withRgaa = renderHtmlReport(scan({ profile: 'rgaa-4.1.2' }));
-  assert.match(withRgaa, /<h2>RGAA rollup<\/h2>/);
+  assert.match(withRgaa, /<h2[^>]*>RGAA rollup<\/h2>/);
   assert.match(withRgaa, /RGAA 9\.1<br><span class="note">9\.1\.1<\/span>/);
   assert.match(withRgaa, /<td lang="fr">Dans chaque page web/);
   assert.match(withRgaa, /not yet been reviewed by an RGAA auditor/);
