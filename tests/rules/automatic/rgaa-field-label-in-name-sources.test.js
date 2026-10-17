@@ -212,3 +212,24 @@ test(`${RULE_ID}: a word that differs only by its ending fails`, () => {
     assert.deepEqual(reasons(rule), [['fail', 'SOURCE_LACKS_VISIBLE_LABEL']], body);
   }
 });
+
+// A state word is the field's state, not its étiquette (glossary « Intitulé
+// visible »): the field has no visible label for 11.2.5 to compare.
+test(`${RULE_ID}: a switch whose only text is its state has no visible label`, () => {
+  for (const state of ['Activé', 'ON', 'Off', 'désactivée']) {
+    assertRule(
+      run(
+        `<p>Notifications</p><button role="switch" aria-checked="true" aria-label="Notifications"><span>${state}</span></button>`
+      ),
+      RULE_ID,
+      'notApplicable'
+    );
+  }
+  assertRule(
+    run(
+      '<span role="checkbox" aria-checked="false" tabindex="0" aria-label="Newsletter">Recevoir les offres</span>'
+    ),
+    RULE_ID,
+    'fail'
+  );
+});

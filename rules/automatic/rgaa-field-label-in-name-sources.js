@@ -26,6 +26,9 @@
  *   particular cases of 11.2); accents are not folded. A source that does
  *   not contain it fails.
  * @implementation-notes
+ * - The content of a switch, checkbox or radio that is only a state word
+ *   ("Activé", "On") is its state, not its étiquette: such a field has no
+ *   visible label, and 11.2.5 does not apply to it.
  * - Screen-reader-only text inside the element or its label (clipped
  *   away, 1x1 px with its overflow hidden, transparent:
  *   helpers.isVisuallyHidden) is not part of the visible label.
@@ -301,6 +304,10 @@ function runInPage(ctx) {
   // The visible label (glossary "Intitulé visible") and where it comes from.
   // Links, buttons and components show it as their content; a field shows it
   // in its <label>, or in the text its aria-labelledby points to.
+  // The whole text is a state, in the shipped locales.
+  const STATE_WORDS =
+    /^\s*(on|off|yes|no|enabled|disabled|activ[ée]e?|d[ée]sactiv[ée]e?|actif|inactif|oui|non|an|aus|ein|ja|nein|aktiv|inaktiv|s[ií]|activado|desactivado|オン|オフ|有効|無効)\s*$/i;
+
   function visibleLabelOf(el) {
     const tag = tagOf(el);
     const role = explicitRole(el);
@@ -319,7 +326,9 @@ function runInPage(ctx) {
       if (fromRefs.text) return { ...fromRefs, origin: 'aria-labelledby' };
       if (FIELD_ROLES_NAMED_BY_CONTENT.has(role)) {
         const own = textUnder(el, true);
-        if (own.text) return { ...own, origin: 'content' };
+        // A state word ("Activé", "On") is the field's state, not its
+        // étiquette (glossary « Intitulé visible »).
+        if (own.text && !STATE_WORDS.test(own.text)) return { ...own, origin: 'content' };
       }
       return { text: '', origin: '', elements: [] };
     }

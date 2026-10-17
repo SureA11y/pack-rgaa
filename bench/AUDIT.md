@@ -125,10 +125,10 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 |---|---|---|---|---|
 | T11-01 | 11.2.5 | FP | A `title` that is help text fails, though the `<label>` gives the étiquette (the glossary's order). | decide |
 | T11-02 | 11.13.1 | FP | An invalid `autocomplete` fails on a field that is not about the user (a search field). | done |
-| T11-03 | 11.2.5 | FP | A switch's state text ("Activé") is taken as its visible label. | open |
-| T11-04 | 11.1.2 | FP | A `<label for>` pointing at an `<input type=hidden>` or a `<div>` fails, though no field is in scope. | open |
+| T11-03 | 11.2.5 | FP | A switch's state text ("Activé") is taken as its visible label. | done |
+| T11-04 | 11.1.2 | FP | A `<label for>` pointing at an `<input type=hidden>` or a `<div>` fails, though no field is in scope. | won't (a `for` that reaches no field means the field it names lacks the id 11.1.2 checks, as when the id matches nothing) |
 | T11-05 | 11.2.5 | WO | Visible "Recherche", name "Rechercher": the name contains the string. Fail or ask. | decide |
-| T11-06 | 11.8 | WO | Lists outside any form fail, though criterion 11.8 says « Dans chaque formulaire ». | open |
+| T11-06 | 11.8 | WO | Lists outside any form fail, though criterion 11.8 says « Dans chaque formulaire ». | won't (test 11.8.1 « Pour chaque balise `<select>` » and its methodology cover every list; only the criterion's title says « formulaire ») |
 | T11-07 | 11.1.3 | MISS | A field whose only `<label>` is visually hidden is never asked about. | open |
 | T11-08 | 11.13.1 | MISS | A personal-data field with no `autocomplete`, or on/off (Q1). | done |
 | T11-09 | 11.10 | MISS | No rule: required fields, error messages (Q2). | open |
