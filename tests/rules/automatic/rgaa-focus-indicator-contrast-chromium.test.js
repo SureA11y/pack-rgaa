@@ -207,6 +207,28 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
     assert.equal(details(result, 'covered').cause, 'covered');
   });
 
+  // RGAA 10.7.1 asks that a focus style be visible, not that it be drawn on
+  // the element's own box: a ring on a wrapper or a label is not measured
+  // here, so a faint outline beside it is asked about, not failed.
+  await t.test('a ring drawn on a wrapper or a label is asked about', async () => {
+    const field = (css) =>
+      `<!doctype html><html lang="en"><head><title>t</title><style>html,body{background:#fff;color:#000} input:focus{outline:1px solid #eee} ${css}</style></head><body><main><div class="wrap"><label for="f" id="l">Name</label><input id="f"></div></main></body></html>`;
+    for (const css of [
+      '.wrap:focus-within{box-shadow:0 0 0 3px #000}',
+      '.wrap:has(input:focus-visible){outline:3px solid #000}',
+      '.wrap:focus-within label{text-decoration:underline;color:#c00}'
+    ]) {
+      const { result } = await scan(field(css), { rules: { include: RULE_ID } });
+      assert.deepEqual(
+        summarize(result),
+        { outcome: 'cantTell', findings: [['f', 'cantTell', 'notMeasured']] },
+        css
+      );
+    }
+    const { result } = await scan(field(''), { rules: { include: RULE_ID } });
+    assert.equal(summarize(result).outcome, 'fail');
+  });
+
   await t.test('the same elements in jsdom are asked about, not failed', () => {
     const rule = runa11yCoreOnHtml(PAGE, {
       runOnly: { includeRuleIds: [RULE_ID] }

@@ -44,9 +44,9 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T25-09 | 5.7.2 | FN | 5.7 passes when `scope` points the wrong way. | open |
 | T25-10 | 4.1 | FN | Media next to text that only mentions a transcript, or says there is none, passes. | open |
 | T25-11 | 4.3.2 | MISS | `<track kind="caption">` (an invalid kind, never displayed) is not failed. | done |
-| T25-12 | 3.2.x | WM | Every 3.2 failure names all four tests instead of the one its size and weight fall under. | open |
-| T25-13 | 3.2 | WO | Fails though the page offers a contrast mechanism (each test's second condition). | open |
-| T25-14 | 3.2 | FP | Logo and brand text fail, which the particular cases exempt. | open |
+| T25-12 | 3.2.x | WM | Every 3.2 failure names all four tests instead of the one its size and weight fall under. | core |
+| T25-13 | 3.2 | WO | Fails though the page offers a contrast mechanism (each test's second condition). | core |
+| T25-14 | 3.2 | FP | Logo and brand text fail, which the particular cases exempt. | core |
 | T25-15 | 3.2 | WO | Weights 600–699 count as not bold. | core |
 | T25-16 | 3.2.1 | WO | An author placeholder colour below the ratio is only asked about. | core |
 | T25-17 | 4.x | MISS | Embedded players (YouTube, Vimeo…) and `autoplay=1` are invisible to theme 4 (Q3). | open |
@@ -103,7 +103,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 
 | # | Test | Kind | Finding | Status |
 |---|---|---|---|---|
-| T10-01 | 10.7.1 | FP | A focus ring drawn on an ancestor (`:focus-within`, `:has(:focus-visible)`) is ignored and the field fails. | open |
+| T10-01 | 10.7.1 | FP | A focus ring drawn on an ancestor (`:focus-within`, `:has(:focus-visible)`) is ignored and the field fails. | done |
 | T10-02 | 10.7.1 | WO | The outline is measured against both sides even when `outline-offset` keeps it off one. | open |
 | T10-03 | 10.7.1 | WO | `outline:0` with nothing else changing on focus is only asked about. | open |
 | T10-04 | 10.7.1 | MISS | `outline-color:#fff` on the browser's `auto` ring hides it, unmeasured. | open |

@@ -40,6 +40,13 @@
  *   box-shadow. `measuredCount` counts the elements whose focus style was
  *   judged.
  * @implementation-notes
+ * - RGAA 10.7.1 asks that a focus style be visible, not that it be drawn on
+ *   the element's own box. A style that focus inside an ancestor brings
+ *   (:focus-within, or :has() holding :focus), and in a browser any change
+ *   on focus to the element's ancestors (up to the first one clearly larger
+ *   than it, four levels at most) or to its labels, is not measured: the
+ *   element is asked about (notMeasured) rather than failed on its own
+ *   outline alone.
  * - WCAG 2.4.7 has no contrast requirement (2.4.13 is AAA and not
  *   checked), so css-focus-indicator-suppressed only asks whether some
  *   indicator exists. RGAA 10.7.1 also asks for 3:1, which this rule
@@ -384,7 +391,8 @@ function runInPage(ctx) {
     return splitTop(selectorText, ',');
   }
 
-  // :focus and :focus-visible, never :focus-within.
+  // :focus and :focus-visible, never :focus-within (ancestorFocusBase reads
+  // that one, and :has() holding :focus, as styling an ancestor).
   const FOCUS_PSEUDO = /:focus(-visible)?(?![-\w])/g;
   function hasFocusPseudo(part) {
     FOCUS_PSEUDO.lastIndex = 0;
@@ -407,6 +415,26 @@ function runInPage(ctx) {
     if (trim(cur)) compounds.push(trim(cur));
     return compounds;
   }
+  // For a selector where focus on a descendant styles an element (a
+  // compound with :focus-within, or :has() holding :focus), the compound
+  // without them, which the focused element's ancestor matches; else null.
+  function ancestorFocusBase(part) {
+    const compounds = splitCompounds(part);
+    for (const c of compounds) {
+      const within = /:focus-within(?![-\w])/i.test(c);
+      const inHas = /:has\([^)]*:focus/i.test(c);
+      if (!within && !inHas) continue;
+      const base = trim(
+        c
+          .replace(/:focus-within(?![-\w])/gi, '')
+          .replace(/:has\((?:[^()]|\([^()]*\))*\)/gi, '')
+          .replace(/::?[a-z-]+$/i, '')
+      );
+      return base || '*';
+    }
+    return null;
+  }
+
   function stripFocus(sel) {
     return trim(String(sel).replace(FOCUS_PSEUDO, '')) || '*';
   }
@@ -490,6 +518,13 @@ function runInPage(ctx) {
     for (const part of splitSelectorList(cssRule.selectorText)) {
       order += 1;
       const { spec, approximate } = specificity(part);
+      // Focus inside an ancestor styles that ancestor or what it holds: a
+      // ring drawn on a wrapper with :focus-within or :has(:focus).
+      const ancestorFocus = ancestorFocusBase(part);
+      if (ancestorFocus) {
+        indirect.push({ base: ancestorFocus, subject: false });
+        continue;
+      }
       if (!hasFocusPseudo(part)) {
         if (hasPseudoElement(part)) continue;
         decls.push({
@@ -938,6 +973,54 @@ function runInPage(ctx) {
     return out;
   }
 
+  // The elements a focus style may be drawn on instead of the element: its
+  // ancestors, up to the first one clearly larger than it and at most four
+  // levels, and its labels. Their transitions are not held off, so a
+  // change that starts on focus is found at once, and then asked about.
+  function relatedOf(el) {
+    const out = [];
+    let rect = null;
+    try {
+      rect = dom.getBoundingClientRect(el);
+    } catch {}
+    for (let a = parentOf(el), n = 0; a && n < 4; a = parentOf(a), n += 1) {
+      if (a === dom.body(document) || a === dom.documentElement(document)) break;
+      out.push(a);
+      let r = null;
+      try {
+        r = dom.getBoundingClientRect(a);
+      } catch {}
+      if (rect && r && (r.width > rect.width + 16 || r.height > rect.height + 16)) break;
+    }
+    try {
+      for (const l of helpers.getAssociatedLabelElements
+        ? helpers.getAssociatedLabelElements(el) || []
+        : []) {
+        if (!out.includes(l)) out.push(l);
+      }
+    } catch {}
+    return out;
+  }
+  const RELATED_PROPS = [
+    'outline-style',
+    'outline-width',
+    'outline-color',
+    'box-shadow',
+    'background-color',
+    'background-image',
+    'color',
+    'text-decoration-line',
+    ...SIDES.flatMap(BORDER_PROPS)
+  ];
+  function relatedSnapshot(node) {
+    try {
+      const cs = view.getComputedStyle(node);
+      return RELATED_PROPS.map((p) => cs.getPropertyValue(p)).join('|');
+    } catch {
+      return '';
+    }
+  }
+
   function deepActiveElement() {
     let cur = dom.activeElement(document) || null;
     let guard = 0;
@@ -955,13 +1038,16 @@ function runInPage(ctx) {
     const previous = deepActiveElement();
     const hadStyle = dom.hasAttribute(el, 'style');
     const styleAttr = dom.getAttribute(el, 'style');
+    const related = relatedOf(el);
     try {
       el.style.setProperty('transition', 'none', 'important');
       if (previous === el) dom.blur(el);
       const before = snapshot(el);
+      const relatedBefore = related.map(relatedSnapshot);
       dom.focus(el, { preventScroll: true, focusVisible: true });
       if (deepActiveElement() !== el) return undefined;
-      return fn(before, snapshot(el));
+      const relatedChanged = related.some((r, i) => relatedSnapshot(r) !== relatedBefore[i]);
+      return fn(before, snapshot(el), relatedChanged);
     } catch {
       return undefined;
     } finally {
@@ -1140,7 +1226,7 @@ function runInPage(ctx) {
   }
 
   function evaluateRendered(el) {
-    return whileFocused(el, (before, after) => {
+    return whileFocused(el, (before, after, relatedChanged) => {
       if (after['outline-style'] === 'auto') return null; // the browser's outline
       const changed = (props) => props.some((p) => before[p] !== after[p]);
       const visibleColor = (value) => {
@@ -1212,9 +1298,12 @@ function runInPage(ctx) {
         }
       }
 
+      // A ring drawn on a wrapper (:focus-within) or a label shows focus as
+      // well as the element's own style: it is not measured here.
       const otherStyle =
         changed(RENDERED_OTHER) ||
         changed(['::before', '::after']) ||
+        relatedChanged ||
         indirect.some((p) => (p.subject ? matchesSafe(el, p.base) : closestSafe(el, p.base))) ||
         dom.hasAttribute(el, 'onfocus') ||
         dom.hasAttribute(el, 'onfocusin');
