@@ -39,9 +39,9 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T25-04 | 3.3.1 | MISS/WM | No rule for 3.3; `rgaa-focus-indicator-contrast` measures 3:1 focus styles but is linked to 10.7.1 only; field borders are not measured. | open |
 | T25-05 | 5.4.1 | MISS | A data table titled by an adjacent heading is not asked about. | open |
 | T25-06 | 5.3.1 | WM | The headerless-table question is not linked to 5.3.1. | open |
-| T25-07 | 5.7.2, 5.7.3 | WO | An invalid `scope`, or `rowgroup`/`colgroup`, only asks, though 5.7 fails either way. | open |
+| T25-07 | 5.7.2, 5.7.3 | WO | An invalid `scope`, or `rowgroup`/`colgroup`, only asks, though 5.7 fails either way. | done |
 | T25-08 | 5.7.1 | MISS | A `th` with no scope, id or role in a table with headers on both axes (M6). | open |
-| T25-09 | 5.7.2 | FN | 5.7 passes when `scope` points the wrong way. | open |
+| T25-09 | 5.7.2 | FN | 5.7 passes when `scope` points the wrong way. | done |
 | T25-10 | 4.1 | FN | Media next to text that only mentions a transcript, or says there is none, passes. | open |
 | T25-11 | 4.3.2 | MISS | `<track kind="caption">` (an invalid kind, never displayed) is not failed. | done |
 | T25-12 | 3.2.x | WM | Every 3.2 failure names all four tests instead of the one its size and weight fall under. | core |

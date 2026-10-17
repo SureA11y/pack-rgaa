@@ -721,8 +721,8 @@ const RGAA_RULE_TESTS = {
       note: 'Fails an exposed element other than <img> and <svg> with role="img", "graphics-symbol" or "graphics-document" that has no name. Not mapped to 1.1.1: the rule accepts a title attribute or an SVG <title> as the name, which 1.1.1 step 4 does not list for role="img", and its graphics-* findings belong to no RGAA test. rgaa-role-img-aria-name checks 1.1.1 for role="img".'
     },
     'scope-attr-valid': {
-      tests: ['5.7.2'],
-      note: 'Flags scope values other than row/col/rowgroup/colgroup. On a th with an invalid scope, 5.7.2 fails because it requires scope="row" or scope="col". The rule accepts rowgroup/colgroup, so it covers only part of 5.7.2. Not linked to 8.2.1: the rule trims values and skips empty ones, which the validator rejects; rgaa-html-elements-attributes-valid reports scope values under 8.2.1.'
+      tests: [],
+      note: 'Flags scope values other than row/col/rowgroup/colgroup. Not linked to 5.7.2: it accepts rowgroup and colgroup, which RGAA does not, and rgaa-th-scope-row-col fails every scope other than row or col. Not linked to 8.2.1: the rule trims values and skips empty ones, which the validator rejects; rgaa-html-elements-attributes-valid reports scope values under 8.2.1.'
     },
     'rgaa-scripted-components-review': {
       tests: ['7.1.1', '7.1.2', '7.1.3'],
@@ -830,7 +830,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-th-scope-row-col': {
       tests: ['5.7.2', '5.7.3'],
-      note: 'Asks about a <th> with scope="rowgroup" or "colgroup" (not in a presentation table). 5.7.2 wants scope="row" or "col" on a header over a whole row or column, and 5.7.3 wants no scope and a unique id on one over part of it (glossary "En-tête de colonne ou de ligne"), so the header fails one of the two tests. Which one depends on how much of the table it covers, so the rule asks.'
+      note: 'Fails a <th> (not in a presentation table) whose scope is not row or col (rowgroup, colgroup, a misspelt or empty value): 5.7.2 wants scope="row" or "col" on a header over a whole row or column, and 5.7.3 wants no scope and a unique id on one over part of it (glossary "En-tête de colonne ou de ligne"), so such a header fails one of the two tests, and criterion 5.7 either way. Also fails a scope pointing the wrong way where the table\'s shape makes it certain (no rowspan or colspan): scope="col" on the first cell of a body row of <td> under a first row of <th>, and scope="row" on a cell of that first row above rows starting with a <td>.'
     },
     'rgaa-title-placeholder-identical': {
       tests: ['11.2.2'],

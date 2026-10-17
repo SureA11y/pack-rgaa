@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**72 rules total: 56 automatic (decide deterministically; can return `fail`), 16 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**72 rules total: 57 automatic (decide deterministically; can return `fail`), 15 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -14,7 +14,7 @@ Under **What a finding reports**, a rule lists the fields its findings carry in 
 
 See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_SCHEMA.md) for what `type`/`confidence`/`severity` mean on a scan result, and [`WCAG_CONFORMANCE.md`](https://github.com/SureA11y/core/blob/main/docs/WCAG_CONFORMANCE.md) for how these roll up to an SC-level conformance claim.
 
-## Automatic rules (56), can return `fail`
+## Automatic rules (57), can return `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -71,11 +71,12 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-skip-link-present`](#rgaa-skip-link-present) | Pages have a skip link to the main content | — | — | high | moderate |
 | [`rgaa-svg-hidden-no-alternative`](#rgaa-svg-hidden-no-alternative) | Hidden decorative SVGs carry no text alternative | — | — | high | minor |
 | [`rgaa-svg-role-img`](#rgaa-svg-role-img) | SVGs with a text alternative have role="img" | — | — | high | serious |
+| [`rgaa-th-scope-row-col`](#rgaa-th-scope-row-col) | Table headers use scope="row" or scope="col", the right one | — | — | high | moderate |
 | [`rgaa-title-placeholder-identical`](#rgaa-title-placeholder-identical) | A form field's title and placeholder are identical | — | — | medium | moderate |
 | [`rgaa-video-captions-track-kind`](#rgaa-video-captions-track-kind) | Video caption tracks use kind="captions" | — | — | high | moderate |
 | [`rgaa-widget-label-in-name`](#rgaa-widget-label-in-name) | The accessible name of a scripted component contains its visible label | — | — | high | serious |
 
-## Manual rules (16), never `fail`
+## Manual rules (15), never `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -93,7 +94,6 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-office-document-link`](#rgaa-office-document-link) | Downloadable office documents are accessible or have an accessible version | — | — | high | moderate |
 | [`rgaa-radio-group-present`](#rgaa-radio-group-present) | Radio buttons sharing a name are grouped | — | — | medium | moderate |
 | [`rgaa-scripted-components-review`](#rgaa-scripted-components-review) | Scripted components are compatible with assistive technologies | — | — | medium | moderate |
-| [`rgaa-th-scope-row-col`](#rgaa-th-scope-row-col) | Table headers use scope="row" or scope="col" | — | — | medium | moderate |
 | [`rgaa-viewport-zoom-review`](#rgaa-viewport-zoom-review) | Text can reach 200% zoom despite a viewport meta tag that limits zoom | — | — | medium | serious |
 
 ## Profiles (1)
@@ -144,7 +144,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-5.2` | Pour chaque tableau de données complexe ayant un résumé, celui-ci est-il pertinent ? | `rgaa-complex-table-summary-quality` |
 | `rgaa-4.1.2-5.4` | Pour chaque tableau de données ayant un titre, le titre est-il correctement associé au tableau de données ? | `table-fake-caption` |
 | `rgaa-4.1.2-5.6` | Pour chaque tableau de données, chaque en-tête de colonne et chaque en-tête de ligne sont-ils correctement déclarés ? | `rgaa-data-table-headers-review` |
-| `rgaa-4.1.2-5.7` | Pour chaque tableau de données, la technique appropriée permettant d’associer chaque cellule avec ses en-têtes est-elle utilisée (hors cas particuliers) ? | `rgaa-th-scope-row-col`, `scope-attr-valid`, `table-headers-attr-valid` |
+| `rgaa-4.1.2-5.7` | Pour chaque tableau de données, la technique appropriée permettant d’associer chaque cellule avec ses en-têtes est-elle utilisée (hors cas particuliers) ? | `rgaa-th-scope-row-col`, `table-headers-attr-valid` |
 | `rgaa-4.1.2-5.8` | Chaque tableau de mise en forme ne doit pas utiliser d’éléments propres aux tableaux de données. Cette règle est-elle respectée ? | `rgaa-layout-table-no-data-markup` |
 | `rgaa-4.1.2-6.1` | Chaque lien est-il explicite (hors cas particuliers) ? | `link-name-quality`, `rgaa-link-context-review`, `rgaa-link-label-in-name-sources` |
 | `rgaa-4.1.2-6.2` | Dans chaque page web, chaque lien a-t-il un intitulé ? | `rgaa-link-content-label-present` |
@@ -1177,15 +1177,20 @@ Checks that an &lt;svg&gt; named by aria-labelledby, aria-label or &lt;title&gt;
 
 ### `rgaa-th-scope-row-col`
 
-**Table headers use scope="row" or scope="col"**
+**Table headers use scope="row" or scope="col", the right one**
 
-manual · no formal WCAG SC mapping · confidence medium · default severity moderate
+automatic · no formal WCAG SC mapping · confidence high · default severity moderate
 
-Flags a &lt;th&gt; with scope="rowgroup" or scope="colgroup", which RGAA does not accept, for a person to tell whether it covers a whole row or column.
+Checks that every &lt;th&gt; with a scope attribute uses scope="row" or scope="col", which RGAA requires, and that the value matches whether the header heads a row or a column.
 
-**Applies to.** Applies to every &lt;th&gt; whose scope attribute is "rowgroup" or "colgroup" (compared without regard to case or surrounding spaces), except in a &lt;table&gt; with role="presentation" or role="none", which is not a data table. Headers hidden by the default hidden-content policy are not checked. A page with none is notApplicable.
+**Applies to.** Applies to every &lt;th&gt; with a scope attribute, except in a &lt;table&gt; with role="presentation" or role="none", which is not a data table. Headers hidden by the default hidden-content policy are not checked. A page with none is notApplicable.
 
-**Expectation.** Such a header is asked about (cantTell). RGAA gives a &lt;th&gt; two choices. A header over a whole row or column that has a scope uses scope="row" or scope="col" (5.7.2). A header over only part of a row or column has no scope, no role="rowheader" or "columnheader", and a unique id (5.7.3); the glossary "En-tête de colonne ou de ligne" adds that only a &lt;th&gt; can be used then. So scope="rowgroup" or "colgroup" fails one of the two tests, but which one depends on how much of the table the header covers, which only a person can tell.
+**Expectation.**
+
+RGAA gives a &lt;th&gt; two choices. A header over a whole row or column that has a scope uses scope="row" or scope="col" (5.7.2). A header over only part of a row or column has no scope, no role="rowheader" or "columnheader", and a unique id (5.7.3); the glossary « En-tête de colonne ou de ligne » adds that only a &lt;th&gt; can be used then. So:
+
+- a scope other than row or col (rowgroup, colgroup, a misspelt or empty value) fails (otherScope): the header fails 5.7.2 if it covers a whole row or column, and 5.7.3 if it covers part of one;
+- a scope pointing the wrong way fails (wrongAxis): scope="col" on the first cell of a body row whose other cells are &lt;td&gt;, under a first row of &lt;th&gt; only (a row header), and scope="row" on a cell of a first row of &lt;th&gt; only, above rows that start with a &lt;td&gt; (a column header). A table with a rowspan or colspan is left out of this check, since the cells' places are then a person's call.
 
 ### `rgaa-title-placeholder-identical`
 

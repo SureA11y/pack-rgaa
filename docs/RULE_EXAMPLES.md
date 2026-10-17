@@ -1386,7 +1386,16 @@ Named only by `<title>`: RGAA 1.1.5 lists only the ARIA sources, while 1.3.6 tre
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
 
-**Flagged (cantTell)**
+**Passed**
+```html
+<table>
+  <tr><th scope="col">Name</th><th scope="col">Age</th></tr>
+  <tr><td>Ada</td><td>36</td></tr>
+</table>
+```
+The column headers use `scope="col"`.
+
+**Failed**
 ```html
 <table>
   <tr><td></td><th scope="colgroup" colspan="2">2025</th></tr>
@@ -1394,16 +1403,7 @@ Named only by `<title>`: RGAA 1.1.5 lists only the ARIA sources, while 1.3.6 tre
   <tr><th scope="row">North</th><td>10</td><td>12</td></tr>
 </table>
 ```
-RGAA accepts `scope="col"` or `"row"` on a header over a whole column or row (5.7.2), and no `scope`, with a unique `id`, on one over part of it (5.7.3). `scope="colgroup"` fails one of the two; which one depends on what the header covers, so a person decides.
-
-**Not applicable**
-```html
-<table>
-  <tr><th scope="col">Name</th><th scope="col">Age</th></tr>
-  <tr><td>Ada</td><td>36</td></tr>
-</table>
-```
-The headers use `scope="col"`.
+RGAA accepts `scope="col"` or `"row"` on a header over a whole column or row (5.7.2), and no `scope`, with a unique `id`, on one over part of it (5.7.3). `scope="colgroup"` fails one of the two, so criterion 5.7 fails either way. A row header with `scope="col"`, where the table's shape makes it certain, fails too.
 
 ## rgaa-title-placeholder-identical
 

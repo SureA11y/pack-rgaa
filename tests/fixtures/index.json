@@ -1146,19 +1146,19 @@
     },
     {
       "ruleId": "rgaa-th-scope-row-col",
-      "title": "Table headers use scope=\"row\" or scope=\"col\"",
-      "type": "manual",
+      "title": "Table headers use scope=\"row\" or scope=\"col\", the right one",
+      "type": "automatic",
       "wcagSc": [],
-      "ruleFile": "rules/manual/th-scope-row-col-manual.js",
-      "testFile": "tests/rules/manual/rgaa-th-scope-row-col.test.js",
+      "ruleFile": "rules/automatic/rgaa-th-scope-row-col.js",
+      "testFile": "tests/rules/automatic/rgaa-th-scope-row-col.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-th-scope-row-col-all-scenarios.html",
-      "totalCases": 5,
+      "totalCases": 7,
       "caseCounts": {
-        "PASS": 0,
-        "FAIL": 0,
-        "CANTTELL": 2,
-        "OTHER": 3
+        "PASS": 1,
+        "FAIL": 4,
+        "CANTTELL": 0,
+        "OTHER": 2
       }
     },
     {
