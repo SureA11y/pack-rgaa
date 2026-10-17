@@ -765,8 +765,8 @@ const RGAA_RULE_TESTS = {
       note: 'Flags <summary> elements with an empty name. A native details/summary disclosure is not script-generated, so 7.1.1 does not strictly apply. 11.9.1 covers only buttons inside a form, and no other candidate test concerns disclosure widgets. The auditor may still choose to treat a scripted summary under 7.1.1.'
     },
     'rgaa-svg-hidden-no-alternative': {
-      tests: ['1.1.5', '1.2.4'],
-      note: 'Fails an <svg aria-hidden="true"> that carries a text alternative: aria-label, aria-labelledby, a title attribute, or a non-empty <title> or <desc>, in its own content or in a <symbol>/<svg> it draws through a same-document <use> (as the note of criterion 1.2 asks). As a decorative image it breaks conditions 2 to 4 of 1.2.4. If the alternative means the image carries information, it is hidden from assistive technology and has no role="img", failing 1.1.5. Which of the two applies needs a human.'
+      tests: ['1.2.4'],
+      note: 'Fails an <svg aria-hidden="true"> that carries a text alternative: aria-label, aria-labelledby, a title attribute, or a non-empty <title> or <desc>, in its own content or in a <symbol>/<svg> it draws through a same-document <use> (as the note of criterion 1.2 asks). aria-hidden marks it decorative, and as a decorative image it breaks conditions 2 to 4 of 1.2.4. Not linked to 1.1.5 as well: a mapping applies to every finding, and such an SVG fails one of the two criteria, not both; if it carries information, hiding it fails 1.1.5 instead, which img-alt-decorative asks about. A sprite sheet, an SVG that draws nothing of its own (only <defs>, <symbol> and the like), is left out: it is no image, and its symbols are checked where a <use> draws them.'
     },
     'svg-image-text-alternative-present': {
       tests: [],

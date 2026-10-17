@@ -8,14 +8,19 @@
  * @summary An SVG hidden as decorative must carry no text alternative
  * @standard RGAA 4.1.2 (no WCAG Success Criterion)
  * @applicability
- *   Applies to <svg> elements with aria-hidden="true", outer ones only. A
+ *   Applies to <svg> elements with aria-hidden="true", outer ones only,
+ *   that draw something of their own. A sprite sheet, an <svg> whose
+ *   children are only <defs>, <symbol>, <title>, <desc>, <style> and other
+ *   elements that are never drawn, is no image (glossary « Image de
+ *   décoration »): its symbols are checked where a <use> draws them. A
  *   page with none is notApplicable.
  * @expectation
  *   Neither the <svg> nor anything in it has an aria-label, aria-labelledby
  *   or title attribute with text, and any <title> or <desc> in it is empty
- *   (RGAA 1.2.4). An SVG that breaks this fails either way: if it is
- *   decorative it breaks 1.2.4, and if it carries information, hiding it
- *   breaks 1.1.5.
+ *   (RGAA 1.2.4). aria-hidden="true" marks the SVG decorative, so it fails
+ *   1.2.4. If it in fact carries information, hiding it breaks 1.1.5
+ *   instead, which img-alt-decorative asks about: the SVG fails one of
+ *   the two criteria, not both.
  *   Content drawn through <use href="#id"> (or xlink:href) counts as the
  *   SVG's own: the note of RGAA criterion 1.2 says 1.2.4 also applies to the
  *   <svg> or <symbol> a <use> element points to. Only same-document
@@ -57,6 +62,28 @@ function runInPage(ctx) {
     ? helpers.queryAllSmart('svg[aria-hidden]')
     : helpers.queryAll('svg[aria-hidden]');
 
+  // Children an SVG never draws: what a sprite sheet holds.
+  const NOT_DRAWN = new Set([
+    'defs',
+    'symbol',
+    'title',
+    'desc',
+    'metadata',
+    'style',
+    'script',
+    'lineargradient',
+    'radialgradient',
+    'pattern',
+    'clippath',
+    'mask',
+    'filter',
+    'marker'
+  ]);
+  const drawsNothing = (svg) =>
+    Array.from(dom.querySelectorAll(svg, ':scope > *')).every((c) =>
+      NOT_DRAWN.has(String(dom.localName(c) || dom.tagName(c)).toLowerCase())
+    );
+
   const occurrences = [];
   let applicableCount = 0;
 
@@ -65,6 +92,7 @@ function runInPage(ctx) {
     if (String(dom.getAttribute(svg, 'aria-hidden')).trim().toLowerCase() !== 'true') continue;
     const outer = dom.parentElement(svg) ? dom.closest(dom.parentElement(svg), 'svg') : null;
     if (outer) continue;
+    if (drawsNothing(svg)) continue;
     applicableCount += 1;
 
     const all = [svg].concat(Array.from(dom.querySelectorAll(svg, '*')));
