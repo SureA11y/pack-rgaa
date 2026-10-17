@@ -87,7 +87,8 @@ function runInPage(ctx) {
     if (isAriaHidden(el)) continue;
     applicableCount += 1;
     const present = dom.hasAttribute(el, 'title');
-    if (present && /[^ \t\n\f\r]/.test(String(dom.getAttribute(el, 'title') || ''))) continue;
+    // Blank: spaces of any kind, &nbsp; included, give the frame no title.
+    if (present && String(dom.getAttribute(el, 'title') || '').trim()) continue;
 
     const element = String(dom.tagName(el)).toLowerCase();
     const reasonCode = present ? 'emptyTitle' : 'missingTitle';

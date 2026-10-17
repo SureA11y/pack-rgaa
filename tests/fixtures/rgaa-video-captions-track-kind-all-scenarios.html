@@ -23,22 +23,22 @@
   <h2>A. Text tracks, none marked as captions (FAIL, or CANTTELL when the subtitles may be translations)</h2>
 
   <div class="case" id="case_01">
-    <div class="case-title">01 — FAIL: kind="subtitles"</div>
-    <video controls id="vct_case_01">
+    <div class="case-title">01 — FAIL: kind="subtitles" in the video's language</div>
+    <video controls lang="en" id="vct_case_01">
       <track src="talk.vtt" kind="subtitles" srclang="en" label="English">
     </video>
   </div>
 
   <div class="case" id="case_02">
-    <div class="case-title">02 — FAIL: track without kind</div>
-    <video controls id="vct_case_02">
+    <div class="case-title">02 — FAIL: track without kind, in the video's language</div>
+    <video controls lang="en" id="vct_case_02">
       <track src="talk.vtt" srclang="en" label="English">
     </video>
   </div>
 
   <div class="case" id="case_07">
-    <div class="case-title">07 — FAIL: subtitles in the page language, and a captions track with no src (delivers nothing)</div>
-    <video controls id="vct_case_07">
+    <div class="case-title">07 — FAIL: subtitles in the video's language (its lang), and a captions track with no src (delivers nothing)</div>
+    <video controls lang="en" id="vct_case_07">
       <track src="talk.vtt" kind="subtitles" srclang="en" label="English">
       <track src="" kind="captions" srclang="en" label="English captions">
     </video>
@@ -48,6 +48,13 @@
     <div class="case-title">08 — CANTTELL: only subtitles in another language (may be a translation)</div>
     <video controls id="vct_case_08">
       <track src="talk-de.vtt" kind="subtitles" srclang="de" label="Deutsch">
+    </video>
+  </div>
+
+  <div class="case" id="case_09">
+    <div class="case-title">09 — FAIL: kind="caption", which HTML reads as metadata, never shown</div>
+    <video controls id="vct_case_09">
+      <track kind="caption" srclang="en" src="en.vtt">
     </video>
   </div>
 

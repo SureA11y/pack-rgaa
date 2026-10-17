@@ -502,7 +502,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-layout-table-no-data-markup': {
       tests: ['5.8.1'],
-      note: 'Fails a table with role="presentation" or role="none" that has a non-empty summary, a <caption>, <th>, <thead>, <tfoot>, <colgroup>, a rowheader or columnheader role, or cells with scope, headers or axis. Those are the two conditions of 5.8.1, applied to tables marked as layout. Such a table that looks like a data table (a full header row or column over data) is asked about instead, since role="presentation" on a data table is not a 5.8.1 matter. A layout table with no role is not found; deciding which tables are layout tables is 5.3.'
+      note: 'Fails a table with role="presentation" or role="none" that has a non-empty summary, a <caption>, <th>, <thead>, <tfoot>, a rowheader or columnheader role, or cells with scope, headers or axis. Those are the two conditions of 5.8.1, applied to tables marked as layout; <colgroup> is not in their list, and passes. Such a table that looks like a data table (a full header row or column over data) is asked about instead, since role="presentation" on a data table is not a 5.8.1 matter. A layout table with no role is not found; deciding which tables are layout tables is 5.3.'
     },
     'rgaa-letters-spaced-with-spaces': {
       tests: ['10.1.3'],
@@ -850,7 +850,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-video-captions-track-kind': {
       tests: ['4.3.2'],
-      note: 'Fails a <video> whose subtitle tracks (with a src) are all kind="subtitles" (or have no kind, which means subtitles), with none kind="captions", when one is in the video\'s language. That is 4.3.2 as written. When none is in the video\'s language (or srclang is missing), it asks instead: a translation track is not a caption track (glossary "Sous-titres synchronisés", note 2), and then 4.3.2 does not apply. Whether the video is pre-recorded synchronised media, and whether a track carries captions at all, needs a human.'
+      note: 'Fails a <video> whose subtitle tracks (with a src) are all kind="subtitles" (or have no kind, which means subtitles), with none kind="captions", when one is in the video\'s language as the <video>\'s own lang gives it, or has a label naming captions (« sourds et malentendants », SME, SDH, CC), and a track whose kind HTML does not know (kind="caption", read as metadata and never shown). That is 4.3.2 as written. Otherwise it asks, since the page\'s language says nothing of the audio\'s and a translation track is not a caption track (glossary "Sous-titres synchronisés", note 2), and then 4.3.2 does not apply. Whether the video is pre-recorded synchronised media, and whether a track carries captions at all, needs a human.'
     },
     'video-poster-text-alternative-present': {
       tests: [],

@@ -10,20 +10,24 @@
  * @applicability
  *   Applies to <video> elements with at least one <track> child with a
  *   non-empty src carrying text for the video: kind="subtitles",
- *   kind="captions", or no kind at all, which HTML reads as subtitles. A
+ *   kind="captions", no kind at all, which HTML reads as subtitles, or a
+ *   kind HTML does not know (kind="caption"), which it reads as metadata. A
  *   track with no src delivers nothing and is ignored. A page with none is
  *   notApplicable.
  * @expectation
  *   At least one of those tracks has kind="captions" (RGAA 4.3.2). When
  *   the only tracks are subtitles:
- *   - fail when one of them has a srclang in the language of the video
- *     (the nearest lang attribute, compared on the primary subtag): a
- *     same-language subtitles track is most likely captions that do not say
- *     so;
- *   - cantTell otherwise (srclang in another language, or missing, or no
- *     language to compare with): the track may be a translation, which is
- *     not a caption track, and then 4.3.2 does not apply and the question
- *     is 4.3.1's.
+ *   - fail when a track has a kind HTML does not know, such as
+ *     kind="caption": HTML makes it metadata, which is never shown;
+ *   - fail when a subtitles track has a srclang in the language of the
+ *     video, as the lang attribute of the <video> itself gives it (primary
+ *     subtag), or a label that names captions (« sourds et malentendants »,
+ *     SME, SDH, CC): it is captions that do not say so;
+ *   - cantTell otherwise: the track may be a translation, which is not a
+ *     caption track (glossary « Sous-titres synchronisés », note 2), and
+ *     then 4.3.2 does not apply and the question is 4.3.1's. The page's
+ *     language is no evidence of the audio's: an English talk with French
+ *     subtitles on a French page is a translation.
  * @implementation-notes
  * - Opt-in (tag `rgaa`): WCAG does not ask for a particular kind value, so
  *   the rule runs only under the rgaa-4.1.2 profile, the `rgaa` tag or its
@@ -72,36 +76,48 @@ function runInPage(ctx) {
   }
 
   // The language of the video's content: its nearest lang attribute.
+  // The language of the video's own audio, as its lang attribute gives it.
+  // The page's language is not evidence: an English talk with French
+  // subtitles on a French page is a translation.
   function videoLanguage(video) {
-    try {
-      const host = dom.get(video, 'closest') ? dom.closest(video, '[lang]') : null;
-      return host ? primarySubtag(dom.getAttribute(host, 'lang')) : '';
-    } catch {
-      return '';
-    }
+    return primarySubtag(dom.getAttribute(video, 'lang'));
   }
+
+  // A track label that names captions for the deaf and hard of hearing.
+  const CAPTIONS_LABEL =
+    /sourds|malentendants|\bSME\b|\bSDH\b|\bCC\b|caption|untertitel f(ü|u)r h(ö|o)rgesch|subt[ií]tulos para sordos|字幕（聴覚/i;
+  const KINDS = ['subtitles', 'captions', 'descriptions', 'chapters', 'metadata'];
 
   for (const video of videos) {
     if (!video) continue;
     const tracks = Array.from(dom.querySelectorAll(video, ':scope > *'))
       .filter((c) => String(dom.tagName(c)).toLowerCase() === 'track')
       .filter((t) => String(dom.getAttribute(t, 'src') || '').trim())
-      .map((t) => ({
-        kind:
-          String(dom.getAttribute(t, 'kind') || 'subtitles')
-            .trim()
-            .toLowerCase() || 'subtitles',
-        srclang: primarySubtag(dom.getAttribute(t, 'srclang'))
-      }))
-      .filter((t) => t.kind === 'subtitles' || t.kind === 'captions');
+      .map((t) => {
+        const raw = String(dom.getAttribute(t, 'kind') || 'subtitles')
+          .trim()
+          .toLowerCase();
+        return {
+          // A value HTML does not know makes the track metadata, never shown.
+          kind: !raw ? 'subtitles' : KINDS.includes(raw) ? raw : 'invalid',
+          raw,
+          label: String(dom.getAttribute(t, 'label') || ''),
+          srclang: primarySubtag(dom.getAttribute(t, 'srclang'))
+        };
+      })
+      .filter((t) => ['subtitles', 'captions', 'invalid'].includes(t.kind));
     if (!tracks.length) continue;
     applicableCount += 1;
     const kinds = tracks.map((t) => t.kind);
     if (kinds.includes('captions')) continue;
 
+    const invalid = tracks.filter((t) => t.kind === 'invalid').map((t) => t.raw);
     const lang = videoLanguage(video);
-    const sameLanguage = !!lang && tracks.some((t) => t.srclang === lang);
-    if (!sameLanguage) {
+    const sameLanguage = !!lang && tracks.some((t) => t.kind === 'subtitles' && t.srclang === lang);
+    const labelledCaptions = tracks.some(
+      (t) => t.kind === 'subtitles' && CAPTIONS_LABEL.test(t.label)
+    );
+    if (!invalid.length && !sameLanguage && !labelledCaptions) {
       const srclangs = tracks.map((t) => t.srclang);
       cantTellOccurrences.push(
         helpers.reportOccurrence(video, {
@@ -130,15 +146,19 @@ function runInPage(ctx) {
 
     occurrences.push(
       helpers.reportOccurrence(video, {
-        summary: 'This video has text tracks, but none with kind="captions".',
+        summary: invalid.length
+          ? `This video has a text track with kind="${invalid[0]}", which HTML does not know, so it is never shown; none has kind="captions".`
+          : 'This video has text tracks, but none with kind="captions".',
         hint: 'Mark the track that carries the captions with kind="captions".',
         i18n: {
-          summaryKey: 'videoCaptionsTrackKind_summary_fail',
+          summaryKey: invalid.length
+            ? 'videoCaptionsTrackKind_summary_fail_invalidKind'
+            : 'videoCaptionsTrackKind_summary_fail',
           hintKey: 'videoCaptionsTrackKind_hint_fail',
-          params: {}
+          params: invalid.length ? { kind: invalid[0] } : {}
         },
         data: {
-          details: { reasonCode: 'noCaptionsKind', kinds },
+          details: { reasonCode: invalid.length ? 'invalidKind' : 'noCaptionsKind', kinds },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })

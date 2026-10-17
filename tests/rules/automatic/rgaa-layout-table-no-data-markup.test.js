@@ -42,7 +42,6 @@ test(`${RULE_ID}: each kind of data table markup fails and is named`, () => {
     ['<tr><th>h</th></tr>', 'th'],
     ['<thead><tr><td>h</td></tr></thead>', 'thead'],
     ['<tfoot><tr><td>f</td></tr></tfoot>', 'tfoot'],
-    ['<colgroup><col></colgroup>', 'colgroup'],
     ['<tr><td role="rowheader">h</td></tr>', 'role="rowheader"'],
     ['<tr><td role="columnheader">h</td></tr>', 'role="columnheader"'],
     ['<tr><td scope="row">h</td></tr>', 'scope'],
@@ -111,7 +110,7 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-layout-table-no-data-mar
     'rgaa-layout-table-no-data-markup-all-scenarios.html'
   );
   const result = runa11yCoreOnHtml(fs.readFileSync(fixturePath, 'utf8'), RUN);
-  const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 7, maxOccurrences: 7 });
+  const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 6, maxOccurrences: 6 });
   const ids = (tier) =>
     rule.occurrences
       .filter((o) => o.occurrenceOutcome === tier)
@@ -121,22 +120,17 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-layout-table-no-data-mar
     'ltn_case_02',
     'ltn_case_03',
     'ltn_case_04',
-    'ltn_case_05',
-    'ltn_case_10'
+    'ltn_case_05'
   ]);
   assert.deepEqual(ids('cantTell'), ['ltn_case_11']);
 });
 
-// RGAA 5.8.1 lists <colgroup> with the other data table markup.
-test(`${RULE_ID}: <colgroup> in a layout table fails`, () => {
+// RGAA 5.8.1 does not list <colgroup>: column widths are layout too.
+test(`${RULE_ID}: <colgroup> in a layout table passes`, () => {
   const html = page(
-    '<table role="presentation"><colgroup><col></colgroup><tr><td>a</td><td>b</td></tr></table>'
+    '<table role="presentation"><colgroup><col style="width:50%"><col></colgroup><tr><td>a</td><td>b</td></tr></table>'
   );
-  const rule = assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'fail', {
-    minOccurrences: 1,
-    maxOccurrences: 1
-  });
-  assert.deepEqual(rule.occurrences[0].data.details.markup, ['colgroup']);
+  assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'pass', { maxOccurrences: 0 });
 });
 
 // 5.8.1 applies to layout tables. A table with a full header row or column
@@ -170,10 +164,10 @@ test(`${RULE_ID}: a layout table with one stray header cell still fails`, () => 
   }
 });
 
-test(`${RULE_ID}: under the rgaa-4.1.2 profile, colgroup fails and a data-like table is asked about (5.8.1)`, () => {
+test(`${RULE_ID}: under the rgaa-4.1.2 profile, a caption fails and a data-like table is asked about (5.8.1)`, () => {
   const run = (body) => runa11yCoreOnHtml(page(body), { engineOptions: { profile: 'rgaa-4.1.2' } });
   const failed = assertRule(
-    run('<table role="presentation"><colgroup><col></colgroup><tr><td>a</td></tr></table>'),
+    run('<table role="presentation"><caption>c</caption><tr><td>a</td></tr></table>'),
     RULE_ID,
     'fail'
   );

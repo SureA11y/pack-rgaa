@@ -411,6 +411,7 @@
   "videoCaptionsTrackKind_title": "動画の字幕トラックが kind=\"captions\" を使用している",
   "videoCaptionsTrackKind_description": "テキストトラックを持つ <video> に、字幕 (subtitles) だけでなく <track kind=\"captions\"> が少なくとも 1 つあるかを確認し、字幕が翻訳である可能性がある場合は確認を求めます。",
   "videoCaptionsTrackKind_summary_fail": "この動画にはテキストトラックがありますが、kind=\"captions\" のものがありません。",
+  "videoCaptionsTrackKind_summary_fail_invalidKind": "この動画には kind=\"{{kind}}\" のテキストトラックがありますが、HTML が認識しない値のため表示されません。kind=\"captions\" のトラックはありません。",
   "videoCaptionsTrackKind_hint_fail": "聴覚障害者向け字幕を含むトラックに kind=\"captions\" を指定してください。",
   "videoCaptionsTrackKind_summary_cantTell_translation": "この動画には字幕 (subtitles) のトラックしかなく、動画の言語のものがありません。キャプションではなく翻訳である可能性があります。",
   "videoCaptionsTrackKind_hint_cantTell_translation": "動画自体の言語のキャプションを含むトラックがある場合は、対応する srclang を付けて kind=\"captions\" と指定してください。トラックが翻訳である場合は、キャプションが別の方法で提供されているか確認してください (RGAA 4.3.1)。",

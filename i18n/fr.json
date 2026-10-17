@@ -411,6 +411,7 @@
   "videoCaptionsTrackKind_title": "Les pistes de sous-titres des vidéos utilisent kind=\"captions\"",
   "videoCaptionsTrackKind_description": "Vérifie qu’une <video> dotée de pistes de texte a au moins un <track kind=\"captions\">, et pas seulement des sous-titres, et demande une vérification quand ses sous-titres peuvent être des traductions.",
   "videoCaptionsTrackKind_summary_fail": "Cette vidéo a des pistes de texte, mais aucune avec kind=\"captions\".",
+  "videoCaptionsTrackKind_summary_fail_invalidKind": "Cette vidéo a une piste de texte avec kind=\"{{kind}}\", valeur que HTML ne connaît pas : elle n’est jamais affichée, et aucune piste n’a kind=\"captions\".",
   "videoCaptionsTrackKind_hint_fail": "Indiquez kind=\"captions\" sur la piste qui porte les sous-titres synchronisés.",
   "videoCaptionsTrackKind_summary_cantTell_translation": "Cette vidéo n’a que des pistes subtitles, aucune dans la langue de la vidéo ; ce sont peut-être des traductions et non des sous-titres pour sourds et malentendants.",
   "videoCaptionsTrackKind_hint_cantTell_translation": "Si une piste porte les sous-titres pour sourds et malentendants dans la langue de la vidéo, déclarez-la kind=\"captions\" avec le srclang correspondant. Si les pistes sont des traductions, vérifiez que ce sous-titrage est fourni autrement (RGAA 4.3.1).",

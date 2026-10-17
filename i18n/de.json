@@ -411,6 +411,7 @@
   "videoCaptionsTrackKind_title": "Untertitelspuren von Videos verwenden kind=\"captions\"",
   "videoCaptionsTrackKind_description": "Prüft, ob ein <video> mit Textspuren mindestens ein <track kind=\"captions\"> hat, nicht nur subtitles, und fragt nach, wenn seine subtitles Übersetzungen sein können.",
   "videoCaptionsTrackKind_summary_fail": "Dieses Video hat Textspuren, aber keine mit kind=\"captions\".",
+  "videoCaptionsTrackKind_summary_fail_invalidKind": "Dieses Video hat eine Textspur mit kind=\"{{kind}}\", einem Wert, den HTML nicht kennt; sie wird nie angezeigt, und keine Spur hat kind=\"captions\".",
   "videoCaptionsTrackKind_hint_fail": "Kennzeichnen Sie die Spur mit den Untertiteln für Gehörlose mit kind=\"captions\".",
   "videoCaptionsTrackKind_summary_cantTell_translation": "Dieses Video hat nur subtitles-Spuren, keine in der Sprache des Videos; es können Übersetzungen statt Untertitel (captions) sein.",
   "videoCaptionsTrackKind_hint_cantTell_translation": "Wenn eine Spur Untertitel (captions) in der Sprache des Videos enthält, kennzeichnen Sie sie mit kind=\"captions\" und dem passenden srclang. Sind die Spuren Übersetzungen, prüfen Sie, ob Untertitel auf andere Weise bereitgestellt werden (RGAA 4.3.1).",

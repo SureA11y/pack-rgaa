@@ -748,7 +748,7 @@ Checks that a table marked as layout (role="presentation" or "none") has no capt
 
 **Applies to.** Applies to &lt;table&gt; elements whose role is presentation or none, the only way markup says a table is for layout. A page with none is notApplicable.
 
-**Expectation.** The table has no non-empty summary attribute and contains no &lt;caption&gt;, &lt;th&gt;, &lt;thead&gt;, &lt;tfoot&gt;, &lt;colgroup&gt; or element with role="rowheader" or role="columnheader", and none of its &lt;td&gt; cells carries scope, headers or axis (RGAA 5.8.1). Only the table's own cells count, not those of a table nested inside it. A table that has such markup and also looks like a data table is reported as cantTell instead of fail: 5.8.1 applies to layout tables, and role="presentation" on a real data table is a different defect (its headers are no longer exposed). It looks like a data table when it has at least two rows and two columns, a data cell, and a full header row (every cell of the first row a header) or a full header column (the first cell of every row a header), headers being &lt;th&gt;, role="columnheader" or role="rowheader".
+**Expectation.** The table has no non-empty summary attribute and contains no &lt;caption&gt;, &lt;th&gt;, &lt;thead&gt;, &lt;tfoot&gt; or element with role="rowheader" or role="columnheader", and none of its &lt;td&gt; cells carries scope, headers or axis (RGAA 5.8.1). Only the table's own cells count, not those of a table nested inside it. &lt;colgroup&gt; and &lt;col&gt; are not in 5.8.1's list: they set column widths, which a layout table may do. A table that has such markup and also looks like a data table is reported as cantTell instead of fail: 5.8.1 applies to layout tables, and role="presentation" on a real data table is a different defect (its headers are no longer exposed). It looks like a data table when it has at least two rows and two columns, a data cell, and a full header row (every cell of the first row a header) or a full header column (the first cell of every row a header), headers being &lt;th&gt;, role="columnheader" or role="rowheader".
 
 ### `rgaa-letters-spaced-with-spaces`
 
@@ -1186,14 +1186,15 @@ automatic · no formal WCAG SC mapping · confidence high · default severity mo
 
 Checks that a &lt;video&gt; with text tracks has at least one &lt;track kind="captions"&gt;, not only subtitles, and asks when its subtitles may be translations.
 
-**Applies to.** Applies to &lt;video&gt; elements with at least one &lt;track&gt; child with a non-empty src carrying text for the video: kind="subtitles", kind="captions", or no kind at all, which HTML reads as subtitles. A track with no src delivers nothing and is ignored. A page with none is notApplicable.
+**Applies to.** Applies to &lt;video&gt; elements with at least one &lt;track&gt; child with a non-empty src carrying text for the video: kind="subtitles", kind="captions", no kind at all, which HTML reads as subtitles, or a kind HTML does not know (kind="caption"), which it reads as metadata. A track with no src delivers nothing and is ignored. A page with none is notApplicable.
 
 **Expectation.**
 
 At least one of those tracks has kind="captions" (RGAA 4.3.2). When the only tracks are subtitles:
 
-- fail when one of them has a srclang in the language of the video (the nearest lang attribute, compared on the primary subtag): a same-language subtitles track is most likely captions that do not say so;
-- cantTell otherwise (srclang in another language, or missing, or no language to compare with): the track may be a translation, which is not a caption track, and then 4.3.2 does not apply and the question is 4.3.1's.
+- fail when a track has a kind HTML does not know, such as kind="caption": HTML makes it metadata, which is never shown;
+- fail when a subtitles track has a srclang in the language of the video, as the lang attribute of the &lt;video&gt; itself gives it (primary subtag), or a label that names captions (« sourds et malentendants », SME, SDH, CC): it is captions that do not say so;
+- cantTell otherwise: the track may be a translation, which is not a caption track (glossary « Sous-titres synchronisés », note 2), and then 4.3.2 does not apply and the question is 4.3.1's. The page's language is no evidence of the audio's: an English talk with French subtitles on a French page is a translation.
 
 ### `rgaa-viewport-zoom-review`
 

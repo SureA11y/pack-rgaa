@@ -177,3 +177,14 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
     'fta_case_10'
   ]);
 });
+
+// &nbsp; is a space too: such a title names nothing, and 2.2 never sees it.
+test(`${RULE_ID}: a title of only non-breaking spaces is empty`, () => {
+  const rule = assertRule(
+    runa11yCoreOnHtml(page('<iframe src="a.html" title="&nbsp; "></iframe>'), RUN),
+    RULE_ID,
+    'fail',
+    { minOccurrences: 1, maxOccurrences: 1 }
+  );
+  assert.equal(rule.occurrences[0].data.details.reasonCode, 'emptyTitle');
+});

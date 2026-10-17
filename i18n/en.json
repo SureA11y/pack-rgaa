@@ -411,6 +411,7 @@
   "videoCaptionsTrackKind_title": "Video caption tracks use kind=\"captions\"",
   "videoCaptionsTrackKind_description": "Checks that a <video> with text tracks has at least one <track kind=\"captions\">, not only subtitles, and asks when its subtitles may be translations.",
   "videoCaptionsTrackKind_summary_fail": "This video has text tracks, but none with kind=\"captions\".",
+  "videoCaptionsTrackKind_summary_fail_invalidKind": "This video has a text track with kind=\"{{kind}}\", which HTML does not know, so it is never shown; none has kind=\"captions\".",
   "videoCaptionsTrackKind_hint_fail": "Mark the track that carries the captions with kind=\"captions\".",
   "videoCaptionsTrackKind_summary_cantTell_translation": "This video has only subtitles tracks, none in the language of the video; they may be translations rather than captions.",
   "videoCaptionsTrackKind_hint_cantTell_translation": "If a track carries captions for the video’s own language, mark it kind=\"captions\" with the matching srclang. If the tracks are translations, check that captions are provided some other way (RGAA 4.3.1).",

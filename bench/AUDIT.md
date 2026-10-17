@@ -33,9 +33,9 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 
 | # | Test | Kind | Finding | Status |
 |---|---|---|---|---|
-| T25-01 | 5.8.1 | FP | A layout table with only `<colgroup>` fails: colgroup is not in 5.8.1's list. | open |
+| T25-01 | 5.8.1 | FP | A layout table with only `<colgroup>` fails: colgroup is not in 5.8.1's list. | done |
 | T25-02 | 3.2 | FP | Text over a `z-index:-1` `::before` painted with an image is measured on the wrong background (C1). | core |
-| T25-03 | 4.3.2 | FP | A translation `kind="subtitles"` track fails when its `srclang` equals the page's language. | open |
+| T25-03 | 4.3.2 | FP | A translation `kind="subtitles"` track fails when its `srclang` equals the page's language. | done |
 | T25-04 | 3.3.1 | MISS/WM | No rule for 3.3; `rgaa-focus-indicator-contrast` measures 3:1 focus styles but is linked to 10.7.1 only; field borders are not measured. | open |
 | T25-05 | 5.4.1 | MISS | A data table titled by an adjacent heading is not asked about. | open |
 | T25-06 | 5.3.1 | WM | The headerless-table question is not linked to 5.3.1. | open |
@@ -43,7 +43,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T25-08 | 5.7.1 | MISS | A `th` with no scope, id or role in a table with headers on both axes (M6). | open |
 | T25-09 | 5.7.2 | FN | 5.7 passes when `scope` points the wrong way. | open |
 | T25-10 | 4.1 | FN | Media next to text that only mentions a transcript, or says there is none, passes. | open |
-| T25-11 | 4.3.2 | MISS | `<track kind="caption">` (an invalid kind, never displayed) is not failed. | open |
+| T25-11 | 4.3.2 | MISS | `<track kind="caption">` (an invalid kind, never displayed) is not failed. | done |
 | T25-12 | 3.2.x | WM | Every 3.2 failure names all four tests instead of the one its size and weight fall under. | open |
 | T25-13 | 3.2 | WO | Fails though the page offers a contrast mechanism (each test's second condition). | open |
 | T25-14 | 3.2 | FP | Logo and brand text fail, which the particular cases exempt. | open |
@@ -52,7 +52,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T25-17 | 4.x | MISS | Embedded players (YouTube, Vimeo…) and `autoplay=1` are invisible to theme 4 (Q3). | open |
 | T25-18 | 5.1.1 | FN | A complex table whose `aria-describedby` resolves to nothing passes. | open |
 | T25-19 | 5.6.1, 5.6.2 | MISS | Row or column headers marked up as bold `td` are not asked about. | open |
-| T25-20 | 2.1.1, 2.2.1 | FN | `title="&nbsp;"` passes 2.1 and escapes 2.2. | open |
+| T25-20 | 2.1.1, 2.2.1 | FN | `title="&nbsp;"` passes 2.1 and escapes 2.2. | done |
 | T25-21 | 3.1 | MISS | No rule: information given by colour alone. | open |
 | T25-22 | 3.2 | WO | `background-image:none,none` and one-colour gradients ask (C3). | core |
 

@@ -1415,11 +1415,11 @@ The caption track has `kind="captions"`.
 
 **Failed**
 ```html
-<video controls src="talk.mp4">
+<video controls src="talk.mp4" lang="en">
   <track src="talk.vtt" kind="subtitles" srclang="en" label="English">
 </video>
 ```
-On a page with `lang="en"`, the only text track is marked as subtitles although it is in the video's language. Subtitles in another language, or without `srclang`, are asked about instead (cantTell), since they may be translations.
+The only text track is marked as subtitles although it is in the video's language, as the video's `lang` gives it. A track with a kind HTML does not know, such as `kind="caption"`, fails too: it is never shown. Subtitles whose language can't be told to be the video's (the page's `lang` says nothing of the audio's) are asked about instead (cantTell), since they may be translations.
 
 ## rgaa-viewport-zoom-review
 

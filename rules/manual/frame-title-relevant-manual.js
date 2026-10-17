@@ -79,7 +79,7 @@ function runInPage(ctx) {
     if (!el || !dom.tagName(el)) continue;
     if (isAriaHidden(el)) continue;
     const title = String(dom.getAttribute(el, 'title') || '')
-      .replace(/[ \t\n\f\r]+/g, ' ')
+      .replace(/\s+/g, ' ')
       .trim();
     if (!title) continue;
 
