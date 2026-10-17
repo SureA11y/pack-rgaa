@@ -86,14 +86,11 @@ test('each rule result lists the rollups that group it; an empty list means none
 
   const rgaa = scan({ profile: 'rgaa-4.1.2' });
   assert.deepEqual(byId(rgaa, 'heading-order').rollupIds, ['rgaa-4.1.2-9.1']);
-  assert.deepEqual(byId(rgaa, 'img-alt-present').rollupIds, ['rgaa-4.1.2-1.1']);
+  assert.deepEqual(byId(rgaa, 'rgaa-img-alt-present').rollupIds, ['rgaa-4.1.2-1.1']);
   assert.deepEqual(byId(rgaa, 'rgaa-img-no-alt-decorative').rollupIds, ['rgaa-4.1.2-1.2']);
   // Under the tests' profile with WCAG, a rule is also grouped under its WCAG criterion.
   const both = scan({ profile: 'rgaa-4.1.2-with-wcag' });
-  assert.deepEqual(byId(both, 'img-alt-present').rollupIds, [
-    'wcag-1.1.1-non-text-content',
-    'rgaa-4.1.2-1.1'
-  ]);
+  assert.deepEqual(byId(both, 'img-alt-present').rollupIds, ['wcag-1.1.1-non-text-content']);
 });
 
 test('excludes apply to RGAA rollups like to any rollup', () => {

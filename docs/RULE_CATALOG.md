@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**69 rules total: 54 automatic (decide deterministically; can return `fail`), 15 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**71 rules total: 55 automatic (decide deterministically; can return `fail`), 16 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -14,7 +14,7 @@ Under **What a finding reports**, a rule lists the fields its findings carry in 
 
 See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_SCHEMA.md) for what `type`/`confidence`/`severity` mean on a scan result, and [`WCAG_CONFORMANCE.md`](https://github.com/SureA11y/core/blob/main/docs/WCAG_CONFORMANCE.md) for how these roll up to an SC-level conformance claim.
 
-## Automatic rules (54), can return `fail`
+## Automatic rules (55), can return `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -42,6 +42,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-html-elements-attributes-valid`](#rgaa-html-elements-attributes-valid) | HTML elements and attribute values are valid | — | — | high | moderate |
 | [`rgaa-html-lang-code-valid`](#rgaa-html-lang-code-valid) | Default language code is valid | — | — | high | serious |
 | [`rgaa-html-nesting-valid`](#rgaa-html-nesting-valid) | HTML elements are nested as HTML allows | — | — | high | moderate |
+| [`rgaa-img-alt-present`](#rgaa-img-alt-present) | Images that are not spacers have an alt attribute | — | — | high | serious |
 | [`rgaa-img-decorative-no-alternative`](#rgaa-img-decorative-no-alternative) | Decorative images have no aria-labelledby, aria-label or title | — | — | high | minor |
 | [`rgaa-img-no-alt-decorative`](#rgaa-img-no-alt-decorative) | Decorative images with no alt attribute | — | — | high | minor |
 | [`rgaa-label-for-target-valid`](#rgaa-label-for-target-valid) | Labels point to a form field | — | — | high | serious |
@@ -73,7 +74,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-video-captions-track-kind`](#rgaa-video-captions-track-kind) | Video caption tracks use kind="captions" | — | — | high | moderate |
 | [`rgaa-widget-label-in-name`](#rgaa-widget-label-in-name) | The accessible name of a scripted component contains its visible label | — | — | high | serious |
 
-## Manual rules (15), never `fail`
+## Manual rules (16), never `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -83,6 +84,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-embedded-refresh-review`](#rgaa-embedded-refresh-review) | Embedded content that may refresh itself lets the user control the refresh | — | — | low | moderate |
 | [`rgaa-fake-list`](#rgaa-fake-list) | Text laid out as a list uses list markup | — | — | low | moderate |
 | [`rgaa-field-group-legend`](#rgaa-field-group-legend) | Groups of form fields have a legend | — | — | medium | moderate |
+| [`rgaa-frame-title-relevant`](#rgaa-frame-title-relevant) | Frame titles are relevant | — | — | high | moderate |
 | [`rgaa-image-alt-long`](#rgaa-image-alt-long) | Text alternatives of images are short | — | — | medium | minor |
 | [`rgaa-keyboard-only-event-handlers`](#rgaa-keyboard-only-event-handlers) | Keyboard-only inline event handlers should have a pointer equivalent | — | — | low | moderate |
 | [`rgaa-letters-spaced-with-spaces`](#rgaa-letters-spaced-with-spaces) | Letters of a word are not spaced out with spaces | — | — | medium | minor |
@@ -101,13 +103,13 @@ What a scan runs under each profile (`engineOptions.profile`): the rules its tag
 |---|---|---|---|---|---|---|
 | `rgaa-4.1.2` | `rgaa` | version 4.1.2 | — | — | — | 2.1 |
 
-## Rollups (50)
+## Rollups (51)
 
 Each groups rules into one result, as a WCAG rollup does; the standard's own report sections show them.
 
 | Rollup ID | Title | Rules |
 |---|---|---|
-| `rgaa-4.1.2-1.1` | Chaque image porteuse d’information a-t-elle une alternative textuelle ? | `area-alt-present`, `img-alt-decorative`, `img-alt-present`, `input-image-alt-present`, `rgaa-area-alt-source`, `rgaa-canvas-role-img`, `rgaa-embed-image-role-img`, `rgaa-object-image-role-img`, `rgaa-role-img-aria-name`, `rgaa-svg-hidden-no-alternative`, `rgaa-svg-role-img`, `server-side-image-map-absent`, `svg-text-alternative-present` |
+| `rgaa-4.1.2-1.1` | Chaque image porteuse d’information a-t-elle une alternative textuelle ? | `area-alt-present`, `img-alt-decorative`, `input-image-alt-present`, `rgaa-area-alt-source`, `rgaa-canvas-role-img`, `rgaa-embed-image-role-img`, `rgaa-img-alt-present`, `rgaa-object-image-role-img`, `rgaa-role-img-aria-name`, `rgaa-svg-hidden-no-alternative`, `rgaa-svg-role-img`, `server-side-image-map-absent`, `svg-text-alternative-present` |
 | `rgaa-4.1.2-1.2` | Chaque image de décoration est-elle correctement ignorée par les technologies d’assistance ? | `rgaa-canvas-decorative-aria-hidden`, `rgaa-img-decorative-no-alternative`, `rgaa-img-no-alt-decorative`, `rgaa-svg-hidden-no-alternative` |
 | `rgaa-4.1.2-1.3` | Pour chaque image porteuse d’information ayant une alternative textuelle, cette alternative est-elle pertinente (hors cas particuliers) ? | `area-alt-quality`, `canvas-text-alternative-quality`, `embed-text-alternative-quality`, `image-redundant-alt`, `img-alt-quality`, `input-image-alt-decorative`, `input-image-alt-quality`, `object-text-alternative-quality`, `rgaa-image-alt-long`, `svg-text-alternative-quality` |
 | `rgaa-4.1.2-1.9` | Chaque légende d’image est-elle, si nécessaire, correctement reliée à l’image correspondante ? | `rgaa-figure-caption-structure` |
@@ -132,6 +134,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-13.3` | Dans chaque page web, chaque document bureautique en téléchargement possède-t-il, si nécessaire, une version accessible (hors cas particuliers) ? | `rgaa-office-document-link` |
 | `rgaa-4.1.2-13.9` | Dans chaque page web, le contenu proposé est-il consultable quelle que soit l’orientation de l’écran (portrait ou paysage) (hors cas particuliers) ? | `css-orientation-lock`, `rgaa-orientation-content-parity` |
 | `rgaa-4.1.2-2.1` | Chaque cadre a-t-il un titre de cadre ? | `rgaa-frame-title-attribute-present` |
+| `rgaa-4.1.2-2.2` | Pour chaque cadre ayant un titre de cadre, ce titre de cadre est-il pertinent ? | `rgaa-frame-title-relevant` |
 | `rgaa-4.1.2-3.2` | Dans chaque page web, le contraste entre la couleur du texte et la couleur de son arrière-plan est-il suffisamment élevé (hors cas particuliers) ? | `contrast-computable`, `rgaa-contrast-minimum` |
 | `rgaa-4.1.2-4.1` | Chaque média temporel pré-enregistré a-t-il, si nécessaire, une transcription textuelle ou une audiodescription (hors cas particuliers) ? | `rgaa-media-transcript-adjacent` |
 | `rgaa-4.1.2-4.10` | Chaque son déclenché automatiquement est-il contrôlable par l’utilisateur ? | `no-autoplay-audio` |
@@ -553,7 +556,19 @@ Checks that every &lt;iframe&gt; and &lt;frame&gt; has a title attribute that is
 
 **Applies to.** Applies to every &lt;iframe&gt; and &lt;frame&gt; in the scan scope that is not hidden from assistive technologies by aria-hidden="true", on itself or on an ancestor. The RGAA glossary "Titre de cadre", note 2, makes criteria 2.1 and 2.2 not applicable to such a frame. A frame removed from the tab order (tabindex="-1") is still in scope. Frames hidden by the default hidden-content policy (display:none, hidden) are not checked. A page with no applicable frame is notApplicable.
 
-**Expectation.** The frame has a title attribute (RGAA 2.1.1: « Chaque cadre (balise &lt;iframe&gt; ou &lt;frame&gt;) a-t-il un attribut title ? »), and it is not empty. Criterion 2.1 asks for a « titre de cadre », which the glossary defines as the content of that attribute, so an empty or blank title gives the frame no title: it fails here, as auditors report it, and 2.2.1 (the title's relevance, for frames that have one) does not apply to it. An accessible name from aria-label or aria-labelledby does not replace the title.
+**Expectation.** The frame has a title attribute (RGAA 2.1.1: « Chaque cadre (balise &lt;iframe&gt; ou &lt;frame&gt;) a-t-il un attribut title ? »), and it is not empty. Criterion 2.1 asks for a « titre de cadre », which the glossary defines as the content of that attribute, so an empty or blank title gives the frame no title: it fails here, as auditors report it, and 2.2.1 (the title's relevance, for frames that have one, which rgaa-frame-title-relevant asks about) does not apply to it. Test 2.1.1 and its methodology ask only that the attribute be there, so this follows the criterion and the glossary rather than the test's letter. An accessible name from aria-label or aria-labelledby does not replace the title.
+
+### `rgaa-frame-title-relevant`
+
+**Frame titles are relevant**
+
+manual · no formal WCAG SC mapping · confidence high · default severity moderate
+
+Flags each &lt;iframe&gt; and &lt;frame&gt; with a title for a person to check that the title says what the frame contains.
+
+**Applies to.** Applies to every &lt;iframe&gt; and &lt;frame&gt; in the scan scope whose title attribute is not empty or blank, and that is not hidden from assistive technologies by aria-hidden="true", on itself or on an ancestor (RGAA glossary "Titre de cadre", note 2, makes 2.2 not applicable to it). Frames hidden by the default hidden-content policy are not checked. A frame with no title, or an empty one, has no « titre de cadre »: rgaa-frame-title-attribute-present fails it under 2.1.1. A page with no applicable frame is notApplicable.
+
+**Expectation.** Each such frame is flagged, quoting its title and its address, for a person to check RGAA 2.2.1: the content of the title attribute is relevant, that is, it says what the frame contains. The glossary accepts a generic mention for a frame used only for technical purposes, such as title="contenus techniques Facebook".
 
 ### `rgaa-heading-content-present`
 
@@ -658,6 +673,18 @@ Flags an image whose text alternative is longer than 80 characters, for a person
 
 **Expectation.** A text alternative longer than 80 characters (spaces collapsed), from any of those sources, is flagged for a person to decide whether it is short and concise, as RGAA 1.3.9 asks, or one of the particular cases it allows. RGAA's test gives no number: 80 characters is a threshold for asking, not a limit. The occurrence lists each source over the threshold. Fallback content of &lt;canvas&gt; and &lt;object&gt; is not measured.
 
+### `rgaa-img-alt-present`
+
+**Images that are not spacers have an alt attribute**
+
+automatic · no formal WCAG SC mapping · confidence high · default severity serious
+
+Checks that each exposed &lt;img&gt; has an alt attribute or another text alternative, except a spacer image, which is decorative.
+
+**Applies to.** Applies to &lt;img&gt; elements included in the accessibility tree, as img-alt-present does: role="presentation" or role="none" leaves an image out only when it is not focusable, and hidden images are left out. A spacer is left out too: an image 2 px wide or high, or less, as rendered or, with no layout, by its width or height attribute, unless it is in a &lt;figure&gt; with a &lt;figcaption&gt; or is the only content of a link or a button. A page with none is notApplicable.
+
+**Expectation.** Each applicable &lt;img&gt; has an alt attribute (alt="" included), a non-empty aria-label or aria-labelledby, or a non-empty title. One with none of these fails 1.1.1 step 1: RGAA 1.1.1 asks each image carrying information for a text alternative. A spacer carries none, so it is decorative, and the alt="" it lacks is 1.2.1's matter, which rgaa-img-no-alt-decorative fails.
+
 ### `rgaa-img-decorative-no-alternative`
 
 **Decorative images have no aria-labelledby, aria-label or title**
@@ -678,11 +705,11 @@ automatic · no formal WCAG SC mapping · confidence high · default severity mi
 
 Checks each &lt;img&gt; with no alt attribute and no alternative: fails a spacer image, and asks whether the others are decorative.
 
-**Applies to.** Applies to &lt;img&gt; elements with no alt attribute and no alternative (no non-empty aria-label, aria-labelledby or title), not marked decorative (aria-hidden="true", role="presentation"/"none"), and not in a &lt;figure&gt; with a &lt;figcaption&gt; (criterion 1.2 does not apply to an image with a caption). An image that is the only content of a link or a button is left out: it carries the control's information, so it is not decorative, and img-alt-present fails it under 1.1.1. Content hidden with CSS or the hidden attribute is left out too. A page with none is notApplicable.
+**Applies to.** Applies to &lt;img&gt; elements with no alt attribute and no alternative (no non-empty aria-label, aria-labelledby or title), not marked decorative (aria-hidden="true", role="presentation"/"none"), and not in a &lt;figure&gt; with a &lt;figcaption&gt; (criterion 1.2 does not apply to an image with a caption). An image that is the only content of a link or a button is left out: it carries the control's information, so it is not decorative, and rgaa-img-alt-present fails it under 1.1.1. Content hidden with CSS or the hidden attribute is left out too. A page with none is notApplicable.
 
 **Expectation.**
 
-Such an image fails one criterion, and which one depends on what it is: 1.1.1 if it carries information (img-alt-present fails it there), 1.2.1 if it is decorative, since 1.2.1 step 2 asks a decorative &lt;img&gt; for alt="" (or aria-hidden="true", or role="presentation"). This rule reports the 1.2.1 side:
+Such an image fails one criterion, and which one depends on what it is: 1.1.1 if it carries information (rgaa-img-alt-present fails it there), 1.2.1 if it is decorative, since 1.2.1 step 2 asks a decorative &lt;img&gt; for alt="" (or aria-hidden="true", or role="presentation"). This rule reports the 1.2.1 side:
 
 - Fails a spacer: an image 2 px wide or high, or less, as rendered or, with no layout, by its width or height attribute. A line or a pixel carries no information.
 - Asks (cantTell) about the others: if the image is decorative, it fails 1.2.1; if it carries information, 1.1.1 only. A person decides.

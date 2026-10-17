@@ -103,12 +103,16 @@ for (const [ruleId, html, outcome, tests, why] of CASES) {
   });
 }
 
-test('img-alt-present fails alt=" " under RGAA 1.1.1, and img-alt-decorative does not ask', () => {
+// img-alt-present's WCAG verdict stays, and rgaa-img-alt-present, which
+// leaves spacers to 1.2, reports RGAA 1.1.1.
+test('alt=" " fails RGAA 1.1.1 through rgaa-img-alt-present, and img-alt-decorative does not ask', () => {
   const result = runa11yCoreOnHtml(page('<img id="a" src="a.png" alt=" ">'), RGAA);
   const rule = (id) => result.checksResults.find((r) => r.ruleId === id);
   assert.equal(rule('img-alt-decorative').outcome, 'notApplicable');
   assert.equal(rule('img-alt-present').outcome, 'fail');
-  assert.ok(rgaaTestsOf(rule('img-alt-present')).includes('1.1.1'));
+  assert.ok(!rgaaTestsOf(rule('img-alt-present')).includes('1.1.1'));
+  assert.equal(rule('rgaa-img-alt-present').outcome, 'fail');
+  assert.ok(rgaaTestsOf(rule('rgaa-img-alt-present')).includes('1.1.1'));
 });
 
 // RGAA 5.7.4 covers cells associated with headers that have an id; a cell

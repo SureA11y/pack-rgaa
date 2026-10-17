@@ -4,13 +4,13 @@ This pack's rules and their scenario pages. Every rule should have a `tests/fixt
 
 ## Summary
 
-Total rules: **69**. With fixture: **69**. Without fixture: **0**.
+Total rules: **71**. With fixture: **71**. Without fixture: **0**.
 
 ## Rules WITHOUT a fixture (0)
 
 None — every rule has a fixture.
 
-## Rules WITH a fixture (69)
+## Rules WITH a fixture (71)
 
 | Rule ID | Type | Fixture | Cases | PASS | FAIL | CANTTELL | OTHER |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -39,12 +39,14 @@ None — every rule has a fixture.
 | rgaa-form-button-label-in-name-sources | automatic | `tests/fixtures/rgaa-form-button-label-in-name-sources-all-scenarios.html` | 9 | 2 | 3 | 2 | 2 |
 | rgaa-form-button-name-present | automatic | `tests/fixtures/rgaa-form-button-name-present-all-scenarios.html` | 9 | 3 | 3 | 2 | 1 |
 | rgaa-frame-title-attribute-present | automatic | `tests/fixtures/rgaa-frame-title-attribute-present-all-scenarios.html` | 10 | 1 | 6 | 0 | 3 |
+| rgaa-frame-title-relevant | manual | `tests/fixtures/rgaa-frame-title-relevant-all-scenarios.html` | 5 | 0 | 0 | 2 | 3 |
 | rgaa-heading-content-present | automatic | `tests/fixtures/rgaa-heading-content-present-all-scenarios.html` | 11 | 3 | 3 | 4 | 1 |
 | rgaa-heading-role-level-present | automatic | `tests/fixtures/rgaa-heading-role-level-present-all-scenarios.html` | 6 | 1 | 3 | 0 | 2 |
 | rgaa-html-elements-attributes-valid | automatic | `tests/fixtures/rgaa-html-elements-attributes-valid-all-scenarios.html` | 16 | 4 | 12 | 0 | 0 |
 | rgaa-html-lang-code-valid | automatic | `tests/fixtures/rgaa-html-lang-code-valid-all-scenarios.html` | 1 | 0 | 1 | 0 | 0 |
 | rgaa-html-nesting-valid | automatic | `tests/fixtures/rgaa-html-nesting-valid-all-scenarios.html` | 17 | 5 | 12 | 0 | 0 |
 | rgaa-image-alt-long | manual | `tests/fixtures/rgaa-image-alt-long-all-scenarios.html` | 6 | 0 | 0 | 0 | 6 |
+| rgaa-img-alt-present | automatic | `tests/fixtures/rgaa-img-alt-present-all-scenarios.html` | 8 | 3 | 3 | 0 | 2 |
 | rgaa-img-decorative-no-alternative | automatic | `tests/fixtures/rgaa-img-decorative-no-alternative-all-scenarios.html` | 9 | 3 | 2 | 2 | 2 |
 | rgaa-img-no-alt-decorative | automatic | `tests/fixtures/rgaa-img-no-alt-decorative-all-scenarios.html` | 8 | 0 | 2 | 2 | 4 |
 | rgaa-keyboard-only-event-handlers | manual | `tests/fixtures/rgaa-keyboard-only-event-handlers-all-scenarios.html` | 10 | 0 | 0 | 4 | 6 |

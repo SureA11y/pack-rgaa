@@ -199,24 +199,16 @@ test(`${RULE_ID}: screen-reader-only text is left out of the visible label`, () 
   assert.ok(rule && rule.outcome !== 'fail', rule && JSON.stringify(reasons(rule)));
 });
 
-// RGAA excuses punctuation and capitals only, so a word that differs by its
-// ending is not excused, but it is not certainly another label either
-// (nantes: "Recherche" shown, "Rechercher" as the name).
-test(`${RULE_ID}: a word that differs only by its ending is asked about`, () => {
+// RGAA's particular cases excuse punctuation, capitals and symbols only: a
+// word that differs by its ending is another word to a voice user, so it
+// fails (nantes: "Recherche" shown, "Rechercher" as the name).
+test(`${RULE_ID}: a word that differs only by its ending fails`, () => {
   for (const body of [
     '<label for="q">Recherche</label><input id="q" title="Rechercher">',
-    '<label for="q">Rechercher</label><input id="q" title="Recherche sur le site">'
+    '<label for="q">Rechercher</label><input id="q" title="Recherche sur le site">',
+    '<label for="n">Nom</label><input id="n" title="Nombre">'
   ]) {
-    const rule = assertRule(run(body), RULE_ID, 'cantTell', {
-      minOccurrences: 1,
-      maxOccurrences: 1
-    });
-    assert.deepEqual(reasons(rule), [['cantTell', 'POSSIBLE_INFLECTION']], body);
-    assert.equal(
-      rule.occurrences[0].i18n.summaryKey,
-      'fieldLabelInNameSources_summary_cantTell_inflection'
-    );
+    const rule = assertRule(run(body), RULE_ID, 'fail', { minOccurrences: 1, maxOccurrences: 1 });
+    assert.deepEqual(reasons(rule), [['fail', 'SOURCE_LACKS_VISIBLE_LABEL']], body);
   }
-  // Short words are not stretched: "Nom" is not "Nombre".
-  assertRule(run('<label for="n">Nom</label><input id="n" title="Nombre">'), RULE_ID, 'fail');
 });

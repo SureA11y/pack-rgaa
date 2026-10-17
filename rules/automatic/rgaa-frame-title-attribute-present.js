@@ -21,9 +21,12 @@
  *   Criterion 2.1 asks for a « titre de cadre », which the glossary defines
  *   as the content of that attribute, so an empty or blank title gives the
  *   frame no title: it fails here, as auditors report it, and 2.2.1 (the
- *   title's relevance, for frames that have one) does not apply to it. An
- *   accessible name from aria-label or aria-labelledby does not replace the
- *   title.
+ *   title's relevance, for frames that have one, which
+ *   rgaa-frame-title-relevant asks about) does not apply to it. Test 2.1.1
+ *   and its methodology ask only that the attribute be there, so this
+ *   follows the criterion and the glossary rather than the test's letter.
+ *   An accessible name from aria-label or aria-labelledby does not replace
+ *   the title.
  * @implementation-notes
  * - WCAG 4.1.2 accepts any accessible name, so iframe-name-present passes
  *   a frame named by aria-label and skips frames with tabindex="-1".

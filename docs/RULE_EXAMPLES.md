@@ -524,21 +524,27 @@ The frame has a `title` attribute (RGAA 2.1.1).
 ```
 The frame has an accessible name, which WCAG 4.1.2 accepts, but no `title` attribute, which RGAA 2.1.1 asks for. Only `aria-hidden="true"` takes a frame out of scope; `tabindex="-1"` does not.
 
-## rgaa-frame-title-not-empty
-
-*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
-
-**Passed**
-```html
-<iframe src="weather.html" title="Weather forecast"></iframe>
-```
-The title is not empty. Whether it is relevant is for a person.
-
 **Failed**
 ```html
 <iframe src="map.html" title="" aria-label="Map"></iframe>
 ```
-The title is empty, so it cannot be relevant (RGAA 2.2.1). The `aria-label` gives the frame a name for WCAG, but 2.2.1 judges the `title` attribute alone.
+The title is empty, so the frame has no « titre de cadre », the content of its `title` attribute (RGAA criterion 2.1 and its glossary). The `aria-label` does not replace it.
+
+## rgaa-frame-title-relevant
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<iframe src="map.html" title="iframe"></iframe>
+```
+The frame has a title, so a person checks that it says what the frame contains (RGAA 2.2.1). "iframe" names nothing.
+
+**Not applicable**
+```html
+<iframe src="map.html" title=""></iframe>
+```
+An empty title gives the frame no « titre de cadre »: it fails 2.1.1, and 2.2 does not apply to it.
 
 ## rgaa-heading-content-present
 
@@ -653,6 +659,22 @@ The text alternative runs to 88 characters; a person decides whether it should b
 ```
 A short text alternative.
 
+## rgaa-img-alt-present
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Passed**
+```html
+<img src="logo.png" alt="Example">
+```
+The image has a text alternative (RGAA 1.1.1).
+
+**Failed**
+```html
+<img src="chart.png" width="300" height="200">
+```
+The image has no `alt` attribute and no other text alternative. A spacer (2 px or less) is left out: it is decorative, and fails 1.2.1 alone.
+
 ## rgaa-img-decorative-no-alternative
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -674,6 +696,22 @@ The image is hidden from assistive technologies but has an `aria-label`.
 <img src="logo.png" alt="" title="Logo">
 ```
 The image may carry information, and then its `title` is its alternative; a person decides.
+
+## rgaa-img-no-alt-decorative
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Not applicable**
+```html
+<img src="pixel.gif" alt="" width="1" height="1">
+```
+The spacer has an empty `alt`, as RGAA 1.2.1 asks of a decorative image; rgaa-img-decorative-no-alternative checks the rest of 1.2.1 for it.
+
+**Failed**
+```html
+<img src="pixel.gif" width="1" height="1">
+```
+A 1 by 1 px image carries no information, so it is decorative, and it has no `alt` attribute (RGAA 1.2.1).
 
 ## rgaa-keyboard-only-event-handlers
 

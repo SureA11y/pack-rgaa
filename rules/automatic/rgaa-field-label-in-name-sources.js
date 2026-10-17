@@ -33,8 +33,9 @@
  *   `family` constant and the messages; the four label-in-name files are
  *   changed together. That file documents the comparison and the cases
  *   asked about instead of failed (a possible symbol, an abbreviation, text
- *   in parentheses, a word that differs only by its ending, such as
- *   "Recherche" for "Rechercher").
+ *   in parentheses). A word that differs only by its ending ("Recherche"
+ *   for "Rechercher") fails: the particular cases of 11.2 excuse only
+ *   punctuation, capital letters and symbols.
  * - Opt-in (tag `rgaa`): WCAG 2.5.3 compares only the accessible name,
  *   which label-in-name checks; this rule runs only under the rgaa-4.1.2
  *   profile, the `rgaa` tag or its own id.
@@ -399,22 +400,6 @@ function runInPage(ctx) {
     return false;
   }
 
-  // The same words but for an ending: each word of the visible label is the
-  // source's word or starts it, or the reverse, the shorter one of 4
-  // letters or more ("Recherche" for "Rechercher").
-  function containsInflectedRun(needle, hay) {
-    if (!needle.length) return false;
-    const close = (a, b) => {
-      if (a === b) return true;
-      const [short, long] = a.length < b.length ? [a, b] : [b, a];
-      return Array.from(short).length >= 4 && long.indexOf(short) === 0;
-    };
-    for (let i = 0; i + needle.length <= hay.length; i++) {
-      if (needle.every((w, j) => close(w, hay[i + j]))) return true;
-    }
-    return false;
-  }
-
   function abbreviatedWords(s) {
     // A word directly followed by a period that ends it ("av." in "l'av. Foch").
     const found = new Set();
@@ -475,8 +460,7 @@ function runInPage(ctx) {
   }
 
   // 'yes' when the source contains the visible label; otherwise why it may
-  // still be acceptable ('abbreviation', 'parentheses', 'inflection',
-  // 'symbol'), or 'no'.
+  // still be acceptable ('abbreviation', 'parentheses', 'symbol'), or 'no'.
   function compare(label, sourceText) {
     const labelTokens = tokenize(label.text, false);
     const sourceTokens = tokenize(sourceText, false);
@@ -493,9 +477,6 @@ function runInPage(ctx) {
       containsWordRun(withoutParentheses, sourceTokens, null)
     ) {
       return 'parentheses';
-    }
-    if (containsInflectedRun(tokenize(label.text, true), tokenize(sourceText, true))) {
-      return 'inflection';
     }
     if (label.elements.some(isIconFontElement)) return 'symbol';
     const whole = label.text.toLowerCase();
@@ -522,7 +503,6 @@ function runInPage(ctx) {
   const UNCERTAIN_CODES = {
     abbreviation: 'POSSIBLE_ABBREVIATION',
     parentheses: 'PARENTHESISED_TEXT_MISSING',
-    inflection: 'POSSIBLE_INFLECTION',
     symbol: 'POSSIBLE_SYMBOL'
   };
 
@@ -562,16 +542,6 @@ function runInPage(ctx) {
         'A label source of this form field differs from its visible label only by an abbreviation or by text in parentheses.',
       hint: 'Check whether the source still contains the visible label as a user would say it. RGAA excuses only punctuation and capital letters.',
       needed: 'Whether the source says the visible label, abbreviation or parenthesised text aside.'
-    },
-    POSSIBLE_INFLECTION: {
-      reasonCode: 'POSSIBLE_INFLECTION',
-      outcome: 'cantTell',
-      summaryKey: 'fieldLabelInNameSources_summary_cantTell_inflection',
-      hintKey: 'fieldLabelInNameSources_hint_cantTell_nearMatch',
-      summary:
-        'A label source of this form field differs from its visible label only by the ending of a word, such as "Recherche" and "Rechercher".',
-      hint: 'Check whether the source still contains the visible label as a user would say it. RGAA excuses only punctuation and capital letters.',
-      needed: 'Whether the source says the visible label, a word ending aside.'
     },
     PARENTHESISED_TEXT_MISSING: {
       reasonCode: 'PARENTHESISED_TEXT_MISSING',

@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 69,
-    "withFixture": 69,
+    "total": 71,
+    "withFixture": 71,
     "withoutFixture": 0
   },
   "rows": [
@@ -431,6 +431,23 @@
       }
     },
     {
+      "ruleId": "rgaa-frame-title-relevant",
+      "title": "Frame titles are relevant",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/frame-title-relevant-manual.js",
+      "testFile": "tests/rules/manual/rgaa-frame-title-relevant.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-frame-title-relevant-all-scenarios.html",
+      "totalCases": 5,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 2,
+        "OTHER": 3
+      }
+    },
+    {
       "ruleId": "rgaa-heading-content-present",
       "title": "Headings have content",
       "type": "automatic",
@@ -530,6 +547,23 @@
         "FAIL": 0,
         "CANTTELL": 0,
         "OTHER": 6
+      }
+    },
+    {
+      "ruleId": "rgaa-img-alt-present",
+      "title": "Images that are not spacers have an alt attribute",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-img-alt-present.js",
+      "testFile": "tests/rules/automatic/rgaa-img-alt-present.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-img-alt-present-all-scenarios.html",
+      "totalCases": 8,
+      "caseCounts": {
+        "PASS": 3,
+        "FAIL": 3,
+        "CANTTELL": 0,
+        "OTHER": 2
       }
     },
     {

@@ -338,7 +338,11 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-frame-title-attribute-present': {
       tests: ['2.1.1'],
-      note: 'Fails an <iframe> or <frame> with no title attribute, which is 2.1.1 step 2 as written, or with an empty or blank one: criterion 2.1 asks for a « titre de cadre », which the glossary defines as the content of the title attribute, so an empty attribute gives the frame no title. Auditors report an empty title under 2.1, and 2.2.1 applies only to frames that have a title. aria-label or aria-labelledby does not replace it, and a frame with tabindex="-1" is still checked. A frame with aria-hidden="true" on itself or an ancestor is left out, since the glossary "Titre de cadre" (note 2) makes 2.1 not applicable to it.'
+      note: 'Fails an <iframe> or <frame> with no title attribute, which is 2.1.1 step 2 as written, or with an empty or blank one: criterion 2.1 asks for a « titre de cadre », which the glossary defines as the content of the title attribute, so an empty attribute gives the frame no title. Auditors report an empty title under 2.1, and 2.2.1 applies only to frames that have a title, which rgaa-frame-title-relevant asks about. Test 2.1.1 as written asks only for the attribute, so this follows the criterion and the glossary rather than the letter of the test. aria-label or aria-labelledby does not replace it, and a frame with tabindex="-1" is still checked. A frame with aria-hidden="true" on itself or an ancestor is left out, since the glossary "Titre de cadre" (note 2) makes 2.1 not applicable to it.'
+    },
+    'rgaa-frame-title-relevant': {
+      tests: ['2.2.1'],
+      note: 'Asks, quoting it, whether the title of each frame that has a non-empty one says what the frame contains, which is 2.2.1 step 2. Frames with aria-hidden="true" are left out (glossary "Titre de cadre", note 2). A frame with no title or an empty one fails 2.1.1 (rgaa-frame-title-attribute-present) and is left out here.'
     },
     'rgaa-heading-content-present': {
       tests: ['9.1.2'],
@@ -378,7 +382,7 @@ const RGAA_RULE_TESTS = {
     },
     'identical-iframes-same-purpose': {
       tests: [],
-      note: 'Flags iframe/frame elements that share an accessible name but embed different resources (WCAG 4.1.2). Not linked to 2.2.1, which judges only the title attribute: this rule groups frames by accessible name, which may come from aria-label. rgaa-frame-title-attribute-present fails an empty title under 2.1.1; whether a non-empty title is relevant is for a person.'
+      note: 'Flags iframe/frame elements that share an accessible name but embed different resources (WCAG 4.1.2). Not linked to 2.2.1, which judges only the title attribute: this rule groups frames by accessible name, which may come from aria-label. rgaa-frame-title-attribute-present fails an empty title under 2.1.1, and rgaa-frame-title-relevant asks whether a non-empty one is relevant.'
     },
     'identical-links-same-purpose': {
       tests: [],
@@ -409,8 +413,12 @@ const RGAA_RULE_TESTS = {
       note: 'Asks whether an <img>, <svg> or <canvas> left out of the accessibility tree (alt="", aria-hidden, role none/presentation, unlabeled svg/canvas) is really decorative. That is step 2 (does the image carry information?) of 1.1.1, 1.1.5 and 1.1.8, and a \'no\' means an informative image with no alternative. It does not check the 1.2.x conditions for correctly ignoring decorative images.'
     },
     'img-alt-present': {
+      tests: [],
+      note: 'Fails an exposed <img> (not hidden, not a non-focusable role none/presentation) that has no alt, no ARIA name and no title (WCAG 1.1.1). Not linked to RGAA: WCAG 1.1.1 covers decorative images too, so it fails a spacer, which RGAA files under 1.2.1 alone (rgaa-img-no-alt-decorative). rgaa-img-alt-present takes 1.1.1 with the spacers left out, so no image with no alt fails both 1.1 and 1.2.'
+    },
+    'rgaa-img-alt-present': {
       tests: ['1.1.1'],
-      note: 'Fails an exposed <img> (not hidden, not a non-focusable role none/presentation) that has no alt, no ARIA name and no title. If the image is informative, that fails 1.1.1 step 3. If it is decorative, it lacks the alt="" / aria-hidden / role=presentation that 1.2.1 step 2 requires instead, which rgaa-img-no-alt-decorative reports. Not linked to 1.2.1 as well: a mapping applies to every finding, and such an image fails one of the two criteria, not both (an image that is the only content of a link carries information).'
+      note: 'Fails an exposed <img> with no alt, no ARIA name and no title, as img-alt-present does, except a spacer (2 px wide or high, or less, not captioned, not the only content of a link or button), which is decorative and fails 1.2.1 through rgaa-img-no-alt-decorative instead. An image that is not a spacer still fails 1.1.1 step 1 here: whether it is decorative, so that it fails 1.2.1 instead, is for a person, and rgaa-img-no-alt-decorative asks it under 1.2.1. Not linked to 1.2.1: a mapping applies to every finding, and such an image fails one of the two criteria, not both.'
     },
     'img-alt-quality': {
       tests: ['1.3.1'],
@@ -418,7 +426,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-img-no-alt-decorative': {
       tests: ['1.2.1'],
-      note: 'Fails an <img> with no alt and no alternative that is 2 px wide or high, or less (a spacer, so decorative): 1.2.1 step 2 asks a decorative <img> for alt="". Asks about the other <img> with no alt and no alternative, which fail 1.2.1 if decorative and 1.1.1 (img-alt-present) if not. An image that is the only content of a link or button is left out: it carries the control\'s information. An image with a caption is left out, as 1.2 does not apply to it.'
+      note: 'Fails an <img> with no alt and no alternative that is 2 px wide or high, or less (a spacer, so decorative): 1.2.1 step 2 asks a decorative <img> for alt="". Asks about the other <img> with no alt and no alternative, which fail 1.2.1 if decorative and 1.1.1 (rgaa-img-alt-present) if not. rgaa-img-alt-present leaves spacers out, so a spacer fails 1.2 alone. An image that is the only content of a link or button is left out: it carries the control\'s information. An image with a caption is left out, as 1.2 does not apply to it.'
     },
     'rgaa-img-decorative-no-alternative': {
       tests: ['1.2.1'],

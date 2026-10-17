@@ -14,12 +14,12 @@
  *   a <figure> with a <figcaption> (criterion 1.2 does not apply to an
  *   image with a caption). An image that is the only content of a link or a
  *   button is left out: it carries the control's information, so it is not
- *   decorative, and img-alt-present fails it under 1.1.1. Content hidden
+ *   decorative, and rgaa-img-alt-present fails it under 1.1.1. Content hidden
  *   with CSS or the hidden attribute is left out too. A page with none is
  *   notApplicable.
  * @expectation
  *   Such an image fails one criterion, and which one depends on what it is:
- *   1.1.1 if it carries information (img-alt-present fails it there), 1.2.1
+ *   1.1.1 if it carries information (rgaa-img-alt-present fails it there), 1.2.1
  *   if it is decorative, since 1.2.1 step 2 asks a decorative <img> for
  *   alt="" (or aria-hidden="true", or role="presentation"). This rule
  *   reports the 1.2.1 side:
@@ -32,7 +32,8 @@
  * - img-alt-present used to be linked to both 1.1.1 and 1.2.1, so every
  *   image with no alt failed both criteria, though it fails only one: on
  *   bordeaux.fr, social icons that are the only content of their links
- *   failed 1.2.
+ *   failed 1.2. rgaa-img-alt-present now takes 1.1.1 and leaves spacers
+ *   out, so a spacer fails here alone.
  * - A rendered size of 0 says nothing (an image not loaded yet), so it is
  *   asked about.
  * - Opt-in (tag `rgaa`): the rule runs only under the rgaa-4.1.2 profile,
