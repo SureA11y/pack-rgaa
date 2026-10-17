@@ -950,7 +950,7 @@ One `<main>` is visible; the other carries the `hidden` attribute (RGAA 9.2.1 st
   </body>
 </html>
 ```
-The second `<main>` is hidden by CSS only; RGAA wants the `hidden` attribute. `role="main"` with no `<main>` element fails too, and so does a page with text and neither. A page with no text of its own (only a frame or a canvas) is asked about, and a page without the HTML5 doctype is not applicable.
+The second `<main>` is hidden by CSS only; RGAA wants the `hidden` attribute. `role="main"` with no `<main>` element fails too, as do `role="banner"`, `"navigation"` or `"contentinfo"` on another element than `<header>`, `<nav>` or `<footer>`, and a page with text and no `<main>`. A page with no text of its own (only a frame or a canvas) is asked about, and a page without the HTML5 doctype is not applicable.
 
 ## rgaa-markup-validation-review
 

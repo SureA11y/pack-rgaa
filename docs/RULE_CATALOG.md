@@ -146,7 +146,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-5.6` | Pour chaque tableau de données, chaque en-tête de colonne et chaque en-tête de ligne sont-ils correctement déclarés ? | `rgaa-data-table-headers-review` |
 | `rgaa-4.1.2-5.7` | Pour chaque tableau de données, la technique appropriée permettant d’associer chaque cellule avec ses en-têtes est-elle utilisée (hors cas particuliers) ? | `rgaa-th-scope-row-col`, `table-headers-attr-valid` |
 | `rgaa-4.1.2-5.8` | Chaque tableau de mise en forme ne doit pas utiliser d’éléments propres aux tableaux de données. Cette règle est-elle respectée ? | `rgaa-layout-table-no-data-markup` |
-| `rgaa-4.1.2-6.1` | Chaque lien est-il explicite (hors cas particuliers) ? | `link-name-quality`, `rgaa-link-context-review`, `rgaa-link-label-in-name-sources` |
+| `rgaa-4.1.2-6.1` | Chaque lien est-il explicite (hors cas particuliers) ? | `identical-links-same-purpose`, `link-name-quality`, `rgaa-link-context-review`, `rgaa-link-label-in-name-sources` |
 | `rgaa-4.1.2-6.2` | Dans chaque page web, chaque lien a-t-il un intitulé ? | `rgaa-link-content-label-present` |
 | `rgaa-4.1.2-7.1` | Chaque script est-il, si nécessaire, compatible avec les technologies d’assistance ? | `aria-role-name-present`, `dialog-name-present`, `menuitem-name-present`, `rgaa-scripted-components-review`, `rgaa-widget-label-in-name`, `tab-name-present`, `treeitem-name-present` |
 | `rgaa-4.1.2-7.3` | Chaque script est-il contrôlable par le clavier et par tout dispositif de pointage (hors cas particuliers) ? | `mouse-only-event-handlers`, `rgaa-keyboard-only-event-handlers` |
@@ -862,7 +862,7 @@ Steps 4 and 5 of RGAA 9.2.1:
 - the main content zone is structured with a &lt;main&gt; element. Every page has a main content zone (glossary « Zone de contenu principal »), so a page with text and no &lt;main&gt; element fails, whether or not it has role="main". A page with neither and no text of its own (only frames, a canvas or shadow DOM content) is asked about (cantTell), since only a person can say where its main content is;
 - when there are several &lt;main&gt; elements, all but one carry the hidden attribute. Every &lt;main&gt; is counted, hidden or not: CSS or aria-hidden alone does not do (« l'utilisation d'un style seul restera insuffisante », 9.2 technical note). A &lt;main&gt; hidden only through a hidden ancestor, or inside a closed &lt;details&gt; or &lt;dialog&gt;, is asked about, since the step speaks of the element's own attribute. A page whose every &lt;main&gt; carries hidden is asked about too.
 
-Steps 1 to 3 and 6 (header, navigation, footer) are left to a person.
+Steps 1, 2 and 6 also name the element: a zone marked with role="banner", "navigation" or "contentinfo" on another element than &lt;header&gt;, &lt;nav&gt; or &lt;footer&gt; fails (roleZoneOnly), unless such an element wraps it or sits inside it. Whether a page's header, navigation and footer zones are marked at all, and step 3 (&lt;nav&gt; kept for navigation zones), are left to a person.
 
 ### `rgaa-markup-validation-review`
 

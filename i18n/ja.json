@@ -210,6 +210,8 @@
   "mainElementStructure_hint_fail_roleMainOnly": "主要コンテンツには <main> 要素を使ってください。",
   "mainElementStructure_summary_fail_noMain": "このページには <main> 要素も role=\"main\" もありません。",
   "mainElementStructure_hint_fail_noMain": "ページの主要コンテンツを <main> 要素で囲んでください。",
+  "mainElementStructure_summary_fail_roleZoneOnly": "この <{{tag}}> には role=\"{{role}}\" がありますが、領域が <{{element}}> 要素で構造化されていません。",
+  "mainElementStructure_hint_fail_roleZoneOnly": "領域を <{{element}}> 要素で構造化してください（RGAA 9.2.1）。ロールだけでは不十分です。",
   "mainElementStructure_summary_cantTell_noMain": "ページに <main> 要素も role=\"main\" もありません。",
   "mainElementStructure_hint_cantTell_noMain": "主要コンテンツがどこかを確認し、<main> 要素で囲んでください。",
   "mainElementStructure_summary_cantTell_hiddenByAncestor": "この <main> 要素は祖先要素によって隠されていますが、それ自体には hidden 属性がありません。",

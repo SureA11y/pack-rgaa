@@ -210,6 +210,8 @@
   "mainElementStructure_hint_fail_roleMainOnly": "Verwenden Sie für den Hauptinhalt ein <main>-Element.",
   "mainElementStructure_summary_fail_noMain": "Die Seite hat weder ein <main>-Element noch role=\"main\".",
   "mainElementStructure_hint_fail_noMain": "Umschließen Sie den Hauptinhalt der Seite mit einem <main>-Element.",
+  "mainElementStructure_summary_fail_roleZoneOnly": "Dieses <{{tag}}> hat role=\"{{role}}\", aber der Bereich ist nicht mit einem <{{element}}>-Element strukturiert.",
+  "mainElementStructure_hint_fail_roleZoneOnly": "Strukturieren Sie den Bereich mit einem <{{element}}>-Element (RGAA 9.2.1): die Rolle allein genügt nicht.",
   "mainElementStructure_summary_cantTell_noMain": "Die Seite hat weder ein <main>-Element noch role=\"main\".",
   "mainElementStructure_hint_cantTell_noMain": "Prüfen Sie, wo der Hauptinhalt ist, und umschließen Sie ihn mit einem <main>-Element.",
   "mainElementStructure_summary_cantTell_hiddenByAncestor": "Dieses <main>-Element wird durch einen Vorfahren verborgen, hat aber selbst kein hidden-Attribut.",

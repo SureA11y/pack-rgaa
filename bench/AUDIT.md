@@ -64,7 +64,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T67-02 | 7.1.1, 7.1.3 | MISS | Buttons outside a form are not checked for a name or label-in-name. | open |
 | T67-03 | 7.3.1 | MISS | `onclick` on a non-interactive element (M2). | open |
 | T67-04 | 6.1.5, 7.1.3, 11.2.5, 11.9.2 | MISS | Visible text inside `aria-hidden="true"` is left out of the visible label. | open |
-| T67-05 | 6.1.1–6.1.4 | WM | `identical-links-same-purpose` is unlinked, though glossary note 3 of « Intitulé de lien » is its question. | open |
+| T67-05 | 6.1.1–6.1.4 | WM | `identical-links-same-purpose` is unlinked, though glossary note 3 of « Intitulé de lien » is its question. | done |
 | T67-06 | 6.1.2, 6.1.3, 6.1.5 | MISS | Note 2 (a `title` that drops the content's name) and images of text in links are not checked. | open |
 | T67-07 | 6.1.1–6.1.4 | MISS | Gaps in the French generic-phrase list; no list used without `lang`. | open |
 | T67-08 | 6.1 | WO | `link-name-quality` names a link by `title` before content (C4). | core |
@@ -80,7 +80,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 
 | # | Test | Kind | Finding | Status |
 |---|---|---|---|---|
-| T89-01 | 9.2.1 | MISS/WO | Steps 1–3 and 6 are never checked, yet 9.2 passes; `role="banner|navigation|contentinfo"` without the element passes. | open |
+| T89-01 | 9.2.1 | MISS/WO | Steps 1–3 and 6 are never checked, yet 9.2 passes; `role="banner|navigation|contentinfo"` without the element passes. | done for roles on other elements; unmarked zones and step 3 left to a person |
 | T89-02 | 9.2.1 | WO | A page with no `<main>` only asks (M3). | done (b0e64c1) |
 | T89-03 | 9.3.1, 9.3.2 | FP | An `<li role="presentation">` (pager) or `<li role="group">` (carousel) fails 9.3 (P7). | core |
 | T89-04 | 9.3.1, 9.3.2 | FP | A plain `<li>` in `<ul role="tablist|menu">` fails 9.3; the technical note sets widgets apart from lists. | core |
@@ -134,7 +134,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T11-09 | 11.10 | MISS | No rule: required fields, error messages (Q2). | open |
 | T11-10 | 11.9.1 | MISS | Rolls up as pass whenever a button has any name. | open |
 | T11-11 | 11.2.1, 11.2.2 | MISS | An empty `<label for>` or `title` as the only étiquette is not failed (M5). | open |
-| T11-12 | 11.2.3, 11.2.4 | WM | The aria-label and aria-labelledby relevance questions are filed under 11.2.2. | open |
+| T11-12 | 11.2.3, 11.2.4 | WM | The aria-label and aria-labelledby relevance questions are filed under 11.2.2. | done |
 | T11-13 | 11.8.1 | MISS | Groups faked with disabled or dashed options. | open |
 | T11-14 | 11.5.1 | MISS | Same-name checkbox sets and `role=radio` sets (Q13). | open |
 | T11-15 | 11.4 | MISS | Label placement (Q15). | open |

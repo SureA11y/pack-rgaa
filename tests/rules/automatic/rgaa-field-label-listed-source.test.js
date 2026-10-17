@@ -227,7 +227,12 @@ test(`${RULE_ID}: the map links it to 11.1.1 alone, and the WCAG field-name rule
     assert.ok(!tests(id).includes('11.1.1'), id);
   }
   assert.deepEqual(tests('aria-role-name-present'), ['7.1.1']);
-  assert.deepEqual(tests('form-control-programmatic-label-quality'), ['11.1.3', '11.2.2']);
+  assert.deepEqual(tests('form-control-programmatic-label-quality'), [
+    '11.1.3',
+    '11.2.2',
+    '11.2.3',
+    '11.2.4'
+  ]);
 });
 
 // --- RGAA and WCAG rollups in one run --------------------------------------------

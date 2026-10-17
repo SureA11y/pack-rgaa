@@ -210,6 +210,8 @@
   "mainElementStructure_hint_fail_roleMainOnly": "Use a <main> element for the main content.",
   "mainElementStructure_summary_fail_noMain": "The page has no <main> element and no role=\"main\".",
   "mainElementStructure_hint_fail_noMain": "Wrap the main content of the page in a <main> element.",
+  "mainElementStructure_summary_fail_roleZoneOnly": "This <{{tag}}> has role=\"{{role}}\", but the zone is not structured with a <{{element}}> element.",
+  "mainElementStructure_hint_fail_roleZoneOnly": "Structure the zone with a <{{element}}> element (RGAA 9.2.1): the role alone does not do.",
   "mainElementStructure_summary_cantTell_noMain": "The page has no <main> element and no role=\"main\".",
   "mainElementStructure_hint_cantTell_noMain": "Check where the main content is, and wrap it in a <main> element.",
   "mainElementStructure_summary_cantTell_hiddenByAncestor": "This <main> element is hidden by an ancestor but has no hidden attribute of its own.",

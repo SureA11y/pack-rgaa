@@ -226,3 +226,33 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
   });
   assert.match(rule.occurrences[0].html, /id="mes_main_2"/);
 });
+
+// Steps 1, 2 and 6 of 9.2.1 name <header>, <nav> and <footer>, as step 4
+// names <main>: a role on another element does not do.
+test(`${RULE_ID}: a header, navigation or footer zone marked by a role alone fails`, () => {
+  const rule = assertRule(
+    run(
+      page(
+        '<div role="banner">Logo</div><div role="navigation"><a href="/a">A</a></div>' +
+          '<main><p>a</p></main><div role="contentinfo">Mentions</div>'
+      )
+    ),
+    RULE_ID,
+    'fail',
+    { minOccurrences: 3, maxOccurrences: 3 }
+  );
+  assert.deepEqual(reasons(rule), ['roleZoneOnly', 'roleZoneOnly', 'roleZoneOnly']);
+  assert.deepEqual(rule.occurrences[1].i18n.params, {
+    tag: 'div',
+    role: 'navigation',
+    element: 'nav'
+  });
+  // The element itself, or one around or inside it, structures the zone.
+  for (const body of [
+    '<header role="banner">Logo</header><main><p>a</p></main>',
+    '<nav><ul role="navigation"><li><a href="/a">A</a></li></ul></nav><main><p>a</p></main>',
+    '<div role="contentinfo"><footer>Mentions</footer></div><main><p>a</p></main>'
+  ]) {
+    assertRule(run(page(body)), RULE_ID, 'pass', { maxOccurrences: 0 });
+  }
+});

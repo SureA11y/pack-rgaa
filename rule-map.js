@@ -333,8 +333,8 @@ const RGAA_RULE_TESTS = {
       note: 'Fails input/select/textarea controls (not hidden/submit/reset/button/image) that have no associated <label>, aria-labelledby, aria-label, title or placeholder. It accepts a wrapping <label> and a placeholder, which 11.1.1 does not list, so a placeholder-only field passes here while it fails 11.1.1. Not mapped to 11.1.1: rgaa-field-label-listed-source reports 11.1.1 for every form field, from the sources 11.1.1 lists only.'
     },
     'form-control-programmatic-label-quality': {
-      tests: ['11.1.3', '11.2.2'],
-      note: 'Asks about native input/select/textarea controls whose only name is a placeholder, a title, an aria-label, or aria-labelledby pointing only at hidden text; a control not drawn on screen (transparent or clipped away) is left out. Those are the labels 11.1.3 covers, a label that is not visible (masqué, aria-label): its step asks whether a title, or text next to the field, makes the expected input understandable, which only a person can tell. 11.2.2 asks whether a title is relevant (other RGAA tools review title-labelled fields there). Not mapped to 11.1.1: a placeholder-only field meets none of the 11.1.1 conditions, and rgaa-field-label-listed-source fails it there. The rule is filed under WCAG 3.3.2, which RGAA relates to 11.2.'
+      tests: ['11.1.3', '11.2.2', '11.2.3', '11.2.4'],
+      note: "Asks about native input/select/textarea controls whose only name is a placeholder, a title, an aria-label, or aria-labelledby pointing only at hidden text; a control not drawn on screen (transparent or clipped away) is left out. Those are the labels 11.1.3 covers, a label that is not visible (masqué, aria-label): its step asks whether a title, or text next to the field, makes the expected input understandable, which only a person can tell. 11.2.2 asks whether a title is relevant (other RGAA tools review title-labelled fields there). Not mapped to 11.1.1: a placeholder-only field meets none of the 11.1.1 conditions, and rgaa-field-label-listed-source fails it there. The rule is filed under WCAG 3.3.2, which RGAA relates to 11.2. Also linked to 11.2.3 and 11.2.4, which ask whether a label given by aria-label, or by a passage linked with aria-labelledby, tells the field's exact function: the rule asks that about fields named only by aria-label or by aria-labelledby, and a question is never a false failure."
     },
     'form-control-single-label': {
       tests: [],
@@ -389,8 +389,15 @@ const RGAA_RULE_TESTS = {
       note: 'Flags iframe/frame elements that share an accessible name but embed different resources (WCAG 4.1.2). Not linked to 2.2.1, which judges only the title attribute: this rule groups frames by accessible name, which may come from aria-label. rgaa-frame-title-attribute-present fails an empty title under 2.1.1, and rgaa-frame-title-relevant asks whether a non-empty one is relevant.'
     },
     'identical-links-same-purpose': {
-      tests: [],
-      note: 'Asks whether links with the same name but different destinations serve the same purpose (WCAG 2.4.9 AAA, which RGAA does not cover). RGAA 6.1.x accepts context as a way to make a link explicit, so two same-named links with different targets are not direct evidence that either one fails 6.1.1 to 6.1.3.'
+      tests: ['6.1.1', '6.1.2', '6.1.3', '6.1.4'],
+      note: 'Asks whether links with the same name but different destinations serve the same purpose. That is note 3 of the glossary entry « Intitulé de lien »: « plusieurs liens ayant une destination différente dont le "nom accessible" est identique. L\'intitulé de lien seul sera considéré comme non-explicite si le contexte de lien ne permet pas de les différencier » — the question 6.1.1 to 6.1.4 ask of text, image, composite and SVG links. It only asks, since the context may tell the links apart, and which of the four tests applies depends on the kind of link.',
+      outsideCorrespondence: {
+        '6.1.1':
+          'Glossary « Intitulé de lien », note 3: same-named links to different destinations are not explicit unless their context tells them apart. RGAA relates 6.1 to WCAG 1.1.1, 2.4.4 and 2.5.3; the engine files this check under 2.4.9.',
+        '6.1.2': 'As for 6.1.1, for image links.',
+        '6.1.3': 'As for 6.1.1, for composite links.',
+        '6.1.4': 'As for 6.1.1, for SVG links.'
+      }
     },
     'iframe-focusable-content': {
       tests: [],
@@ -558,7 +565,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-main-element-structure': {
       tests: ['9.2.1'],
-      note: 'Steps 4 and 5 of 9.2.1 on HTML5 pages: fails role="main" with no <main> element (step 4), and a second <main> that has no hidden attribute, even if CSS or aria-hidden hides it (step 5 and the 9.2 technical note). Fails a page with text and neither <main> nor role="main": every page has a main content zone (glossary « Zone de contenu principal »), so step 4 is not met. Asks when such a page has no text of its own (only frames, a canvas or shadow DOM content), or when a <main> is hidden only by an ancestor. Not applicable when the doctype is not HTML5 (9.2 particular case). Steps 1 to 3 and 6 are not checked.'
+      note: 'Steps 4 and 5 of 9.2.1 on HTML5 pages: fails role="main" with no <main> element (step 4), and a second <main> that has no hidden attribute, even if CSS or aria-hidden hides it (step 5 and the 9.2 technical note). Fails a page with text and neither <main> nor role="main": every page has a main content zone (glossary « Zone de contenu principal »), so step 4 is not met. Asks when such a page has no text of its own (only frames, a canvas or shadow DOM content), or when a <main> is hidden only by an ancestor. Not applicable when the doctype is not HTML5 (9.2 particular case). Steps 1, 2 and 6 name the element as step 4 does: a zone marked with role="banner", "navigation" or "contentinfo" on another element than <header>, <nav> or <footer> fails, unless such an element wraps it or sits inside it. Whether the page marks its header, navigation and footer zones at all, and step 3, are not checked.'
     },
     'manual-review': {
       tests: ['12.8.1', '12.9.1', '10.7.1'],

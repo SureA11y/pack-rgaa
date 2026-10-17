@@ -210,6 +210,8 @@
   "mainElementStructure_hint_fail_roleMainOnly": "Structurez la zone de contenu principal avec une balise <main>.",
   "mainElementStructure_summary_fail_noMain": "La page n’a ni balise <main> ni role=\"main\".",
   "mainElementStructure_hint_fail_noMain": "Placez le contenu principal de la page dans une balise <main>.",
+  "mainElementStructure_summary_fail_roleZoneOnly": "Cet élément <{{tag}}> a role=\"{{role}}\", mais la zone n’est pas structurée au moyen d’une balise <{{element}}>.",
+  "mainElementStructure_hint_fail_roleZoneOnly": "Structurez la zone au moyen d’une balise <{{element}}> (RGAA 9.2.1) : le rôle seul ne suffit pas.",
   "mainElementStructure_summary_cantTell_noMain": "La page n’a ni balise <main> ni role=\"main\".",
   "mainElementStructure_hint_cantTell_noMain": "Repérez la zone de contenu principal et structurez-la avec une balise <main>.",
   "mainElementStructure_summary_cantTell_hiddenByAncestor": "Cette balise <main> est masquée par un parent mais n’a pas d’attribut hidden elle-même.",

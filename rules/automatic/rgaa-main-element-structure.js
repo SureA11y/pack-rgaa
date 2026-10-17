@@ -30,7 +30,12 @@
  *     is asked about, since the step speaks of the element's own
  *     attribute. A page whose every <main> carries hidden is asked about
  *     too.
- *   Steps 1 to 3 and 6 (header, navigation, footer) are left to a person.
+ *   Steps 1, 2 and 6 also name the element: a zone marked with
+ *   role="banner", "navigation" or "contentinfo" on another element than
+ *   <header>, <nav> or <footer> fails (roleZoneOnly), unless such an
+ *   element wraps it or sits inside it. Whether a page's header,
+ *   navigation and footer zones are marked at all, and step 3 (<nav> kept
+ *   for navigation zones), are left to a person.
  * @implementation-notes
  * - landmark-one-main and landmark-no-duplicate-main count the main
  *   landmarks exposed to assistive technologies: they accept role="main"
@@ -61,7 +66,7 @@ const meta = {
   coverage: {},
   // Reason codes built at runtime, so not found by reading the source: the
   // finding identities a baseline holds include them.
-  reasonCodes: ['allHidden', 'hiddenByAncestor', 'noMain', 'roleMainOnly']
+  reasonCodes: ['allHidden', 'hiddenByAncestor', 'noMain', 'roleMainOnly', 'roleZoneOnly']
 };
 
 function applicability(ctx) {
@@ -169,7 +174,49 @@ function runInPage(ctx) {
     });
   }
 
+  // Steps 1, 2 and 6 name the elements too: a header, navigation or footer
+  // zone marked with role="banner", "navigation" or "contentinfo" on
+  // another element is not structured « via une balise » <header>, <nav>
+  // or <footer>, unless that element wraps it or sits inside it.
+  const ZONES = { banner: 'header', navigation: 'nav', contentinfo: 'footer' };
+  const zoneFails = query('[role]')
+    .filter((el) => {
+      const role = helpers.aria.getExplicitRole(el);
+      const tag = ZONES[role];
+      if (!tag) return false;
+      if (String(dom.localName(el) || '').toLowerCase() === tag) return false;
+      return !dom.closest(el, tag) && !dom.querySelector(el, tag);
+    })
+    .map((el) => {
+      const role = helpers.aria.getExplicitRole(el);
+      const element = ZONES[role];
+      const tag = String(dom.localName(el) || '').toLowerCase();
+      return helpers.reportOccurrence(el, {
+        summary: `This <${tag}> has role="${role}", but the zone is not structured with a <${element}> element.`,
+        hint: `Structure the zone with a <${element}> element (RGAA 9.2.1): the role alone does not do.`,
+        i18n: {
+          summaryKey: 'mainElementStructure_summary_fail_roleZoneOnly',
+          hintKey: 'mainElementStructure_hint_fail_roleZoneOnly',
+          params: { tag, role, element }
+        },
+        data: {
+          details: { reasonCode: 'roleZoneOnly', role, element },
+          visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
+        }
+      });
+    });
+
   function result(outcome, occurrences) {
+    if (zoneFails.length) {
+      return {
+        ruleId: rule.ruleId,
+        ...helpers.resolveTieredOutcome(
+          (outcome === 'fail' ? occurrences || [] : []).concat(zoneFails),
+          outcome === 'cantTell' ? occurrences || [] : [],
+          rule.defaultSeverity || 'moderate'
+        )
+      };
+    }
     return {
       ruleId: rule.ruleId,
       outcome,
