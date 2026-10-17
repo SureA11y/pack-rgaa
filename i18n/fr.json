@@ -562,5 +562,6 @@
   "skipLinkPlacement_hint_cantTell_positionMayDiffer": "Vérifiez si ces pages appartiennent au même ensemble de pages que celle-ci, la page d’accueil pouvant en constituer un à elle seule ; au sein d’un ensemble, le lien d’évitement doit être à la même place (RGAA 12.7.2).",
   "orientationContentParity_summary_cantTell_mayDiffer_portrait": "En portrait, cet élément <{{element}}> est masqué, et son contenu (« {{text}} ») n’est pas affiché ailleurs dans les mêmes termes.",
   "orientationContentParity_summary_cantTell_mayDiffer_landscape": "En paysage, cet élément <{{element}}> est masqué, et son contenu (« {{text}} ») n’est pas affiché ailleurs dans les mêmes termes.",
-  "orientationContentParity_hint_cantTell_mayDiffer": "Vérifiez que le même contenu est proposé dans les deux orientations, quels que soient sa présentation ou le moyen d’y accéder, comme un bouton de menu (RGAA 13.9.1)."
+  "orientationContentParity_hint_cantTell_mayDiffer": "Vérifiez que le même contenu est proposé dans les deux orientations, quels que soient sa présentation ou le moyen d’y accéder, comme un bouton de menu (RGAA 13.9.1).",
+  "markupShadowRoot_hint_cantTell": "Ce balisage est dans une racine fantôme (shadow DOM), que le validateur du W3C ne voit pas dans le code source généré de la page. Vérifiez si l’audit le juge au titre du test 8.2.1 ; corriger le balisage règle les deux cas."
 }

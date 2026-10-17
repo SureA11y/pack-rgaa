@@ -39,6 +39,10 @@
  *     own hidden attribute. A main hidden by CSS, aria-hidden or a hidden
  *     ancestor still counts.
  * @implementation-notes
+ * - Markup inside a shadow root is asked about (cantTell) instead of failed:
+ *   RGAA 8.2.1's methodology runs the W3C validator on the generated
+ *   source, whose serialization holds no shadow root. Correcting the
+ *   markup settles both readings.
  * - The WCAG rules on lists and nesting (list-children-valid,
  *   listitem-parent-valid, definition-list-children-valid,
  *   dlitem-parent-valid, nested-interactive-controls-absent) judge what
@@ -168,27 +172,46 @@ function runInPage(ctx) {
     ]
   };
 
+  // Inside a shadow root: the W3C validator, which RGAA 8.2.1's methodology
+  // runs on the generated source, does not see it in the serialized page.
+  function inShadow(el) {
+    try {
+      const r = dom.get(el, 'getRootNode') ? dom.getRootNode(el) : null;
+      return !!r && r !== ctx.document && dom.nodeType(r) === 11;
+    } catch {
+      return false;
+    }
+  }
+  const SHADOW_NEEDED =
+    'Whether markup in a shadow root, which the W3C validator does not see in the generated source, is to be judged under 8.2.1.';
+  const SHADOW_HINT =
+    "This markup is in a shadow root, which the W3C validator does not see in the page's generated source. Check whether the audit judges it under 8.2.1; correcting the markup settles both.";
+  const shadowAsked = [];
   const occurrences = [];
   function report(el, reasonCode, params, outcome) {
     const key = outcome === 'cantTell' ? 'cantTell' : 'fail';
-    occurrences.push(
+    const shadow = key === 'fail' && inShadow(el);
+    (shadow ? shadowAsked : occurrences).push(
       helpers.reportOccurrence(el, {
         summary: TEXTS[reasonCode][0](params || {}),
-        hint: TEXTS[reasonCode][1],
+        hint: shadow ? SHADOW_HINT : TEXTS[reasonCode][1],
         i18n: {
           summaryKey: `htmlNestingValid_summary_${key}_${reasonCode}`,
-          hintKey: `htmlNestingValid_hint_${key}_${reasonCode}`,
+          hintKey: shadow
+            ? 'markupShadowRoot_hint_cantTell'
+            : `htmlNestingValid_hint_${key}_${reasonCode}`,
           params: params || {}
         },
-        uncertainty:
-          outcome === 'cantTell'
+        uncertainty: shadow
+          ? { code: 'judgement-required', needed: SHADOW_NEEDED }
+          : outcome === 'cantTell'
             ? {
                 code: 'out-of-scope',
                 needed: 'Whether the nesting is valid for the declared doctype.'
               }
             : undefined,
         data: {
-          details: { reasonCode, ...(params || {}) },
+          details: { reasonCode, ...(params || {}), ...(shadow ? { inShadowRoot: true } : {}) },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })
@@ -373,7 +396,11 @@ function runInPage(ctx) {
   );
   for (const el of shownMains.slice(1)) report(el, 'extraMain', {});
 
-  return result(occurrences.length ? 'fail' : 'pass');
+  if (!occurrences.length && !shadowAsked.length) return result('pass');
+  return {
+    ruleId: rule.ruleId,
+    ...helpers.resolveTieredOutcome(occurrences, shadowAsked, rule.defaultSeverity || 'moderate')
+  };
 }
 
 module.exports = { id, meta, runInPage };

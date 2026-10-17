@@ -88,7 +88,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T89-06 | 8.9.1 | MISS | No rule: `<h2 role="presentation">`, empty `<p>`, `<br><br>` paragraphs, empty `<blockquote>`. | open |
 | T89-07 | 8.10.1 | MISS | Right-to-left text with no `dir` is not detected. | open |
 | T89-08 | 9.1.3 | MISS | A page with text but no heading is notApplicable. | open |
-| T89-09 | 8.2.1 | FP | Markup inside shadow roots fails 8.2, though the validator RGAA names never sees it. | open (pack rules); core (`duplicate-id`) |
+| T89-09 | 8.2.1 | FP | Markup inside shadow roots fails 8.2, though the validator RGAA names never sees it. | done (pack rules); core (`duplicate-id`) |
 | T89-10 | 8.4.1, 8.8.1 | WM | A default language on `<body>` is judged under 8.8 instead of 8.4. | open (pack); core (`valid-lang` reason) |
 | T89-11 | 8.4.1 | MISS | A wrong default language passes; `und`, `mul` pass (Q7). | open |
 | T89-12 | 8.7.1 | MISS | No rule: changes of language (Q6). | open |

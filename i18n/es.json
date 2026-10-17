@@ -562,5 +562,6 @@
   "skipLinkPlacement_hint_cantTell_positionMayDiffer": "Compruebe si esas páginas pertenecen al mismo conjunto de páginas que esta, como la página de inicio, que puede formar uno por sí sola; dentro de un conjunto, el enlace de salto debe estar en el mismo lugar (RGAA 12.7.2).",
   "orientationContentParity_summary_cantTell_mayDiffer_portrait": "En vertical, este <{{element}}> está oculto, y su contenido («{{text}}») no se muestra con las mismas palabras en otro lugar.",
   "orientationContentParity_summary_cantTell_mayDiffer_landscape": "En horizontal, este <{{element}}> está oculto, y su contenido («{{text}}») no se muestra con las mismas palabras en otro lugar.",
-  "orientationContentParity_hint_cantTell_mayDiffer": "Compruebe que se ofrece el mismo contenido en ambas orientaciones, sea cual sea su presentación o el modo de llegar a él, como un botón de menú (RGAA 13.9.1)."
+  "orientationContentParity_hint_cantTell_mayDiffer": "Compruebe que se ofrece el mismo contenido en ambas orientaciones, sea cual sea su presentación o el modo de llegar a él, como un botón de menú (RGAA 13.9.1).",
+  "markupShadowRoot_hint_cantTell": "Este marcado está en una raíz shadow, que el validador del W3C no ve en el código fuente generado de la página. Compruebe si la auditoría lo juzga en 8.2.1; corregir el marcado resuelve ambos casos."
 }

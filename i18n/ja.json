@@ -562,5 +562,6 @@
   "skipLinkPlacement_hint_cantTell_positionMayDiffer": "これらのページがこのページと同じページ群に属するか確認してください（トップページは単独でページ群になる場合があります）。ページ群の中では、スキップリンクは同じ位置になければなりません（RGAA 12.7.2）。",
   "orientationContentParity_summary_cantTell_mayDiffer_portrait": "縦向きでは、この <{{element}}> は非表示で、その内容（「{{text}}」）は他の場所に同じ言葉で表示されていません。",
   "orientationContentParity_summary_cantTell_mayDiffer_landscape": "横向きでは、この <{{element}}> は非表示で、その内容（「{{text}}」）は他の場所に同じ言葉で表示されていません。",
-  "orientationContentParity_hint_cantTell_mayDiffer": "表示方法やメニューボタンなどのアクセス手段が違っても、両方の向きで同じ内容が提供されているか確認してください（RGAA 13.9.1）。"
+  "orientationContentParity_hint_cantTell_mayDiffer": "表示方法やメニューボタンなどのアクセス手段が違っても、両方の向きで同じ内容が提供されているか確認してください（RGAA 13.9.1）。",
+  "markupShadowRoot_hint_cantTell": "このマークアップはシャドウルート内にあり、W3C バリデーターはページの生成されたソースでそれを確認できません。監査が 8.2.1 で判断するか確認してください。マークアップを修正すればどちらの場合も解決します。"
 }

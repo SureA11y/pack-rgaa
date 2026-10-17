@@ -562,5 +562,6 @@
   "skipLinkPlacement_hint_cantTell_positionMayDiffer": "Check whether these pages belong to the same set of pages as this one, such as the home page, which may form one on its own; within a set, the skip link must be at the same place (RGAA 12.7.2).",
   "orientationContentParity_summary_cantTell_mayDiffer_portrait": "In portrait, this <{{element}}> is hidden, and its content (\"{{text}}\") is not shown in the same words elsewhere.",
   "orientationContentParity_summary_cantTell_mayDiffer_landscape": "In landscape, this <{{element}}> is hidden, and its content (\"{{text}}\") is not shown in the same words elsewhere.",
-  "orientationContentParity_hint_cantTell_mayDiffer": "Check that the same content is offered in both orientations, whatever its presentation or the way to reach it, such as a menu button (RGAA 13.9.1)."
+  "orientationContentParity_hint_cantTell_mayDiffer": "Check that the same content is offered in both orientations, whatever its presentation or the way to reach it, such as a menu button (RGAA 13.9.1).",
+  "markupShadowRoot_hint_cantTell": "This markup is in a shadow root, which the W3C validator does not see in the page's generated source. Check whether the audit judges it under 8.2.1; correcting the markup settles both."
 }

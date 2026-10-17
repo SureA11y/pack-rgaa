@@ -38,6 +38,10 @@
  *   as a way to mark a decorative image, so whether the audit counts it
  *   against 8.2.1 is left to the auditor.
  * @implementation-notes
+ * - Markup inside a shadow root is asked about (cantTell) instead of failed:
+ *   RGAA 8.2.1's methodology runs the W3C validator on the generated
+ *   source, whose serialization holds no shadow root. Correcting the
+ *   markup settles both readings.
  * - Expected outcomes follow the W3C validator version 26.9.27. The tables
  *   of accepted roles and of the roles each element allows were read from
  *   that version's reports, element by element; re-check them when the
@@ -357,18 +361,38 @@ function runInPage(ctx) {
   const cantTellOccurrences = [];
   let applicableCount = 0;
 
+  // Inside a shadow root: the W3C validator, which RGAA 8.2.1's methodology
+  // runs on the generated source, does not see it in the serialized page.
+  function inShadow(el) {
+    try {
+      const r = dom.get(el, 'getRootNode') ? dom.getRootNode(el) : null;
+      return !!r && r !== ctx.document && dom.nodeType(r) === 11;
+    } catch {
+      return false;
+    }
+  }
+  const SHADOW_NEEDED =
+    'Whether markup in a shadow root, which the W3C validator does not see in the generated source, is to be judged under 8.2.1.';
+  const SHADOW_HINT =
+    "This markup is in a shadow root, which the W3C validator does not see in the page's generated source. Check whether the audit judges it under 8.2.1; correcting the markup settles both.";
+  const shadowAsked = [];
+
   function report(el, reasonCode, params) {
     const msg = MESSAGES[reasonCode];
     let summary = msg.summary;
     for (const k of Object.keys(params)) summary = summary.split(`{{${k}}}`).join(params[k]);
+    const shadow = msg.outcome === 'fail' && inShadow(el);
     const occurrence = helpers.reportOccurrence(el, {
       summary,
-      hint: msg.hint,
+      hint: shadow ? SHADOW_HINT : msg.hint,
       i18n: {
         summaryKey: `ariaRoleConformance_summary_${msg.outcome}_${reasonCode}`,
-        hintKey: `ariaRoleConformance_hint_${msg.outcome}_${reasonCode}`,
+        hintKey: shadow
+          ? 'markupShadowRoot_hint_cantTell'
+          : `ariaRoleConformance_hint_${msg.outcome}_${reasonCode}`,
         params
       },
+      ...(shadow ? { uncertainty: { code: 'judgement-required', needed: SHADOW_NEEDED } } : {}),
       ...(msg.outcome === 'cantTell'
         ? {
             uncertainty: {
@@ -379,11 +403,12 @@ function runInPage(ctx) {
           }
         : {}),
       data: {
-        details: { reasonCode, ...params },
+        details: { reasonCode, ...params, ...(shadow ? { inShadowRoot: true } : {}) },
         visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
       }
     });
-    if (msg.outcome === 'fail') failOccurrences.push(occurrence);
+    if (shadow) shadowAsked.push(occurrence);
+    else if (msg.outcome === 'fail') failOccurrences.push(occurrence);
     else cantTellOccurrences.push(occurrence);
   }
 
@@ -445,7 +470,7 @@ function runInPage(ctx) {
   }
   const resolved = helpers.resolveTieredOutcome(
     failOccurrences,
-    cantTellOccurrences,
+    cantTellOccurrences.concat(shadowAsked),
     rule.defaultSeverity || 'moderate'
   );
   return { ruleId: rule.ruleId, ...resolved };

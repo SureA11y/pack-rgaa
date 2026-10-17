@@ -66,7 +66,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-aria-attribute-conformance': {
       tests: ['8.2.1'],
-      note: 'Fails, hidden content included, what the W3C validator (version 26.9.27) reports about aria-* attributes: an unknown name, an invalid value (empty, misspelt or out of range, an aria-activedescendant pointing to nothing), an attribute the role or element does not support (aria-pressed on a link, aria-sort on a native td, aria-expanded on a details summary), a name on an element that cannot be named (aria-label on a div, span, p or caption), aria-checked on a native checkbox or radio, a state that contradicts a native attribute, and a missing required attribute even where ARIA gives a default (role=heading without aria-level). That is 8.2.1 step 2, attributes and values following the writing rules. It passes what the validator accepts: aria-expanded on a heading, an aria-describedby that points to nothing.'
+      note: "Fails, hidden content included, what the W3C validator (version 26.9.27) reports about aria-* attributes: an unknown name, an invalid value (empty, misspelt or out of range, an aria-activedescendant pointing to nothing), an attribute the role or element does not support (aria-pressed on a link, aria-sort on a native td, aria-expanded on a details summary), a name on an element that cannot be named (aria-label on a div, span, p or caption), aria-checked on a native checkbox or radio, a state that contradicts a native attribute, and a missing required attribute even where ARIA gives a default (role=heading without aria-level). That is 8.2.1 step 2, attributes and values following the writing rules. It passes what the validator accepts: aria-expanded on a heading, an aria-describedby that points to nothing. Markup inside a shadow root is asked about instead of failed: the validator RGAA's methodology runs on the generated source does not see it in the serialized page."
     },
     'aria-braille-equivalent': {
       tests: [],
@@ -118,7 +118,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-aria-role-conformance': {
       tests: ['8.2.1'],
-      note: 'Fails, hidden content included, what the W3C validator (version 26.9.27) reports about role attributes: an empty value, a token that is not a role it accepts (misspelt, abstract, written with capitals, alone or in a list), a role not allowed on the element (tab on nav, navigation on main, any role on a native td), and an img with a role and an empty or missing alt. That is 8.2.1 step 2, attribute values following the writing rules. An img with role="presentation" and an empty or missing alt is asked about: the validator reports it, but RGAA 1.2.1 names that markup for decorative images.'
+      note: 'Fails, hidden content included, what the W3C validator (version 26.9.27) reports about role attributes: an empty value, a token that is not a role it accepts (misspelt, abstract, written with capitals, alone or in a list), a role not allowed on the element (tab on nav, navigation on main, any role on a native td), and an img with a role and an empty or missing alt. That is 8.2.1 step 2, attribute values following the writing rules. An img with role="presentation" and an empty or missing alt is asked about: the validator reports it, but RGAA 1.2.1 names that markup for decorative images. Markup inside a shadow root is asked about instead of failed: the validator RGAA\'s methodology runs on the generated source does not see it in the serialized page.'
     },
     'aria-role-name-present': {
       tests: ['7.1.1'],
@@ -366,7 +366,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-html-elements-attributes-valid': {
       tests: ['8.2.1'],
-      note: "Fails, hidden content included, obsolete or unknown elements and attribute values the W3C validator rejects: dir, id (empty or with whitespace), lang (not a well-formed language tag), xml:lang without a matching lang, scope, headers naming no th of the table, optgroup without label, image buttons with no alt or an empty one, and autocomplete values and placements. Each is 8.2.1's condition that tags, attributes and attribute values respect the writing rules. Asks instead on a page whose doctype is neither HTML5 nor missing, since 8.2.1 judges the source against the declared doctype. Where the validator is stricter than the HTML standard (on/off in capitals, unregistered subtags), the rule does not report."
+      note: "Fails, hidden content included, obsolete or unknown elements and attribute values the W3C validator rejects: dir, id (empty or with whitespace), lang (not a well-formed language tag), xml:lang without a matching lang, scope, headers naming no th of the table, optgroup without label, image buttons with no alt or an empty one, and autocomplete values and placements. Each is 8.2.1's condition that tags, attributes and attribute values respect the writing rules. Asks instead on a page whose doctype is neither HTML5 nor missing, since 8.2.1 judges the source against the declared doctype. Where the validator is stricter than the HTML standard (on/off in capitals, unregistered subtags), the rule does not report. Markup inside a shadow root is asked about instead of failed: the validator RGAA's methodology runs on the generated source does not see it in the serialized page."
     },
     'html-lang-attr-present': {
       tests: [],
@@ -378,7 +378,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-html-nesting-valid': {
       tests: ['8.2.1'],
-      note: "Fails, hidden content included, the nesting errors the W3C validator reports on lists (a ul, ol or menu child other than li, an li outside them), description lists (the dl content model, a dt or dd outside a dl), interactive content or tabindex inside a link or button, img ismap outside a link, and more than one main without the hidden attribute. That is 8.2.1's condition that tag nesting conforms. Nesting that uses only ARIA roles is a validator warning and is not reported. Asks instead on a page whose doctype is neither HTML5 nor missing, since the nesting rules of older doctypes differ."
+      note: "Fails, hidden content included, the nesting errors the W3C validator reports on lists (a ul, ol or menu child other than li, an li outside them), description lists (the dl content model, a dt or dd outside a dl), interactive content or tabindex inside a link or button, img ismap outside a link, and more than one main without the hidden attribute. That is 8.2.1's condition that tag nesting conforms. Nesting that uses only ARIA roles is a validator warning and is not reported. Asks instead on a page whose doctype is neither HTML5 nor missing, since the nesting rules of older doctypes differ. Markup inside a shadow root is asked about instead of failed: the validator RGAA's methodology runs on the generated source does not see it in the serialized page."
     },
     'html-xml-lang-mismatch': {
       tests: ['8.4.1'],

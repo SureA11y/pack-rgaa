@@ -562,5 +562,6 @@
   "skipLinkPlacement_hint_cantTell_positionMayDiffer": "Prüfen Sie, ob diese Seiten zur selben Seitengruppe gehören wie diese, etwa die Startseite, die allein eine bilden kann; innerhalb einer Gruppe muss der Sprunglink an derselben Stelle stehen (RGAA 12.7.2).",
   "orientationContentParity_summary_cantTell_mayDiffer_portrait": "Im Hochformat ist dieses <{{element}}> ausgeblendet, und sein Inhalt („{{text}}“) wird nirgends sonst mit denselben Worten gezeigt.",
   "orientationContentParity_summary_cantTell_mayDiffer_landscape": "Im Querformat ist dieses <{{element}}> ausgeblendet, und sein Inhalt („{{text}}“) wird nirgends sonst mit denselben Worten gezeigt.",
-  "orientationContentParity_hint_cantTell_mayDiffer": "Prüfen Sie, dass in beiden Ausrichtungen derselbe Inhalt angeboten wird, unabhängig von seiner Darstellung oder dem Weg dorthin, etwa einer Menüschaltfläche (RGAA 13.9.1)."
+  "orientationContentParity_hint_cantTell_mayDiffer": "Prüfen Sie, dass in beiden Ausrichtungen derselbe Inhalt angeboten wird, unabhängig von seiner Darstellung oder dem Weg dorthin, etwa einer Menüschaltfläche (RGAA 13.9.1).",
+  "markupShadowRoot_hint_cantTell": "Dieses Markup steht in einem Shadow Root, den der W3C-Validator im generierten Quelltext der Seite nicht sieht. Prüfen Sie, ob das Audit es unter 8.2.1 bewertet; das Markup zu korrigieren klärt beides."
 }
