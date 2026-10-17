@@ -208,6 +208,8 @@
   "mainElementStructure_hint_fail_extraMain": "Mantenga un único elemento <main> visible. Dé el atributo hidden a todos los demás: CSS o aria-hidden por sí solos no bastan.",
   "mainElementStructure_summary_fail_roleMainOnly": "El contenido principal está marcado con role=\"main\", pero la página no tiene ningún elemento <main>.",
   "mainElementStructure_hint_fail_roleMainOnly": "Use un elemento <main> para el contenido principal.",
+  "mainElementStructure_summary_fail_noMain": "La página no tiene ni elemento <main> ni role=\"main\".",
+  "mainElementStructure_hint_fail_noMain": "Envuelva el contenido principal de la página en un elemento <main>.",
   "mainElementStructure_summary_cantTell_noMain": "La página no tiene ningún elemento <main> ni role=\"main\".",
   "mainElementStructure_hint_cantTell_noMain": "Compruebe dónde está el contenido principal y envuélvalo en un elemento <main>.",
   "mainElementStructure_summary_cantTell_hiddenByAncestor": "Este elemento <main> está oculto por un antecesor, pero no tiene atributo hidden propio.",

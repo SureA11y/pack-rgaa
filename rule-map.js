@@ -554,7 +554,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-main-element-structure': {
       tests: ['9.2.1'],
-      note: 'Steps 4 and 5 of 9.2.1 on HTML5 pages: fails role="main" with no <main> element (step 4), and a second <main> that has no hidden attribute, even if CSS or aria-hidden hides it (step 5 and the 9.2 technical note). Asks when the page has neither <main> nor role="main", or when a <main> is hidden only by an ancestor. Not applicable when the doctype is not HTML5 (9.2 particular case). Steps 1 to 3 and 6 are not checked.'
+      note: 'Steps 4 and 5 of 9.2.1 on HTML5 pages: fails role="main" with no <main> element (step 4), and a second <main> that has no hidden attribute, even if CSS or aria-hidden hides it (step 5 and the 9.2 technical note). Fails a page with text and neither <main> nor role="main": every page has a main content zone (glossary « Zone de contenu principal »), so step 4 is not met. Asks when such a page has no text of its own (only frames, a canvas or shadow DOM content), or when a <main> is hidden only by an ancestor. Not applicable when the doctype is not HTML5 (9.2 particular case). Steps 1 to 3 and 6 are not checked.'
     },
     'manual-review': {
       tests: ['12.8.1', '12.9.1', '10.7.1'],

@@ -208,6 +208,8 @@
   "mainElementStructure_hint_fail_extraMain": "Gardez une seule balise <main> visible. Donnez l’attribut hidden à toutes les autres : un style ou aria-hidden seul ne suffit pas.",
   "mainElementStructure_summary_fail_roleMainOnly": "La zone de contenu principal est indiquée par role=\"main\", mais la page n’a pas de balise <main>.",
   "mainElementStructure_hint_fail_roleMainOnly": "Structurez la zone de contenu principal avec une balise <main>.",
+  "mainElementStructure_summary_fail_noMain": "La page n’a ni balise <main> ni role=\"main\".",
+  "mainElementStructure_hint_fail_noMain": "Placez le contenu principal de la page dans une balise <main>.",
   "mainElementStructure_summary_cantTell_noMain": "La page n’a ni balise <main> ni role=\"main\".",
   "mainElementStructure_hint_cantTell_noMain": "Repérez la zone de contenu principal et structurez-la avec une balise <main>.",
   "mainElementStructure_summary_cantTell_hiddenByAncestor": "Cette balise <main> est masquée par un parent mais n’a pas d’attribut hidden elle-même.",

@@ -208,6 +208,8 @@
   "mainElementStructure_hint_fail_extraMain": "表示する <main> 要素は 1 つにしてください。ほかの <main> にはすべて hidden 属性を付けてください。CSS や aria-hidden だけでは足りません。",
   "mainElementStructure_summary_fail_roleMainOnly": "主要コンテンツは role=\"main\" で示されていますが、ページに <main> 要素がありません。",
   "mainElementStructure_hint_fail_roleMainOnly": "主要コンテンツには <main> 要素を使ってください。",
+  "mainElementStructure_summary_fail_noMain": "このページには <main> 要素も role=\"main\" もありません。",
+  "mainElementStructure_hint_fail_noMain": "ページの主要コンテンツを <main> 要素で囲んでください。",
   "mainElementStructure_summary_cantTell_noMain": "ページに <main> 要素も role=\"main\" もありません。",
   "mainElementStructure_hint_cantTell_noMain": "主要コンテンツがどこかを確認し、<main> 要素で囲んでください。",
   "mainElementStructure_summary_cantTell_hiddenByAncestor": "この <main> 要素は祖先要素によって隠されていますが、それ自体には hidden 属性がありません。",

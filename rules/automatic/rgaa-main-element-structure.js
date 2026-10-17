@@ -15,10 +15,13 @@
  *   engineOptions.fragment is notApplicable.
  * @expectation
  *   Steps 4 and 5 of RGAA 9.2.1:
- *   - the main content zone is structured with a <main> element. A page
- *     with role="main" and no <main> element fails; a page with neither
- *     is asked about (cantTell), since only a person can say where its
- *     main content is;
+ *   - the main content zone is structured with a <main> element. Every
+ *     page has a main content zone (glossary « Zone de contenu
+ *     principal »), so a page with text and no <main> element fails,
+ *     whether or not it has role="main". A page with neither and no text
+ *     of its own (only frames, a canvas or shadow DOM content) is asked
+ *     about (cantTell), since only a person can say where its main
+ *     content is;
  *   - when there are several <main> elements, all but one carry the hidden
  *     attribute. Every <main> is counted, hidden or not: CSS or
  *     aria-hidden alone does not do (« l'utilisation d'un style seul
@@ -90,6 +93,31 @@ function runInPage(ctx) {
     return false;
   }
 
+  // Whether the page has text of its own, outside scripts, styles and
+  // templates: then it has a main content zone in the light DOM.
+  function hasOwnText(root) {
+    if (!root) return false;
+    const SKIP = ['script', 'style', 'template', 'noscript'];
+    let walker;
+    try {
+      walker = dom.createTreeWalker(document, root, 4, null);
+    } catch {
+      return false;
+    }
+    for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+      if (!/\S/.test(String(dom.nodeValue(n) || ''))) continue;
+      let skipped = false;
+      for (let a = dom.parentNode(n); a && a !== root; a = dom.parentNode(a)) {
+        if (SKIP.includes(String(dom.localName(a) || '').toLowerCase())) {
+          skipped = true;
+          break;
+        }
+      }
+      if (!skipped) return true;
+    }
+    return false;
+  }
+
   function occurrence(el, reasonCode, outcome) {
     const texts = {
       extraMain: [
@@ -102,7 +130,9 @@ function runInPage(ctx) {
       ],
       noMain: [
         'The page has no <main> element and no role="main".',
-        'Check where the main content is, and wrap it in a <main> element.'
+        outcome === 'fail'
+          ? 'Wrap the main content of the page in a <main> element.'
+          : 'Check where the main content is, and wrap it in a <main> element.'
       ],
       hiddenByAncestor: [
         'This <main> element is hidden by an ancestor but has no hidden attribute of its own.',
@@ -151,9 +181,9 @@ function runInPage(ctx) {
   if (!mains.length) {
     const roleMain = query('[role]').find((el) => helpers.aria.getExplicitRole(el) === 'main');
     if (roleMain) return result('fail', [occurrence(roleMain, 'roleMainOnly', 'fail')]);
-    return result('cantTell', [
-      occurrence(dom.body(document) || dom.documentElement(document), 'noMain', 'cantTell')
-    ]);
+    const body = dom.body(document) || dom.documentElement(document);
+    const outcome = hasOwnText(body) ? 'fail' : 'cantTell';
+    return result(outcome, [occurrence(body, 'noMain', outcome)]);
   }
 
   const withoutOwnHidden = mains.filter((el) => !dom.hasAttribute(el, 'hidden'));
