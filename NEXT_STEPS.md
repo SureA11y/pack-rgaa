@@ -35,25 +35,88 @@ as many detections as RGAA allows:
 
 ## Where the work stands
 
+Last updated at commit `6e5cbb7`: 98 rules (31 manual), a result for 63 of
+RGAA's 106 criteria, 1067 tests passing.
+
 [`bench/AUDIT.md`](./bench/AUDIT.md) tracks every finding of the audit with
-its status. Search it for `| open |` (about 50 items left), `| partial |`
-and `decide`. Items marked `core` are in `bench/CORE_ISSUES.md`.
+its status: search it for `| open |` (28 items) and `| partial |` (7).
+Items marked `core` are in [`bench/CORE_ISSUES.md`](./bench/CORE_ISSUES.md).
+The open items fall in five groups; work them in this order.
 
-Suggested order for the open items, most useful first:
+### 1. Doable now, without the owner
 
-1. T25-18 (5.1.1): a complex table whose `aria-describedby` resolves to
-   nothing passes. Same approach as `rgaa-img-describedby-target`.
-2. T1-08 (1.9.2–1.9.5): captioned `<svg>`, `<canvas>`, `<object>` and
-   `<embed>` images are not checked (see `rgaa-figure-caption-structure`).
-3. T11-11 (11.2.1, 11.2.2): an empty `<label for>`, or a `title` as the only
-   label, is not failed.
-4. T11-07 (11.1.3): a field whose only `<label>` is visually hidden is never
-   asked about.
-5. T25-19 (5.6.1, 5.6.2): headers marked up as bold `<td>`.
-6. T10-10 (10.8.1): visible, informative text under `aria-hidden="true"`.
-7. T67-09 (7.3.2): `onfocus="this.blur()"`.
-8. T1-12 (rest of 1.6, 1.7): only 1.6.9 is checked so far.
-9. The rest of the open list.
+- **T1-13 (1.8, images of text):** no question yet. A manual rule could ask
+  about `<img>`, `input type=image`, image `<object>`/`<embed>` and
+  `<canvas>` whose alternative reads like a sentence or a slogan, outside
+  logos (1.8's particular case exempts logos, brand names, CAPTCHAs and
+  images whose exact rendering matters). Keep it a question: whether an
+  image holds text is for a person.
+- **T67-06 (6.1 note 2):** a link `title` must repeat the link's visible
+  name. Compare the `title` with the content's text (the same normalisation
+  as the label-in-name rules) and ask, or fail when the title clearly drops
+  it; check what other engines do first.
+- **T89-10 (8.4 vs 8.8):** a `lang` that sets the default language (no
+  `lang` on any ancestor, as on `<body>`) is judged under 8.8 because core's
+  `valid-lang` gives it the same reason code as a change of language. The
+  pack side can only be done once core gives it its own reason code (see 2).
+
+### 2. When core releases its fixes
+
+Core's main branch, after 1.13.0 (commit `94ef114`), fixes nine of the
+issues in `bench/CORE_ISSUES.md` (C1, C2, C3, C4, C7, C8, C9, C10, T12-11)
+and C5 in part; each entry's status says so. They are not released yet, and
+the pack runs on 1.12.1. Once a release carries them:
+
+1. Raise the `@surea11y/core` dev dependency (and the peer range if the
+   pack needs the new rule) and run `npm test`. Tests that pin core's old
+   behaviour will change (for instance `tests/core-rules.test.js`); check
+   each change is the fix, not a regression.
+2. Map core's new `click-handler-keyboard-operable` to RGAA 7.3.1
+   (« Chaque élément manipulable via un script est-il contrôlable au
+   clavier ? »): its failure is a role="button", link, checkbox or switch
+   that cannot take focus. Then close T67-03 in AUDIT.md.
+3. `list-children-valid` now reports `<li role="presentation">` (pagers,
+   carousels) with its own reason, `LIST_ITEM_ROLE_OVERRIDDEN`. Under 9.3
+   it should be asked about, not failed (T89-03); that needs the map to
+   tell a rule's reason codes apart, which it cannot today.
+4. Mark the fixed items `done` in AUDIT.md and remove them from
+   CORE_ISSUES.md.
+
+To recheck an issue against an unreleased core: check core's main out in
+a scratch folder, replace `node_modules/@surea11y/core` with a symlink to
+it (core has no dependencies), run the repro with
+`node --preserve-symlinks`, then put the original folder back.
+
+### 3. Waiting on the owner's decision
+
+Each is marked Q in AUDIT.md: T1-10 (CAPTCHAs), T25-17 (embedded players
+and `autoplay=1`), T89-11 (a wrong default language, `und`, `mul`), T89-12
+(changes of language), T89-13 (quotations), T10-06 (links at 3:1), T10-07
+(text colour with no background colour), T11-14 (same-name checkbox sets,
+`role=radio` sets), T11-15 (label placement), T11-17 (smaller form
+questions), T12-13 (two ways to navigate). Ask the owner, with what RGAA
+says and what other engines do, before building any of them.
+
+### 4. Needs browser measurement or crawler work
+
+T25-04 (3.3, focus and field borders), T10-02, T10-03, T10-04 (10.7
+focus outline cases), T10-11 (10.14, content shown on `:hover` only),
+T10-13 (10.2, 10.3, 10.11: CSS-reordered and CSS-only content, reflow),
+T13-04 (12.11, menus that open on hover), T13-07 (script-attached
+behaviour, needs a listener probe). Each needs Chromium tests; propose
+the approach to the owner first.
+
+### 5. Design questions
+
+T89-16 (criteria with a « pertinent » condition pass on validity alone),
+T89-17 (list findings name both 9.3 tests), T12-14 (« ensemble de pages »:
+never conclude from one page), T11-10 (11.9.1 passes whenever a button has
+a name), T12-09 (12.6.1 questions inside other landmarks), T67-04 (text
+under `aria-hidden` left out of the visible label). These change how
+results roll up; discuss with the owner.
+
+The partial items (T1-12, T1-14, T25-21, T67-07, T89-14, T13-03, T13-06)
+say in AUDIT.md what is left; the rest is either for a person or in core.
 
 Still to do, approved by the owner:
 
