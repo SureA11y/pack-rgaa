@@ -310,9 +310,9 @@ Passes: role="img" with aria-labelledby or aria-label; or, without role="img", f
 
 - role="img" with no aria-labelledby or aria-label. The methodology's note is explicit: "si l'élément &lt;canvas&gt; dispose d'un rôle img, son alternative ne peut être fournie que par les techniques listées à l'étape 4", so fallback content, title and an adjacent link do not count;
 - no role="img", an aria-label, aria-labelledby or title, but no fallback content and no link or button after it (the name alone is not one of the step 6 options);
-- nothing at all.
+- nothing at all, on a canvas that certainly carries information: the only content of a link or a button, a captioned canvas, or one that takes focus.
 
-Asks (cantTell): no role="img" and no fallback content, but a link or button right after the &lt;canvas&gt; (does it lead to an alternative content?).
+Asks (cantTell) about any other canvas with nothing at all (noAlternativeMayBeDecorative): it may be decorative, and then it fails 1.2.5 instead, which asks for aria-hidden="true". Asks (cantTell): no role="img" and no fallback content, but a link or button right after the &lt;canvas&gt; (does it lead to an alternative content?).
 
 ### `rgaa-complex-table-summary`
 
@@ -460,7 +460,7 @@ RGAA 1.1.7 passes when one of these holds:
 - it is immediately followed by a link or button that gives access to an alternative content;
 - a mechanism lets the user replace it with an alternative content.
 
-Passes: role="img" and a text alternative. Fails: no text alternative and no link or button right after it. Asks (cantTell):
+Passes: role="img" and a text alternative. Fails: no text alternative and no link or button right after it, when the embed has role="img" or certainly carries information (the only content of a link or a button, a captioned image, or one that takes focus). Without either, it is asked about (noAlternativeMayBeDecorative): it may be decorative, and then it fails 1.2.6 instead. Asks (cantTell):
 
 - a text alternative without role="img". The test wording requires both, but the methodology validates on the alternative alone (steps 2 to 4), so RGAA does not say which reading wins;
 - no text alternative, but a link or button right after the &lt;embed&gt; (does it lead to an alternative content?).
@@ -1045,7 +1045,7 @@ RGAA 1.1.6 passes when one of these holds:
 - it is immediately followed by a link or button that gives access to an alternative content;
 - a mechanism lets the user replace it with an alternative content.
 
-Passes: role="img" and a text alternative. Fails: no text alternative, no fallback content between &lt;object&gt; and &lt;/object&gt;, and no link or button right after it. Asks (cantTell):
+Passes: role="img" and a text alternative. Fails: no text alternative, no fallback content between &lt;object&gt; and &lt;/object&gt;, and no link or button right after it, when the object has role="img" or certainly carries information (the only content of a link or a button, a captioned image, or one that takes focus). Without either, it is asked about (noAlternativeMayBeDecorative): it may be decorative, and then it fails 1.2.3 instead. Asks (cantTell):
 
 - a text alternative without role="img". The test wording requires both, but the methodology validates on the alternative alone (steps 3 to 5), so RGAA does not say which reading wins;
 - no text alternative, but a link or button right after the &lt;object&gt; (does it lead to an alternative content?);

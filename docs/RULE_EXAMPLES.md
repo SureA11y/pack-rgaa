@@ -157,7 +157,7 @@ With `role="img"`, only `aria-labelledby` or `aria-label` can provide the altern
 <canvas width="40" height="20"></canvas>
 <a href="/donnees">Données du graphique</a>
 ```
-A person checks that the adjacent link leads to an alternative content.
+A person checks that the adjacent link leads to an alternative content. A canvas with nothing at all is asked about too, since it may be decorative (then it fails 1.2.5), unless it certainly carries information, as the only content of a link or button, captioned, or focusable: then it fails.
 
 ## rgaa-complex-table-summary
 
@@ -347,9 +347,9 @@ The embedded image has `role="img"` and a text alternative.
 
 **Failed**
 ```html
-<embed type="image/svg+xml" src="chart.svg">
+<a href="/plan"><embed type="image/svg+xml" src="chart.svg"></a>
 ```
-No text alternative, and no link or button to an alternative content after it.
+The image is the only content of the link, so it carries information, and it has no text alternative and no link or button to an alternative content after it. A bare `<embed>` image that may be decorative is asked about instead: if it is decorative, it fails 1.2.6.
 
 **Flagged (cantTell)**
 ```html
@@ -1114,9 +1114,9 @@ The image object has `role="img"` and a text alternative.
 
 **Failed**
 ```html
-<object type="image/png" data="chart.png"></object>
+<a href="/plan"><object type="image/png" data="chart.png"></object></a>
 ```
-No text alternative, no fallback content, and no link or button to an alternative content after it.
+The image is the only content of the link, so it carries information, and it has no text alternative, no fallback content, and no link or button to an alternative content after it. A bare `<object>` image that may be decorative is asked about instead: if it is decorative, it fails 1.2.3.
 
 **Flagged (cantTell)**
 ```html

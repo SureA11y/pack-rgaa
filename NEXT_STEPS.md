@@ -16,6 +16,10 @@ as many detections as RGAA allows:
 - **Ask (cantTell)** where RGAA leaves the call to a person, with a message
   that says exactly what to check.
 - Where the test's text and its methodology or glossary disagree, ask.
+- Whenever there is doubt, check both RGAA (test, methodology, glossary,
+  particular cases) and what other RGAA and accessibility engines do in
+  the same case, before deciding. Report the comparison to the owner, but
+  keep engine names out of the repository.
 
 ## House rules
 
@@ -53,10 +57,14 @@ Suggested order for the open items, most useful first:
 
 Owner decisions still pending:
 
-- T1-05: whether a bare `<canvas>`, `<object>` or `<embed>` image with no
-  alternative fails 1.1 or is asked about (it may be decorative).
-- Whether to reword the message of commit `dab2b17`, which mentions "other
-  tools". That needs a force-push of the branch, so ask the owner first.
+- The owner approved rewording commit `dab2b17` ("Ask where RGAA leaves
+  the call to a person…"), whose last bullet says the map notes "no longer
+  compare the links with other tools". It should read "The map notes and
+  the mapping page are reworded; the README and the package header count 73
+  rules." This rewrites the commits after it, so it needs a force-push of
+  `fix-false-positives`, which the session's permissions blocked. Do it once
+  pushing with force is allowed, for instance with `git filter-branch
+  --msg-filter` over `dab2b17^..HEAD`, then `git push --force-with-lease`.
 
 ## How a rule change is made
 

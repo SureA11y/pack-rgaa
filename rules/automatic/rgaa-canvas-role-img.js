@@ -34,7 +34,12 @@
  *   - no role="img", an aria-label, aria-labelledby or title, but no
  *     fallback content and no link or button after it (the name alone is
  *     not one of the step 6 options);
- *   - nothing at all.
+ *   - nothing at all, on a canvas that certainly carries information: the
+ *     only content of a link or a button, a captioned canvas, or one that
+ *     takes focus.
+ *   Asks (cantTell) about any other canvas with nothing at all
+ *   (noAlternativeMayBeDecorative): it may be decorative, and then it
+ *   fails 1.2.5 instead, which asks for aria-hidden="true".
  *   Asks (cantTell): no role="img" and no fallback content, but a link or
  *   button right after the <canvas> (does it lead to an alternative
  *   content?).
@@ -176,6 +181,39 @@ function runInPage(ctx) {
   let applicableCount = 0;
   const VF = { targetSet: 'dom', accEligible: null, reasons: [] };
 
+  // Certainly informative: the only content of a link or a button, an image
+  // with a caption, or one that takes focus. Anything else may be
+  // decorative, and then 1.2 applies instead.
+  function certainlyInformative(el) {
+    const tagName = (n) => String(dom.localName(n) || '').toLowerCase();
+    if (/^\d+$/.test(String(dom.getAttribute(el, 'tabindex') || '').trim())) return true;
+    const figure = dom.closest(el, 'figure');
+    if (
+      figure &&
+      Array.from(dom.querySelectorAll(figure, ':scope > figcaption')).some((c) =>
+        String(dom.textContent(c) || '').trim()
+      )
+    ) {
+      return true;
+    }
+    let control = null;
+    for (let a = dom.parentElement(el); a && !control; a = dom.parentElement(a)) {
+      const r = helpers.aria.getExplicitRole(a);
+      if (r === 'link' || r === 'button') control = a;
+      else if (
+        !r &&
+        ((tagName(a) === 'a' && dom.hasAttribute(a, 'href')) || tagName(a) === 'button')
+      ) {
+        control = a;
+      }
+    }
+    if (!control) return false;
+    if (String(dom.textContent(control) || '').trim()) return false;
+    return !Array.from(dom.querySelectorAll(control, 'img, svg, canvas, object, embed')).some(
+      (n) => n !== el && !dom.contains(el, n)
+    );
+  }
+
   function fail(el, reasonCode, summary, summaryKey, params, extra) {
     fails.push(
       helpers.reportOccurrence(el, {
@@ -248,6 +286,26 @@ function runInPage(ctx) {
         'canvasRoleImg_summary_fail_noRole',
         { source },
         { source }
+      );
+      continue;
+    }
+
+    if (!certainlyInformative(el)) {
+      cantTells.push(
+        helpers.reportOccurrence(el, {
+          summary:
+            'This <canvas> has no text alternative. If it carries information, it fails 1.1.8; if it is decorative, it needs aria-hidden="true" (1.2.5).',
+          hint: 'If the canvas carries information, give it role="img" and an aria-label or aria-labelledby, or alternative content; if it is decorative, add aria-hidden="true".',
+          i18n: {
+            summaryKey: 'canvasRoleImg_summary_cantTell_mayBeDecorative',
+            hintKey: 'canvasRoleImg_hint_cantTell_mayBeDecorative'
+          },
+          uncertainty: {
+            code: 'judgement-required',
+            needed: 'Whether the image carries information or is decorative.'
+          },
+          data: { details: { reasonCode: 'noAlternativeMayBeDecorative' }, visibilityFilter: VF }
+        })
       );
       continue;
     }

@@ -23,7 +23,12 @@
  *     an alternative content;
  *   - a mechanism lets the user replace it with an alternative content.
  *   Passes: role="img" and a text alternative.
- *   Fails: no text alternative and no link or button right after it.
+ *   Fails: no text alternative and no link or button right after it, when
+ *   the embed has role="img" or certainly carries information (the only
+ *   content of a link or a button, a captioned image, or one that takes
+ *   focus). Without either, it is asked about
+ *   (noAlternativeMayBeDecorative): it may be decorative, and then it fails
+ *   1.2.6 instead.
  *   Asks (cantTell):
  *   - a text alternative without role="img". The test wording requires
  *     both, but the methodology validates on the alternative alone (steps 2
@@ -147,6 +152,39 @@ function runInPage(ctx) {
 
   const VF = { targetSet: 'dom', accEligible: null, reasons: [] };
 
+  // Certainly informative: the only content of a link or a button, an image
+  // with a caption, or one that takes focus. Anything else may be
+  // decorative, and then 1.2 applies instead.
+  function certainlyInformative(el) {
+    const tagName = (n) => String(dom.localName(n) || '').toLowerCase();
+    if (/^\d+$/.test(String(dom.getAttribute(el, 'tabindex') || '').trim())) return true;
+    const figure = dom.closest(el, 'figure');
+    if (
+      figure &&
+      Array.from(dom.querySelectorAll(figure, ':scope > figcaption')).some((c) =>
+        String(dom.textContent(c) || '').trim()
+      )
+    ) {
+      return true;
+    }
+    let control = null;
+    for (let a = dom.parentElement(el); a && !control; a = dom.parentElement(a)) {
+      const r = helpers.aria.getExplicitRole(a);
+      if (r === 'link' || r === 'button') control = a;
+      else if (
+        !r &&
+        ((tagName(a) === 'a' && dom.hasAttribute(a, 'href')) || tagName(a) === 'button')
+      ) {
+        control = a;
+      }
+    }
+    if (!control) return false;
+    if (String(dom.textContent(control) || '').trim()) return false;
+    return !Array.from(dom.querySelectorAll(control, 'img, svg, canvas, object, embed')).some(
+      (n) => n !== el && !dom.contains(el, n)
+    );
+  }
+
   for (const el of nodes) {
     if (!el || !dom.get(el, 'getAttribute')) continue;
     const type = trim(attr(el, 'type')).toLowerCase();
@@ -191,6 +229,29 @@ function runInPage(ctx) {
             hintKey: 'embedImageRoleImg_hint_cantTell_adjacent'
           },
           data: { details: { reasonCode: 'adjacentLinkOrButton', type }, visibilityFilter: VF }
+        })
+      );
+      continue;
+    }
+
+    if (!isRoleImg && !certainlyInformative(el)) {
+      cantTells.push(
+        helpers.reportOccurrence(el, {
+          summary:
+            'This image embed has no text alternative. If it carries information, it fails 1.1.7; if it is decorative, it needs aria-hidden="true" (1.2.6).',
+          hint: 'If the image carries information, give the <embed> role="img" and an aria-label or aria-labelledby, or follow it with a link or button to an alternative content; if it is decorative, add aria-hidden="true".',
+          i18n: {
+            summaryKey: 'embedImageRoleImg_summary_cantTell_mayBeDecorative',
+            hintKey: 'embedImageRoleImg_hint_cantTell_mayBeDecorative'
+          },
+          uncertainty: {
+            code: 'judgement-required',
+            needed: 'Whether the image carries information or is decorative.'
+          },
+          data: {
+            details: { reasonCode: 'noAlternativeMayBeDecorative', type },
+            visibilityFilter: VF
+          }
         })
       );
       continue;

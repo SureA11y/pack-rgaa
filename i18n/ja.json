@@ -682,5 +682,11 @@
   "imgDescribedbyTarget_hint_fail": "aria-describedby を詳細な説明を含む箇所の id に向けるか、削除してください（RGAA 1.6.9）。",
   "imgDescribedbyTarget_summary_cantTell_someTargetsMissing": "この画像の aria-describedby は存在しない id を挙げています：「{{missing}}」。",
   "imgDescribedbyTarget_summary_cantTell_emptyDescription": "この画像の aria-describedby が指す箇所にはテキストがありません。",
-  "imgDescribedbyTarget_hint_cantTell": "aria-describedby が画像の詳細な説明を関連付けているか確認してください（RGAA 1.6.9）。"
+  "imgDescribedbyTarget_hint_cantTell": "aria-describedby が画像の詳細な説明を関連付けているか確認してください（RGAA 1.6.9）。",
+  "canvasRoleImg_summary_cantTell_mayBeDecorative": "この <canvas> には代替テキストがありません。情報を伝えるなら 1.1.8 に不適合、装飾なら aria-hidden=\"true\" が必要です（1.2.5）。",
+  "canvasRoleImg_hint_cantTell_mayBeDecorative": "canvas が情報を伝えるなら role=\"img\" と aria-label または aria-labelledby、または代替コンテンツを付け、装飾なら aria-hidden=\"true\" を追加してください。",
+  "objectImageRoleImg_summary_cantTell_mayBeDecorative": "この画像オブジェクトには代替テキストがありません。情報を伝えるなら 1.1.6 に不適合、装飾なら aria-hidden=\"true\" が必要です（1.2.3）。",
+  "objectImageRoleImg_hint_cantTell_mayBeDecorative": "画像が情報を伝えるなら <object> に role=\"img\" と aria-label または aria-labelledby を付けるか、代替コンテンツへのリンクやボタンを続けてください。装飾なら aria-hidden=\"true\" を追加してください。",
+  "embedImageRoleImg_summary_cantTell_mayBeDecorative": "この埋め込み画像には代替テキストがありません。情報を伝えるなら 1.1.7 に不適合、装飾なら aria-hidden=\"true\" が必要です（1.2.6）。",
+  "embedImageRoleImg_hint_cantTell_mayBeDecorative": "画像が情報を伝えるなら <embed> に role=\"img\" と aria-label または aria-labelledby を付けるか、代替コンテンツへのリンクやボタンを続けてください。装飾なら aria-hidden=\"true\" を追加してください。"
 }

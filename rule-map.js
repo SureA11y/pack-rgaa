@@ -170,7 +170,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-canvas-role-img': {
       tests: ['1.1.8'],
-      note: 'Checks each <canvas> not marked decorative. Passes role="img" with aria-labelledby or aria-label (steps 3 and 4), or, without role="img", fallback content (step 6). Fails a <canvas role="img"> with no ARIA name, since the note of the methodology limits its alternative to step 4, and a canvas with no role, no fallback content and no link or button after it, even if aria-label or title names it. Asks when a link or button follows the canvas. A replacement mechanism cannot be detected.'
+      note: 'Checks each <canvas> not marked decorative. Passes role="img" with aria-labelledby or aria-label (steps 3 and 4), or, without role="img", fallback content (step 6). Fails a <canvas role="img"> with no ARIA name, since the note of the methodology limits its alternative to step 4, a canvas with no role, no fallback content and no link or button after it that aria-label or title names, and one with nothing at all that certainly carries information (the only content of a link or button, captioned, or focusable). Asks about any other canvas with nothing at all, which may be decorative and then fails 1.2.5 instead, and when a link or button follows the canvas. A replacement mechanism cannot be detected.'
     },
     'canvas-text-alternative-present': {
       tests: [],
@@ -270,7 +270,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-embed-image-role-img': {
       tests: ['1.1.7'],
-      note: 'Checks each <embed type="image/..."> not marked decorative. Passes role="img" with aria-labelledby, aria-label or title. Fails an embed with no text alternative and no link or button right after it, which meets none of the conditions of 1.1.7 short of a replacement mechanism the page would have to offer. Asks when there is a text alternative without role="img" (the test wording requires both, the methodology validates on the alternative alone) and when a link or button follows (does it lead to an alternative content?).'
+      note: 'Checks each <embed type="image/..."> not marked decorative. Passes role="img" with aria-labelledby, aria-label or title. Fails an embed with no text alternative and no link or button right after it, which meets none of the conditions of 1.1.7 short of a replacement mechanism the page would have to offer, when it has role="img" or certainly carries information (the only content of a link or button, captioned, or focusable); asks about any other, which may be decorative and then fails 1.2.6 instead. Asks when there is a text alternative without role="img" (the test wording requires both, the methodology validates on the alternative alone) and when a link or button follows (does it lead to an alternative content?).'
     },
     'embed-text-alternative-present': {
       tests: [],
@@ -649,7 +649,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-object-image-role-img': {
       tests: ['1.1.6'],
-      note: 'Checks each <object type="image/..."> not marked decorative. Passes role="img" with aria-labelledby, aria-label or title. Fails an object with no text alternative, no fallback content and no link or button right after it, which meets none of the conditions of 1.1.6 short of a replacement mechanism the page would have to offer. Asks when there is a text alternative without role="img" (the test wording requires both, the methodology validates on the alternative alone), when a link or button follows (does it lead to an alternative content?), and when there is only fallback content.'
+      note: 'Checks each <object type="image/..."> not marked decorative. Passes role="img" with aria-labelledby, aria-label or title. Fails an object with no text alternative, no fallback content and no link or button right after it, which meets none of the conditions of 1.1.6 short of a replacement mechanism the page would have to offer, when it has role="img" or certainly carries information (the only content of a link or button, captioned, or focusable); asks about any other, which may be decorative and then fails 1.2.3 instead. Asks when there is a text alternative without role="img" (the test wording requires both, the methodology validates on the alternative alone), when a link or button follows (does it lead to an alternative content?), and when there is only fallback content.'
     },
     'object-text-alternative-present': {
       tests: [],

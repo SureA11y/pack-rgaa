@@ -682,5 +682,11 @@
   "imgDescribedbyTarget_hint_fail": "Point aria-describedby at the id of the passage that holds the detailed description, or remove it (RGAA 1.6.9).",
   "imgDescribedbyTarget_summary_cantTell_someTargetsMissing": "This image's aria-describedby lists ids that do not exist: \"{{missing}}\".",
   "imgDescribedbyTarget_summary_cantTell_emptyDescription": "The passages this image's aria-describedby points to hold no text.",
-  "imgDescribedbyTarget_hint_cantTell": "Check that aria-describedby associates the detailed description of the image (RGAA 1.6.9)."
+  "imgDescribedbyTarget_hint_cantTell": "Check that aria-describedby associates the detailed description of the image (RGAA 1.6.9).",
+  "canvasRoleImg_summary_cantTell_mayBeDecorative": "This <canvas> has no text alternative. If it carries information, it fails 1.1.8; if it is decorative, it needs aria-hidden=\"true\" (1.2.5).",
+  "canvasRoleImg_hint_cantTell_mayBeDecorative": "If the canvas carries information, give it role=\"img\" and an aria-label or aria-labelledby, or alternative content; if it is decorative, add aria-hidden=\"true\".",
+  "objectImageRoleImg_summary_cantTell_mayBeDecorative": "This image object has no text alternative. If it carries information, it fails 1.1.6; if it is decorative, it needs aria-hidden=\"true\" (1.2.3).",
+  "objectImageRoleImg_hint_cantTell_mayBeDecorative": "If the image carries information, give the <object> role=\"img\" and an aria-label or aria-labelledby, or follow it with a link or button to an alternative content; if it is decorative, add aria-hidden=\"true\".",
+  "embedImageRoleImg_summary_cantTell_mayBeDecorative": "This image embed has no text alternative. If it carries information, it fails 1.1.7; if it is decorative, it needs aria-hidden=\"true\" (1.2.6).",
+  "embedImageRoleImg_hint_cantTell_mayBeDecorative": "If the image carries information, give the <embed> role=\"img\" and an aria-label or aria-labelledby, or follow it with a link or button to an alternative content; if it is decorative, add aria-hidden=\"true\"."
 }

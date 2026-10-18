@@ -682,5 +682,11 @@
   "imgDescribedbyTarget_hint_fail": "Haga que aria-describedby apunte al id del fragmento que contiene la descripción detallada, o quítelo (RGAA 1.6.9).",
   "imgDescribedbyTarget_summary_cantTell_someTargetsMissing": "El aria-describedby de esta imagen lista id que no existen: \"{{missing}}\".",
   "imgDescribedbyTarget_summary_cantTell_emptyDescription": "Los fragmentos a los que apunta el aria-describedby de esta imagen no contienen texto.",
-  "imgDescribedbyTarget_hint_cantTell": "Compruebe que aria-describedby asocia la descripción detallada de la imagen (RGAA 1.6.9)."
+  "imgDescribedbyTarget_hint_cantTell": "Compruebe que aria-describedby asocia la descripción detallada de la imagen (RGAA 1.6.9).",
+  "canvasRoleImg_summary_cantTell_mayBeDecorative": "Este <canvas> no tiene alternativa textual. Si transmite información, falla el 1.1.8; si es decorativo, necesita aria-hidden=\"true\" (1.2.5).",
+  "canvasRoleImg_hint_cantTell_mayBeDecorative": "Si el canvas transmite información, dele role=\"img\" y un aria-label o aria-labelledby, o contenido alternativo; si es decorativo, añada aria-hidden=\"true\".",
+  "objectImageRoleImg_summary_cantTell_mayBeDecorative": "Esta imagen objeto no tiene alternativa textual. Si transmite información, falla el 1.1.6; si es decorativa, necesita aria-hidden=\"true\" (1.2.3).",
+  "objectImageRoleImg_hint_cantTell_mayBeDecorative": "Si la imagen transmite información, dé al <object> role=\"img\" y un aria-label o aria-labelledby, o haga que la siga un enlace o botón a un contenido alternativo; si es decorativa, añada aria-hidden=\"true\".",
+  "embedImageRoleImg_summary_cantTell_mayBeDecorative": "Esta imagen incrustada no tiene alternativa textual. Si transmite información, falla el 1.1.7; si es decorativa, necesita aria-hidden=\"true\" (1.2.6).",
+  "embedImageRoleImg_hint_cantTell_mayBeDecorative": "Si la imagen transmite información, dé al <embed> role=\"img\" y un aria-label o aria-labelledby, o haga que la siga un enlace o botón a un contenido alternativo; si es decorativa, añada aria-hidden=\"true\"."
 }

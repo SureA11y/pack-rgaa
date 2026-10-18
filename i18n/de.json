@@ -682,5 +682,11 @@
   "imgDescribedbyTarget_hint_fail": "Lassen Sie aria-describedby auf die id der Textpassage mit der ausführlichen Beschreibung verweisen, oder entfernen Sie es (RGAA 1.6.9).",
   "imgDescribedbyTarget_summary_cantTell_someTargetsMissing": "Das aria-describedby dieses Bildes nennt ids, die nicht existieren: „{{missing}}“.",
   "imgDescribedbyTarget_summary_cantTell_emptyDescription": "Die Textpassagen, auf die das aria-describedby dieses Bildes verweist, enthalten keinen Text.",
-  "imgDescribedbyTarget_hint_cantTell": "Prüfen Sie, dass aria-describedby die ausführliche Beschreibung des Bildes verknüpft (RGAA 1.6.9)."
+  "imgDescribedbyTarget_hint_cantTell": "Prüfen Sie, dass aria-describedby die ausführliche Beschreibung des Bildes verknüpft (RGAA 1.6.9).",
+  "canvasRoleImg_summary_cantTell_mayBeDecorative": "Dieses <canvas> hat keine Textalternative. Trägt es Informationen, verstößt es gegen 1.1.8; ist es dekorativ, braucht es aria-hidden=\"true\" (1.2.5).",
+  "canvasRoleImg_hint_cantTell_mayBeDecorative": "Trägt das Canvas Informationen, geben Sie ihm role=\"img\" und ein aria-label oder aria-labelledby oder alternativen Inhalt; ist es dekorativ, fügen Sie aria-hidden=\"true\" hinzu.",
+  "objectImageRoleImg_summary_cantTell_mayBeDecorative": "Dieses Bildobjekt hat keine Textalternative. Trägt es Informationen, verstößt es gegen 1.1.6; ist es dekorativ, braucht es aria-hidden=\"true\" (1.2.3).",
+  "objectImageRoleImg_hint_cantTell_mayBeDecorative": "Trägt das Bild Informationen, geben Sie dem <object> role=\"img\" und ein aria-label oder aria-labelledby, oder lassen Sie ihm einen Link oder eine Schaltfläche zu einem alternativen Inhalt folgen; ist es dekorativ, fügen Sie aria-hidden=\"true\" hinzu.",
+  "embedImageRoleImg_summary_cantTell_mayBeDecorative": "Dieses eingebettete Bild hat keine Textalternative. Trägt es Informationen, verstößt es gegen 1.1.7; ist es dekorativ, braucht es aria-hidden=\"true\" (1.2.6).",
+  "embedImageRoleImg_hint_cantTell_mayBeDecorative": "Trägt das Bild Informationen, geben Sie dem <embed> role=\"img\" und ein aria-label oder aria-labelledby, oder lassen Sie ihm einen Link oder eine Schaltfläche zu einem alternativen Inhalt folgen; ist es dekorativ, fügen Sie aria-hidden=\"true\" hinzu."
 }

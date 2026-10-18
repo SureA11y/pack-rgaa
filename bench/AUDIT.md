@@ -15,7 +15,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T1-02 | 1.1.5, 1.2.4 | WM | `rgaa-svg-hidden-no-alternative` is linked to both tests, though an image fails one of them, not both. Now 1.2.4 only. | done (631a8d8) |
 | T1-03 | 1.1.1 | WO | `rgaa-img-alt-present` fails every non-spacer `<img>` with no alt under 1.1.1, including images the glossary calls decorative (one before each list item). | done (decision B) |
 | T1-04 | 1.1.5 | WO | An exposed SVG with a `<title>` and no `role="img"` fails 1.1.5 even beside text, where it may be decorative (then 1.2.4). | done (decision B) |
-| T1-05 | 1.1.6–1.1.8 | FP/WO | A 0×0 `<canvas>` fails 1.1.8; a bare canvas, object or embed image fails 1.1 though it may be decorative. | done for 0×0; bare canvas, object, embed: decide |
+| T1-05 | 1.1.6–1.1.8 | FP/WO | A 0×0 `<canvas>` fails 1.1.8; a bare canvas, object or embed image fails 1.1 though it may be decorative. | done: 0×0 left out; a bare canvas, object or embed fails only when certainly informative (link or button content, captioned, focusable) or role="img", and is asked about otherwise (owner's decision) |
 | T1-06 | 1.1.1, 1.2.1 | WO | `alt=" "` is reported as no alt; a spacer with `alt=" "` fails 1.1.1 instead of 1.2.1. | done |
 | T1-07 | 1.2.4 | MISS | An exposed decorative SVG without `aria-hidden` (including `role="presentation"`) is never checked against 1.2.4. | done (rgaa-svg-decorative-aria-hidden) |
 | T1-08 | 1.9.2–1.9.5 | MISS | Captioned svg, canvas, object and embed images are not checked. | open |

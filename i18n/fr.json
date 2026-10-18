@@ -682,5 +682,11 @@
   "imgDescribedbyTarget_hint_fail": "Faites pointer aria-describedby vers l’id du passage qui contient la description détaillée, ou retirez-le (RGAA 1.6.9).",
   "imgDescribedbyTarget_summary_cantTell_someTargetsMissing": "L’attribut aria-describedby de cette image liste des id inexistants : « {{missing}} ».",
   "imgDescribedbyTarget_summary_cantTell_emptyDescription": "Les passages vers lesquels pointe l’attribut aria-describedby de cette image ne contiennent aucun texte.",
-  "imgDescribedbyTarget_hint_cantTell": "Vérifiez que l’attribut aria-describedby associe la description détaillée de l’image (RGAA 1.6.9)."
+  "imgDescribedbyTarget_hint_cantTell": "Vérifiez que l’attribut aria-describedby associe la description détaillée de l’image (RGAA 1.6.9).",
+  "canvasRoleImg_summary_cantTell_mayBeDecorative": "Cette balise <canvas> n’a pas d’alternative textuelle. Si elle est porteuse d’information, elle est en échec au test 1.1.8 ; si elle est de décoration, elle doit avoir aria-hidden=\"true\" (1.2.5).",
+  "canvasRoleImg_hint_cantTell_mayBeDecorative": "Si la balise <canvas> est porteuse d’information, donnez-lui role=\"img\" et un aria-label ou aria-labelledby, ou un contenu alternatif ; si elle est de décoration, ajoutez aria-hidden=\"true\".",
+  "objectImageRoleImg_summary_cantTell_mayBeDecorative": "Cette image objet n’a pas d’alternative textuelle. Si elle est porteuse d’information, elle est en échec au test 1.1.6 ; si elle est de décoration, elle doit avoir aria-hidden=\"true\" (1.2.3).",
+  "objectImageRoleImg_hint_cantTell_mayBeDecorative": "Si l’image est porteuse d’information, donnez à la balise <object> role=\"img\" et un aria-label ou aria-labelledby, ou faites-la suivre d’un lien ou bouton vers un contenu alternatif ; si elle est de décoration, ajoutez aria-hidden=\"true\".",
+  "embedImageRoleImg_summary_cantTell_mayBeDecorative": "Cette image embarquée n’a pas d’alternative textuelle. Si elle est porteuse d’information, elle est en échec au test 1.1.7 ; si elle est de décoration, elle doit avoir aria-hidden=\"true\" (1.2.6).",
+  "embedImageRoleImg_hint_cantTell_mayBeDecorative": "Si l’image est porteuse d’information, donnez à la balise <embed> role=\"img\" et un aria-label ou aria-labelledby, ou faites-la suivre d’un lien ou bouton vers un contenu alternatif ; si elle est de décoration, ajoutez aria-hidden=\"true\"."
 }
