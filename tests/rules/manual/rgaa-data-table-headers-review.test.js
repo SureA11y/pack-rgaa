@@ -115,8 +115,10 @@ test(`${RULE_ID}: opt-in, so a default run and a WCAG profile do not include it`
   }
 });
 
-test(`${RULE_ID}: the map links it to 5.6.1 and 5.6.2`, () => {
-  assert.deepEqual(RGAA_RULE_TESTS['4.1.2'][RULE_ID].tests, ['5.6.1', '5.6.2']);
+// A headerless table is a data table with unmarked headers (5.6) or a
+// layout table, which 5.3.1 asks for role="presentation".
+test(`${RULE_ID}: the map links it to 5.3.1, 5.6.1 and 5.6.2`, () => {
+  assert.deepEqual(RGAA_RULE_TESTS['4.1.2'][RULE_ID].tests, ['5.3.1', '5.6.1', '5.6.2']);
 });
 
 // A large table with no headers fails WCAG 1.3.1 through td-has-header, which

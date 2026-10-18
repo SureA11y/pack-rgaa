@@ -49,6 +49,21 @@ test(`${RULE_ID}: aria-describedby is taken as the summary`, () => {
   assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'pass', { maxOccurrences: 0 });
 });
 
+// An aria-describedby that points to nothing, or to an empty element,
+// marks no summary.
+test(`${RULE_ID}: aria-describedby to a missing or empty element is not a summary`, () => {
+  for (const body of [
+    `<table aria-describedby="nope">${TWO_HEADER_ROWS}</table>`,
+    `<p id="d"></p><table aria-describedby="d">${TWO_HEADER_ROWS}</table>`
+  ]) {
+    const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'cantTell', {
+      minOccurrences: 1,
+      maxOccurrences: 1
+    });
+    assert.equal(rule.occurrences[0].data.details.describedbyUnresolved, true, body);
+  }
+});
+
 // RGAA 5.1.1 step 2 accepts summary only "dans les versions de HTML et de
 // XHTML antérieures à HTML 5".
 test(`${RULE_ID}: a summary attribute counts before HTML5 (or with no doctype), not in HTML5`, () => {

@@ -26,7 +26,8 @@
  *   passes: whether that summary is good is rgaa-complex-table-summary-quality's
  *   question.
  * @expectation
- *   A complex table without aria-describedby, and without a summary
+ *   A complex table without aria-describedby pointing to some text (an id
+ *   that exists in the page and holds text), and without a summary
  *   attribute where one still counts, is flagged for a person to check that
  *   a summary is available, as RGAA 5.1.1 asks: in the <caption>, or in a
  *   passage near the table. The summary attribute counts only on a <table>
@@ -198,7 +199,21 @@ function runInPage(ctx) {
     const reasons = complexity(table);
     if (!reasons.length) continue;
     applicableCount += 1;
-    if (hasText(dom.getAttribute(table, 'aria-describedby'))) continue;
+    // aria-describedby marks a summary only when it points to some text.
+    const describedby = String(dom.getAttribute(table, 'aria-describedby') || '').trim();
+    const described = describedby
+      .split(/\s+/)
+      .filter(Boolean)
+      .some((ref) => {
+        let target = null;
+        try {
+          target = helpers.getElementByIdInTree
+            ? helpers.getElementByIdInTree(table, ref)
+            : dom.getElementById(dom.getRootNode(table), ref);
+        } catch {}
+        return !!target && hasText(dom.textContent(target));
+      });
+    if (described) continue;
     // summary is a résumé only on a <table> before HTML5 (5.1.1 step 2).
     const hasSummaryAttr = isNative && hasText(dom.getAttribute(table, 'summary'));
     if (hasSummaryAttr && !isHtml5) continue;
@@ -220,6 +235,7 @@ function runInPage(ctx) {
             reasonCode: 'complexTableNoSummary',
             reasons,
             hasCaption: Boolean(caption),
+            ...(describedby ? { describedbyUnresolved: true } : {}),
             ...(hasSummaryAttr ? { summaryAttributeIgnored: true } : {})
           },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }

@@ -186,7 +186,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-complex-table-summary': {
       tests: ['5.1.1'],
-      note: 'Asks whether a summary is available for a <table> or role="table" the rule takes as complex: a header cell outside both the first row and the first column, a cell with a headers attribute, a header with scope="rowgroup" or "colgroup", or first-row (or first-column) headers that each span a group of columns (or rows), as in RGAA\'s definition of a complex data table. A table with aria-describedby is not asked about, nor one with a summary attribute in a document whose doctype is not HTML5 (5.1.1 step 2 accepts summary only before HTML5). The summary may sit in the caption or next to the table, which only a person can judge.'
+      note: 'Asks whether a summary is available for a <table> or role="table" the rule takes as complex: a header cell outside both the first row and the first column, a cell with a headers attribute, a header with scope="rowgroup" or "colgroup", or first-row (or first-column) headers that each span a group of columns (or rows), as in RGAA\'s definition of a complex data table. A table with an aria-describedby that points to some text is not asked about (one pointing to a missing or empty element marks no summary), nor one with a summary attribute in a document whose doctype is not HTML5 (5.1.1 step 2 accepts summary only before HTML5). The summary may sit in the caption or next to the table, which only a person can judge.'
     },
     'rgaa-complex-table-summary-quality': {
       tests: ['5.2.1'],
@@ -225,8 +225,8 @@ const RGAA_RULE_TESTS = {
       note: 'Fails an @media (orientation) block that rotates the page by about 90 degrees, a known way to force one orientation. That is direct evidence that viewing is not possible in both portrait and landscape (13.9.1 step 2). An orientation block that hides the main content (a "rotate your device" message) is asked about. The essential-orientation exception still needs a human.'
     },
     'rgaa-data-table-headers-review': {
-      tests: ['5.6.1', '5.6.2'],
-      note: 'Asks about a table of at least two rows and two columns that has no header cell at all (no <th>, no columnheader or rowheader role), and is not role="presentation" or "none". If it is a data table, its headers over a whole column or row fail 5.6.1 or 5.6.2 unless marked with <th> or those roles; only a person can say whether it is a data table and which cells are headers. A table with at least one header is not asked about.'
+      tests: ['5.3.1', '5.6.1', '5.6.2'],
+      note: 'Asks about a table of at least two rows and two columns that has no header cell at all (no <th>, no columnheader or rowheader role), and is not role="presentation" or "none". If it is a data table, its headers over a whole column or row fail 5.6.1 or 5.6.2 unless marked with <th> or those roles; only a person can say whether it is a data table and which cells are headers. If it is a layout table, 5.3.1 asks it for role="presentation", which it lacks; the question covers that test too. A table with at least one header is not asked about.'
     },
     'definition-list-children-valid': {
       tests: ['9.3.3'],

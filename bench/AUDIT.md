@@ -39,7 +39,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T25-03 | 4.3.2 | FP | A translation `kind="subtitles"` track fails when its `srclang` equals the page's language. | done |
 | T25-04 | 3.3.1 | MISS/WM | No rule for 3.3; `rgaa-focus-indicator-contrast` measures 3:1 focus styles but is linked to 10.7.1 only; field borders are not measured. | open |
 | T25-05 | 5.4.1 | MISS | A data table titled by an adjacent heading is not asked about. Now asked about by `rgaa-table-title-adjacent`. | done |
-| T25-06 | 5.3.1 | WM | The headerless-table question is not linked to 5.3.1. | open |
+| T25-06 | 5.3.1 | WM | The headerless-table question is not linked to 5.3.1. Now linked: a layout table without role="presentation" fails 5.3.1, so the question covers it. | done |
 | T25-07 | 5.7.2, 5.7.3 | WO | An invalid `scope`, or `rowgroup`/`colgroup`, only asks, though 5.7 fails either way. | done |
 | T25-08 | 5.7.1 | MISS | A `th` with no scope, id or role in a table with headers on both axes (M6). Now `rgaa-th-association-present`: fails it in a both-axes table without spans; asks once about other tables. | done |
 | T25-09 | 5.7.2 | FN | 5.7 passes when `scope` points the wrong way. | done |
@@ -51,7 +51,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T25-15 | 3.2 | WO | Weights 600–699 count as not bold. | core |
 | T25-16 | 3.2.1 | WO | An author placeholder colour below the ratio is only asked about. | core |
 | T25-17 | 4.x | MISS | Embedded players (YouTube, Vimeo…) and `autoplay=1` are invisible to theme 4 (Q3). | open |
-| T25-18 | 5.1.1 | FN | A complex table whose `aria-describedby` resolves to nothing passes. | open |
+| T25-18 | 5.1.1 | FN | A complex table whose `aria-describedby` resolves to nothing passes. Now asked about: aria-describedby counts only when it points to text. | done |
 | T25-19 | 5.6.1, 5.6.2 | MISS | Row or column headers marked up as bold `td` are not asked about. | open |
 | T25-20 | 2.1.1, 2.2.1 | FN | `title="&nbsp;"` passes 2.1 and escapes 2.2. | done |
 | T25-21 | 3.1 | MISS | No rule: information given by colour alone. | open |
