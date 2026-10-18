@@ -747,5 +747,10 @@
   "crypticContentReview_summary_cantTell_emoticon": "Ce contenu contient une émoticône (« {{sample}} ») sans attribut title.",
   "crypticContentReview_summary_cantTell_emoji": "Ce contenu contient un emoji (« {{sample}} ») sans attribut title.",
   "crypticContentReview_summary_cantTell_asciiArt": "Ce contenu contient de l’art ASCII (« {{sample}} ») sans attribut title.",
-  "crypticContentReview_hint_cantTell": "Vérifiez que le contexte adjacent en donne la définition, ou ajoutez un attribut title ; pour un emoji, role=\"img\" avec un aria-label le nomme (RGAA 13.5.1)."
+  "crypticContentReview_hint_cantTell": "Vérifiez que le contexte adjacent en donne la définition, ou ajoutez un attribut title ; pour un emoji, role=\"img\" avec un aria-label le nomme (RGAA 13.5.1).",
+  "statusMessageReview_title": "Les messages de statut utilisent role=\"status\", \"alert\", \"log\" ou \"progressbar\"",
+  "statusMessageReview_description": "Signale les éléments qui ressemblent à des messages de statut (aria-live, ou une classe comme alert, message ou error) sans rôle status, alert, log ni progressbar, pour qu’une personne vérifie le rôle qu’il leur faut.",
+  "statusMessageReview_summary_cantTell_liveWithoutRole": "Cet élément a aria-live mais pas de role=\"status\", \"alert\", \"log\" ni \"progressbar\" (« {{text}} »).",
+  "statusMessageReview_summary_cantTell_possibleStatusMessage": "Cet élément ressemble à un message de statut (« {{text}} ») mais n’a pas de role=\"status\", \"alert\", \"log\" ni \"progressbar\".",
+  "statusMessageReview_hint_cantTell": "S’il s’agit d’un message de statut, utilisez role=\"status\" pour une réussite, un résultat ou un état, role=\"alert\" pour une erreur ou une suggestion, et role=\"log\", \"progressbar\" ou \"status\" pour une progression (RGAA 7.5)."
 }

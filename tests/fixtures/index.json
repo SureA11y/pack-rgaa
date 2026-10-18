@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 95,
-    "withFixture": 95,
+    "total": 96,
+    "withFixture": 96,
     "withoutFixture": 0
   },
   "rows": [
@@ -1431,6 +1431,23 @@
         "FAIL": 1,
         "CANTTELL": 0,
         "OTHER": 0
+      }
+    },
+    {
+      "ruleId": "rgaa-status-message-review",
+      "title": "Status messages use role=\"status\", \"alert\", \"log\" or \"progressbar\"",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/status-message-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-status-message-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-status-message-review-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 1
       }
     },
     {

@@ -1694,6 +1694,22 @@ Navigation comes before the main content and no link leads to it. WCAG 2.4.1 acc
 ```
 The skip link works with the keyboard, but `aria-hidden="true"` hides it from screen reader users: a person decides.
 
+## rgaa-status-message-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<p class="alert alert-success">Message envoyé avec succès</p>
+```
+If this message appears after an action, it needs role="status" (RGAA 7.5.1); a person checks.
+
+**Not applicable**
+```html
+<div role="status">Message envoyé avec succès</div>
+```
+The message has role="status".
+
 ## rgaa-svg-decorative-aria-hidden
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*

@@ -855,6 +855,10 @@ const RGAA_RULE_TESTS = {
       tests: [],
       note: 'Flags <summary> elements with an empty name. A native details/summary disclosure is not script-generated, so 7.1.1 does not strictly apply. 11.9.1 covers only buttons inside a form, and no other candidate test concerns disclosure widgets. The auditor may still choose to treat a scripted summary under 7.1.1.'
     },
+    'rgaa-status-message-review': {
+      tests: ['7.5.1', '7.5.2', '7.5.3'],
+      note: 'Asks about visible elements that look like status messages with none of the roles 7.5 names (status, alert, log, progressbar): one with aria-live, and one whose class or id names a message (alert, message, notification, notice, toast, flash, success, error, warning, feedback) holding 40 words or less. 7.5.1 to 7.5.3 name the role attribute, so aria-live alone is not one of them; whether the element is a status message (glossary « Message de statut », a change of content without a change of context) is for a person.'
+    },
     'rgaa-svg-decorative-aria-hidden': {
       tests: ['1.2.4'],
       note: 'Checks each <svg> exposed to assistive technologies that may be decorative (not the only content of a link or button, not focusable, not captioned, not a sprite sheet, no role="img"): fails one with role="presentation" or "none" and no aria-hidden="true", since 1.2.4 condition 1 accepts only aria-hidden="true" for a decorative SVG, and asks about the others, which fail 1.2.4 if decorative and fall under 1.1.5 if they carry information.'

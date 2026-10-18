@@ -4,13 +4,13 @@ This pack's rules and their scenario pages. Every rule should have a `tests/fixt
 
 ## Summary
 
-Total rules: **95**. With fixture: **95**. Without fixture: **0**.
+Total rules: **96**. With fixture: **96**. Without fixture: **0**.
 
 ## Rules WITHOUT a fixture (0)
 
 None — every rule has a fixture.
 
-## Rules WITH a fixture (95)
+## Rules WITH a fixture (96)
 
 | Rule ID | Type | Fixture | Cases | PASS | FAIL | CANTTELL | OTHER |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -98,6 +98,7 @@ None — every rule has a fixture.
 | rgaa-select-fake-groups-review | manual | `tests/fixtures/rgaa-select-fake-groups-review-all-scenarios.html` | 2 | 0 | 0 | 1 | 1 |
 | rgaa-skip-link-placement | automatic | `tests/fixtures/rgaa-skip-link-placement-all-scenarios.html` | 1 | 0 | 0 | 1 | 0 |
 | rgaa-skip-link-present | automatic | `tests/fixtures/rgaa-skip-link-present-all-scenarios.html` | 1 | 0 | 1 | 0 | 0 |
+| rgaa-status-message-review | manual | `tests/fixtures/rgaa-status-message-review-all-scenarios.html` | 2 | 0 | 0 | 1 | 1 |
 | rgaa-svg-decorative-aria-hidden | automatic | `tests/fixtures/rgaa-svg-decorative-aria-hidden-all-scenarios.html` | 6 | 0 | 1 | 2 | 3 |
 | rgaa-svg-hidden-no-alternative | automatic | `tests/fixtures/rgaa-svg-hidden-no-alternative-all-scenarios.html` | 10 | 3 | 5 | 0 | 2 |
 | rgaa-svg-role-img | automatic | `tests/fixtures/rgaa-svg-role-img-all-scenarios.html` | 10 | 2 | 1 | 4 | 3 |

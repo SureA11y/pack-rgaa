@@ -747,5 +747,10 @@
   "crypticContentReview_summary_cantTell_emoticon": "このコンテンツには title のない顔文字（「{{sample}}」）があります。",
   "crypticContentReview_summary_cantTell_emoji": "このコンテンツには title のない絵文字（「{{sample}}」）があります。",
   "crypticContentReview_summary_cantTell_asciiArt": "このコンテンツには title のないアスキーアート（「{{sample}}」）があります。",
-  "crypticContentReview_hint_cantTell": "隣接するテキストが意味を説明しているか確認するか、title を付けてください。絵文字には role=\"img\" と aria-label で名前を付けられます（RGAA 13.5.1）。"
+  "crypticContentReview_hint_cantTell": "隣接するテキストが意味を説明しているか確認するか、title を付けてください。絵文字には role=\"img\" と aria-label で名前を付けられます（RGAA 13.5.1）。",
+  "statusMessageReview_title": "ステータスメッセージは role=\"status\"、\"alert\"、\"log\"、\"progressbar\" を使う",
+  "statusMessageReview_description": "ステータスメッセージのように見える要素（aria-live、または alert、message、error などのクラス）で、status、alert、log、progressbar のロールがないものを示し、必要なロールを人が確認できるようにします。",
+  "statusMessageReview_summary_cantTell_liveWithoutRole": "この要素には aria-live がありますが、role=\"status\"、\"alert\"、\"log\"、\"progressbar\" がありません（「{{text}}」）。",
+  "statusMessageReview_summary_cantTell_possibleStatusMessage": "この要素はステータスメッセージのように見えます（「{{text}}」）が、role=\"status\"、\"alert\"、\"log\"、\"progressbar\" がありません。",
+  "statusMessageReview_hint_cantTell": "ステータスメッセージなら、成功・結果・状態には role=\"status\"、エラーや提案には role=\"alert\"、進行状況には role=\"log\"、\"progressbar\"、\"status\" を使ってください（RGAA 7.5）。"
 }

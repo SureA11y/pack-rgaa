@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**95 rules total: 67 automatic (decide deterministically; can return `fail`), 28 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**96 rules total: 67 automatic (decide deterministically; can return `fail`), 29 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -86,7 +86,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-video-captions-track-kind`](#rgaa-video-captions-track-kind) | Video caption tracks use kind="captions" | — | — | high | moderate |
 | [`rgaa-widget-label-in-name`](#rgaa-widget-label-in-name) | The accessible name of a scripted component contains its visible label | — | — | high | serious |
 
-## Manual rules (28), never `fail`
+## Manual rules (29), never `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -116,6 +116,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-script-redirect-review`](#rgaa-script-redirect-review) | A timed redirection done by a script can be controlled | — | — | high | moderate |
 | [`rgaa-scripted-components-review`](#rgaa-scripted-components-review) | Scripted components are compatible with assistive technologies | — | — | medium | moderate |
 | [`rgaa-select-fake-groups-review`](#rgaa-select-fake-groups-review) | Options are grouped with &lt;optgroup&gt;, not with fake heading options | — | — | high | moderate |
+| [`rgaa-status-message-review`](#rgaa-status-message-review) | Status messages use role="status", "alert", "log" or "progressbar" | — | — | high | moderate |
 | [`rgaa-table-title-adjacent`](#rgaa-table-title-adjacent) | A heading just before a data table is tied to it if it is its title | — | — | high | moderate |
 | [`rgaa-viewport-zoom-review`](#rgaa-viewport-zoom-review) | Text can reach 200% zoom despite a viewport meta tag that limits zoom | — | — | medium | serious |
 
@@ -127,7 +128,7 @@ What a scan runs under each profile (`engineOptions.profile`): the rules its tag
 |---|---|---|---|---|---|---|
 | `rgaa-4.1.2` | `rgaa` | version 4.1.2 | — | — | — | 2.1 |
 
-## Rollups (60)
+## Rollups (61)
 
 Each groups rules into one result, as a WCAG rollup does; the standard's own report sections show them.
 
@@ -181,6 +182,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-7.2` | Pour chaque script ayant une alternative, cette alternative est-elle pertinente ? | `rgaa-noscript-alternative-review` |
 | `rgaa-4.1.2-7.3` | Chaque script est-il contrôlable par le clavier et par tout dispositif de pointage (hors cas particuliers) ? | `mouse-only-event-handlers`, `rgaa-focus-not-removed`, `rgaa-keyboard-only-event-handlers` |
 | `rgaa-4.1.2-7.4` | Pour chaque script qui initie un changement de contexte, l’utilisateur est-il averti ou en a-t-il le contrôle ? | `rgaa-context-change-review` |
+| `rgaa-4.1.2-7.5` | Dans chaque page web, les messages de statut sont-ils correctement restitués par les technologies d’assistance ? | `rgaa-status-message-review` |
 | `rgaa-4.1.2-8.1` | Chaque page web est-elle définie par un type de document ? | `rgaa-doctype-position`, `rgaa-doctype-present`, `rgaa-doctype-valid` |
 | `rgaa-4.1.2-8.10` | Dans chaque page web, les changements du sens de lecture sont-ils signalés ? | `rgaa-dir-attribute-valid`, `rgaa-text-direction-marked` |
 | `rgaa-4.1.2-8.2` | Pour chaque page web, le code source généré est-il valide selon le type de document spécifié ? | `duplicate-id`, `rgaa-aria-attribute-conformance`, `rgaa-aria-role-conformance`, `rgaa-html-elements-attributes-valid`, `rgaa-html-nesting-valid`, `rgaa-markup-validation-review` |
@@ -1444,6 +1446,25 @@ A same-page link outside the main content zone leads to it: its fragment resolve
 - on a skip link whose target does not exist, whether or not the page has navigation.
 
 A link whose target does not exist fails as a broken skip link only when its name or fragment says it leads to the content (« contenu », content, main, principal…); a broken first link that names something else (cookie settings, a menu) is no skip link to the content. It asks instead of failing when no navigation block comes before the main zone and no link leads to it (a one-page site may not need one), and on a skip link whose target exists but is hidden, sits before the zone with links or other focusable elements, but no navigation block, between the two, or sits inside the zone after links or other focusable elements outside navigation, and on a link to the content whose target lies before a navigation block that precedes the zone (a wrapper around a section menu and &lt;main&gt;). A skip link to a target inside navigation, after the zone, or with navigation between it and the zone leads elsewhere (to a menu, a search form, the footer) and does not count. A working skip link inside aria-hidden="true" is asked about (skipLinkAriaHidden): it works with the keyboard, but screen reader users cannot find it.
+
+### `rgaa-status-message-review`
+
+**Status messages use role="status", "alert", "log" or "progressbar"**
+
+manual · no formal WCAG SC mapping · confidence high · default severity moderate
+
+Flags elements that look like status messages (aria-live, or a class such as alert, message or error) with no status, alert, log or progressbar role, for a person to check the role they need.
+
+**Applies to.**
+
+Applies to visible elements that look like status messages and carry none of the roles 7.5 names (status, alert, log, progressbar):
+
+- an element with aria-live, which shows the author meant it to be announced (liveWithoutRole);
+- an element whose class or id names a message (alert, message, notification, notice, toast, flash, success, error, warning, feedback), holding a short text of 40 words or less (possibleStatusMessage).
+
+An element inside one with such a role is left out. A page with none is notApplicable.
+
+**Expectation.** RGAA 7.5.1 to 7.5.3: a status message telling of a success, a result or a state uses role="status"; one with a suggestion or an error, role="alert"; one with a progress, role="log", "progressbar" or "status". The tests name the role attribute, so aria-live alone is not one of them. Whether the element is a status message (glossary « Message de statut »: a change in the content that informs the user without a change of context) is for a person, so each one is asked about.
 
 ### `rgaa-svg-decorative-aria-hidden`
 
