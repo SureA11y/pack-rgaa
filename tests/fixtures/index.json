@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 88,
-    "withFixture": 88,
+    "total": 89,
+    "withFixture": 89,
     "withoutFixture": 0
   },
   "rows": [
@@ -1023,6 +1023,23 @@
         "FAIL": 0,
         "CANTTELL": 2,
         "OTHER": 1
+      }
+    },
+    {
+      "ruleId": "rgaa-object-embed-decorative-aria-hidden",
+      "title": "Decorative image objects and embeds have aria-hidden=\"true\" and no alternative",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-object-embed-decorative-aria-hidden.js",
+      "testFile": "tests/rules/automatic/rgaa-object-embed-decorative-aria-hidden.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-object-embed-decorative-aria-hidden-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 1,
+        "FAIL": 1,
+        "CANTTELL": 0,
+        "OTHER": 0
       }
     },
     {

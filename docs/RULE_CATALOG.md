@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**88 rules total: 66 automatic (decide deterministically; can return `fail`), 22 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**89 rules total: 67 automatic (decide deterministically; can return `fail`), 22 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -14,7 +14,7 @@ Under **What a finding reports**, a rule lists the fields its findings carry in 
 
 See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_SCHEMA.md) for what `type`/`confidence`/`severity` mean on a scan result, and [`WCAG_CONFORMANCE.md`](https://github.com/SureA11y/core/blob/main/docs/WCAG_CONFORMANCE.md) for how these roll up to an SC-level conformance claim.
 
-## Automatic rules (66), can return `fail`
+## Automatic rules (67), can return `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -61,6 +61,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-media-transcript-adjacent`](#rgaa-media-transcript-adjacent) | Audio and video have an adjacent transcript or a link to one | — | — | medium | moderate |
 | [`rgaa-meta-redirect-immediate`](#rgaa-meta-redirect-immediate) | Meta redirects are immediate | — | — | medium | serious |
 | [`rgaa-meta-refresh-no-url-timing`](#rgaa-meta-refresh-no-url-timing) | Meta refresh waits 20 hours or more | — | — | high | serious |
+| [`rgaa-object-embed-decorative-aria-hidden`](#rgaa-object-embed-decorative-aria-hidden) | Decorative image objects and embeds have aria-hidden="true" and no alternative | — | — | high | minor |
 | [`rgaa-object-image-role-img`](#rgaa-object-image-role-img) | Image objects have role="img" and a text alternative | — | — | medium | serious |
 | [`rgaa-optgroup-label-not-empty`](#rgaa-optgroup-label-not-empty) | Option group labels are not empty | — | — | high | moderate |
 | [`rgaa-optgroup-label-present`](#rgaa-optgroup-label-present) | Option groups have a label | — | — | high | moderate |
@@ -127,7 +128,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | Rollup ID | Title | Rules |
 |---|---|---|
 | `rgaa-4.1.2-1.1` | Chaque image porteuse d’information a-t-elle une alternative textuelle ? | `area-alt-present`, `img-alt-decorative`, `input-image-alt-present`, `rgaa-area-alt-source`, `rgaa-canvas-role-img`, `rgaa-embed-image-role-img`, `rgaa-img-alt-present`, `rgaa-object-image-role-img`, `rgaa-role-img-aria-name`, `rgaa-svg-role-img`, `server-side-image-map-absent`, `svg-text-alternative-present` |
-| `rgaa-4.1.2-1.2` | Chaque image de décoration est-elle correctement ignorée par les technologies d’assistance ? | `rgaa-canvas-decorative-aria-hidden`, `rgaa-img-decorative-no-alternative`, `rgaa-img-no-alt-decorative`, `rgaa-svg-decorative-aria-hidden`, `rgaa-svg-hidden-no-alternative` |
+| `rgaa-4.1.2-1.2` | Chaque image de décoration est-elle correctement ignorée par les technologies d’assistance ? | `rgaa-canvas-decorative-aria-hidden`, `rgaa-img-decorative-no-alternative`, `rgaa-img-no-alt-decorative`, `rgaa-object-embed-decorative-aria-hidden`, `rgaa-svg-decorative-aria-hidden`, `rgaa-svg-hidden-no-alternative` |
 | `rgaa-4.1.2-1.3` | Pour chaque image porteuse d’information ayant une alternative textuelle, cette alternative est-elle pertinente (hors cas particuliers) ? | `area-alt-quality`, `canvas-text-alternative-quality`, `embed-text-alternative-quality`, `image-redundant-alt`, `img-alt-quality`, `input-image-alt-decorative`, `input-image-alt-quality`, `object-text-alternative-quality`, `rgaa-image-alt-long`, `svg-text-alternative-quality` |
 | `rgaa-4.1.2-1.6` | Chaque image porteuse d’information a-t-elle, si nécessaire, une description détaillée ? | `rgaa-img-describedby-target` |
 | `rgaa-4.1.2-1.9` | Chaque légende d’image est-elle, si nécessaire, correctement reliée à l’image correspondante ? | `rgaa-figure-caption-structure` |
@@ -1084,6 +1085,25 @@ Flags content that moves or blinks by itself for more than 5 seconds (marquee, a
 **Applies to.** Applies to content that moves or blinks by itself for more than 5 seconds, as the page shows it: a &lt;marquee&gt;; a &lt;video&gt; that plays by itself (autoplay) with no controls attribute; an SVG animation (&lt;animate&gt;, &lt;animateTransform&gt;, &lt;animateMotion&gt;, &lt;set&gt;) repeated indefinitely; and, where the page has a layout, a running CSS animation on visible content that repeats indefinitely or lasts more than 5 seconds. A page with none is notApplicable.
 
 **Expectation.** RGAA 13.8.1 (moving content) and 13.8.2 (blinking content): content triggered automatically lasts 5 seconds or less, or the user can stop and restart it, show and hide it, or see all of its information without the movement. Each case is asked about (cantTell): a script or a button elsewhere in the page may give that control, which only a person can try. A CSS animation of opacity, visibility or colour only is reported as blinking (blinkingAnimation), any other as moving (movingAnimation).
+
+### `rgaa-object-embed-decorative-aria-hidden`
+
+**Decorative image objects and embeds have aria-hidden="true" and no alternative**
+
+automatic · no formal WCAG SC mapping · confidence high · default severity minor
+
+Checks that an &lt;object&gt; or &lt;embed&gt; image marked decorative has aria-hidden="true", no aria-labelledby, aria-label or title, and no alternative content inside it.
+
+**Applies to.** Applies to &lt;object&gt; and &lt;embed&gt; elements of an image type (type="image/…") marked decorative: with aria-hidden="true" on the element, or with role="none"/"presentation". One inside a &lt;figure&gt; with a &lt;figcaption&gt; is left out: criterion 1.2 does not apply to an image with a caption (légende). Content hidden with CSS or the hidden attribute is left out too. A page with none is notApplicable.
+
+**Expectation.**
+
+RGAA 1.2.3 (&lt;object&gt;) and 1.2.6 (&lt;embed&gt;): a decorative image has aria-hidden="true" and no text alternative, on itself or its children, and an &lt;object&gt; no text between &lt;object&gt; and &lt;/object&gt;. Fails:
+
+- aria-hidden="true" with an alternative (hiddenImageHasAlternative). If the image is decorative, it breaks 1.2.3 or 1.2.6; if it carries information, hiding it breaks 1.1.6 or 1.1.7. Either way the page fails;
+- role="none"/"presentation" without aria-hidden="true" and no content (presentationWithoutAriaHidden): the role marks it decorative, and RGAA asks for aria-hidden="true".
+
+Asks (cantTell): an &lt;object&gt; with role="none"/"presentation", no aria-hidden="true" and content inside it (presentationWithContent): that content may be its alternative.
 
 ### `rgaa-object-image-role-img`
 

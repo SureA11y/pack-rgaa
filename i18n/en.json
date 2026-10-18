@@ -712,5 +712,13 @@
   "ariaHiddenTextReview_title": "Visible text hidden from assistive technologies is meant to be ignored",
   "ariaHiddenTextReview_description": "Flags each element with aria-hidden=\"true\" that holds visible text of two words or more, for a person to check that the text is given to assistive technologies otherwise or is meant to be ignored.",
   "ariaHiddenTextReview_summary_cantTell": "This visible text (\"{{text}}\") is hidden from assistive technologies by aria-hidden=\"true\".",
-  "ariaHiddenTextReview_hint_cantTell": "Check that the text is given to assistive technologies another way, or carries no information; otherwise remove aria-hidden (RGAA 10.8.1)."
+  "ariaHiddenTextReview_hint_cantTell": "Check that the text is given to assistive technologies another way, or carries no information; otherwise remove aria-hidden (RGAA 10.8.1).",
+  "objectEmbedDecorativeAriaHidden_title": "Decorative image objects and embeds have aria-hidden=\"true\" and no alternative",
+  "objectEmbedDecorativeAriaHidden_description": "Checks that an <object> or <embed> image marked decorative has aria-hidden=\"true\", no aria-labelledby, aria-label or title, and no alternative content inside it.",
+  "objectEmbedDecorativeAriaHidden_summary_fail_hidden": "This <{{tag}}> image is hidden with aria-hidden=\"true\" but carries an alternative: {{alternatives}}.",
+  "objectEmbedDecorativeAriaHidden_hint_fail_hidden": "If the image is decorative, remove the alternative (RGAA {{test}}). If it carries information, remove aria-hidden and give it role=\"img\" and an aria-label or aria-labelledby.",
+  "objectEmbedDecorativeAriaHidden_summary_fail_role": "This <{{tag}} role=\"{{role}}\"> is marked decorative but has no aria-hidden=\"true\".",
+  "objectEmbedDecorativeAriaHidden_hint_fail_role": "Add aria-hidden=\"true\" to a decorative image, and give it no aria-label, aria-labelledby or title (RGAA {{test}}).",
+  "objectEmbedDecorativeAriaHidden_summary_cantTell_content": "This <{{tag}} role=\"{{role}}\"> has no aria-hidden=\"true\" and has content between <{{tag}}> and </{{tag}}>.",
+  "objectEmbedDecorativeAriaHidden_hint_cantTell_content": "If the image carries information, remove the role and keep the content as its alternative. If it is decorative, add aria-hidden=\"true\" and remove the content."
 }

@@ -712,5 +712,13 @@
   "ariaHiddenTextReview_title": "支援技術から隠された表示テキストが無視されるべきものである",
   "ariaHiddenTextReview_description": "2語以上の表示テキストを含む aria-hidden=\"true\" の各要素を示し、そのテキストが別の方法で支援技術に伝えられるか、無視されるべきものか人が確認できるようにします。",
   "ariaHiddenTextReview_summary_cantTell": "この表示テキスト（「{{text}}」）は aria-hidden=\"true\" で支援技術から隠されています。",
-  "ariaHiddenTextReview_hint_cantTell": "テキストが別の方法で支援技術に伝えられるか、情報を持たないか確認してください。そうでなければ aria-hidden を削除してください（RGAA 10.8.1）。"
+  "ariaHiddenTextReview_hint_cantTell": "テキストが別の方法で支援技術に伝えられるか、情報を持たないか確認してください。そうでなければ aria-hidden を削除してください（RGAA 10.8.1）。",
+  "objectEmbedDecorativeAriaHidden_title": "装飾用の画像オブジェクトと埋め込み画像に aria-hidden=\"true\" があり代替がない",
+  "objectEmbedDecorativeAriaHidden_description": "装飾とマークされた <object> または <embed> の画像に aria-hidden=\"true\" があり、aria-labelledby、aria-label、title、内部の代替コンテンツがないことを確認します。",
+  "objectEmbedDecorativeAriaHidden_summary_fail_hidden": "この <{{tag}}> 画像は aria-hidden=\"true\" で隠されていますが、代替があります：{{alternatives}}。",
+  "objectEmbedDecorativeAriaHidden_hint_fail_hidden": "画像が装飾なら代替を削除してください（RGAA {{test}}）。情報を伝えるなら aria-hidden を削除し、role=\"img\" と aria-label または aria-labelledby を付けてください。",
+  "objectEmbedDecorativeAriaHidden_summary_fail_role": "この <{{tag}} role=\"{{role}}\"> は装飾とマークされていますが、aria-hidden=\"true\" がありません。",
+  "objectEmbedDecorativeAriaHidden_hint_fail_role": "装飾画像には aria-label、aria-labelledby、title を付けずに aria-hidden=\"true\" を追加してください（RGAA {{test}}）。",
+  "objectEmbedDecorativeAriaHidden_summary_cantTell_content": "この <{{tag}} role=\"{{role}}\"> には aria-hidden=\"true\" がなく、<{{tag}}> と </{{tag}}> の間に内容があります。",
+  "objectEmbedDecorativeAriaHidden_hint_cantTell_content": "画像が情報を伝えるならロールを削除し、内容を代替として残してください。装飾なら aria-hidden=\"true\" を追加し、内容を削除してください。"
 }

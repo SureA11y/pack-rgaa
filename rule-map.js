@@ -667,6 +667,10 @@ const RGAA_RULE_TESTS = {
       tests: ['1.1.6'],
       note: 'Checks each <object type="image/..."> not marked decorative. Passes role="img" with aria-labelledby, aria-label or title. Fails an object with no text alternative, no fallback content and no link or button right after it, which meets none of the conditions of 1.1.6 short of a replacement mechanism the page would have to offer, when it has role="img" or certainly carries information (captioned, or focusable); asks about any other, which may be decorative and then fails 1.2.3 instead. Asks when there is a text alternative without role="img" (the test wording requires both, the methodology validates on the alternative alone), when a link or button follows (does it lead to an alternative content?), and when there is only fallback content. One that is the only content of a link or a button is left out: the glossary « Image porteuse d\'information » (notes 1 and 2) judges its alternative as the control\'s label, under 6.1, 11.9 or 7.1.'
     },
+    'rgaa-object-embed-decorative-aria-hidden': {
+      tests: ['1.2.3', '1.2.6'],
+      note: 'Checks each <object> or <embed> of an image type marked decorative, without a caption. Fails aria-hidden="true" with aria-labelledby, aria-label, title, a child alternative or text inside an <object> (1.2.3 and 1.2.6 condition 2 and, for <object>, 3; if the image carries information, hiding it fails 1.1.6 or 1.1.7 instead), and role="none"/"presentation" without aria-hidden="true" and with no content (condition 1). Asks when such an <object> has content, which may be its alternative. The same checks as rgaa-canvas-decorative-aria-hidden for <canvas> (1.2.5).'
+    },
     'object-text-alternative-present': {
       tests: [],
       note: 'Fails an <object> with no fallback text, no ARIA name and no title. Not mapped to 1.1.6: that test covers only type="image/...", while the rule fails every <object>, and RGAA passes an object followed by a link or button to an alternative content, which this rule fails. rgaa-object-image-role-img checks 1.1.6 as RGAA words it.'

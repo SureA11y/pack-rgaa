@@ -712,5 +712,13 @@
   "ariaHiddenTextReview_title": "Le texte visible masqué aux technologies d’assistance a vocation à être ignoré",
   "ariaHiddenTextReview_description": "Signale chaque élément doté de aria-hidden=\"true\" qui contient un texte visible de deux mots ou plus, pour qu’une personne vérifie que le texte est restitué autrement aux technologies d’assistance ou a vocation à être ignoré.",
   "ariaHiddenTextReview_summary_cantTell": "Ce texte visible (« {{text}} ») est masqué aux technologies d’assistance par aria-hidden=\"true\".",
-  "ariaHiddenTextReview_hint_cantTell": "Vérifiez que le texte est restitué autrement aux technologies d’assistance, ou ne porte aucune information ; sinon, retirez aria-hidden (RGAA 10.8.1)."
+  "ariaHiddenTextReview_hint_cantTell": "Vérifiez que le texte est restitué autrement aux technologies d’assistance, ou ne porte aucune information ; sinon, retirez aria-hidden (RGAA 10.8.1).",
+  "objectEmbedDecorativeAriaHidden_title": "Les images objet et embarquées de décoration ont aria-hidden=\"true\" et pas d’alternative",
+  "objectEmbedDecorativeAriaHidden_description": "Vérifie qu’une image <object> ou <embed> marquée comme décorative a aria-hidden=\"true\", ni aria-labelledby, ni aria-label, ni title, et aucun contenu alternatif.",
+  "objectEmbedDecorativeAriaHidden_summary_fail_hidden": "Cette image <{{tag}}> est masquée par aria-hidden=\"true\" mais porte une alternative : {{alternatives}}.",
+  "objectEmbedDecorativeAriaHidden_hint_fail_hidden": "Si l’image est de décoration, supprimez l’alternative (RGAA {{test}}). Si elle est porteuse d’information, retirez aria-hidden et donnez-lui role=\"img\" et un attribut aria-label ou aria-labelledby.",
+  "objectEmbedDecorativeAriaHidden_summary_fail_role": "Cette balise <{{tag}} role=\"{{role}}\"> est marquée comme décorative mais n’a pas d’attribut aria-hidden=\"true\".",
+  "objectEmbedDecorativeAriaHidden_hint_fail_role": "Ajoutez aria-hidden=\"true\" à une image de décoration, sans aria-label, aria-labelledby ni title (RGAA {{test}}).",
+  "objectEmbedDecorativeAriaHidden_summary_cantTell_content": "Cette balise <{{tag}} role=\"{{role}}\"> n’a pas d’attribut aria-hidden=\"true\" et a un contenu entre <{{tag}}> et </{{tag}}>.",
+  "objectEmbedDecorativeAriaHidden_hint_cantTell_content": "Si l’image est porteuse d’information, retirez le rôle et gardez le contenu comme contenu alternatif. Si elle est de décoration, ajoutez aria-hidden=\"true\" et supprimez le contenu."
 }

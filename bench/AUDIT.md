@@ -25,7 +25,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T1-11 | 1.3.1, 1.3.6 | WM | Relevance asked about images that are a link's or button's only content, which the glossary sends to 6.1 and 11.9. | core |
 | T1-12 | 1.6, 1.7 | MISS | No rule; a broken `aria-describedby` on an image should fail 1.6.9. 1.6.9 now checked by `rgaa-img-describedby-target` (fails when no id exists; asks when some are missing or empty). Still open: the rest of 1.6 and 1.7 (description needed, longdesc, adjacent link). | partial |
 | T1-13 | 1.8 | MISS | Images of text: no question. | open |
-| T1-14 | 1.2.2, 1.2.3, 1.2.6 | MISS | `<area>` without href, decorative object and embed: no check. | open |
+| T1-14 | 1.2.2, 1.2.3, 1.2.6 | MISS | `<area>` without href, decorative object and embed: no check. 1.2.3 and 1.2.6 now checked by `rgaa-object-embed-decorative-aria-hidden`. Still open: `<area>` without href (1.2.2), rare. | partial |
 | T1-15 | 1.2.1 | FP | A spacer inside an `aria-hidden="true"` container fails 1.2.1. | done |
 | T1-16 | 1.3.9 | WO | `rgaa-image-alt-long` asks about `aria-hidden` images; its hint cites 1.8 for 1.6. | done |
 | T1-17 | 1.9.1 | FP | A `<figure>` with a hidden `<figcaption>` fails 1.9.1. | done |

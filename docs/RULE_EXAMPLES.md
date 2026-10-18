@@ -1166,6 +1166,22 @@ The page reloads every 20 hours, the limit RGAA 13.1.1 accepts. WCAG 2.2.1 exemp
 ```
 The page reloads itself every 30 seconds. A redirect to another address is `rgaa-meta-redirect-immediate`'s matter.
 
+## rgaa-object-embed-decorative-aria-hidden
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Failed**
+```html
+<object type="image/png" data="swirl.png" aria-hidden="true" title="Décor"></object>
+```
+The image is marked decorative with `aria-hidden="true"`, but still carries a `title`, which RGAA 1.2.3 forbids on a decorative image.
+
+**Passed**
+```html
+<embed type="image/png" src="swirl.png" aria-hidden="true">
+```
+The decorative image is hidden and has no alternative (RGAA 1.2.6).
+
 ## rgaa-object-image-role-img
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*

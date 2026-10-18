@@ -712,5 +712,13 @@
   "ariaHiddenTextReview_title": "El texto visible oculto a las tecnologías de apoyo está pensado para ignorarse",
   "ariaHiddenTextReview_description": "Señala cada elemento con aria-hidden=\"true\" que contiene un texto visible de dos palabras o más, para que una persona compruebe que el texto llega de otro modo a las tecnologías de apoyo o está pensado para ignorarse.",
   "ariaHiddenTextReview_summary_cantTell": "Este texto visible (\"{{text}}\") está oculto a las tecnologías de apoyo con aria-hidden=\"true\".",
-  "ariaHiddenTextReview_hint_cantTell": "Compruebe que el texto llega de otro modo a las tecnologías de apoyo, o no transmite información; si no, quite aria-hidden (RGAA 10.8.1)."
+  "ariaHiddenTextReview_hint_cantTell": "Compruebe que el texto llega de otro modo a las tecnologías de apoyo, o no transmite información; si no, quite aria-hidden (RGAA 10.8.1).",
+  "objectEmbedDecorativeAriaHidden_title": "Las imágenes objeto e incrustadas decorativas tienen aria-hidden=\"true\" y ninguna alternativa",
+  "objectEmbedDecorativeAriaHidden_description": "Comprueba que una imagen <object> o <embed> marcada como decorativa tiene aria-hidden=\"true\", ni aria-labelledby, ni aria-label, ni title, y ningún contenido alternativo.",
+  "objectEmbedDecorativeAriaHidden_summary_fail_hidden": "Esta imagen <{{tag}}> está oculta con aria-hidden=\"true\" pero lleva una alternativa: {{alternatives}}.",
+  "objectEmbedDecorativeAriaHidden_hint_fail_hidden": "Si la imagen es decorativa, quite la alternativa (RGAA {{test}}). Si transmite información, quite aria-hidden y dele role=\"img\" y un aria-label o aria-labelledby.",
+  "objectEmbedDecorativeAriaHidden_summary_fail_role": "Este <{{tag}} role=\"{{role}}\"> está marcado como decorativo pero no tiene aria-hidden=\"true\".",
+  "objectEmbedDecorativeAriaHidden_hint_fail_role": "Añada aria-hidden=\"true\" a una imagen decorativa, sin aria-label, aria-labelledby ni title (RGAA {{test}}).",
+  "objectEmbedDecorativeAriaHidden_summary_cantTell_content": "Este <{{tag}} role=\"{{role}}\"> no tiene aria-hidden=\"true\" y tiene contenido entre <{{tag}}> y </{{tag}}>.",
+  "objectEmbedDecorativeAriaHidden_hint_cantTell_content": "Si la imagen transmite información, quite el rol y conserve el contenido como su alternativa. Si es decorativa, añada aria-hidden=\"true\" y quite el contenido."
 }
