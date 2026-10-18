@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 76,
-    "withFixture": 76,
+    "total": 77,
+    "withFixture": 77,
     "withoutFixture": 0
   },
   "rows": [
@@ -1210,6 +1210,23 @@
         "FAIL": 1,
         "CANTTELL": 4,
         "OTHER": 3
+      }
+    },
+    {
+      "ruleId": "rgaa-text-direction-marked",
+      "title": "Text in the other reading direction is marked with dir",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-text-direction-marked.js",
+      "testFile": "tests/rules/automatic/rgaa-text-direction-marked.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-text-direction-marked-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 1,
+        "CANTTELL": 1,
+        "OTHER": 1
       }
     },
     {

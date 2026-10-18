@@ -262,6 +262,12 @@ The direction is `rtl`, one of the two values RGAA accepts.
 ```
 HTML allows `dir="auto"`, but RGAA accepts only `ltr` or `rtl` on text that reads in the reverse direction of the page. `dir="auto"` on text in the page's own direction is not applicable.
 
+**Failed**
+```html
+<p dir="rtl">Bonjour tout le monde</p>
+```
+The French text reads left to right: `dir="rtl"` turns it the wrong way, which is not a relevant value (RGAA 8.10.2).
+
 ## rgaa-doctype-position
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -1475,6 +1481,28 @@ The SVG is the link's only content, so it carries information, and it has a text
 </svg>
 ```
 Named only by `<title>`: RGAA 1.1.5 lists only the ARIA sources, while 1.3.6 treats `<title>` as the alternative.
+
+## rgaa-text-direction-marked
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Failed**
+```html
+<p>مرحبا بكم في موقعنا</p>
+```
+The Arabic text reads right to left in a page that reads left to right, and no element around it has a `dir` attribute (RGAA 8.10.1).
+
+**Flagged (cantTell)**
+```html
+<p>Le mot شكرا veut dire merci.</p>
+```
+One word reads right to left inside a French sentence: a person checks whether it is a passage that needs `dir="rtl"`.
+
+**Not applicable**
+```html
+<p dir="rtl" lang="ar">مرحبا بكم في موقعنا</p>
+```
+The change of direction is marked with `dir="rtl"`.
 
 ## rgaa-th-scope-row-col
 

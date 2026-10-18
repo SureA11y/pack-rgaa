@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**76 rules total: 59 automatic (decide deterministically; can return `fail`), 17 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**77 rules total: 60 automatic (decide deterministically; can return `fail`), 17 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -14,7 +14,7 @@ Under **What a finding reports**, a rule lists the fields its findings carry in 
 
 See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_SCHEMA.md) for what `type`/`confidence`/`severity` mean on a scan result, and [`WCAG_CONFORMANCE.md`](https://github.com/SureA11y/core/blob/main/docs/WCAG_CONFORMANCE.md) for how these roll up to an SC-level conformance claim.
 
-## Automatic rules (59), can return `fail`
+## Automatic rules (60), can return `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -73,6 +73,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-svg-decorative-aria-hidden`](#rgaa-svg-decorative-aria-hidden) | Decorative SVGs are hidden with aria-hidden="true" | — | — | high | minor |
 | [`rgaa-svg-hidden-no-alternative`](#rgaa-svg-hidden-no-alternative) | Hidden decorative SVGs carry no text alternative | — | — | high | minor |
 | [`rgaa-svg-role-img`](#rgaa-svg-role-img) | SVGs with a text alternative have role="img" | — | — | high | serious |
+| [`rgaa-text-direction-marked`](#rgaa-text-direction-marked) | Text in the other reading direction is marked with dir | — | — | high | moderate |
 | [`rgaa-th-scope-row-col`](#rgaa-th-scope-row-col) | Table headers use scope="row" or scope="col", the right one | — | — | high | moderate |
 | [`rgaa-title-placeholder-identical`](#rgaa-title-placeholder-identical) | A form field's title and placeholder are identical | — | — | medium | moderate |
 | [`rgaa-video-captions-track-kind`](#rgaa-video-captions-track-kind) | Video caption tracks use kind="captions" | — | — | high | moderate |
@@ -156,7 +157,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-7.1` | Chaque script est-il, si nécessaire, compatible avec les technologies d’assistance ? | `aria-role-name-present`, `dialog-name-present`, `menuitem-name-present`, `rgaa-scripted-components-review`, `rgaa-widget-label-in-name`, `tab-name-present`, `treeitem-name-present` |
 | `rgaa-4.1.2-7.3` | Chaque script est-il contrôlable par le clavier et par tout dispositif de pointage (hors cas particuliers) ? | `mouse-only-event-handlers`, `rgaa-keyboard-only-event-handlers` |
 | `rgaa-4.1.2-8.1` | Chaque page web est-elle définie par un type de document ? | `rgaa-doctype-position`, `rgaa-doctype-present`, `rgaa-doctype-valid` |
-| `rgaa-4.1.2-8.10` | Dans chaque page web, les changements du sens de lecture sont-ils signalés ? | `rgaa-dir-attribute-valid` |
+| `rgaa-4.1.2-8.10` | Dans chaque page web, les changements du sens de lecture sont-ils signalés ? | `rgaa-dir-attribute-valid`, `rgaa-text-direction-marked` |
 | `rgaa-4.1.2-8.2` | Pour chaque page web, le code source généré est-il valide selon le type de document spécifié ? | `duplicate-id`, `rgaa-aria-attribute-conformance`, `rgaa-aria-role-conformance`, `rgaa-html-elements-attributes-valid`, `rgaa-html-nesting-valid`, `rgaa-markup-validation-review` |
 | `rgaa-4.1.2-8.3` | Dans chaque page web, la langue par défaut est-elle présente ? | `rgaa-page-language-present` |
 | `rgaa-4.1.2-8.4` | Pour chaque page web ayant une langue par défaut, le code de langue est-il pertinent ? | `html-xml-lang-mismatch`, `rgaa-html-lang-code-valid` |
@@ -383,11 +384,11 @@ Flags a table of at least two rows and two columns with no &lt;th&gt; and no col
 
 automatic · no formal WCAG SC mapping · confidence high · default severity minor
 
-Checks that every dir attribute is ltr or rtl, the two values RGAA accepts.
+Checks that every dir attribute is ltr or rtl, the two values RGAA accepts, and fails one that turns text the wrong way.
 
 **Applies to.** Applies to elements carrying a dir attribute. An element with dir="auto" applies only when its text (content, or the value of a text field) contains a strong character of the direction opposite to the one it inherits: RGAA 8.10.2 step 1 covers only the passages of 8.10.1, text that reads in the reverse direction of the document. A page with no applicable element is notApplicable.
 
-**Expectation.** The value is ltr or rtl, in any case (RGAA 8.10.2: « La valeur de l'attribut dir est conforme (rtl ou ltr) »). Surrounding spaces are not ignored: HTML matches the keyword exactly, apart from case, so a browser ignores dir=" rtl ". dir="auto", which HTML allows, fails with its own reasonCode on reverse-direction text, since RGAA names only those two values. Whether the direction is the right one is the relevance condition of the same test, left to a person.
+**Expectation.** The value is ltr or rtl, in any case (RGAA 8.10.2: « La valeur de l'attribut dir est conforme (rtl ou ltr) »). Surrounding spaces are not ignored: HTML matches the keyword exactly, apart from case, so a browser ignores dir=" rtl ". dir="auto", which HTML allows, fails with its own reasonCode on reverse-direction text, since RGAA names only those two values. The relevance condition of the same test fails a dir that changes the direction on text whose letters all read in the old one (directionNotRelevant): dir="rtl" on French text. Other questions of relevance are left to a person.
 
 ### `rgaa-doctype-position`
 
@@ -1242,6 +1243,23 @@ Checks that an &lt;svg&gt; named by aria-labelledby, aria-label or &lt;title&gt;
 **Applies to.** Applies to outer &lt;svg&gt; elements that carry a text alternative: text referenced by aria-labelledby, a non-empty aria-label, or a non-empty &lt;title&gt; child. An &lt;svg&gt; with aria-hidden="true", on itself or an ancestor, is left out (rgaa-svg-hidden-no-alternative checks it), and so is content hidden with CSS or the hidden attribute. An &lt;svg role="img"&gt; with no alternative at all is left to svg-text-alternative-present. A page with none is notApplicable.
 
 **Expectation.** The &lt;svg&gt; has role="img" (RGAA 1.1.5 step 3; step 4: "Si ce n'est pas le cas, le test est invalidé"), and its alternative comes from aria-labelledby or aria-label (step 5). An alternative without role="img" fails when the SVG certainly carries information: it is the only content of a link or a button, or it takes focus itself (tabindex 0 or more). Otherwise it is asked about (cantTell): an icon beside a button's text is decorative, and then it fails 1.2.4 instead, which requires aria-hidden="true" and no alternative; the 1.1.5 methodology leaves that call to a person (« déterminer si l'image est porteuse d'information »). An &lt;svg role="img"&gt; named only by its &lt;title&gt; is asked about (cantTell): RGAA contradicts itself there. 1.1.5 step 5 lists only aria-labelledby and aria-label, but 1.3.6 checks "le contenu de l'élément &lt;title&gt;" as the alternative of an SVG.
+
+### `rgaa-text-direction-marked`
+
+**Text in the other reading direction is marked with dir**
+
+automatic · no formal WCAG SC mapping · confidence high · default severity moderate
+
+Fails text that reads right to left in a left-to-right context, or the reverse, with no dir attribute around it; asks about short runs inside other text.
+
+**Applies to.** Applies to visible text whose strong characters read in the direction opposite to that of its context: right-to-left letters (Hebrew, Arabic, Syriac, Thaana, NKo and related blocks) where the direction is left to right, or other letters where it is right to left. The context is the nearest ancestor whose dir is ltr or rtl, and left to right with none (glossary « Sens de lecture »: « le sens de lecture par défaut est de gauche à droite »). Text under dir="auto" is left to rgaa-dir-attribute-valid; code, scripts and styles are left out. A page with none is notApplicable.
+
+**Expectation.**
+
+RGAA 8.10.1: « chaque texte dont le sens de lecture est différent du sens de lecture par défaut est contenu dans une balise possédant un attribut dir ».
+
+- It fails (directionNotMarked) when an element's whole text reads in the other direction, or when a run of three words or more does, with no dir between it and its context. In a right-to-left context, a whole element of one or two left-to-right words (a brand name, a link to a site) is asked about instead.
+- A shorter run inside other text, such as a word quoted in a sentence, is asked about (cantTell): it is a change of direction, but whether it is a passage or a name is for a person. So is text in a &lt;bdi&gt; with no dir, which browsers isolate but RGAA does not name.
 
 ### `rgaa-th-scope-row-col`
 

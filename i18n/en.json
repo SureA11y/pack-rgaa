@@ -422,7 +422,7 @@
   "videoCaptionsTrackKind_summary_cantTell_translation": "This video has only subtitles tracks, none in the language of the video; they may be translations rather than captions.",
   "videoCaptionsTrackKind_hint_cantTell_translation": "If a track carries captions for the video’s own language, mark it kind=\"captions\" with the matching srclang. If the tracks are translations, check that captions are provided some other way (RGAA 4.3.1).",
   "dirAttributeValid_title": "dir attributes are ltr or rtl",
-  "dirAttributeValid_description": "Checks that every dir attribute is ltr or rtl, the two values RGAA accepts.",
+  "dirAttributeValid_description": "Checks that every dir attribute is ltr or rtl, the two values RGAA accepts, and fails one that turns text the wrong way.",
   "dirAttributeValid_summary_fail_auto": "This element uses dir=\"auto\"; RGAA accepts only ltr or rtl.",
   "dirAttributeValid_summary_fail_invalid": "This element has dir=\"{{value}}\", which is neither ltr nor rtl.",
   "dirAttributeValid_hint_fail": "Set dir to ltr (left to right) or rtl (right to left), whichever the text reads in.",
@@ -612,5 +612,18 @@
   "invalidFieldMessage_description": "Flags each field of a form with aria-invalid=\"true\" and no visible passage linked by aria-describedby or aria-labelledby, for a person to check that its label holds the error message.",
   "invalidFieldMessage_summary_cantTell": "This field is marked aria-invalid=\"true\", and no visible passage is linked to it by aria-describedby or aria-labelledby.",
   "invalidFieldMessage_summary_cantTell_errormessage": "This field is marked aria-invalid=\"true\"; its message is linked by aria-errormessage only, which is not one of the places RGAA 11.10.4 names.",
-  "invalidFieldMessage_hint_cantTell": "Check that the error message is visible in the field's label, or link it with aria-describedby (RGAA 11.10.4, 11.10.7)."
+  "invalidFieldMessage_hint_cantTell": "Check that the error message is visible in the field's label, or link it with aria-describedby (RGAA 11.10.4, 11.10.7).",
+  "textDirectionMarked_title": "Text in the other reading direction is marked with dir",
+  "textDirectionMarked_description": "Fails text that reads right to left in a left-to-right context, or the reverse, with no dir attribute around it; asks about short runs inside other text.",
+  "textDirectionMarked_summary_fail_rtl": "This text reads right to left, unlike its context, and no element around it has a dir attribute.",
+  "textDirectionMarked_summary_fail_ltr": "This text reads left to right, unlike its context, and no element around it has a dir attribute.",
+  "textDirectionMarked_hint_fail": "Put the text in an element with dir=\"{{direction}}\" (RGAA 8.10.1).",
+  "textDirectionMarked_summary_cantTell_rtl": "This text holds a short run that reads right to left, unlike its context, with no dir attribute around it.",
+  "textDirectionMarked_summary_cantTell_ltr": "This text holds a short run that reads left to right, unlike its context, with no dir attribute around it.",
+  "textDirectionMarked_summary_cantTell_bdi_rtl": "This text reads right to left, unlike its context, inside a <bdi> with no dir attribute.",
+  "textDirectionMarked_summary_cantTell_bdi_ltr": "This text reads left to right, unlike its context, inside a <bdi> with no dir attribute.",
+  "textDirectionMarked_hint_cantTell": "If the run is a passage of text in that direction, put it in an element with dir=\"{{direction}}\" (RGAA 8.10.1).",
+  "dirAttributeValid_summary_fail_irrelevant_rtl": "This element has dir=\"{{value}}\", but its text reads left to right.",
+  "dirAttributeValid_summary_fail_irrelevant_ltr": "This element has dir=\"{{value}}\", but its text reads right to left.",
+  "dirAttributeValid_hint_fail_irrelevant": "Remove the dir attribute, or set it to the direction the text reads in."
 }

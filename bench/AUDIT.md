@@ -86,7 +86,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T89-04 | 9.3.1, 9.3.2 | FP | A plain `<li>` in `<ul role="tablist|menu">` fails 9.3; the technical note sets widgets apart from lists. | core |
 | T89-05 | 9.1.1 | MISS | A skipped level is missed after an earlier, deeper heading (M1). | core |
 | T89-06 | 8.9.1 | MISS | No rule: `<h2 role="presentation">`, empty `<p>`, `<br><br>` paragraphs, empty `<blockquote>`. | open |
-| T89-07 | 8.10.1 | MISS | Right-to-left text with no `dir` is not detected. | open |
+| T89-07 | 8.10.1 | MISS | Right-to-left text with no `dir` is not detected. Now `rgaa-text-direction-marked`: fails a whole element or a run of three words or more in the other direction with no `dir`; asks about shorter runs and `<bdi>`. | done |
 | T89-08 | 9.1.3 | MISS | A page with text but no heading is notApplicable. | open |
 | T89-09 | 8.2.1 | FP | Markup inside shadow roots fails 8.2, though the validator RGAA names never sees it. | done (pack rules); core (`duplicate-id`) |
 | T89-10 | 8.4.1, 8.8.1 | WM | A default language on `<body>` is judged under 8.8 instead of 8.4. | open (pack); core (`valid-lang` reason) |
@@ -97,7 +97,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T89-15 | 9.1.3 | WO | `p-as-heading` asks about numbers and link-only paragraphs (C5). | core |
 | T89-16 | 8.4, 8.8, 8.10, 9.1 | WO | Criteria with a « pertinent » condition pass on validity alone. | open |
 | T89-17 | 9.3.1, 9.3.2 | WM | Every list finding names both the unordered and the ordered test. | open |
-| T89-18 | 8.10.2 | MISS | `dir="rtl"` on Latin-only text passes (Q16). | open |
+| T89-18 | 8.10.2 | MISS | `dir="rtl"` on Latin-only text passes (Q16). Now fails in `rgaa-dir-attribute-valid` (directionNotRelevant) when the dir changes the direction and the text has letters of the old direction only. | done |
 
 ## Theme 10, Presentation
 

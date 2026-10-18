@@ -422,7 +422,7 @@
   "videoCaptionsTrackKind_summary_cantTell_translation": "Este video solo tiene pistas subtitles, ninguna en el idioma del video; pueden ser traducciones en lugar de subtítulos para personas sordas.",
   "videoCaptionsTrackKind_hint_cantTell_translation": "Si una pista lleva subtítulos para personas sordas en el idioma del video, marcarla kind=\"captions\" con el srclang correspondiente. Si las pistas son traducciones, comprobar que esos subtítulos se proporcionan de otra forma (RGAA 4.3.1).",
   "dirAttributeValid_title": "Los atributos dir son ltr o rtl",
-  "dirAttributeValid_description": "Comprueba que cada atributo dir es ltr o rtl, los dos valores que acepta el RGAA.",
+  "dirAttributeValid_description": "Comprueba que cada atributo dir vale ltr o rtl, los dos valores que acepta el RGAA, y falla el que invierte un texto sin motivo.",
   "dirAttributeValid_summary_fail_auto": "Este elemento usa dir=\"auto\"; el RGAA solo acepta ltr o rtl.",
   "dirAttributeValid_summary_fail_invalid": "Este elemento tiene dir=\"{{value}}\", que no es ni ltr ni rtl.",
   "dirAttributeValid_hint_fail": "Poner dir en ltr (de izquierda a derecha) o rtl (de derecha a izquierda), según el sentido de lectura del texto.",
@@ -612,5 +612,18 @@
   "invalidFieldMessage_description": "Señala cada campo de formulario con aria-invalid=\"true\" y sin pasaje visible vinculado con aria-describedby o aria-labelledby, para que una persona compruebe que su etiqueta contiene el mensaje de error.",
   "invalidFieldMessage_summary_cantTell": "Este campo está marcado con aria-invalid=\"true\", y ningún pasaje visible está vinculado a él con aria-describedby o aria-labelledby.",
   "invalidFieldMessage_summary_cantTell_errormessage": "Este campo está marcado con aria-invalid=\"true\"; su mensaje solo está vinculado con aria-errormessage, que no es uno de los lugares que nombra el RGAA 11.10.4.",
-  "invalidFieldMessage_hint_cantTell": "Compruebe que el mensaje de error es visible en la etiqueta del campo, o vincúlelo con aria-describedby (RGAA 11.10.4, 11.10.7)."
+  "invalidFieldMessage_hint_cantTell": "Compruebe que el mensaje de error es visible en la etiqueta del campo, o vincúlelo con aria-describedby (RGAA 11.10.4, 11.10.7).",
+  "textDirectionMarked_title": "El texto en el otro sentido de lectura está marcado con dir",
+  "textDirectionMarked_description": "Falla un texto que se lee de derecha a izquierda en un contexto de izquierda a derecha, o al revés, sin un atributo dir a su alrededor; pregunta por los fragmentos cortos dentro de otro texto.",
+  "textDirectionMarked_summary_fail_rtl": "Este texto se lee de derecha a izquierda, a diferencia de su contexto, y ningún elemento a su alrededor tiene un atributo dir.",
+  "textDirectionMarked_summary_fail_ltr": "Este texto se lee de izquierda a derecha, a diferencia de su contexto, y ningún elemento a su alrededor tiene un atributo dir.",
+  "textDirectionMarked_hint_fail": "Ponga el texto en un elemento con dir=\"{{direction}}\" (RGAA 8.10.1).",
+  "textDirectionMarked_summary_cantTell_rtl": "Este texto contiene un fragmento corto que se lee de derecha a izquierda, a diferencia de su contexto, sin un atributo dir a su alrededor.",
+  "textDirectionMarked_summary_cantTell_ltr": "Este texto contiene un fragmento corto que se lee de izquierda a derecha, a diferencia de su contexto, sin un atributo dir a su alrededor.",
+  "textDirectionMarked_summary_cantTell_bdi_rtl": "Este texto se lee de derecha a izquierda, a diferencia de su contexto, dentro de un <bdi> sin atributo dir.",
+  "textDirectionMarked_summary_cantTell_bdi_ltr": "Este texto se lee de izquierda a derecha, a diferencia de su contexto, dentro de un <bdi> sin atributo dir.",
+  "textDirectionMarked_hint_cantTell": "Si el fragmento es un texto en ese sentido, póngalo en un elemento con dir=\"{{direction}}\" (RGAA 8.10.1).",
+  "dirAttributeValid_summary_fail_irrelevant_rtl": "Este elemento tiene dir=\"{{value}}\", pero su texto se lee de izquierda a derecha.",
+  "dirAttributeValid_summary_fail_irrelevant_ltr": "Este elemento tiene dir=\"{{value}}\", pero su texto se lee de derecha a izquierda.",
+  "dirAttributeValid_hint_fail_irrelevant": "Quite el atributo dir, o dele el sentido en que se lee el texto."
 }

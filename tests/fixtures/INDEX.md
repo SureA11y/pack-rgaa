@@ -4,13 +4,13 @@ This pack's rules and their scenario pages. Every rule should have a `tests/fixt
 
 ## Summary
 
-Total rules: **76**. With fixture: **76**. Without fixture: **0**.
+Total rules: **77**. With fixture: **77**. Without fixture: **0**.
 
 ## Rules WITHOUT a fixture (0)
 
 None — every rule has a fixture.
 
-## Rules WITH a fixture (76)
+## Rules WITH a fixture (77)
 
 | Rule ID | Type | Fixture | Cases | PASS | FAIL | CANTTELL | OTHER |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -85,6 +85,7 @@ None — every rule has a fixture.
 | rgaa-svg-decorative-aria-hidden | automatic | `tests/fixtures/rgaa-svg-decorative-aria-hidden-all-scenarios.html` | 6 | 0 | 1 | 2 | 3 |
 | rgaa-svg-hidden-no-alternative | automatic | `tests/fixtures/rgaa-svg-hidden-no-alternative-all-scenarios.html` | 10 | 3 | 5 | 0 | 2 |
 | rgaa-svg-role-img | automatic | `tests/fixtures/rgaa-svg-role-img-all-scenarios.html` | 10 | 2 | 1 | 4 | 3 |
+| rgaa-text-direction-marked | automatic | `tests/fixtures/rgaa-text-direction-marked-all-scenarios.html` | 3 | 0 | 1 | 1 | 1 |
 | rgaa-th-scope-row-col | automatic | `tests/fixtures/rgaa-th-scope-row-col-all-scenarios.html` | 7 | 1 | 4 | 0 | 2 |
 | rgaa-title-placeholder-identical | automatic | `tests/fixtures/rgaa-title-placeholder-identical-all-scenarios.html` | 7 | 2 | 0 | 3 | 2 |
 | rgaa-video-captions-track-kind | automatic | `tests/fixtures/rgaa-video-captions-track-kind-all-scenarios.html` | 9 | 2 | 4 | 1 | 2 |

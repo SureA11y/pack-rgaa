@@ -422,7 +422,7 @@
   "videoCaptionsTrackKind_summary_cantTell_translation": "Cette vidéo n’a que des pistes subtitles, aucune dans la langue de la vidéo ; ce sont peut-être des traductions et non des sous-titres pour sourds et malentendants.",
   "videoCaptionsTrackKind_hint_cantTell_translation": "Si une piste porte les sous-titres pour sourds et malentendants dans la langue de la vidéo, déclarez-la kind=\"captions\" avec le srclang correspondant. Si les pistes sont des traductions, vérifiez que ce sous-titrage est fourni autrement (RGAA 4.3.1).",
   "dirAttributeValid_title": "Les attributs dir valent ltr ou rtl",
-  "dirAttributeValid_description": "Vérifie que chaque attribut dir vaut ltr ou rtl, les deux valeurs acceptées par le RGAA.",
+  "dirAttributeValid_description": "Vérifie que chaque attribut dir vaut ltr ou rtl, les deux valeurs acceptées par le RGAA, et signale en échec celui qui inverse le sens de lecture d’un texte à tort.",
   "dirAttributeValid_summary_fail_auto": "Cet élément utilise dir=\"auto\" ; le RGAA n’accepte que ltr ou rtl.",
   "dirAttributeValid_summary_fail_invalid": "Cet élément a dir=\"{{value}}\", qui ne vaut ni ltr ni rtl.",
   "dirAttributeValid_hint_fail": "Donnez à dir la valeur ltr (de gauche à droite) ou rtl (de droite à gauche), selon le sens de lecture du texte.",
@@ -612,5 +612,18 @@
   "invalidFieldMessage_description": "Signale chaque champ de formulaire doté de aria-invalid=\"true\" sans passage visible lié par aria-describedby ou aria-labelledby, pour qu’une personne vérifie que son étiquette contient le message d’erreur.",
   "invalidFieldMessage_summary_cantTell": "Ce champ est marqué aria-invalid=\"true\", et aucun passage visible ne lui est lié par aria-describedby ou aria-labelledby.",
   "invalidFieldMessage_summary_cantTell_errormessage": "Ce champ est marqué aria-invalid=\"true\" ; son message n’est lié que par aria-errormessage, qui ne fait pas partie des emplacements que nomme le RGAA 11.10.4.",
-  "invalidFieldMessage_hint_cantTell": "Vérifiez que le message d’erreur est visible dans l’étiquette du champ, ou liez-le avec aria-describedby (RGAA 11.10.4, 11.10.7)."
+  "invalidFieldMessage_hint_cantTell": "Vérifiez que le message d’erreur est visible dans l’étiquette du champ, ou liez-le avec aria-describedby (RGAA 11.10.4, 11.10.7).",
+  "textDirectionMarked_title": "Le texte dans l’autre sens de lecture est signalé par dir",
+  "textDirectionMarked_description": "En échec quand un texte se lit de droite à gauche dans un contexte de gauche à droite, ou l’inverse, sans attribut dir autour de lui ; pose la question pour les courts passages au sein d’un autre texte.",
+  "textDirectionMarked_summary_fail_rtl": "Ce texte se lit de droite à gauche, contrairement à son contexte, et aucun élément qui l’entoure n’a d’attribut dir.",
+  "textDirectionMarked_summary_fail_ltr": "Ce texte se lit de gauche à droite, contrairement à son contexte, et aucun élément qui l’entoure n’a d’attribut dir.",
+  "textDirectionMarked_hint_fail": "Placez le texte dans un élément doté de dir=\"{{direction}}\" (RGAA 8.10.1).",
+  "textDirectionMarked_summary_cantTell_rtl": "Ce texte contient un court passage qui se lit de droite à gauche, contrairement à son contexte, sans attribut dir autour de lui.",
+  "textDirectionMarked_summary_cantTell_ltr": "Ce texte contient un court passage qui se lit de gauche à droite, contrairement à son contexte, sans attribut dir autour de lui.",
+  "textDirectionMarked_summary_cantTell_bdi_rtl": "Ce texte se lit de droite à gauche, contrairement à son contexte, dans une balise <bdi> sans attribut dir.",
+  "textDirectionMarked_summary_cantTell_bdi_ltr": "Ce texte se lit de gauche à droite, contrairement à son contexte, dans une balise <bdi> sans attribut dir.",
+  "textDirectionMarked_hint_cantTell": "Si le passage est un texte dans ce sens de lecture, placez-le dans un élément doté de dir=\"{{direction}}\" (RGAA 8.10.1).",
+  "dirAttributeValid_summary_fail_irrelevant_rtl": "Cet élément a dir=\"{{value}}\", mais son texte se lit de gauche à droite.",
+  "dirAttributeValid_summary_fail_irrelevant_ltr": "Cet élément a dir=\"{{value}}\", mais son texte se lit de droite à gauche.",
+  "dirAttributeValid_hint_fail_irrelevant": "Retirez l’attribut dir, ou donnez-lui le sens de lecture du texte."
 }

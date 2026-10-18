@@ -242,7 +242,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-dir-attribute-valid': {
       tests: ['8.10.2'],
-      note: 'Fails a dir attribute whose value is not rtl or ltr, which is the first condition of 8.10.2 ("La valeur de l’attribut dir est conforme (rtl ou ltr)"). dir="auto", valid HTML, fails too on text that reads in the reverse direction of its context, since RGAA names only the two values; on other text it is not applicable, as 8.10.2 step 1 covers only the passages of 8.10.1. A value with surrounding spaces fails: browsers ignore it. Whether the direction is right for the text (the second condition) needs a human.'
+      note: 'Fails a dir attribute whose value is not rtl or ltr, which is the first condition of 8.10.2 ("La valeur de l’attribut dir est conforme (rtl ou ltr)"). dir="auto", valid HTML, fails too on text that reads in the reverse direction of its context, since RGAA names only the two values; on other text it is not applicable, as 8.10.2 step 1 covers only the passages of 8.10.1. A value with surrounding spaces fails: browsers ignore it. The second condition, relevance, fails a dir that changes the direction on text whose letters all read in the old one (dir="rtl" on French text): such a value cannot be « pertinente ». Other questions of relevance need a human.'
     },
     'dlitem-parent-valid': {
       tests: ['9.3.3'],
@@ -850,6 +850,10 @@ const RGAA_RULE_TESTS = {
     'text-spacing-content-loss': {
       tests: ['10.12.1'],
       note: "In a browser, applies the four spacings of 10.12.1 step 1 (line-height 1.5, 2em after paragraphs, letter-spacing 0.12em, word-spacing 0.16em) as a style sheet that wins over the page's own, and fails text that an ancestor with overflow hidden or clip then cuts off by at least half a line. That is the criterion's question, « le texte reste-t-il lisible ». It asks about text pushed out by less, text that comes to overlap other text, and a style sheet rule that forces spacing below those values with !important."
+    },
+    'rgaa-text-direction-marked': {
+      tests: ['8.10.1'],
+      note: 'Fails text whose letters read in the direction opposite to its context (the nearest dir="ltr" or dir="rtl", or left to right with none, as the glossary « Sens de lecture » says) with no dir between them: an element whose whole text reads that way, or a run of three words or more. 8.10.1: « chaque texte dont le sens de lecture est différent du sens de lecture par défaut est contenu dans une balise possédant un attribut dir ». Asks about a shorter run inside other text, a whole element of one or two left-to-right words in a right-to-left context, and text in a <bdi> with no dir. Text under dir="auto" is left to rgaa-dir-attribute-valid; code is left out.'
     },
     'textbox-name-present': {
       tests: [],
