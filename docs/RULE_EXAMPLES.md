@@ -1893,6 +1893,23 @@ The title and the placeholder are identical.
 ```
 RGAA's glossary entry "Étiquette de champ de formulaire" says a placeholder may be read in place of the title, so the two must be identical when both are present.
 
+## rgaa-tooltip-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<button type="button" aria-describedby="tip">Partager</button>
+<div role="tooltip" id="tip" hidden>Partager cette page</div>
+```
+A person checks that the tooltip closes with Escape, can be hovered, and stays until the pointer or focus leaves (RGAA 10.13).
+
+**Not applicable**
+```html
+<a href="/contact" title="Nous écrire">Contact</a>
+```
+The browser shows and hides a title, which 10.13's particular case leaves out.
+
 ## rgaa-video-captions-track-kind
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*

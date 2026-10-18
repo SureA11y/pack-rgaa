@@ -115,7 +115,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T10-09 | 10.9, 10.10 | MISS | An active menu item shown only visually (no `aria-current`). Now asked about by `rgaa-current-item-review` (10.9.1). | done |
 | T10-10 | 10.8.1 | MISS | Visible, informative text under `aria-hidden="true"` passes. Now asked about by `rgaa-aria-hidden-text-review` (two words or more of visible text). | done |
 | T10-11 | 10.14 | MISS | Content revealed on `:hover` only. | open |
-| T10-12 | 10.13 | MISS | Author tooltips: no question. | open |
+| T10-12 | 10.13 | MISS | Author tooltips: no question. Now asked about by `rgaa-tooltip-review` (role="tooltip" and tooltip library attributes; title left out). | done |
 | T10-13 | 10.2, 10.3, 10.11 | MISS | CSS-reordered content, CSS-only content, reflow at 320 px. | open |
 | T10-14 | 10.1.2 | FP | `<link rel="mask-icon" color>` in `<head>` fails 10.1.2. | done |
 | T10-15 | 10.1.2 | WO | `width`/`height` on `<source>` in `<picture>` is exempted though RGAA's list is closed (P8). | done (decision B: asked) |

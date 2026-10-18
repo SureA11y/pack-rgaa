@@ -765,5 +765,10 @@
   "colorReferenceReview_title": "Un texto que remite a un color no da la información solo por el color",
   "colorReferenceReview_description": "Señala los textos que indican algo por un color (« indiqués en rouge », « shown in green »), para que una persona compruebe que la información también se da de otra forma.",
   "colorReferenceReview_summary_cantTell": "Este texto remite a un color (\"{{sample}}\"); compruebe que la información no se da solo por el color.",
-  "colorReferenceReview_hint_cantTell": "Dé también la misma información de otra forma: una palabra, un signo como un asterisco o una forma (RGAA 3.1.2)."
+  "colorReferenceReview_hint_cantTell": "Dé también la misma información de otra forma: una palabra, un signo como un asterisco o una forma (RGAA 3.1.2).",
+  "tooltipReview_title": "El contenido que aparece al pasar el puntero o al recibir el foco se puede ocultar, sobrevolar y permanece visible",
+  "tooltipReview_description": "Señala las descripciones emergentes y popovers del autor (role=\"tooltip\", o un atributo de una biblioteca de descripciones emergentes), para que una persona compruebe que lo que muestran se puede ocultar con Escape, sobrevolar, y permanece hasta que el puntero o el foco se van.",
+  "tooltipReview_summary_cantTell_tooltipRole": "Este elemento muestra una descripción emergente (role=\"tooltip\") al pasar el puntero o al recibir el foco.",
+  "tooltipReview_summary_cantTell_tooltipAttribute": "Este elemento muestra una descripción emergente o un popover ({{attribute}}) al pasar el puntero o al recibir el foco.",
+  "tooltipReview_hint_cantTell": "Compruebe que lo que aparece se puede ocultar sin mover el puntero ni el foco (con Escape, por ejemplo), se puede sobrevolar sin que desaparezca y permanece visible hasta que el puntero o el foco lo dejan (RGAA 10.13)."
 }

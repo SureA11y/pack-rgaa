@@ -963,6 +963,10 @@ const RGAA_RULE_TESTS = {
       tests: ['4.3.1'],
       note: 'Flags <video> without a <track kind="captions"> (with a src), raising the question of 4.3.1 step 2 (are synchronised captions present?). A video with only kind="subtitles" tracks is asked about too, since the glossary "Sous-titres synchronisés" (note 2) does not count translation subtitles as captions.'
     },
+    'rgaa-tooltip-review': {
+      tests: ['10.13.1', '10.13.2', '10.13.3'],
+      note: 'Asks about author tooltips and popovers: an element with role="tooltip" (on the element that references it by aria-describedby or aria-labelledby, if any), and a visible element with a tooltip library attribute (data-tooltip, data-tippy-content, data-balloon, data-toggle or data-bs-toggle set to tooltip, or to popover with a hover or focus trigger). 10.13.1 to 10.13.3 ask that such content can be hidden without moving the pointer or focus, can be hovered, and stays visible; that is behaviour a script decides, for a person to test. The title attribute is left out: 10.13\'s particular case makes content « contrôlé par l’agent utilisateur (par exemple, attribut title) » not applicable.'
+    },
     'rgaa-video-captions-track-kind': {
       tests: ['4.3.2'],
       note: 'Fails a <video> whose subtitle tracks (with a src) are all kind="subtitles" (or have no kind, which means subtitles), with none kind="captions", when one is in the video\'s language as the <video>\'s own lang gives it, or has a label naming captions (« sourds et malentendants », SME, SDH, CC), and a track whose kind HTML does not know (kind="caption", read as metadata and never shown). That is 4.3.2 as written. Otherwise it asks, since the page\'s language says nothing of the audio\'s and a translation track is not a caption track (glossary "Sous-titres synchronisés", note 2), and then 4.3.2 does not apply. Whether the video is pre-recorded synchronised media, and whether a track carries captions at all, needs a human.'

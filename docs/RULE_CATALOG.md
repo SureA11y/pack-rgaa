@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**97 rules total: 67 automatic (decide deterministically; can return `fail`), 30 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**98 rules total: 67 automatic (decide deterministically; can return `fail`), 31 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -86,7 +86,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-video-captions-track-kind`](#rgaa-video-captions-track-kind) | Video caption tracks use kind="captions" | — | — | high | moderate |
 | [`rgaa-widget-label-in-name`](#rgaa-widget-label-in-name) | The accessible name of a scripted component contains its visible label | — | — | high | serious |
 
-## Manual rules (30), never `fail`
+## Manual rules (31), never `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -119,6 +119,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-select-fake-groups-review`](#rgaa-select-fake-groups-review) | Options are grouped with &lt;optgroup&gt;, not with fake heading options | — | — | high | moderate |
 | [`rgaa-status-message-review`](#rgaa-status-message-review) | Status messages use role="status", "alert", "log" or "progressbar" | — | — | high | moderate |
 | [`rgaa-table-title-adjacent`](#rgaa-table-title-adjacent) | A heading just before a data table is tied to it if it is its title | — | — | high | moderate |
+| [`rgaa-tooltip-review`](#rgaa-tooltip-review) | Content shown on hover or focus can be dismissed, hovered and stays visible | — | — | high | minor |
 | [`rgaa-viewport-zoom-review`](#rgaa-viewport-zoom-review) | Text can reach 200% zoom despite a viewport meta tag that limits zoom | — | — | medium | serious |
 
 ## Profiles (1)
@@ -129,7 +130,7 @@ What a scan runs under each profile (`engineOptions.profile`): the rules its tag
 |---|---|---|---|---|---|---|
 | `rgaa-4.1.2` | `rgaa` | version 4.1.2 | — | — | — | 2.1 |
 
-## Rollups (62)
+## Rollups (63)
 
 Each groups rules into one result, as a WCAG rollup does; the standard's own report sections show them.
 
@@ -142,6 +143,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-1.9` | Chaque légende d’image est-elle, si nécessaire, correctement reliée à l’image correspondante ? | `rgaa-figure-caption-structure` |
 | `rgaa-4.1.2-10.1` | Dans le site web, des feuilles de styles sont-elles utilisées pour contrôler la présentation de l’information ? | `rgaa-letters-spaced-with-spaces`, `rgaa-presentational-attributes-absent`, `rgaa-presentational-elements-absent` |
 | `rgaa-4.1.2-10.12` | Dans chaque page web, les propriétés d’espacement du texte peuvent-elles être redéfinies par l’utilisateur sans perte de contenu ou de fonctionnalité (hors cas particuliers) ? | `avoid-inline-spacing`, `text-spacing-content-loss` |
+| `rgaa-4.1.2-10.13` | Dans chaque page web, les contenus additionnels apparaissant à la prise de focus ou au survol d’un composant d’interface sont-ils contrôlables par l’utilisateur (hors cas particuliers) ? | `rgaa-tooltip-review` |
 | `rgaa-4.1.2-10.4` | Dans chaque page web, le texte reste-t-il lisible lorsque la taille des caractères est augmentée jusqu’à 200 %, au moins (hors cas particuliers) ? | `rgaa-viewport-zoom-review` |
 | `rgaa-4.1.2-10.6` | Dans chaque page web, chaque lien dont la nature n’est pas évidente est-il visible par rapport au texte environnant ? | `link-in-text-block`, `rgaa-link-state-colors-review` |
 | `rgaa-4.1.2-10.7` | Dans chaque page web, pour chaque élément recevant le focus, la prise de focus est-elle visible ? | `css-focus-indicator-suppressed`, `css-hidden-focus`, `manual-review`, `rgaa-focus-indicator-contrast` |
@@ -1597,6 +1599,18 @@ Asks about form fields whose title and placeholder are both present but differ: 
 **Applies to.** Applies to &lt;input&gt; and &lt;textarea&gt; fields that carry both a non-empty title and a non-empty placeholder. Only these fields show a placeholder; the attribute does nothing elsewhere. A hidden field, or a page with no such field, is notApplicable.
 
 **Expectation.** RGAA's glossary entry "Étiquette de champ de formulaire" says that a placeholder « est susceptible d'être restitué à la place de l'attribut title » and that « lorsque ces deux attributs title et placeholder sont présents, ils doivent être identiques ». A field whose two values are the same once whitespace is collapsed passes.
+
+### `rgaa-tooltip-review`
+
+**Content shown on hover or focus can be dismissed, hovered and stays visible**
+
+manual · no formal WCAG SC mapping · confidence high · default severity minor
+
+Flags author tooltips and popovers (role="tooltip", or a tooltip library attribute), for a person to check that what they show can be dismissed with Escape, hovered, and stays until the pointer or focus leaves.
+
+**Applies to.** Applies to author tooltips and popovers: an element with role="tooltip", and a visible element with a tooltip library's attribute (data-tooltip, data-tippy-content, data-balloon, or data-toggle / data-bs-toggle set to "tooltip", or to "popover" with a hover or focus trigger, since a popover otherwise opens on click). A role="tooltip" referenced by aria-describedby or aria-labelledby is reported on the element that references it. The title attribute is left out: 10.13's particular case makes content « contrôlé par l’agent utilisateur (par exemple, attribut title) » not applicable. A page with none is notApplicable.
+
+**Expectation.** RGAA 10.13: content that appears on hover or focus can be hidden by the user without moving the pointer or the focus (10.13.1), can be hovered without disappearing (10.13.2), and stays visible until the pointer or focus leaves, the user hides it, or it is no longer valid (10.13.3). Each is behaviour a script decides, so every tooltip is asked about (tooltipRole, tooltipAttribute), one occurrence per element.
 
 ### `rgaa-video-captions-track-kind`
 

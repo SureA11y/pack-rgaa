@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>rgaa-tooltip-review — scenario fixture</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.4; margin: 24px; }
+    h1 { font-size: 20px; margin: 0 0 16px; }
+    h2 { font-size: 16px; margin: 22px 0 10px; }
+    .note { font-size: 12px; opacity: 0.85; margin: 8px 0 16px; }
+    .case { border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin: 10px 0; }
+    .case-title { font-weight: 700; margin: 0 0 8px; }
+  </style>
+</head>
+<body>
+  <h1>Scenario fixture: <code>rgaa-tooltip-review</code> (RGAA 10.13.1–10.13.3)</h1>
+
+  <p class="note">
+    Each target has a stable <code>id</code> of the form <code>ttr_case_NN</code>.
+    Author tooltips are asked about; the title attribute is not.
+  </p>
+
+  <div class="case" id="case_01">
+    <div class="case-title">01 — CANTTELL: a button described by a role="tooltip"</div>
+    <button type="button" id="ttr_case_01" aria-describedby="ttr_tip">Partager</button><div role="tooltip" id="ttr_tip" hidden>Partager cette page</div>
+  </div>
+
+  <div class="case" id="case_02">
+    <div class="case-title">02 — CANTTELL: a link with a tooltip library attribute</div>
+    <a href="/aide" id="ttr_case_02" data-bs-toggle="tooltip" data-bs-title="Centre d'aide">Aide</a>
+  </div>
+
+  <div class="case" id="case_03">
+    <div class="case-title">03 — NOT APPLICABLE: a title attribute</div>
+    <a href="/contact" id="ttr_case_03" title="Nous écrire">Contact</a>
+  </div>
+</body>
+</html>

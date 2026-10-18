@@ -765,5 +765,10 @@
   "colorReferenceReview_title": "Un texte qui renvoie à une couleur ne donne pas l’information par la couleur seule",
   "colorReferenceReview_description": "Signale les textes qui indiquent quelque chose par une couleur (« indiqués en rouge », « shown in green »), pour qu’une personne vérifie que l’information est aussi donnée autrement.",
   "colorReferenceReview_summary_cantTell": "Ce texte renvoie à une couleur (« {{sample}} ») ; vérifiez que l’information n’est pas donnée uniquement par la couleur.",
-  "colorReferenceReview_hint_cantTell": "Donnez aussi la même information autrement : un mot, un signe comme un astérisque, ou une forme (RGAA 3.1.2)."
+  "colorReferenceReview_hint_cantTell": "Donnez aussi la même information autrement : un mot, un signe comme un astérisque, ou une forme (RGAA 3.1.2).",
+  "tooltipReview_title": "Les contenus affichés au survol ou à la prise de focus sont masquables, survolables et restent visibles",
+  "tooltipReview_description": "Signale les infobulles et popovers de l’auteur (role=\"tooltip\", ou un attribut de bibliothèque d’infobulles), pour qu’une personne vérifie que ce qu’ils affichent peut être masqué avec Échap, survolé, et reste visible jusqu’à ce que le pointeur ou le focus s’en aille.",
+  "tooltipReview_summary_cantTell_tooltipRole": "Cet élément affiche une infobulle (role=\"tooltip\") au survol ou à la prise de focus.",
+  "tooltipReview_summary_cantTell_tooltipAttribute": "Cet élément affiche une infobulle ou un popover ({{attribute}}) au survol ou à la prise de focus.",
+  "tooltipReview_hint_cantTell": "Vérifiez que ce qui apparaît peut être masqué sans déplacer le pointeur ni le focus (avec Échap, par exemple), peut être survolé sans disparaître, et reste visible jusqu’à ce que le pointeur ou le focus le quitte (RGAA 10.13)."
 }

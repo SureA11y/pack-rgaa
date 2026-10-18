@@ -4,13 +4,13 @@ This pack's rules and their scenario pages. Every rule should have a `tests/fixt
 
 ## Summary
 
-Total rules: **97**. With fixture: **97**. Without fixture: **0**.
+Total rules: **98**. With fixture: **98**. Without fixture: **0**.
 
 ## Rules WITHOUT a fixture (0)
 
 None — every rule has a fixture.
 
-## Rules WITH a fixture (97)
+## Rules WITH a fixture (98)
 
 | Rule ID | Type | Fixture | Cases | PASS | FAIL | CANTTELL | OTHER |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -108,6 +108,7 @@ None — every rule has a fixture.
 | rgaa-th-association-present | automatic | `tests/fixtures/rgaa-th-association-present-all-scenarios.html` | 3 | 1 | 1 | 1 | 0 |
 | rgaa-th-scope-row-col | automatic | `tests/fixtures/rgaa-th-scope-row-col-all-scenarios.html` | 7 | 1 | 4 | 0 | 2 |
 | rgaa-title-placeholder-identical | automatic | `tests/fixtures/rgaa-title-placeholder-identical-all-scenarios.html` | 7 | 2 | 0 | 3 | 2 |
+| rgaa-tooltip-review | manual | `tests/fixtures/rgaa-tooltip-review-all-scenarios.html` | 3 | 0 | 0 | 2 | 1 |
 | rgaa-video-captions-track-kind | automatic | `tests/fixtures/rgaa-video-captions-track-kind-all-scenarios.html` | 9 | 2 | 4 | 1 | 2 |
 | rgaa-viewport-zoom-review | manual | `tests/fixtures/rgaa-viewport-zoom-review-all-scenarios.html` | 1 | 0 | 0 | 1 | 0 |
 | rgaa-widget-label-in-name | automatic | `tests/fixtures/rgaa-widget-label-in-name-all-scenarios.html` | 7 | 1 | 3 | 1 | 2 |

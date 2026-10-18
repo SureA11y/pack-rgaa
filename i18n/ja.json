@@ -765,5 +765,10 @@
   "colorReferenceReview_title": "色に言及するテキストは、色だけで情報を伝えない",
   "colorReferenceReview_description": "色で何かを示すテキスト（« indiqués en rouge »、« shown in green »）を示し、情報が他の方法でも伝えられているかを人が確認できるようにします。",
   "colorReferenceReview_summary_cantTell": "このテキストは色に言及しています（「{{sample}}」）。情報が色だけで伝えられていないか確認してください。",
-  "colorReferenceReview_hint_cantTell": "同じ情報を、言葉、アスタリスクなどの記号、形など、他の方法でも伝えてください（RGAA 3.1.2）。"
+  "colorReferenceReview_hint_cantTell": "同じ情報を、言葉、アスタリスクなどの記号、形など、他の方法でも伝えてください（RGAA 3.1.2）。",
+  "tooltipReview_title": "ホバーやフォーカスで表示される内容は、閉じられ、ポインターを乗せられ、表示され続ける",
+  "tooltipReview_description": "作成者によるツールチップやポップオーバー（role=\"tooltip\"、またはツールチップライブラリの属性）を示し、表示内容が Escape で閉じられ、ポインターを乗せても消えず、ポインターやフォーカスが離れるまで表示され続けるかを人が確認できるようにします。",
+  "tooltipReview_summary_cantTell_tooltipRole": "この要素はホバーやフォーカスでツールチップ（role=\"tooltip\"）を表示します。",
+  "tooltipReview_summary_cantTell_tooltipAttribute": "この要素はホバーやフォーカスでツールチップまたはポップオーバー（{{attribute}}）を表示します。",
+  "tooltipReview_hint_cantTell": "表示された内容が、ポインターやフォーカスを動かさずに（Escape などで）閉じられること、ポインターを乗せても消えないこと、ポインターやフォーカスが離れるまで表示され続けることを確認してください（RGAA 10.13）。"
 }

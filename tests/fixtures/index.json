@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 97,
-    "withFixture": 97,
+    "total": 98,
+    "withFixture": 98,
     "withoutFixture": 0
   },
   "rows": [
@@ -1601,6 +1601,23 @@
         "FAIL": 0,
         "CANTTELL": 3,
         "OTHER": 2
+      }
+    },
+    {
+      "ruleId": "rgaa-tooltip-review",
+      "title": "Content shown on hover or focus can be dismissed, hovered and stays visible",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/tooltip-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-tooltip-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-tooltip-review-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 2,
+        "OTHER": 1
       }
     },
     {

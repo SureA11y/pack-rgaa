@@ -765,5 +765,10 @@
   "colorReferenceReview_title": "Text that refers to a colour does not give the information by colour alone",
   "colorReferenceReview_description": "Flags text that indicates something by a colour (« indiqués en rouge », « shown in green »), for a person to check that the information is also given another way.",
   "colorReferenceReview_summary_cantTell": "This text refers to a colour (\"{{sample}}\"); check that the information is not given by colour alone.",
-  "colorReferenceReview_hint_cantTell": "Give the same information another way as well: a word, a sign such as an asterisk, or a shape (RGAA 3.1.2)."
+  "colorReferenceReview_hint_cantTell": "Give the same information another way as well: a word, a sign such as an asterisk, or a shape (RGAA 3.1.2).",
+  "tooltipReview_title": "Content shown on hover or focus can be dismissed, hovered and stays visible",
+  "tooltipReview_description": "Flags author tooltips and popovers (role=\"tooltip\", or a tooltip library attribute), for a person to check that what they show can be dismissed with Escape, hovered, and stays until the pointer or focus leaves.",
+  "tooltipReview_summary_cantTell_tooltipRole": "This element shows a tooltip (role=\"tooltip\") on hover or focus.",
+  "tooltipReview_summary_cantTell_tooltipAttribute": "This element shows a tooltip or popover ({{attribute}}) on hover or focus.",
+  "tooltipReview_hint_cantTell": "Check that what appears can be hidden without moving the pointer or the focus (with Escape, say), can be hovered without disappearing, and stays visible until the pointer or focus leaves it (RGAA 10.13)."
 }
