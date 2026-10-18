@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**80 rules total: 62 automatic (decide deterministically; can return `fail`), 18 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**84 rules total: 64 automatic (decide deterministically; can return `fail`), 20 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -14,7 +14,7 @@ Under **What a finding reports**, a rule lists the fields its findings carry in 
 
 See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_SCHEMA.md) for what `type`/`confidence`/`severity` mean on a scan result, and [`WCAG_CONFORMANCE.md`](https://github.com/SureA11y/core/blob/main/docs/WCAG_CONFORMANCE.md) for how these roll up to an SC-level conformance claim.
 
-## Automatic rules (62), can return `fail`
+## Automatic rules (64), can return `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -45,6 +45,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-html-nesting-valid`](#rgaa-html-nesting-valid) | HTML elements are nested as HTML allows | — | — | high | moderate |
 | [`rgaa-img-alt-present`](#rgaa-img-alt-present) | Images that are not spacers have an alt attribute | — | — | high | serious |
 | [`rgaa-img-decorative-no-alternative`](#rgaa-img-decorative-no-alternative) | Decorative images have no aria-labelledby, aria-label or title | — | — | high | minor |
+| [`rgaa-img-describedby-target`](#rgaa-img-describedby-target) | An image's aria-describedby points to its description | — | — | high | serious |
 | [`rgaa-img-no-alt-decorative`](#rgaa-img-no-alt-decorative) | Decorative images with no alt attribute | — | — | high | minor |
 | [`rgaa-label-for-target-valid`](#rgaa-label-for-target-valid) | Labels point to a form field | — | — | high | serious |
 | [`rgaa-layout-table-no-data-markup`](#rgaa-layout-table-no-data-markup) | Layout tables use no data table markup | — | — | high | moderate |
@@ -76,12 +77,13 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-svg-hidden-no-alternative`](#rgaa-svg-hidden-no-alternative) | Hidden decorative SVGs carry no text alternative | — | — | high | minor |
 | [`rgaa-svg-role-img`](#rgaa-svg-role-img) | SVGs with a text alternative have role="img" | — | — | high | serious |
 | [`rgaa-text-direction-marked`](#rgaa-text-direction-marked) | Text in the other reading direction is marked with dir | — | — | high | moderate |
+| [`rgaa-th-association-present`](#rgaa-th-association-present) | Table headers have an id, a scope or a header role | — | — | high | serious |
 | [`rgaa-th-scope-row-col`](#rgaa-th-scope-row-col) | Table headers use scope="row" or scope="col", the right one | — | — | high | moderate |
 | [`rgaa-title-placeholder-identical`](#rgaa-title-placeholder-identical) | A form field's title and placeholder are identical | — | — | medium | moderate |
 | [`rgaa-video-captions-track-kind`](#rgaa-video-captions-track-kind) | Video caption tracks use kind="captions" | — | — | high | moderate |
 | [`rgaa-widget-label-in-name`](#rgaa-widget-label-in-name) | The accessible name of a scripted component contains its visible label | — | — | high | serious |
 
-## Manual rules (18), never `fail`
+## Manual rules (20), never `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -92,6 +94,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-fake-list`](#rgaa-fake-list) | Text laid out as a list uses list markup | — | — | low | moderate |
 | [`rgaa-field-group-legend`](#rgaa-field-group-legend) | Groups of form fields have a legend | — | — | medium | moderate |
 | [`rgaa-frame-title-relevant`](#rgaa-frame-title-relevant) | Frame titles are relevant | — | — | high | moderate |
+| [`rgaa-headings-absent-review`](#rgaa-headings-absent-review) | A page with text but no heading is reviewed | — | — | high | moderate |
 | [`rgaa-image-alt-long`](#rgaa-image-alt-long) | Text alternatives of images are short | — | — | medium | minor |
 | [`rgaa-invalid-field-message`](#rgaa-invalid-field-message) | Fields marked invalid have their error message in their label or a linked passage | — | — | high | moderate |
 | [`rgaa-keyboard-only-event-handlers`](#rgaa-keyboard-only-event-handlers) | Keyboard-only inline event handlers should have a pointer equivalent | — | — | low | moderate |
@@ -102,6 +105,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-office-document-link`](#rgaa-office-document-link) | Downloadable office documents are accessible or have an accessible version | — | — | high | moderate |
 | [`rgaa-radio-group-present`](#rgaa-radio-group-present) | Radio buttons sharing a name are grouped | — | — | medium | moderate |
 | [`rgaa-scripted-components-review`](#rgaa-scripted-components-review) | Scripted components are compatible with assistive technologies | — | — | medium | moderate |
+| [`rgaa-table-title-adjacent`](#rgaa-table-title-adjacent) | A heading just before a data table is tied to it if it is its title | — | — | high | moderate |
 | [`rgaa-viewport-zoom-review`](#rgaa-viewport-zoom-review) | Text can reach 200% zoom despite a viewport meta tag that limits zoom | — | — | medium | serious |
 
 ## Profiles (1)
@@ -112,7 +116,7 @@ What a scan runs under each profile (`engineOptions.profile`): the rules its tag
 |---|---|---|---|---|---|---|
 | `rgaa-4.1.2` | `rgaa` | version 4.1.2 | — | — | — | 2.1 |
 
-## Rollups (54)
+## Rollups (55)
 
 Each groups rules into one result, as a WCAG rollup does; the standard's own report sections show them.
 
@@ -121,6 +125,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-1.1` | Chaque image porteuse d’information a-t-elle une alternative textuelle ? | `area-alt-present`, `img-alt-decorative`, `input-image-alt-present`, `rgaa-area-alt-source`, `rgaa-canvas-role-img`, `rgaa-embed-image-role-img`, `rgaa-img-alt-present`, `rgaa-object-image-role-img`, `rgaa-role-img-aria-name`, `rgaa-svg-role-img`, `server-side-image-map-absent`, `svg-text-alternative-present` |
 | `rgaa-4.1.2-1.2` | Chaque image de décoration est-elle correctement ignorée par les technologies d’assistance ? | `rgaa-canvas-decorative-aria-hidden`, `rgaa-img-decorative-no-alternative`, `rgaa-img-no-alt-decorative`, `rgaa-svg-decorative-aria-hidden`, `rgaa-svg-hidden-no-alternative` |
 | `rgaa-4.1.2-1.3` | Pour chaque image porteuse d’information ayant une alternative textuelle, cette alternative est-elle pertinente (hors cas particuliers) ? | `area-alt-quality`, `canvas-text-alternative-quality`, `embed-text-alternative-quality`, `image-redundant-alt`, `img-alt-quality`, `input-image-alt-decorative`, `input-image-alt-quality`, `object-text-alternative-quality`, `rgaa-image-alt-long`, `svg-text-alternative-quality` |
+| `rgaa-4.1.2-1.6` | Chaque image porteuse d’information a-t-elle, si nécessaire, une description détaillée ? | `rgaa-img-describedby-target` |
 | `rgaa-4.1.2-1.9` | Chaque légende d’image est-elle, si nécessaire, correctement reliée à l’image correspondante ? | `rgaa-figure-caption-structure` |
 | `rgaa-4.1.2-10.1` | Dans le site web, des feuilles de styles sont-elles utilisées pour contrôler la présentation de l’information ? | `rgaa-letters-spaced-with-spaces`, `rgaa-presentational-attributes-absent`, `rgaa-presentational-elements-absent` |
 | `rgaa-4.1.2-10.12` | Dans chaque page web, les propriétés d’espacement du texte peuvent-elles être redéfinies par l’utilisateur sans perte de contenu ou de fonctionnalité (hors cas particuliers) ? | `avoid-inline-spacing`, `text-spacing-content-loss` |
@@ -152,9 +157,9 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-4.3` | Chaque média temporel synchronisé pré-enregistré a-t-il, si nécessaire, des sous-titres synchronisés (hors cas particuliers) ? | `rgaa-video-captions-track-kind`, `video-caption` |
 | `rgaa-4.1.2-5.1` | Chaque tableau de données complexe a-t-il un résumé ? | `rgaa-complex-table-summary` |
 | `rgaa-4.1.2-5.2` | Pour chaque tableau de données complexe ayant un résumé, celui-ci est-il pertinent ? | `rgaa-complex-table-summary-quality` |
-| `rgaa-4.1.2-5.4` | Pour chaque tableau de données ayant un titre, le titre est-il correctement associé au tableau de données ? | `table-fake-caption` |
+| `rgaa-4.1.2-5.4` | Pour chaque tableau de données ayant un titre, le titre est-il correctement associé au tableau de données ? | `rgaa-table-title-adjacent`, `table-fake-caption` |
 | `rgaa-4.1.2-5.6` | Pour chaque tableau de données, chaque en-tête de colonne et chaque en-tête de ligne sont-ils correctement déclarés ? | `rgaa-data-table-headers-review` |
-| `rgaa-4.1.2-5.7` | Pour chaque tableau de données, la technique appropriée permettant d’associer chaque cellule avec ses en-têtes est-elle utilisée (hors cas particuliers) ? | `rgaa-th-scope-row-col`, `table-headers-attr-valid` |
+| `rgaa-4.1.2-5.7` | Pour chaque tableau de données, la technique appropriée permettant d’associer chaque cellule avec ses en-têtes est-elle utilisée (hors cas particuliers) ? | `rgaa-th-association-present`, `rgaa-th-scope-row-col`, `table-headers-attr-valid` |
 | `rgaa-4.1.2-5.8` | Chaque tableau de mise en forme ne doit pas utiliser d’éléments propres aux tableaux de données. Cette règle est-elle respectée ? | `rgaa-layout-table-no-data-markup` |
 | `rgaa-4.1.2-6.1` | Chaque lien est-il explicite (hors cas particuliers) ? | `identical-links-same-purpose`, `link-name-quality`, `rgaa-link-context-review`, `rgaa-link-label-in-name-sources` |
 | `rgaa-4.1.2-6.2` | Dans chaque page web, chaque lien a-t-il un intitulé ? | `rgaa-link-content-label-present` |
@@ -169,7 +174,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-8.6` | Pour chaque page web ayant un titre de page, ce titre est-il pertinent ? | `page-title-patterns`, `rgaa-page-title-unique` |
 | `rgaa-4.1.2-8.8` | Dans chaque page web, le code de langue de chaque changement de langue est-il valide et pertinent ? | `valid-lang` |
 | `rgaa-4.1.2-8.9` | Dans chaque page web, les balises ne doivent pas être utilisées uniquement à des fins de présentation. Cette règle est-elle respectée ? | `rgaa-markup-for-presentation` |
-| `rgaa-4.1.2-9.1` | Dans chaque page web, l’information est-elle structurée par l’utilisation appropriée de titres ? | `heading-order`, `heading-quality`, `p-as-heading`, `rgaa-heading-content-present`, `rgaa-heading-role-level-present` |
+| `rgaa-4.1.2-9.1` | Dans chaque page web, l’information est-elle structurée par l’utilisation appropriée de titres ? | `heading-order`, `heading-quality`, `p-as-heading`, `rgaa-heading-content-present`, `rgaa-heading-role-level-present`, `rgaa-headings-absent-review` |
 | `rgaa-4.1.2-9.2` | Dans chaque page web, la structure du document est-elle cohérente (hors cas particuliers) ? | `rgaa-main-element-structure` |
 | `rgaa-4.1.2-9.3` | Dans chaque page web, chaque liste est-elle correctement structurée ? | `definition-list-children-valid`, `dlitem-parent-valid`, `list-children-valid`, `listitem-parent-valid`, `rgaa-aria-list-item-roles`, `rgaa-fake-list` |
 
@@ -631,6 +636,18 @@ Checks that each element with role="heading" also has an aria-level attribute.
 
 **Expectation.** The element has an aria-level attribute whose value is a number. RGAA defines a heading as an &lt;hx&gt; element or an element with both role="heading" and aria-level (glossary "Titre"), and 9.1.3 step 1 accepts only these two structures ("un attribut WAI-ARIA aria-level=x", "x" being a number). WAI-ARIA gives role="heading" a default level of 2, which WCAG accepts, but RGAA does not.
 
+### `rgaa-headings-absent-review`
+
+**A page with text but no heading is reviewed**
+
+manual · no formal WCAG SC mapping · confidence high · default severity moderate
+
+Flags a page with 30 words or more of text and no heading at all, for a person to check whether some passages act as headings and need &lt;hx&gt; markup.
+
+**Applies to.** Applies to a page with no heading at all (no &lt;h1&gt;-&lt;h6&gt; and no role="heading", hidden ones included) whose visible text holds 30 words or more. A page with a heading, or with less text, is notApplicable.
+
+**Expectation.** RGAA 9.1.3: « chaque passage de texte constituant un titre est-il structuré à l'aide d'une balise &lt;hx&gt; » or role="heading" with aria-level. A page of some length with no heading at all usually has passages that act as headings, but a short page may have none: the page is asked about (noHeading), for a person to look for them.
+
 ### `rgaa-html-elements-attributes-valid`
 
 **HTML elements and attribute values are valid**
@@ -735,6 +752,24 @@ Checks that an &lt;img&gt; marked decorative (alt="", aria-hidden="true" or role
 **Applies to.** Applies to &lt;img&gt; elements marked decorative: alt="", aria-hidden="true" on the element, or role="presentation"/"none". An &lt;img&gt; inside a &lt;figure&gt; that has a &lt;figcaption&gt; is left out: criterion 1.2 does not apply to an image with a caption (légende). Content hidden with CSS or the hidden attribute is left out too. A page with none is notApplicable.
 
 **Expectation.** RGAA 1.2.1 step 2: "vérifier que l'image ne possède pas d'attributs aria-labelledby, aria-label ou title". An image marked decorative that has none of them, with a non-empty value, passes. Fails: aria-hidden="true" together with one of them. The image is hidden from assistive technologies, so it is decorative for them; if it carries information after all, hiding it fails 1.1.1 instead. Either way the page fails. Asks (cantTell): alt="" or role="presentation"/"none", without aria-hidden="true", together with one of them. The image may be informative, and then 1.2.1 does not apply and 1.1.1 accepts aria-label, aria-labelledby or title as its alternative. A person decides which.
+
+### `rgaa-img-describedby-target`
+
+**An image's aria-describedby points to its description**
+
+automatic · no formal WCAG SC mapping · confidence high · default severity serious
+
+Fails an image whose aria-describedby lists only ids that do not exist; asks when some are missing or the passages are empty.
+
+**Applies to.** Applies to images exposed to assistive technologies (&lt;img&gt;, &lt;input type="image"&gt;, &lt;area href&gt;, &lt;object&gt;, &lt;embed&gt;, outer &lt;svg&gt;, &lt;canvas&gt;, role="img") that carry a non-empty aria-describedby. Decorative images (alt="", role="presentation" or "none", or inside aria-hidden="true") are left out. A page with none is notApplicable.
+
+**Expectation.**
+
+RGAA 1.6.9: for each image « qui utilise un attribut WAI-ARIA aria-describedby, l'attribut WAI-ARIA aria-describedby associe-t-il la description détaillée ? »
+
+- It fails when none of the ids it lists exists in the page (targetMissing): it associates nothing.
+- It asks (cantTell) when some ids exist and others do not (someTargetsMissing), and when the passages it points to hold no text (emptyDescription).
+- Whether the passage it points to is the detailed description is left to a person, as 1.6 is.
 
 ### `rgaa-img-no-alt-decorative`
 
@@ -1248,7 +1283,7 @@ A same-page link outside the main content zone leads to it: its fragment resolve
 - when a navigation block (&lt;nav&gt; or role="navigation") comes before the main zone and no link leads to it; the 12.7 particular case, a one-page site, turns on the presence of navigation, so with navigation the link is needed;
 - on a skip link whose target does not exist, whether or not the page has navigation.
 
-A link whose target does not exist fails as a broken skip link only when its name or fragment says it leads to the content (« contenu », content, main, principal…); a broken first link that names something else (cookie settings, a menu) is no skip link to the content. It asks instead of failing when no navigation block comes before the main zone and no link leads to it (a one-page site may not need one), and on a skip link whose target exists but is hidden, sits before the zone with links or other focusable elements, but no navigation block, between the two, or sits inside the zone after links or other focusable elements outside navigation, and on a link to the content whose target lies before a navigation block that precedes the zone (a wrapper around a section menu and &lt;main&gt;). A skip link to a target inside navigation, after the zone, or with navigation between it and the zone leads elsewhere (to a menu, a search form, the footer) and does not count.
+A link whose target does not exist fails as a broken skip link only when its name or fragment says it leads to the content (« contenu », content, main, principal…); a broken first link that names something else (cookie settings, a menu) is no skip link to the content. It asks instead of failing when no navigation block comes before the main zone and no link leads to it (a one-page site may not need one), and on a skip link whose target exists but is hidden, sits before the zone with links or other focusable elements, but no navigation block, between the two, or sits inside the zone after links or other focusable elements outside navigation, and on a link to the content whose target lies before a navigation block that precedes the zone (a wrapper around a section menu and &lt;main&gt;). A skip link to a target inside navigation, after the zone, or with navigation between it and the zone leads elsewhere (to a menu, a search form, the footer) and does not count. A working skip link inside aria-hidden="true" is asked about (skipLinkAriaHidden): it works with the keyboard, but screen reader users cannot find it.
 
 ### `rgaa-svg-decorative-aria-hidden`
 
@@ -1291,6 +1326,18 @@ Checks that an &lt;svg&gt; named by aria-labelledby, aria-label or &lt;title&gt;
 
 **Expectation.** The &lt;svg&gt; has role="img" (RGAA 1.1.5 step 3; step 4: "Si ce n'est pas le cas, le test est invalidé"), and its alternative comes from aria-labelledby or aria-label (step 5). An alternative without role="img" fails when the SVG certainly carries information: it is the only content of a link or a button, or it takes focus itself (tabindex 0 or more). Otherwise it is asked about (cantTell): an icon beside a button's text is decorative, and then it fails 1.2.4 instead, which requires aria-hidden="true" and no alternative; the 1.1.5 methodology leaves that call to a person (« déterminer si l'image est porteuse d'information »). An &lt;svg role="img"&gt; named only by its &lt;title&gt; is asked about (cantTell): RGAA contradicts itself there. 1.1.5 step 5 lists only aria-labelledby and aria-label, but 1.3.6 checks "le contenu de l'élément &lt;title&gt;" as the alternative of an SVG.
 
+### `rgaa-table-title-adjacent`
+
+**A heading just before a data table is tied to it if it is its title**
+
+manual · no formal WCAG SC mapping · confidence high · default severity moderate
+
+Flags each data table with no caption or name that comes right after a heading, for a person to check whether the heading is the table's title and should be tied to it.
+
+**Applies to.** Applies to visible data tables (a &lt;table&gt; with a &lt;th&gt;, not role="presentation" or "none") with no &lt;caption&gt;, title, aria-label or aria-labelledby, whose previous element is a heading (&lt;h1&gt;-&lt;h6&gt;, or role="heading"). A page with none is notApplicable.
+
+**Expectation.** RGAA 5.4.1: « Pour chaque tableau de données ayant un titre, le titre est-il correctement associé au tableau de données ? » A heading right before the table may be the table's title, given as plain text and not tied to it, or the title of the section the table belongs to: a person decides (adjacentHeading). If it is the table's title, a &lt;caption&gt; or aria-labelledby ties it.
+
 ### `rgaa-text-direction-marked`
 
 **Text in the other reading direction is marked with dir**
@@ -1307,6 +1354,23 @@ RGAA 8.10.1: « chaque texte dont le sens de lecture est différent du sens de l
 
 - It fails (directionNotMarked) when a text of three words or more reads in the other direction, as a whole element or a run inside other text, with no dir between it and its context.
 - A text of one or two words is asked about (cantTell): a whole element (shortText), such as « العربية » in a language menu, or a run inside other text (shortRun), such as a word quoted in a sentence. The letter of 8.10.1 covers it, but a browser shows one or two words the same with or without dir, so whether it needs one is for a person. So is text in a &lt;bdi&gt; with no dir (bdiWithoutDir), which browsers isolate but RGAA does not name.
+
+### `rgaa-th-association-present`
+
+**Table headers have an id, a scope or a header role**
+
+automatic · no formal WCAG SC mapping · confidence high · default severity serious
+
+Fails a &lt;th&gt; with no id, scope or header role in a table with headers on both axes; asks about other tables whose headers have none.
+
+**Applies to.** Applies to the &lt;th&gt; elements with text of tables that are not presentation tables (role="presentation" or "none"). A page with none is notApplicable.
+
+**Expectation.**
+
+RGAA 5.7.1: each &lt;th&gt; « s'appliquant à la totalité de la ligne ou de la colonne » has a unique id, a scope, or role="rowheader" or "columnheader".
+
+- In a table with headers on both axes (a first row of &lt;th&gt; and rows that start with a &lt;th&gt; followed by &lt;td&gt;) and no rowspan or colspan, each &lt;th&gt; with none of the three fails (noAssociation): such a header covers a whole row or column, and the shape leaves no doubt.
+- Elsewhere, the table is asked about once (noAssociationSimple): in a table with headers on one axis only, browsers tie the headers to their cells, and an auditor may accept it; with spans, a header may cover only part of a row or column, which 5.7.3 handles.
 
 ### `rgaa-th-scope-row-col`
 

@@ -22,7 +22,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T1-09 | 1.1.1 | MISS | `alt=""` images in a named figure or nav are never asked about (C7). | core |
 | T1-10 | 1.4, 1.5 | MISS | CAPTCHAs: no question (Q5). | open |
 | T1-11 | 1.3.1, 1.3.6 | WM | Relevance asked about images that are a link's or button's only content, which the glossary sends to 6.1 and 11.9. | core |
-| T1-12 | 1.6, 1.7 | MISS | No rule; a broken `aria-describedby` on an image should fail 1.6.9. | open |
+| T1-12 | 1.6, 1.7 | MISS | No rule; a broken `aria-describedby` on an image should fail 1.6.9. 1.6.9 now checked by `rgaa-img-describedby-target` (fails when no id exists; asks when some are missing or empty). Still open: the rest of 1.6 and 1.7 (description needed, longdesc, adjacent link). | partial |
 | T1-13 | 1.8 | MISS | Images of text: no question. | open |
 | T1-14 | 1.2.2, 1.2.3, 1.2.6 | MISS | `<area>` without href, decorative object and embed: no check. | open |
 | T1-15 | 1.2.1 | FP | A spacer inside an `aria-hidden="true"` container fails 1.2.1. | done |
@@ -37,10 +37,10 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T25-02 | 3.2 | FP | Text over a `z-index:-1` `::before` painted with an image is measured on the wrong background (C1). | core |
 | T25-03 | 4.3.2 | FP | A translation `kind="subtitles"` track fails when its `srclang` equals the page's language. | done |
 | T25-04 | 3.3.1 | MISS/WM | No rule for 3.3; `rgaa-focus-indicator-contrast` measures 3:1 focus styles but is linked to 10.7.1 only; field borders are not measured. | open |
-| T25-05 | 5.4.1 | MISS | A data table titled by an adjacent heading is not asked about. | open |
+| T25-05 | 5.4.1 | MISS | A data table titled by an adjacent heading is not asked about. Now asked about by `rgaa-table-title-adjacent`. | done |
 | T25-06 | 5.3.1 | WM | The headerless-table question is not linked to 5.3.1. | open |
 | T25-07 | 5.7.2, 5.7.3 | WO | An invalid `scope`, or `rowgroup`/`colgroup`, only asks, though 5.7 fails either way. | done |
-| T25-08 | 5.7.1 | MISS | A `th` with no scope, id or role in a table with headers on both axes (M6). | open |
+| T25-08 | 5.7.1 | MISS | A `th` with no scope, id or role in a table with headers on both axes (M6). Now `rgaa-th-association-present`: fails it in a both-axes table without spans; asks once about other tables. | done |
 | T25-09 | 5.7.2 | FN | 5.7 passes when `scope` points the wrong way. | done |
 | T25-10 | 4.1 | FN | Media next to text that only mentions a transcript, or says there is none, passes. | open |
 | T25-11 | 4.3.2 | MISS | `<track kind="caption">` (an invalid kind, never displayed) is not failed. | done |
@@ -87,7 +87,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T89-05 | 9.1.1 | MISS | A skipped level is missed after an earlier, deeper heading (M1). | core |
 | T89-06 | 8.9.1 | MISS | No rule: `<h2 role="presentation">`, empty `<p>`, `<br><br>` paragraphs, empty `<blockquote>`. Now `rgaa-markup-for-presentation`: fails a heading with role presentation/none and a paragraph of only `&nbsp;` or `<br>`; asks about an empty `<p>` or `<blockquote>`, live regions, `<br><br>` and indents of `&nbsp;`. | done |
 | T89-07 | 8.10.1 | MISS | Right-to-left text with no `dir` is not detected. Now `rgaa-text-direction-marked`: fails a text of three words or more in the other direction with no `dir`; asks about texts of one or two words (a language menu's « العربية », decision B) and `<bdi>`. | done |
-| T89-08 | 9.1.3 | MISS | A page with text but no heading is notApplicable. | open |
+| T89-08 | 9.1.3 | MISS | A page with text but no heading is notApplicable. Now asked about by `rgaa-headings-absent-review` (30 words or more, no heading at all). | done |
 | T89-09 | 8.2.1 | FP | Markup inside shadow roots fails 8.2, though the validator RGAA names never sees it. | done (pack rules); core (`duplicate-id`) |
 | T89-10 | 8.4.1, 8.8.1 | WM | A default language on `<body>` is judged under 8.8 instead of 8.4. | open (pack); core (`valid-lang` reason) |
 | T89-11 | 8.4.1 | MISS | A wrong default language passes; `und`, `mul` pass (Q7). | open |
@@ -154,7 +154,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T12-07 | 12.6.1 | FN | Passes when no zone is recognised. | open |
 | T12-08 | 13.1, 13.3, 13.9 | WO | A criterion rolls up notApplicable or pass though some of its tests are not checked. | core |
 | T12-09 | 12.6.1 | WO | Untargeted questions on blocks inside other landmarks. | open |
-| T12-10 | 12.7.2 | MISS | An `aria-hidden` skip link passes 12.7. | open |
+| T12-10 | 12.7.2 | MISS | An `aria-hidden` skip link passes 12.7. Now asked about by `rgaa-skip-link-present` (skipLinkAriaHidden): it works with the keyboard, but screen reader users cannot find it. | done |
 | T12-11 | 12.7 | WO | A working empty `tabindex="-1"` anchor target is asked about. | core |
 | T12-12 | 13.9 | WO | Cross-origin stylesheets make it ask (C6). | core |
 | T13-01 | 13.3.1 | MISS | Office documents named only in the link text or `type` are not found. | done |

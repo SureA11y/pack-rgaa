@@ -368,6 +368,10 @@ const RGAA_RULE_TESTS = {
       tests: ['9.1.3'],
       note: 'Fails an element with role=heading and no numeric aria-level. 9.1.3 step 1 accepts only an <hx> element or role=heading with aria-level=x, and the glossary "Titre" defines a heading the same way; the WAI-ARIA default level of 2 does not count.'
     },
+    'rgaa-headings-absent-review': {
+      tests: ['9.1.3'],
+      note: 'Asks about a page with 30 words or more of visible text and no heading at all (no <hx>, no role="heading", hidden ones included). 9.1.3 asks that « chaque passage de texte constituant un titre » be marked as one; a page of some length with no heading usually has such passages, but a short page may have none, so a person decides.'
+    },
     'rgaa-html-elements-attributes-valid': {
       tests: ['8.2.1'],
       note: "Fails, hidden content included, obsolete or unknown elements and attribute values the W3C validator rejects: dir, id (empty or with whitespace), lang (not a well-formed language tag), xml:lang without a matching lang, scope, headers naming no th of the table, optgroup without label, image buttons with no alt or an empty one, and autocomplete values and placements. Each is 8.2.1's condition that tags, attributes and attribute values respect the writing rules. Asks instead on a page whose doctype is neither HTML5 nor missing, since 8.2.1 judges the source against the declared doctype. Where the validator is stricter than the HTML standard (on/off in capitals, unregistered subtags), the rule does not report. Markup inside a shadow root is asked about instead of failed: the validator RGAA's methodology runs on the generated source does not see it in the serialized page."
@@ -438,6 +442,10 @@ const RGAA_RULE_TESTS = {
     'img-alt-quality': {
       tests: ['1.3.1'],
       note: 'Asks a human to judge the relevance of a non-empty <img> alt, which is 1.3.1 step 2.'
+    },
+    'rgaa-img-describedby-target': {
+      tests: ['1.6.9'],
+      note: "Fails an exposed, non-decorative image (img, input image, area, object, embed, svg, canvas, role=img) whose aria-describedby lists only ids that do not exist in its tree: 1.6.9 asks whether « l'attribut WAI-ARIA aria-describedby associe-t-il la description détaillée », and it associates nothing. Asks when some ids are missing or the passages hold no text. Whether the passage is the detailed description is for a person."
     },
     'rgaa-img-no-alt-decorative': {
       tests: ['1.2.1'],
@@ -789,7 +797,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-skip-link-present': {
       tests: ['12.7.1'],
-      note: 'Fails a page whose navigation block comes before the visible <main> when no same-page link leads to the main content zone (to <main>, or to an element just before or at the start of it), and a skip link to the content (by its name or fragment) whose target does not exist; a broken first link that names something else, such as cookie settings, is no skip link. That is 12.7.1 step 2: the zone can be skipped or reached by a link. Asks when no navigation comes before the zone (the one-page particular case), and on a skip link whose target is hidden or not at the start of the zone. Whether the link is visible on focus is left to 12.7.2.'
+      note: 'Fails a page whose navigation block comes before the visible <main> when no same-page link leads to the main content zone (to <main>, or to an element just before or at the start of it), and a skip link to the content (by its name or fragment) whose target does not exist; a broken first link that names something else, such as cookie settings, is no skip link. That is 12.7.1 step 2: the zone can be skipped or reached by a link. Asks when no navigation comes before the zone (the one-page particular case), and on a skip link whose target is hidden or not at the start of the zone, and on a working skip link inside aria-hidden="true", which keyboard users can use but screen reader users cannot find. Whether the link is visible on focus is left to 12.7.2.'
     },
     'slider-name-present': {
       tests: [],
@@ -851,6 +859,10 @@ const RGAA_RULE_TESTS = {
       tests: [],
       note: 'Fails a table (not role=presentation) that has <th> but no <td> at all. If the auditor judges it a layout table, the <th> use fails 5.8.1 step 2. If it is a data table whose cells are all marked <th>, no RGAA test forbids that (5.6.4 allows th), so the auditor must decide which applies. Not mapped to 5.8.1: only a failure if the auditor judges the table a layout table. Not mapped to 5.7.1: a table with no <td> says nothing about the id, scope or role that 5.7.1 checks.'
     },
+    'rgaa-table-title-adjacent': {
+      tests: ['5.4.1'],
+      note: "Asks about a data table (with a <th>, not a presentation table) that has no <caption>, title, aria-label or aria-labelledby and comes right after a heading: the heading may be the table's title given as plain text, which 5.4.1 wants « correctement associé au tableau », or the title of its section. table-fake-caption asks about the other plain-text title, a first row of one cell."
+    },
     'target-size-minimum': {
       tests: [],
       note: 'Checks the 24x24 CSS px target size and spacing exception of WCAG 2.5.8, a WCAG 2.2 criterion RGAA 4.1.2 does not include. No RGAA test measures pointer target size.'
@@ -870,6 +882,10 @@ const RGAA_RULE_TESTS = {
     'textbox-name-present': {
       tests: [],
       note: 'Checks that role=textbox has a name from aria-label, aria-labelledby, title or an associated label. It accepts a wrapping <label> and a placeholder on a text-like <input>, which 11.1.1 does not list, so a placeholder-only field passes here while it fails 11.1.1. Not mapped to 11.1.1: rgaa-field-label-listed-source reports 11.1.1 for every form field, from the sources 11.1.1 lists only. Not mapped to 7.1.1: it passes when an accessible alternative exists.'
+    },
+    'rgaa-th-association-present': {
+      tests: ['5.7.1'],
+      note: 'Fails a <th> with text and no unique id, scope or role="rowheader"/"columnheader" in a table with headers on both axes (a first row of <th>, and rows starting with a <th> followed by <td>) and no rowspan or colspan: 5.7.1 asks one of the three of each <th> « s\'appliquant à la totalité de la ligne ou de la colonne », and that shape leaves no doubt the header covers a whole row or column. Asks once about any other table whose headers lack all three: with headers on one axis browsers tie them to their cells and an auditor may accept it, and with spans a header may cover part of a row (5.7.3).'
     },
     'rgaa-th-scope-row-col': {
       tests: ['5.7.2', '5.7.3'],

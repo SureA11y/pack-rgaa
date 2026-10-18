@@ -321,3 +321,12 @@ test(`${RULE_ID}: a content link whose target lies before a section menu is aske
   const rule = assertRule(run(body), RULE_ID, 'cantTell');
   assert.deepEqual(reasons(rule), [['cantTell', 'skipLinkTargetNotMain']]);
 });
+
+// It works with the keyboard, but screen reader users cannot find it.
+test(`${RULE_ID}: a working skip link inside aria-hidden="true" is asked about`, () => {
+  const body =
+    '<header><div aria-hidden="true"><a href="#contenu">Aller au contenu</a></div><nav><a href="/a">A</a></nav></header>' +
+    '<main id="contenu"><h1>T</h1></main>';
+  const rule = assertRule(run(body), RULE_ID, 'cantTell');
+  assert.deepEqual(reasons(rule), [['cantTell', 'skipLinkAriaHidden']]);
+});

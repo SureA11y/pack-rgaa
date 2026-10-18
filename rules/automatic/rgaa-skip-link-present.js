@@ -44,6 +44,9 @@
  *   navigation, after the zone, or with navigation between it and the zone
  *   leads elsewhere (to a menu, a search form, the footer) and does not
  *   count.
+ *   A working skip link inside aria-hidden="true" is asked about
+ *   (skipLinkAriaHidden): it works with the keyboard, but screen reader
+ *   users cannot find it.
  * @implementation-notes
  * - A skip link is recognised as skip-link recognises one: its accessible
  *   name follows a common skip-link wording in one of the shipped locales
@@ -308,6 +311,18 @@ function runInPage(ctx) {
     };
   }
 
+  function insideAriaHidden(el) {
+    for (let a = el; a && dom.nodeType(a) === 1; a = dom.parentElement(a)) {
+      if (
+        String(attr(a, 'aria-hidden') || '')
+          .trim()
+          .toLowerCase() === 'true'
+      )
+        return true;
+    }
+    return false;
+  }
+
   const navBefore = navigations.filter(
     (n) => !dom.contains(main, n) && !dom.contains(n, main) && precedes(n, main)
   );
@@ -329,6 +344,30 @@ function runInPage(ctx) {
     // Inside the zone, a navigation block before the target (a breadcrumb)
     // is still main content: the link reaches the zone.
     if (usable && path && (path.inside || !path.navigation) && !path.focusable) {
+      // Hidden from assistive technologies, it still works with the
+      // keyboard: whether that is enough is for a person.
+      if (insideAriaHidden(el)) {
+        const href = String(attr(el, 'href') || '').trim();
+        questions.push(
+          helpers.reportOccurrence(el, {
+            summary: `This skip link points to "${href}" but is hidden from assistive technologies by aria-hidden="true".`,
+            hint: 'Remove aria-hidden from the skip link and its ancestors, so that every user can find it.',
+            i18n: {
+              summaryKey: 'skipLinkPresent_summary_cantTell_ariaHidden',
+              hintKey: 'skipLinkPresent_hint_cantTell_ariaHidden',
+              params: { href }
+            },
+            uncertainty: {
+              code: 'judgement-required',
+              needed:
+                'Whether a skip link hidden from assistive technologies lets a person skip to the main content.',
+              evidence: { reasonCode: 'skipLinkAriaHidden', href }
+            },
+            data: { details: { reasonCode: 'skipLinkAriaHidden', href } }
+          })
+        );
+        break;
+      }
       reached = true;
       break;
     }

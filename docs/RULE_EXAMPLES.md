@@ -602,6 +602,22 @@ The heading has no content at all, so RGAA 9.1.2 has nothing to judge. `<h2 titl
 ```
 No `aria-level`. WAI-ARIA gives the heading level 2 by default, which WCAG accepts, but RGAA 9.1.3 does not.
 
+## rgaa-headings-absent-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<body><p>Les horaires de la mairie changent pendant les vacances scolaires… (30 words or more)</p></body>
+```
+The page has text but no heading at all: a person checks whether some passages act as headings (RGAA 9.1.3).
+
+**Not applicable**
+```html
+<body><h1>Mairie</h1><p>Les horaires…</p></body>
+```
+The page has a heading.
+
 ## rgaa-html-elements-attributes-valid
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -720,6 +736,22 @@ The image is hidden from assistive technologies but has an `aria-label`.
 <img src="logo.png" alt="" title="Logo">
 ```
 The image may carry information, and then its `title` is its alternative; a person decides.
+
+## rgaa-img-describedby-target
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Failed**
+```html
+<img src="ventes.png" alt="Ventes 2024" aria-describedby="desc-ventes">
+```
+No element has the id `desc-ventes`: aria-describedby associates no description (RGAA 1.6.9).
+
+**Passed**
+```html
+<img src="ventes.png" alt="Ventes 2024" aria-describedby="d"><p id="d">Les ventes montent de 5 % par trimestre.</p>
+```
+aria-describedby points to a passage with text; whether it is the detailed description is for a person.
 
 ## rgaa-img-no-alt-decorative
 
@@ -1484,6 +1516,14 @@ A link before the navigation leads to `<main>`.
 ```
 Navigation comes before the main content and no link leads to it. WCAG 2.4.1 accepts the main landmark as a way to bypass the navigation; RGAA 12.7.1 needs a link. Without the `<nav>`, the rule asks instead, since a one-page site may not need a skip link.
 
+**Flagged (cantTell)**
+```html
+<div aria-hidden="true"><a href="#contenu">Aller au contenu</a></div>
+<nav><a href="/">Accueil</a></nav>
+<main id="contenu"><h1>Actualités</h1></main>
+```
+The skip link works with the keyboard, but `aria-hidden="true"` hides it from screen reader users: a person decides.
+
 ## rgaa-svg-decorative-aria-hidden
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -1555,6 +1595,23 @@ The SVG is the link's only content, so it carries information, and it has a text
 ```
 Named only by `<title>`: RGAA 1.1.5 lists only the ARIA sources, while 1.3.6 treats `<title>` as the alternative.
 
+## rgaa-table-title-adjacent
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<h3>Population des villes</h3>
+<table><tr><th scope="col">Ville</th><th scope="col">Habitants</th></tr><tr><td>Lyon</td><td>520 000</td></tr></table>
+```
+The heading right before the table may be its title, given as plain text: if it is, a `<caption>` or aria-labelledby ties it (RGAA 5.4.1).
+
+**Not applicable**
+```html
+<table><caption>Population des villes</caption><tr><th scope="col">Ville</th></tr><tr><td>Lyon</td></tr></table>
+```
+The title is in a `<caption>`.
+
 ## rgaa-text-direction-marked
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -1576,6 +1633,25 @@ One word reads right to left inside a French sentence: a person checks whether i
 <p dir="rtl" lang="ar">مرحبا بكم في موقعنا</p>
 ```
 The change of direction is marked with `dir="rtl"`.
+
+## rgaa-th-association-present
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Failed**
+```html
+<table>
+  <tr><td></td><th>2023</th><th>2024</th></tr>
+  <tr><th>Paris</th><td>1</td><td>2</td></tr>
+</table>
+```
+The table has headers on both axes, and its `<th>` have no `scope`, `id` or header role (RGAA 5.7.1).
+
+**Flagged (cantTell)**
+```html
+<table><tr><th>Nom</th><th>Âge</th></tr><tr><td>Ana</td><td>31</td></tr></table>
+```
+With headers on one axis only, browsers tie them to their cells and an auditor may accept it: the table is asked about once.
 
 ## rgaa-th-scope-row-col
 

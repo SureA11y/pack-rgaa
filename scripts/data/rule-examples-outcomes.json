@@ -7,6 +7,12 @@
       "example": "<html lang=\"fr\"> <!DOCTYPE html> …</html>"
     },
     {
+      "ruleId": "rgaa-headings-absent-review",
+      "label": "Flagged (cantTell)",
+      "engine": "notApplicable",
+      "example": "<body><p>Les horaires de la mairie changent pendant les vacances scolaires… (30 words or more)</p></…"
+    },
+    {
       "ruleId": "rgaa-link-context-review",
       "label": "Flagged (cantTell)",
       "engine": "notApplicable",

@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 80,
-    "withFixture": 80,
+    "total": 84,
+    "withFixture": 84,
     "withoutFixture": 0
   },
   "rows": [
@@ -499,6 +499,23 @@
       }
     },
     {
+      "ruleId": "rgaa-headings-absent-review",
+      "title": "A page with text but no heading is reviewed",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/headings-absent-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-headings-absent-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-headings-absent-review-all-scenarios.html",
+      "totalCases": 0,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 0,
+        "OTHER": 0
+      }
+    },
+    {
       "ruleId": "rgaa-html-elements-attributes-valid",
       "title": "HTML elements and attribute values are valid",
       "type": "automatic",
@@ -598,6 +615,23 @@
         "FAIL": 2,
         "CANTTELL": 2,
         "OTHER": 2
+      }
+    },
+    {
+      "ruleId": "rgaa-img-describedby-target",
+      "title": "An image's aria-describedby points to its description",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-img-describedby-target.js",
+      "testFile": "tests/rules/automatic/rgaa-img-describedby-target.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-img-describedby-target-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 1,
+        "FAIL": 1,
+        "CANTTELL": 0,
+        "OTHER": 0
       }
     },
     {
@@ -1264,6 +1298,23 @@
       }
     },
     {
+      "ruleId": "rgaa-table-title-adjacent",
+      "title": "A heading just before a data table is tied to it if it is its title",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/table-title-adjacent-manual.js",
+      "testFile": "tests/rules/manual/rgaa-table-title-adjacent.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-table-title-adjacent-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 1
+      }
+    },
+    {
       "ruleId": "rgaa-text-direction-marked",
       "title": "Text in the other reading direction is marked with dir",
       "type": "automatic",
@@ -1278,6 +1329,23 @@
         "FAIL": 1,
         "CANTTELL": 1,
         "OTHER": 1
+      }
+    },
+    {
+      "ruleId": "rgaa-th-association-present",
+      "title": "Table headers have an id, a scope or a header role",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-th-association-present.js",
+      "testFile": "tests/rules/automatic/rgaa-th-association-present.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-th-association-present-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 1,
+        "FAIL": 1,
+        "CANTTELL": 1,
+        "OTHER": 0
       }
     },
     {
