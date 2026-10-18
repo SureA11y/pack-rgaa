@@ -159,6 +159,19 @@ function runInPage(ctx) {
       .split(ASCII_WS)
       .filter(Boolean);
 
+  // Input types that can hold a field: an email address fits type="email"
+  // or "text", not "tel".
+  const TYPES_FOR_FIELD = {
+    email: ['email', 'text'],
+    tel: ['tel', 'text'],
+    url: ['url', 'text'],
+    photo: ['url', 'text', 'file'],
+    impp: ['url', 'text'],
+    'current-password': ['password', 'text'],
+    'new-password': ['password', 'text'],
+    bday: ['date', 'text']
+  };
+
   // A well-formed autofill detail token list (autocomplete-valid's test).
   function isValid(tokens) {
     if (!tokens.length) return false;
@@ -235,7 +248,33 @@ function runInPage(ctx) {
     const personal = looksPersonal(el, type);
     if (!valid && !namesField && !personal) continue;
     applicableCount += 1;
-    if (valid) continue;
+    if (valid) {
+      // A well-formed value that names a field the input type cannot hold
+      // (email on type="tel") is not « pertinente »: one of the two is wrong.
+      const field = tokens.filter((t) => t !== 'webauthn').pop();
+      const allowed =
+        TYPES_FOR_FIELD[field] || (field.startsWith('tel-') ? TYPES_FOR_FIELD.tel : null);
+      if (tag === 'input' && allowed && !allowed.includes(type)) {
+        cantTells.push(
+          helpers.reportOccurrence(el, {
+            summary: `This field's autocomplete value "${value}" names a field that an input of type "${type}" does not hold.`,
+            hint: 'Check which of the two is wrong: give the field the autocomplete value that matches what it asks for, or the type that matches the value (RGAA 11.13.1).',
+            i18n: {
+              summaryKey: 'autocompleteUserField_summary_cantTell_contradictsType',
+              hintKey: 'autocompleteUserField_hint_cantTell_contradictsType',
+              params: { value, type }
+            },
+            uncertainty: {
+              code: 'judgement-required',
+              needed: 'Whether the autocomplete value matches what the field asks for.',
+              evidence: { reasonCode: 'contradictsType', value }
+            },
+            data: { details: { reasonCode: 'contradictsType', value, type }, visibilityFilter: VF }
+          })
+        );
+      }
+      continue;
+    }
 
     if (namesField) {
       fails.push(

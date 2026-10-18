@@ -755,5 +755,7 @@
   "statusMessageReview_hint_cantTell": "S’il s’agit d’un message de statut, utilisez role=\"status\" pour une réussite, un résultat ou un état, role=\"alert\" pour une erreur ou une suggestion, et role=\"log\", \"progressbar\" ou \"status\" pour une progression (RGAA 7.5).",
   "mediaTranscriptAdjacent_summary_cantTell_mention": "Le texte à côté de cette balise <{{element}}> mentionne une transcription, mais ne la contient pas et n’y mène pas.",
   "lettersSpacedWithSpaces_summary_cantTell_columns": "Ce texte aligne des mots avec des suites d’espaces (« {{text}} »), comme le ferait un tableau ou des colonnes.",
-  "lettersSpacedWithSpaces_hint_cantTell_columns": "Si les espaces simulent un tableau ou des colonnes, utilisez plutôt une balise <table> ou une mise en page CSS (RGAA 10.1.3)."
+  "lettersSpacedWithSpaces_hint_cantTell_columns": "Si les espaces simulent un tableau ou des colonnes, utilisez plutôt une balise <table> ou une mise en page CSS (RGAA 10.1.3).",
+  "autocompleteUserField_summary_cantTell_contradictsType": "La valeur autocomplete « {{value}} » de ce champ désigne une donnée qu’un champ de type « {{type}} » ne contient pas.",
+  "autocompleteUserField_hint_cantTell_contradictsType": "Vérifiez lequel des deux est faux : donnez au champ la valeur autocomplete qui correspond à ce qu’il demande, ou le type qui correspond à la valeur (RGAA 11.13.1)."
 }

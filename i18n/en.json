@@ -755,5 +755,7 @@
   "statusMessageReview_hint_cantTell": "If it is a status message, use role=\"status\" for a success, result or state, role=\"alert\" for an error or a suggestion, and role=\"log\", \"progressbar\" or \"status\" for a progress (RGAA 7.5).",
   "mediaTranscriptAdjacent_summary_cantTell_mention": "The text next to this <{{element}}> mentions a transcript but neither holds it nor links to it.",
   "lettersSpacedWithSpaces_summary_cantTell_columns": "This text lines up words with runs of spaces (\"{{text}}\"), as a table or columns would.",
-  "lettersSpacedWithSpaces_hint_cantTell_columns": "If the spaces simulate a table or columns, use a <table> or CSS layout instead (RGAA 10.1.3)."
+  "lettersSpacedWithSpaces_hint_cantTell_columns": "If the spaces simulate a table or columns, use a <table> or CSS layout instead (RGAA 10.1.3).",
+  "autocompleteUserField_summary_cantTell_contradictsType": "This field's autocomplete value \"{{value}}\" names a field that an input of type \"{{type}}\" does not hold.",
+  "autocompleteUserField_hint_cantTell_contradictsType": "Check which of the two is wrong: give the field the autocomplete value that matches what it asks for, or the type that matches the value (RGAA 11.13.1)."
 }

@@ -139,7 +139,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T11-13 | 11.8.1 | MISS | Groups faked with disabled or dashed options. Now asked about by `rgaa-select-fake-groups-review`. | done |
 | T11-14 | 11.5.1 | MISS | Same-name checkbox sets and `role=radio` sets (Q13). | open |
 | T11-15 | 11.4 | MISS | Label placement (Q15). | open |
-| T11-16 | 11.13.1 | MISS | An `autocomplete` value that contradicts the field. | open |
+| T11-16 | 11.13.1 | MISS | An `autocomplete` value that contradicts the field. Now asked about by `rgaa-autocomplete-user-field` when the value names a field the input type cannot hold (contradictsType). A value that contradicts the label is not looked for. | done |
 | T11-17 | 11.7, 11.11, 11.3, 11.12 | MISS | Smaller targeted questions (Q15). | open |
 
 ## Themes 12–13, Navigation, Consultation

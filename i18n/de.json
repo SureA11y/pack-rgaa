@@ -755,5 +755,7 @@
   "statusMessageReview_hint_cantTell": "Wenn es eine Statusmeldung ist, verwenden Sie role=\"status\" für einen Erfolg, ein Ergebnis oder einen Zustand, role=\"alert\" für einen Fehler oder einen Vorschlag und role=\"log\", \"progressbar\" oder \"status\" für einen Fortschritt (RGAA 7.5).",
   "mediaTranscriptAdjacent_summary_cantTell_mention": "Der Text neben diesem <{{element}}> erwähnt ein Transkript, enthält es aber nicht und verlinkt nicht darauf.",
   "lettersSpacedWithSpaces_summary_cantTell_columns": "Dieser Text richtet Wörter mit Folgen von Leerzeichen aus („{{text}}“), wie es eine Tabelle oder Spalten täten.",
-  "lettersSpacedWithSpaces_hint_cantTell_columns": "Wenn die Leerzeichen eine Tabelle oder Spalten nachahmen, verwenden Sie stattdessen eine <table> oder ein CSS-Layout (RGAA 10.1.3)."
+  "lettersSpacedWithSpaces_hint_cantTell_columns": "Wenn die Leerzeichen eine Tabelle oder Spalten nachahmen, verwenden Sie stattdessen eine <table> oder ein CSS-Layout (RGAA 10.1.3).",
+  "autocompleteUserField_summary_cantTell_contradictsType": "Der autocomplete-Wert „{{value}}“ dieses Feldes nennt eine Angabe, die ein Feld vom Typ „{{type}}“ nicht enthält.",
+  "autocompleteUserField_hint_cantTell_contradictsType": "Prüfen Sie, welches von beiden falsch ist: Geben Sie dem Feld den autocomplete-Wert, der zu seiner Abfrage passt, oder den Typ, der zum Wert passt (RGAA 11.13.1)."
 }

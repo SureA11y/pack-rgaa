@@ -755,5 +755,7 @@
   "statusMessageReview_hint_cantTell": "ステータスメッセージなら、成功・結果・状態には role=\"status\"、エラーや提案には role=\"alert\"、進行状況には role=\"log\"、\"progressbar\"、\"status\" を使ってください（RGAA 7.5）。",
   "mediaTranscriptAdjacent_summary_cantTell_mention": "この <{{element}}> の隣のテキストはトランスクリプトに触れていますが、その内容もリンクもありません。",
   "lettersSpacedWithSpaces_summary_cantTell_columns": "このテキストは連続した空白で単語を揃えています（「{{text}}」）。表や段組みのような使い方です。",
-  "lettersSpacedWithSpaces_hint_cantTell_columns": "空白で表や段組みを表現しているなら、代わりに <table> か CSS レイアウトを使ってください（RGAA 10.1.3）。"
+  "lettersSpacedWithSpaces_hint_cantTell_columns": "空白で表や段組みを表現しているなら、代わりに <table> か CSS レイアウトを使ってください（RGAA 10.1.3）。",
+  "autocompleteUserField_summary_cantTell_contradictsType": "このフィールドの autocomplete 値「{{value}}」は、type「{{type}}」の入力欄には入らない項目を示しています。",
+  "autocompleteUserField_hint_cantTell_contradictsType": "どちらが誤りか確認し、フィールドが求める内容に合った autocomplete 値か、値に合った type を付けてください（RGAA 11.13.1）。"
 }

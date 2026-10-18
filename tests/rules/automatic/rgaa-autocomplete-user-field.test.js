@@ -103,3 +103,27 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
     ['auf_case_03', 'cantTell']
   ]);
 });
+
+// 11.13.1 wants the value « pertinente »: a field name the input type
+// cannot hold means one of the two is wrong.
+test(`${RULE_ID}: a value that contradicts the input type is asked about`, () => {
+  for (const body of [
+    '<input type="tel" autocomplete="email" aria-label="Téléphone">',
+    '<input type="email" autocomplete="tel" aria-label="Courriel">',
+    '<input type="email" autocomplete="new-password" aria-label="Mot de passe">'
+  ]) {
+    const result = runa11yCoreOnHtml(page(`<form>${body}</form>`), RUN);
+    const r = result.checksResults.find((c) => c.ruleId === RULE_ID);
+    assert.equal(r.outcome, 'cantTell', body);
+    assert.equal(r.occurrences[0].data.details.reasonCode, 'contradictsType', body);
+  }
+  for (const body of [
+    '<input type="email" autocomplete="email" aria-label="Courriel">',
+    '<input type="text" autocomplete="tel" aria-label="Tél">',
+    '<input type="tel" autocomplete="tel-national" aria-label="Tél">',
+    '<input type="number" autocomplete="bday-year" aria-label="Année">'
+  ]) {
+    const result = runa11yCoreOnHtml(page(`<form>${body}</form>`), RUN);
+    assert.equal(result.checksResults.find((c) => c.ruleId === RULE_ID).outcome, 'pass', body);
+  }
+});
