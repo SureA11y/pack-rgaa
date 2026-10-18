@@ -1042,6 +1042,23 @@ No text alternative, no fallback content, and no link or button to an alternativ
 ```
 The content inside `<object>` is not a text alternative under RGAA 1.1.6; a person checks how the image is made accessible.
 
+## rgaa-modal-tab-order
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<header><a href="/">Accueil</a></header>
+<div role="dialog" aria-modal="true" aria-label="Connexion"><button>Fermer</button></div>
+```
+The dialog is marked modal, but the link behind it can still take focus with the Tab key: a person checks that a script keeps focus inside (RGAA 12.8.1).
+
+**Not applicable**
+```html
+<div role="dialog" aria-label="Aide"><button>Fermer</button></div>
+```
+The dialog is not modal, so the page behind it stays in the tab order on purpose.
+
 ## rgaa-office-document-link
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -1057,6 +1074,12 @@ The link downloads a PDF; a person checks the document or its accessible version
 <a href="/get?file=rapport.pdf">Rapport annuel</a>
 ```
 The query string names a PDF, so the link downloads one even though its path has no extension.
+
+**Flagged (cantTell)**
+```html
+<a href="/media/1234/download">Rapport annuel (PDF, 2 Mo)</a>
+```
+The address names no format, but the link's text announces a PDF download, in brackets with its size. A format named in passing ("Comment ouvrir un PDF") is not taken for a download.
 
 **Not applicable**
 ```html

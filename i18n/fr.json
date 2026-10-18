@@ -581,5 +581,9 @@
   "svgDecorativeAriaHidden_summary_fail": "Cette balise <svg> a role=\"{{role}}\" mais pas d’attribut aria-hidden=\"true\", que le test 1.2.4 du RGAA demande pour une image vectorielle de décoration.",
   "svgDecorativeAriaHidden_hint_fail": "Ajoutez aria-hidden=\"true\" à la balise <svg> de décoration, et retirez-lui toute balise <title>, <desc> ou autre alternative.",
   "svgDecorativeAriaHidden_summary_cantTell": "Cette balise <svg> est restituée aux technologies d’assistance. Si elle est de décoration, elle échoue au test 1.2.4, qui demande aria-hidden=\"true\" et aucune alternative ; si elle est porteuse d’information, le test 1.1.5 s’applique.",
-  "svgDecorativeAriaHidden_hint_cantTell": "Si l’image est de décoration, comme une icône à côté d’un texte, ajoutez aria-hidden=\"true\" et retirez toute balise <title> ou autre alternative. Si elle est porteuse d’information, donnez-lui role=\"img\" et un attribut aria-label."
+  "svgDecorativeAriaHidden_hint_cantTell": "Si l’image est de décoration, comme une icône à côté d’un texte, ajoutez aria-hidden=\"true\" et retirez toute balise <title> ou autre alternative. Si elle est porteuse d’information, donnez-lui role=\"img\" et un attribut aria-label.",
+  "modalTabOrder_title": "Le focus reste dans une fenêtre modale ouverte",
+  "modalTabOrder_description": "Signale chaque fenêtre de dialogue ouverte marquée aria-modal=\"true\" alors que des éléments hors d’elle peuvent encore recevoir le focus, pour qu’une personne vérifie que le focus reste dans la fenêtre.",
+  "modalTabOrder_summary_cantTell": "Cette fenêtre de dialogue est marquée aria-modal=\"true\", mais {{count}} élément(s) hors d’elle peuvent encore recevoir le focus avec la touche Tab.",
+  "modalTabOrder_hint_cantTell": "Vérifiez que le focus reste dans la fenêtre tant qu’elle est ouverte, par exemple en rendant le reste de la page inerte (inert) ou en ouvrant une balise <dialog> avec showModal() (RGAA 12.8.1)."
 }

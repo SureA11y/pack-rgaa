@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 73,
-    "withFixture": 73,
+    "total": 74,
+    "withFixture": 74,
     "withoutFixture": 0
   },
   "rows": [
@@ -853,6 +853,23 @@
         "FAIL": 1,
         "CANTTELL": 0,
         "OTHER": 0
+      }
+    },
+    {
+      "ruleId": "rgaa-modal-tab-order",
+      "title": "Focus stays inside an open modal dialog",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/modal-tab-order-manual.js",
+      "testFile": "tests/rules/manual/rgaa-modal-tab-order.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-modal-tab-order-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 2
       }
     },
     {

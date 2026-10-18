@@ -581,5 +581,9 @@
   "svgDecorativeAriaHidden_summary_fail": "この <svg> には role=\"{{role}}\" がありますが、RGAA 1.2.4 が装飾の SVG に求める aria-hidden=\"true\" がありません。",
   "svgDecorativeAriaHidden_hint_fail": "装飾の <svg> に aria-hidden=\"true\" を追加し、<title>、<desc> などの代替を削除してください。",
   "svgDecorativeAriaHidden_summary_cantTell": "この <svg> は支援技術に公開されています。装飾であれば 1.2.4（aria-hidden=\"true\" と代替なしを求める）に適合せず、情報を伝えるものなら 1.1.5 が適用されます。",
-  "svgDecorativeAriaHidden_hint_cantTell": "テキストの横のアイコンのように装飾の場合は aria-hidden=\"true\" を追加し、<title> などの代替を削除してください。情報を伝える場合は role=\"img\" と aria-label を指定してください。"
+  "svgDecorativeAriaHidden_hint_cantTell": "テキストの横のアイコンのように装飾の場合は aria-hidden=\"true\" を追加し、<title> などの代替を削除してください。情報を伝える場合は role=\"img\" と aria-label を指定してください。",
+  "modalTabOrder_title": "開いているモーダルダイアログ内にフォーカスがとどまる",
+  "modalTabOrder_description": "aria-modal=\"true\" の開いたダイアログで、外側の要素がまだフォーカスを受け取れる場合に示し、フォーカスがダイアログ内にとどまるかを人が確認できるようにします。",
+  "modalTabOrder_summary_cantTell": "このダイアログは aria-modal=\"true\" ですが、外側の {{count}} 個の要素がまだ Tab キーでフォーカスを受け取れます。",
+  "modalTabOrder_hint_cantTell": "ダイアログが開いている間、フォーカスがその中にとどまるか確認してください。たとえばページの他の部分を inert にするか、<dialog> を showModal() で開きます（RGAA 12.8.1）。"
 }

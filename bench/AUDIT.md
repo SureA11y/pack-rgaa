@@ -157,8 +157,8 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T12-10 | 12.7.2 | MISS | An `aria-hidden` skip link passes 12.7. | open |
 | T12-11 | 12.7 | WO | A working empty `tabindex="-1"` anchor target is asked about. | core |
 | T12-12 | 13.9 | WO | Cross-origin stylesheets make it ask (C6). | core |
-| T13-01 | 13.3.1 | MISS | Office documents named only in the link text or `type` are not found. | open |
-| T13-02 | 12.8.1 | MISS | Focus reaching hidden elements; tabbable content outside an open modal. | open |
+| T13-01 | 13.3.1 | MISS | Office documents named only in the link text or `type` are not found. | done |
+| T13-02 | 12.8.1 | MISS | Focus reaching hidden elements; tabbable content outside an open modal. | done (css-hidden-focus linked, rgaa-modal-tab-order); hidden off-canvas links: core |
 | T13-03 | 13.1.3, 13.1.4 | MISS | Script redirects, countdowns, session limits. | open |
 | T13-04 | 12.11.1 | MISS | Menus that open on hover only. | open |
 | T13-05 | 13.8, 13.7.3 | MISS | Moving and blinking content (marquee, infinite animations, GIFs). | open |

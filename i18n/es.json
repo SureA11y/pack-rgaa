@@ -581,5 +581,9 @@
   "svgDecorativeAriaHidden_summary_fail": "Este <svg> tiene role=\"{{role}}\" pero no aria-hidden=\"true\", que el RGAA 1.2.4 exige a un SVG decorativo.",
   "svgDecorativeAriaHidden_hint_fail": "Añada aria-hidden=\"true\" al <svg> decorativo y quítele cualquier <title>, <desc> u otra alternativa.",
   "svgDecorativeAriaHidden_summary_cantTell": "Este <svg> está expuesto a las tecnologías de apoyo. Si es decorativo, no cumple 1.2.4, que exige aria-hidden=\"true\" y ninguna alternativa; si transmite información, se aplica 1.1.5.",
-  "svgDecorativeAriaHidden_hint_cantTell": "Si la imagen es decorativa, como un icono junto a un texto, añada aria-hidden=\"true\" y quite cualquier <title> u otra alternativa. Si transmite información, dele role=\"img\" y un aria-label."
+  "svgDecorativeAriaHidden_hint_cantTell": "Si la imagen es decorativa, como un icono junto a un texto, añada aria-hidden=\"true\" y quite cualquier <title> u otra alternativa. Si transmite información, dele role=\"img\" y un aria-label.",
+  "modalTabOrder_title": "El foco permanece dentro de un diálogo modal abierto",
+  "modalTabOrder_description": "Señala cada diálogo abierto marcado con aria-modal=\"true\" mientras elementos fuera de él aún pueden recibir el foco, para que una persona compruebe que el foco permanece dentro.",
+  "modalTabOrder_summary_cantTell": "Este diálogo está marcado con aria-modal=\"true\", pero {{count}} elemento(s) fuera de él aún pueden recibir el foco con la tecla Tab.",
+  "modalTabOrder_hint_cantTell": "Compruebe que el foco permanece dentro del diálogo mientras está abierto, por ejemplo haciendo inerte el resto de la página o abriendo un <dialog> con showModal() (RGAA 12.8.1)."
 }

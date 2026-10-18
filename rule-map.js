@@ -213,8 +213,12 @@ const RGAA_RULE_TESTS = {
       note: "Flags tab-order elements whose outline is removed, by a :focus/:focus-visible rule or by a rule with no state such as a { outline: none }, with no border, box-shadow or background replacement in any matching focus rule. That is 10.7.1 condition 1 (native focus style removed) and step 2 (visual focus indicator present). The 3:1 contrast part of step 2 is rgaa-focus-indicator-contrast's."
     },
     'css-hidden-focus': {
-      tests: ['10.7.1'],
-      note: 'Flags keyboard-focusable elements that are visually hidden (opacity 0, clipped, off-screen, zero-size with overflow hidden), so taking focus on them gives no visible indication. An element that a :focus/:focus-visible rule brings back into view, such as an off-screen skip link, is not flagged. This is evidence for 10.7.1 step 2 on focusable elements. It is not 10.8.1, because the content stays exposed to AT and the problem is purely visual.'
+      tests: ['10.7.1', '12.8.1'],
+      note: 'Flags keyboard-focusable elements that are visually hidden (opacity 0, clipped, off-screen, zero-size with overflow hidden), so taking focus on them gives no visible indication. An element that a :focus/:focus-visible rule brings back into view, such as an off-screen skip link, is not flagged. This is evidence for 10.7.1 step 2 on focusable elements, and for 12.8.1: Tab stops on elements a person cannot see, such as the links of a closed off-canvas menu, make the tab order incoherent. It is not 10.8.1, because the content stays exposed to AT and the problem is purely visual.',
+      outsideCorrespondence: {
+        '12.8.1':
+          'Tab stops on hidden elements break the coherent tab order 12.8.1 asks for. RGAA relates 12.8 to WCAG 2.4.3; the engine files this check under 2.4.7. It only asks.'
+      }
     },
     'css-orientation-lock': {
       tests: ['13.9.1'],
@@ -638,6 +642,10 @@ const RGAA_RULE_TESTS = {
     'object-text-alternative-quality': {
       tests: ['1.3.4'],
       note: "Asks a human to judge the relevance of an <object>'s title, ARIA name or fallback content, which is 1.3.4 step 2 (fallback content is explicitly listed there). Scope mismatch: 1.3.4 only covers image objects."
+    },
+    'rgaa-modal-tab-order': {
+      tests: ['12.8.1'],
+      note: 'Asks about each open dialog marked aria-modal="true", not opened with showModal(), while elements outside it can still take focus: the 12.8.1 methodology says « l\'ordre de tabulation dans une fenêtre modale ne doit considérer que les éléments … au sein de cette fenêtre », and aria-modal does not stop the Tab key. Whether a script keeps focus inside is for a person.'
     },
     'rgaa-office-document-link': {
       tests: ['13.3.1'],

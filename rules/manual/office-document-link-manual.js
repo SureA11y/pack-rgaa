@@ -11,7 +11,11 @@
  *   Applies to links (<a href>, <area href>), forms and submit buttons that
  *   download an office document. A link qualifies when its `download`
  *   filename, the path of its address, or a value in its query string
- *   (`/get?file=report.pdf`) ends with an office document extension. A form
+ *   (`/get?file=report.pdf`) ends with an office document extension, when
+ *   its type attribute names an office MIME type, or when its text, title
+ *   or aria-label announces a format as a download is announced: in
+ *   brackets ("Rapport annuel (PDF, 2 Mo)"), next to a file size, or after
+ *   a separator at its end ("Rapport annuel - PDF"). A form
  *   qualifies by its `action`, and a submit button by its `formaction`, read
  *   the same way. The extensions are those of the formats RGAA's glossary
  *   entry "Version accessible" names: Microsoft Office (.doc, .docx, .docm,
@@ -98,6 +102,52 @@ function runInPage(ctx) {
     return null;
   }
 
+  // The format a link's type attribute names, as a MIME type.
+  const MIME = {
+    'application/pdf': 'pdf',
+    'application/epub+zip': 'epub',
+    'application/rtf': 'rtf',
+    'application/msword': 'doc',
+    'application/vnd.ms-excel': 'xls',
+    'application/vnd.ms-powerpoint': 'ppt',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'pptx',
+    'application/vnd.oasis.opendocument.text': 'odt',
+    'application/vnd.oasis.opendocument.spreadsheet': 'ods',
+    'application/vnd.oasis.opendocument.presentation': 'odp'
+  };
+  function extensionOfType(type) {
+    const t = String(type || '')
+      .split(';')[0]
+      .trim()
+      .toLowerCase();
+    return MIME[t] || null;
+  }
+
+  // A format named in the link's wording the way a download is announced:
+  // in brackets ("(PDF, 2 Mo)"), next to a file size, or after a separator
+  // at the end ("Rapport annuel - PDF"). A format named in passing
+  // ("Comment ouvrir un PDF") is not taken for a download.
+  const FORMAT = '(PDF|EPUB|RTF|DOCX?|XLSX?|PPTX?|ODT|ODS|ODP)';
+  const SIZE = '\\d+(?:[.,]\\d+)?\\s?(?:[kKmMgG]i?[oOB]|octets|bytes)\\b';
+  const ANNOUNCED = [
+    new RegExp(`[([][^)\\]]*\\b${FORMAT}\\b[^)\\]]*[)\\]]`, 'i'),
+    new RegExp(`\\b${FORMAT}\\b[^A-Za-z]{0,6}${SIZE}`, 'i'),
+    new RegExp(`${SIZE}[^A-Za-z]{0,6}\\b${FORMAT}\\b`, 'i'),
+    new RegExp(`[-–—|:,]\\s*${FORMAT}\\s*$`, 'i')
+  ];
+  function extensionOfWording(text) {
+    const t = String(text || '')
+      .replace(/\s+/g, ' ')
+      .trim();
+    for (const re of ANNOUNCED) {
+      const m = re.exec(t);
+      if (m) return m[1].toLowerCase();
+    }
+    return null;
+  }
+
   const occurrences = [];
 
   function flag(el, extension, kind) {
@@ -131,7 +181,17 @@ function runInPage(ctx) {
     if (!link || !dom.get(link, 'getAttribute')) continue;
     const extension =
       extensionOfName(dom.getAttribute(link, 'download')) ||
-      extensionOfUrl(dom.getAttribute(link, 'href'));
+      extensionOfUrl(dom.getAttribute(link, 'href')) ||
+      extensionOfType(dom.getAttribute(link, 'type')) ||
+      extensionOfWording(
+        [
+          dom.textContent(link),
+          dom.getAttribute(link, 'title'),
+          dom.getAttribute(link, 'aria-label')
+        ]
+          .filter(Boolean)
+          .join(' ')
+      );
     if (extension) flag(link, extension, 'link');
   }
 

@@ -581,5 +581,9 @@
   "svgDecorativeAriaHidden_summary_fail": "This <svg> has role=\"{{role}}\" but no aria-hidden=\"true\", which RGAA 1.2.4 asks of a decorative SVG.",
   "svgDecorativeAriaHidden_hint_fail": "Add aria-hidden=\"true\" to the decorative <svg>, and remove any <title>, <desc> or other alternative from it.",
   "svgDecorativeAriaHidden_summary_cantTell": "This <svg> is exposed to assistive technologies. If it is decorative, it fails 1.2.4, which asks for aria-hidden=\"true\" and no alternative; if it carries information, 1.1.5 applies.",
-  "svgDecorativeAriaHidden_hint_cantTell": "If the image is decorative, such as an icon beside text, add aria-hidden=\"true\" and remove any <title> or other alternative. If it carries information, give it role=\"img\" and an aria-label."
+  "svgDecorativeAriaHidden_hint_cantTell": "If the image is decorative, such as an icon beside text, add aria-hidden=\"true\" and remove any <title> or other alternative. If it carries information, give it role=\"img\" and an aria-label.",
+  "modalTabOrder_title": "Focus stays inside an open modal dialog",
+  "modalTabOrder_description": "Flags each open dialog marked aria-modal=\"true\" while elements outside it can still take focus, for a person to check that focus stays inside it.",
+  "modalTabOrder_summary_cantTell": "This dialog is marked aria-modal=\"true\", but {{count}} element(s) outside it can still take focus with the Tab key.",
+  "modalTabOrder_hint_cantTell": "Check that focus stays inside the dialog while it is open, for instance by making the rest of the page inert or by opening a <dialog> with showModal() (RGAA 12.8.1)."
 }

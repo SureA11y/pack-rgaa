@@ -581,5 +581,9 @@
   "svgDecorativeAriaHidden_summary_fail": "Dieses <svg> hat role=\"{{role}}\", aber kein aria-hidden=\"true\", das RGAA 1.2.4 für ein dekoratives SVG verlangt.",
   "svgDecorativeAriaHidden_hint_fail": "Fügen Sie dem dekorativen <svg> aria-hidden=\"true\" hinzu und entfernen Sie <title>, <desc> und jede andere Alternative.",
   "svgDecorativeAriaHidden_summary_cantTell": "Dieses <svg> ist für assistive Technologien zugänglich. Ist es dekorativ, verletzt es 1.2.4, das aria-hidden=\"true\" und keine Alternative verlangt; trägt es Information, gilt 1.1.5.",
-  "svgDecorativeAriaHidden_hint_cantTell": "Ist das Bild dekorativ, etwa ein Symbol neben Text, fügen Sie aria-hidden=\"true\" hinzu und entfernen Sie <title> und jede andere Alternative. Trägt es Information, geben Sie ihm role=\"img\" und ein aria-label."
+  "svgDecorativeAriaHidden_hint_cantTell": "Ist das Bild dekorativ, etwa ein Symbol neben Text, fügen Sie aria-hidden=\"true\" hinzu und entfernen Sie <title> und jede andere Alternative. Trägt es Information, geben Sie ihm role=\"img\" und ein aria-label.",
+  "modalTabOrder_title": "Der Fokus bleibt in einem geöffneten modalen Dialog",
+  "modalTabOrder_description": "Markiert jeden geöffneten Dialog mit aria-modal=\"true\", während Elemente außerhalb noch den Fokus erhalten können, damit eine Person prüft, dass der Fokus im Dialog bleibt.",
+  "modalTabOrder_summary_cantTell": "Dieser Dialog ist mit aria-modal=\"true\" markiert, aber {{count}} Element(e) außerhalb können noch mit der Tabulatortaste den Fokus erhalten.",
+  "modalTabOrder_hint_cantTell": "Prüfen Sie, dass der Fokus im Dialog bleibt, solange er offen ist, etwa indem der Rest der Seite inert wird oder ein <dialog> mit showModal() geöffnet wird (RGAA 12.8.1)."
 }

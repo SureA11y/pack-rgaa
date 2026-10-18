@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**73 rules total: 58 automatic (decide deterministically; can return `fail`), 15 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**74 rules total: 58 automatic (decide deterministically; can return `fail`), 16 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -77,7 +77,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-video-captions-track-kind`](#rgaa-video-captions-track-kind) | Video caption tracks use kind="captions" | — | — | high | moderate |
 | [`rgaa-widget-label-in-name`](#rgaa-widget-label-in-name) | The accessible name of a scripted component contains its visible label | — | — | high | serious |
 
-## Manual rules (15), never `fail`
+## Manual rules (16), never `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -92,6 +92,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-keyboard-only-event-handlers`](#rgaa-keyboard-only-event-handlers) | Keyboard-only inline event handlers should have a pointer equivalent | — | — | low | moderate |
 | [`rgaa-letters-spaced-with-spaces`](#rgaa-letters-spaced-with-spaces) | Letters of a word are not spaced out with spaces | — | — | medium | minor |
 | [`rgaa-link-context-review`](#rgaa-link-context-review) | Generic links whose only context is outside RGAA's list are reviewed | — | — | medium | minor |
+| [`rgaa-modal-tab-order`](#rgaa-modal-tab-order) | Focus stays inside an open modal dialog | — | — | high | moderate |
 | [`rgaa-office-document-link`](#rgaa-office-document-link) | Downloadable office documents are accessible or have an accessible version | — | — | high | moderate |
 | [`rgaa-radio-group-present`](#rgaa-radio-group-present) | Radio buttons sharing a name are grouped | — | — | medium | moderate |
 | [`rgaa-scripted-components-review`](#rgaa-scripted-components-review) | Scripted components are compatible with assistive technologies | — | — | medium | moderate |
@@ -130,7 +131,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-11.9` | Dans chaque formulaire, l’intitulé de chaque bouton est-il pertinent (hors cas particuliers) ? | `rgaa-form-button-label-in-name-sources`, `rgaa-form-button-name-present` |
 | `rgaa-4.1.2-12.6` | Les zones de regroupement de contenus présentes dans plusieurs pages web (zones d’en-tête, de navigation principale, de contenu principal, de pied de page et de moteur de recherche) peuvent-elles être atteintes ou évitées ? | `rgaa-page-zones-reachable` |
 | `rgaa-4.1.2-12.7` | Dans chaque page web, un lien d’évitement ou d’accès rapide à la zone de contenu principal est-il présent (hors cas particuliers) ? | `rgaa-skip-link-placement`, `rgaa-skip-link-present`, `skip-link` |
-| `rgaa-4.1.2-12.8` | Dans chaque page web, l’ordre de tabulation est-il cohérent ? | `manual-review`, `tabindex` |
+| `rgaa-4.1.2-12.8` | Dans chaque page web, l’ordre de tabulation est-il cohérent ? | `css-hidden-focus`, `manual-review`, `rgaa-modal-tab-order`, `tabindex` |
 | `rgaa-4.1.2-12.9` | Dans chaque page web, la navigation ne doit pas contenir de piège au clavier. Cette règle est-elle respectée ? | `manual-review` |
 | `rgaa-4.1.2-13.1` | Pour chaque page web, l’utilisateur a-t-il le contrôle de chaque limite de temps modifiant le contenu (hors cas particuliers) ? | `rgaa-embedded-refresh-review`, `rgaa-meta-redirect-immediate`, `rgaa-meta-refresh-no-url-timing` |
 | `rgaa-4.1.2-13.3` | Dans chaque page web, chaque document bureautique en téléchargement possède-t-il, si nécessaire, une version accessible (hors cas particuliers) ? | `rgaa-office-document-link` |
@@ -928,6 +929,18 @@ Checks that a &lt;meta http-equiv="refresh"&gt; that reloads the page waits at l
 
 **Expectation.** The delay is 72000 seconds (20 hours) or more, the last condition of RGAA 13.1.1 (« La limite de temps entre deux rafraîchissements est de vingt heures, au moins »). A shorter delay, 0 included, fails: a meta refresh gives the visitor no way to stop, relaunch or lengthen it, and no warning, which are the other three conditions.
 
+### `rgaa-modal-tab-order`
+
+**Focus stays inside an open modal dialog**
+
+manual · no formal WCAG SC mapping · confidence high · default severity moderate
+
+Flags each open dialog marked aria-modal="true" while elements outside it can still take focus, for a person to check that focus stays inside it.
+
+**Applies to.** Applies to each dialog shown as modal by aria-modal="true" (an element with role dialog or alertdialog, or a &lt;dialog&gt;), rendered, and not opened with showModal(), which makes the rest of the page inert. A page with none is notApplicable.
+
+**Expectation.** The 12.8.1 methodology names this case: « l'ordre de tabulation dans une fenêtre modale ne doit considérer que les éléments … au sein de cette fenêtre ». aria-modal="true" tells assistive technologies that the rest of the page is out of reach, but does not stop the Tab key: elements outside the dialog that can take focus (not disabled, no tabindex="-1", not inert, not hidden) are reachable unless a script keeps focus inside the dialog, which only a person can check. The dialog is asked about (cantTell), naming how many such elements there are.
+
 ### `rgaa-object-image-role-img`
 
 **Image objects have role="img" and a text alternative**
@@ -960,7 +973,7 @@ manual · no formal WCAG SC mapping · confidence high · default severity moder
 
 Flags each link or form that downloads an office document (PDF, Word, OpenDocument, spreadsheet, presentation, EPUB, RTF) for a person to check the document or its accessible version.
 
-**Applies to.** Applies to links (&lt;a href&gt;, &lt;area href&gt;), forms and submit buttons that download an office document. A link qualifies when its `download` filename, the path of its address, or a value in its query string (`/get?file=report.pdf`) ends with an office document extension. A form qualifies by its `action`, and a submit button by its `formaction`, read the same way. The extensions are those of the formats RGAA's glossary entry "Version accessible" names: Microsoft Office (.doc, .docx, .docm, .dot, .dotx, .dotm, .xls, .xlsx, .xlsm, .xlsb, .xlt, .xltx, .xltm, .ppt, .pptx, .pptm, .pps, .ppsx, .ppsm, .pot, .potx, .potm), OpenDocument (.odt, .ott, .ods, .ots, .odp, .otp, .odg, .otg), PDF and EPUB, plus .rtf. A page with none is notApplicable.
+**Applies to.** Applies to links (&lt;a href&gt;, &lt;area href&gt;), forms and submit buttons that download an office document. A link qualifies when its `download` filename, the path of its address, or a value in its query string (`/get?file=report.pdf`) ends with an office document extension, when its type attribute names an office MIME type, or when its text, title or aria-label announces a format as a download is announced: in brackets ("Rapport annuel (PDF, 2 Mo)"), next to a file size, or after a separator at its end ("Rapport annuel - PDF"). A form qualifies by its `action`, and a submit button by its `formaction`, read the same way. The extensions are those of the formats RGAA's glossary entry "Version accessible" names: Microsoft Office (.doc, .docx, .docm, .dot, .dotx, .dotm, .xls, .xlsx, .xlsm, .xlsb, .xlt, .xltx, .xltm, .ppt, .pptx, .pptm, .pps, .ppsx, .ppsm, .pot, .potx, .potm), OpenDocument (.odt, .ott, .ods, .ots, .odp, .otp, .odg, .otg), PDF and EPUB, plus .rtf. A page with none is notApplicable.
 
 **Expectation.** Each such link or form is flagged for a person to check one of the conditions of RGAA 13.3.1: the document is accessible, or an accessible version is offered for download or in HTML.
 
