@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 93,
-    "withFixture": 93,
+    "total": 94,
+    "withFixture": 94,
     "withoutFixture": 0
   },
   "rows": [
@@ -1329,6 +1329,23 @@
         "FAIL": 1,
         "CANTTELL": 0,
         "OTHER": 1
+      }
+    },
+    {
+      "ruleId": "rgaa-script-redirect-review",
+      "title": "A timed redirection done by a script can be controlled",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/script-redirect-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-script-redirect-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-script-redirect-review-all-scenarios.html",
+      "totalCases": 1,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 0
       }
     },
     {

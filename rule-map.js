@@ -799,6 +799,10 @@ const RGAA_RULE_TESTS = {
       tests: ['7.1.3'],
       note: 'Fails a button (<button>, input button/submit/reset/image, role=button) outside any form, with no form attribute naming one, that has no name from aria-labelledby, aria-label, its content, value, alt or title. A button outside a form does nothing unless a script drives it, so it is a component 7.1 covers, and 7.1.3 asks « Le composant possède un nom pertinent » with no alternative, unlike 7.1.1. Asks about an image button the browser names with a generic "Submit". The buttons of a form are left to rgaa-form-button-name-present (11.9.1).'
     },
+    'rgaa-script-redirect-review': {
+      tests: ['13.1.3'],
+      note: 'Asks about each inline <script> whose code loads another address from a timer (setTimeout or setInterval, then an assignment to location or location.href, or location.assign or replace): 13.1.3 asks that the user can stop or restart such a redirection, extend its delay ten times, or be warned with twenty seconds to extend it, unless the limit is twenty hours or more, which only a person can try. Script files are not read.'
+    },
     'rgaa-scripted-components-review': {
       tests: ['7.1.1', '7.1.2', '7.1.3'],
       note: 'Asks on every page with script (an executable <script>, an inline event handler, a javascript: URL or a custom element) for a person to check each scripted component against 7.1.1 to 7.1.3. It always asks, because the engine cannot see behaviour attached from script files. It lists candidate elements from the markup (widget roles, tabindex, inline handlers, links whose href is "#" or javascript:, which usually act as buttons whose role 7.1.3 asks to be relevant, contenteditable, aria-expanded and similar states) as a starting point, not a complete list. A page with no script is notApplicable, since 7.1 applies to scripts.'

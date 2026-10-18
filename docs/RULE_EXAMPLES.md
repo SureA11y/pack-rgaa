@@ -1571,6 +1571,16 @@ The button has a name, whose relevance a person judges.
 ```
 A button in a form is checked under 11.9.1 by rgaa-form-button-name-present.
 
+## rgaa-script-redirect-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<script>setTimeout(function () { window.location.href = '/accueil'; }, 5000);</script>
+```
+The page redirects after five seconds: a person checks that the user can stop, extend or be warned of it (RGAA 13.1.3).
+
 ## rgaa-scripted-components-review
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*

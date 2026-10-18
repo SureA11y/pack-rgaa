@@ -737,5 +737,9 @@
   "currentItemReview_title": "El elemento activo de un menú no se indica solo por su aspecto",
   "currentItemReview_description": "Señala cada enlace de navegación marcado como actual solo por una clase, sin aria-current ni texto que lo diga, para que una persona compruebe cómo se indica la página activa.",
   "currentItemReview_summary_cantTell": "Este enlace de navegación (\"{{label}}\") está marcado como actual solo por una clase, sin aria-current ni texto que lo diga.",
-  "currentItemReview_hint_cantTell": "Si la clase indica la página activa, añada aria-current=\"page\" al enlace, o un texto que lo diga (RGAA 10.9.1)."
+  "currentItemReview_hint_cantTell": "Si la clase indica la página activa, añada aria-current=\"page\" al enlace, o un texto que lo diga (RGAA 10.9.1).",
+  "scriptRedirectReview_title": "Una redirección diferida hecha por un script se puede controlar",
+  "scriptRedirectReview_description": "Señala cada script en línea que carga otra dirección desde un temporizador, para que una persona compruebe que el usuario puede detener, ampliar o ser avisado de la redirección.",
+  "scriptRedirectReview_summary_cantTell": "Este script carga otra dirección tras un retraso (\"{{code}}\").",
+  "scriptRedirectReview_hint_cantTell": "Compruebe que el usuario puede detener o reanudar la redirección, ampliar su retraso diez veces al menos, o recibe un aviso con veinte segundos para ampliarlo (RGAA 13.1.3)."
 }

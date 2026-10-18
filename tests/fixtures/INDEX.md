@@ -4,13 +4,13 @@ This pack's rules and their scenario pages. Every rule should have a `tests/fixt
 
 ## Summary
 
-Total rules: **93**. With fixture: **93**. Without fixture: **0**.
+Total rules: **94**. With fixture: **94**. Without fixture: **0**.
 
 ## Rules WITHOUT a fixture (0)
 
 None — every rule has a fixture.
 
-## Rules WITH a fixture (93)
+## Rules WITH a fixture (94)
 
 | Rule ID | Type | Fixture | Cases | PASS | FAIL | CANTTELL | OTHER |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -92,6 +92,7 @@ None — every rule has a fixture.
 | rgaa-required-field-indication | automatic | `tests/fixtures/rgaa-required-field-indication-all-scenarios.html` | 5 | 1 | 2 | 1 | 1 |
 | rgaa-role-img-aria-name | automatic | `tests/fixtures/rgaa-role-img-aria-name-all-scenarios.html` | 9 | 2 | 3 | 1 | 3 |
 | rgaa-script-button-name-present | automatic | `tests/fixtures/rgaa-script-button-name-present-all-scenarios.html` | 3 | 1 | 1 | 0 | 1 |
+| rgaa-script-redirect-review | manual | `tests/fixtures/rgaa-script-redirect-review-all-scenarios.html` | 1 | 0 | 0 | 1 | 0 |
 | rgaa-scripted-components-review | manual | `tests/fixtures/rgaa-scripted-components-review-all-scenarios.html` | 12 | 0 | 0 | 0 | 12 |
 | rgaa-select-fake-groups-review | manual | `tests/fixtures/rgaa-select-fake-groups-review-all-scenarios.html` | 2 | 0 | 0 | 1 | 1 |
 | rgaa-skip-link-placement | automatic | `tests/fixtures/rgaa-skip-link-placement-all-scenarios.html` | 1 | 0 | 0 | 1 | 0 |

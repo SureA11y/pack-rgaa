@@ -737,5 +737,9 @@
   "currentItemReview_title": "The active item of a menu is not shown by its look alone",
   "currentItemReview_description": "Flags each navigation link marked current by a class only, with no aria-current and no text that says so, for a person to check how the active page is told.",
   "currentItemReview_summary_cantTell": "This navigation link (\"{{label}}\") is marked as the current one by a class only, with no aria-current and no text that says so.",
-  "currentItemReview_hint_cantTell": "If the class shows the active page, add aria-current=\"page\" to the link, or a text that says so (RGAA 10.9.1)."
+  "currentItemReview_hint_cantTell": "If the class shows the active page, add aria-current=\"page\" to the link, or a text that says so (RGAA 10.9.1).",
+  "scriptRedirectReview_title": "A timed redirection done by a script can be controlled",
+  "scriptRedirectReview_description": "Flags each inline script that loads another address from a timer, for a person to check that the user can stop, extend or be warned of the redirection.",
+  "scriptRedirectReview_summary_cantTell": "This script loads another address after a delay (\"{{code}}\").",
+  "scriptRedirectReview_hint_cantTell": "Check that the user can stop or restart the redirection, extend its delay ten times at least, or is warned with twenty seconds to extend it (RGAA 13.1.3)."
 }

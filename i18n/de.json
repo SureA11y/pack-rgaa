@@ -737,5 +737,9 @@
   "currentItemReview_title": "Der aktive Menüeintrag wird nicht nur durch sein Aussehen angezeigt",
   "currentItemReview_description": "Markiert jeden Navigationslink, der nur durch eine Klasse als aktuell gekennzeichnet ist, ohne aria-current und ohne Text, der das sagt, damit eine Person prüft, wie die aktive Seite angezeigt wird.",
   "currentItemReview_summary_cantTell": "Dieser Navigationslink („{{label}}“) ist nur durch eine Klasse als aktuell gekennzeichnet, ohne aria-current und ohne Text, der das sagt.",
-  "currentItemReview_hint_cantTell": "Wenn die Klasse die aktive Seite anzeigt, fügen Sie dem Link aria-current=\"page\" hinzu oder einen Text, der das sagt (RGAA 10.9.1)."
+  "currentItemReview_hint_cantTell": "Wenn die Klasse die aktive Seite anzeigt, fügen Sie dem Link aria-current=\"page\" hinzu oder einen Text, der das sagt (RGAA 10.9.1).",
+  "scriptRedirectReview_title": "Eine zeitverzögerte Weiterleitung per Skript lässt sich steuern",
+  "scriptRedirectReview_description": "Markiert jedes eingebettete Skript, das über einen Timer eine andere Adresse lädt, damit eine Person prüft, dass Nutzende die Weiterleitung anhalten, verlängern oder vorher gewarnt werden können.",
+  "scriptRedirectReview_summary_cantTell": "Dieses Skript lädt nach einer Verzögerung eine andere Adresse („{{code}}“).",
+  "scriptRedirectReview_hint_cantTell": "Prüfen Sie, dass Nutzende die Weiterleitung anhalten oder neu starten, ihre Verzögerung mindestens verzehnfachen oder mit zwanzig Sekunden Vorlauf zur Verlängerung gewarnt werden können (RGAA 13.1.3)."
 }

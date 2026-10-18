@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**93 rules total: 67 automatic (decide deterministically; can return `fail`), 26 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**94 rules total: 67 automatic (decide deterministically; can return `fail`), 27 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -86,7 +86,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-video-captions-track-kind`](#rgaa-video-captions-track-kind) | Video caption tracks use kind="captions" | — | — | high | moderate |
 | [`rgaa-widget-label-in-name`](#rgaa-widget-label-in-name) | The accessible name of a scripted component contains its visible label | — | — | high | serious |
 
-## Manual rules (26), never `fail`
+## Manual rules (27), never `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -112,6 +112,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-noscript-alternative-review`](#rgaa-noscript-alternative-review) | A &lt;noscript&gt; alternative gives similar content and features | — | — | high | moderate |
 | [`rgaa-office-document-link`](#rgaa-office-document-link) | Downloadable office documents are accessible or have an accessible version | — | — | high | moderate |
 | [`rgaa-radio-group-present`](#rgaa-radio-group-present) | Radio buttons sharing a name are grouped | — | — | medium | moderate |
+| [`rgaa-script-redirect-review`](#rgaa-script-redirect-review) | A timed redirection done by a script can be controlled | — | — | high | moderate |
 | [`rgaa-scripted-components-review`](#rgaa-scripted-components-review) | Scripted components are compatible with assistive technologies | — | — | medium | moderate |
 | [`rgaa-select-fake-groups-review`](#rgaa-select-fake-groups-review) | Options are grouped with &lt;optgroup&gt;, not with fake heading options | — | — | high | moderate |
 | [`rgaa-table-title-adjacent`](#rgaa-table-title-adjacent) | A heading just before a data table is tied to it if it is its title | — | — | high | moderate |
@@ -155,7 +156,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-12.7` | Dans chaque page web, un lien d’évitement ou d’accès rapide à la zone de contenu principal est-il présent (hors cas particuliers) ? | `rgaa-skip-link-placement`, `rgaa-skip-link-present`, `skip-link` |
 | `rgaa-4.1.2-12.8` | Dans chaque page web, l’ordre de tabulation est-il cohérent ? | `css-hidden-focus`, `manual-review`, `rgaa-modal-tab-order`, `tabindex` |
 | `rgaa-4.1.2-12.9` | Dans chaque page web, la navigation ne doit pas contenir de piège au clavier. Cette règle est-elle respectée ? | `manual-review` |
-| `rgaa-4.1.2-13.1` | Pour chaque page web, l’utilisateur a-t-il le contrôle de chaque limite de temps modifiant le contenu (hors cas particuliers) ? | `rgaa-embedded-refresh-review`, `rgaa-meta-redirect-immediate`, `rgaa-meta-refresh-no-url-timing` |
+| `rgaa-4.1.2-13.1` | Pour chaque page web, l’utilisateur a-t-il le contrôle de chaque limite de temps modifiant le contenu (hors cas particuliers) ? | `rgaa-embedded-refresh-review`, `rgaa-meta-redirect-immediate`, `rgaa-meta-refresh-no-url-timing`, `rgaa-script-redirect-review` |
 | `rgaa-4.1.2-13.3` | Dans chaque page web, chaque document bureautique en téléchargement possède-t-il, si nécessaire, une version accessible (hors cas particuliers) ? | `rgaa-office-document-link` |
 | `rgaa-4.1.2-13.8` | Dans chaque page web, chaque contenu en mouvement ou clignotant est-il contrôlable par l’utilisateur ? | `rgaa-moving-content-review` |
 | `rgaa-4.1.2-13.9` | Dans chaque page web, le contenu proposé est-il consultable quelle que soit l’orientation de l’écran (portrait ou paysage) (hors cas particuliers) ? | `css-orientation-lock`, `rgaa-orientation-content-parity` |
@@ -1355,6 +1356,18 @@ Checks that each button outside a form, a component only a script can drive, has
 **Applies to.** Applies to buttons (&lt;button&gt;, &lt;input&gt; of type submit, reset, button or image, and role="button") outside any form: no &lt;form&gt; or role="form" ancestor, and no form attribute naming one. Such a button does nothing unless a script drives it, so it is a component a script controls (glossary « Composant d'interface », RGAA 7.1). Buttons in a form are left to rgaa-form-button-name-present (11.9.1). A button hidden from assistive technologies, or whose explicit role is another one, is out of scope. A page with no such button is notApplicable.
 
 **Expectation.** RGAA 7.1.3: « Le composant possède un nom pertinent ». Unlike 7.1.1, the test offers no alternative. A button with no name at all (no aria-labelledby, aria-label, content, value, alt or title) has none to be relevant and fails (nameMissing). An &lt;input type="image"&gt; with no alt, aria-label, aria-labelledby or title, which the browser names with a generic "Submit", is asked about (imageButtonNoAlt). Whether a name is relevant is left to a person.
+
+### `rgaa-script-redirect-review`
+
+**A timed redirection done by a script can be controlled**
+
+manual · no formal WCAG SC mapping · confidence high · default severity moderate
+
+Flags each inline script that loads another address from a timer, for a person to check that the user can stop, extend or be warned of the redirection.
+
+**Applies to.** Applies to inline &lt;script&gt; elements whose code loads another address from a timer: setTimeout or setInterval followed, within a few hundred characters, by an assignment to location or location.href, or a call to location.assign or location.replace. A page with none is notApplicable.
+
+**Expectation.** RGAA 13.1.3: each redirection done by a script lets the user stop or restart it, extend its time limit ten times at least, or be warned with twenty seconds to extend it, unless the limit is twenty hours or more. A timed redirection is asked about (timedScriptRedirect), for a person to check which of these holds.
 
 ### `rgaa-scripted-components-review`
 

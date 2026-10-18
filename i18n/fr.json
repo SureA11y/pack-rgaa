@@ -737,5 +737,9 @@
   "currentItemReview_title": "L’élément actif d’un menu n’est pas indiqué par sa seule apparence",
   "currentItemReview_description": "Signale chaque lien de navigation marqué comme courant par une seule classe, sans aria-current ni texte qui le dise, pour qu’une personne vérifie comment la page active est indiquée.",
   "currentItemReview_summary_cantTell": "Ce lien de navigation (« {{label}} ») est marqué comme courant par une seule classe, sans aria-current ni texte qui le dise.",
-  "currentItemReview_hint_cantTell": "Si la classe signale la page active, ajoutez aria-current=\"page\" au lien, ou un texte qui le dise (RGAA 10.9.1)."
+  "currentItemReview_hint_cantTell": "Si la classe signale la page active, ajoutez aria-current=\"page\" au lien, ou un texte qui le dise (RGAA 10.9.1).",
+  "scriptRedirectReview_title": "Une redirection différée faite par un script est contrôlable",
+  "scriptRedirectReview_description": "Signale chaque script en ligne qui charge une autre adresse depuis une minuterie, pour qu’une personne vérifie que l’utilisateur peut arrêter, prolonger la redirection ou en être averti.",
+  "scriptRedirectReview_summary_cantTell": "Ce script charge une autre adresse après un délai (« {{code}} »).",
+  "scriptRedirectReview_hint_cantTell": "Vérifiez que l’utilisateur peut arrêter ou relancer la redirection, augmenter son délai de dix fois au moins, ou en est averti avec vingt secondes pour le prolonger (RGAA 13.1.3)."
 }

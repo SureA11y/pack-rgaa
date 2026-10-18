@@ -737,5 +737,9 @@
   "currentItemReview_title": "メニューのアクティブな項目が見た目だけで示されていない",
   "currentItemReview_description": "クラスだけで現在の項目とされ、aria-current もそれを示すテキストもない各ナビゲーションリンクを示し、アクティブなページの伝え方を人が確認できるようにします。",
   "currentItemReview_summary_cantTell": "このナビゲーションリンク（「{{label}}」）はクラスだけで現在の項目とされ、aria-current もそれを示すテキストもありません。",
-  "currentItemReview_hint_cantTell": "クラスがアクティブなページを示すなら、リンクに aria-current=\"page\" か、それを示すテキストを追加してください（RGAA 10.9.1）。"
+  "currentItemReview_hint_cantTell": "クラスがアクティブなページを示すなら、リンクに aria-current=\"page\" か、それを示すテキストを追加してください（RGAA 10.9.1）。",
+  "scriptRedirectReview_title": "スクリプトによる遅延リダイレクトを制御できる",
+  "scriptRedirectReview_description": "タイマーから別のアドレスを読み込む各インラインスクリプトを示し、利用者がリダイレクトを停止、延長、または事前に知らされるか人が確認できるようにします。",
+  "scriptRedirectReview_summary_cantTell": "このスクリプトは遅延後に別のアドレスを読み込みます（「{{code}}」）。",
+  "scriptRedirectReview_hint_cantTell": "利用者がリダイレクトを停止・再開できるか、遅延を10倍以上に延長できるか、延長のための20秒の猶予とともに警告されるか確認してください（RGAA 13.1.3）。"
 }

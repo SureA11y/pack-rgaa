@@ -160,7 +160,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T12-12 | 13.9 | WO | Cross-origin stylesheets make it ask (C6). | core |
 | T13-01 | 13.3.1 | MISS | Office documents named only in the link text or `type` are not found. | done |
 | T13-02 | 12.8.1 | MISS | Focus reaching hidden elements; tabbable content outside an open modal. | done (css-hidden-focus linked, rgaa-modal-tab-order); hidden off-canvas links: core |
-| T13-03 | 13.1.3, 13.1.4 | MISS | Script redirects, countdowns, session limits. | open |
+| T13-03 | 13.1.3, 13.1.4 | MISS | Script redirects, countdowns, session limits. Timed script redirects now asked about by `rgaa-script-redirect-review` (13.1.3, inline scripts). Still open: countdowns and session limits (13.1.4), which the markup does not show. | partial |
 | T13-04 | 12.11.1 | MISS | Menus that open on hover only. | open |
 | T13-05 | 13.8, 13.7.3 | MISS | Moving and blinking content (marquee, infinite animations, GIFs). Now `rgaa-moving-content-review` (13.8.1, 13.8.2) asks about `<marquee>`, autoplay video without controls, endless SVG and CSS animations. Not found: animated images, finite CSS animations (core settles them, CORE_ISSUES T13-05), and 13.7.3 flashes, which need measuring. | done |
 | T13-06 | 13.4.1, 13.5, 13.6 | MISS | Accessible versions of documents; emoji and ASCII art. | open |
