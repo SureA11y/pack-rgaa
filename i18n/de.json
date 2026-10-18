@@ -708,5 +708,9 @@
   "fieldHiddenLabelReview_hint_cantTell": "Prüfen Sie, dass ein title oder Text neben dem Feld, der sichtbar ist oder beim Fokus sichtbar wird, die erwartete Eingabe verständlich macht (RGAA 11.1.3).",
   "dataTableHeadersReview_summary_cantTell_bold_row": "Die erste Zeile dieser Tabelle enthält fette Datenzellen, die als <td> ausgezeichnete Spaltenüberschriften sein können.",
   "dataTableHeadersReview_summary_cantTell_bold_column": "Die erste Spalte dieser Tabelle enthält fette Datenzellen, die als <td> ausgezeichnete Zeilenüberschriften sein können.",
-  "dataTableHeadersReview_hint_cantTell_bold": "Wenn diese Zellen Überschriften sind, zeichnen Sie sie mit <th> aus (oder mit role=\"columnheader\" oder role=\"rowheader\" in einer ARIA-Tabelle), mit einem scope (RGAA 5.6.1, 5.6.2)."
+  "dataTableHeadersReview_hint_cantTell_bold": "Wenn diese Zellen Überschriften sind, zeichnen Sie sie mit <th> aus (oder mit role=\"columnheader\" oder role=\"rowheader\" in einer ARIA-Tabelle), mit einem scope (RGAA 5.6.1, 5.6.2).",
+  "ariaHiddenTextReview_title": "Sichtbarer, vor assistiven Technologien verborgener Text soll ignoriert werden",
+  "ariaHiddenTextReview_description": "Markiert jedes Element mit aria-hidden=\"true\", das sichtbaren Text von zwei oder mehr Wörtern enthält, damit eine Person prüft, dass der Text assistiven Technologien anders zugänglich ist oder ignoriert werden soll.",
+  "ariaHiddenTextReview_summary_cantTell": "Dieser sichtbare Text („{{text}}“) ist durch aria-hidden=\"true\" vor assistiven Technologien verborgen.",
+  "ariaHiddenTextReview_hint_cantTell": "Prüfen Sie, dass der Text assistiven Technologien anders zugänglich ist oder keine Information trägt; sonst entfernen Sie aria-hidden (RGAA 10.8.1)."
 }

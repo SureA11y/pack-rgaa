@@ -708,5 +708,9 @@
   "fieldHiddenLabelReview_hint_cantTell": "Compruebe que un title, o un texto junto al campo visible o que se hace visible al recibir el foco, permite entender lo que hay que introducir (RGAA 11.1.3).",
   "dataTableHeadersReview_summary_cantTell_bold_row": "La primera fila de esta tabla contiene celdas de datos en negrita, que pueden ser encabezados de columna marcados con <td>.",
   "dataTableHeadersReview_summary_cantTell_bold_column": "La primera columna de esta tabla contiene celdas de datos en negrita, que pueden ser encabezados de fila marcados con <td>.",
-  "dataTableHeadersReview_hint_cantTell_bold": "Si estas celdas son encabezados, márquelas con <th> (o role=\"columnheader\" o role=\"rowheader\" en una tabla ARIA), con un scope (RGAA 5.6.1, 5.6.2)."
+  "dataTableHeadersReview_hint_cantTell_bold": "Si estas celdas son encabezados, márquelas con <th> (o role=\"columnheader\" o role=\"rowheader\" en una tabla ARIA), con un scope (RGAA 5.6.1, 5.6.2).",
+  "ariaHiddenTextReview_title": "El texto visible oculto a las tecnologías de apoyo está pensado para ignorarse",
+  "ariaHiddenTextReview_description": "Señala cada elemento con aria-hidden=\"true\" que contiene un texto visible de dos palabras o más, para que una persona compruebe que el texto llega de otro modo a las tecnologías de apoyo o está pensado para ignorarse.",
+  "ariaHiddenTextReview_summary_cantTell": "Este texto visible (\"{{text}}\") está oculto a las tecnologías de apoyo con aria-hidden=\"true\".",
+  "ariaHiddenTextReview_hint_cantTell": "Compruebe que el texto llega de otro modo a las tecnologías de apoyo, o no transmite información; si no, quite aria-hidden (RGAA 10.8.1)."
 }

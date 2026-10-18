@@ -4,18 +4,19 @@ This pack's rules and their scenario pages. Every rule should have a `tests/fixt
 
 ## Summary
 
-Total rules: **87**. With fixture: **87**. Without fixture: **0**.
+Total rules: **88**. With fixture: **88**. Without fixture: **0**.
 
 ## Rules WITHOUT a fixture (0)
 
 None — every rule has a fixture.
 
-## Rules WITH a fixture (87)
+## Rules WITH a fixture (88)
 
 | Rule ID | Type | Fixture | Cases | PASS | FAIL | CANTTELL | OTHER |
 |---|---|---|---:|---:|---:|---:|---:|
 | rgaa-area-alt-source | automatic | `tests/fixtures/rgaa-area-alt-source-all-scenarios.html` | 7 | 2 | 2 | 0 | 3 |
 | rgaa-aria-attribute-conformance | automatic | `tests/fixtures/rgaa-aria-attribute-conformance-all-scenarios.html` | 19 | 5 | 14 | 0 | 0 |
+| rgaa-aria-hidden-text-review | manual | `tests/fixtures/rgaa-aria-hidden-text-review-all-scenarios.html` | 2 | 0 | 0 | 1 | 1 |
 | rgaa-aria-list-item-roles | automatic | `tests/fixtures/rgaa-aria-list-item-roles-all-scenarios.html` | 6 | 1 | 0 | 3 | 2 |
 | rgaa-aria-role-conformance | automatic | `tests/fixtures/rgaa-aria-role-conformance-all-scenarios.html` | 20 | 5 | 14 | 1 | 0 |
 | rgaa-autocomplete-user-field | automatic | `tests/fixtures/rgaa-autocomplete-user-field-all-scenarios.html` | 6 | 1 | 1 | 2 | 2 |

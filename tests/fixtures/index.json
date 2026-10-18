@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 87,
-    "withFixture": 87,
+    "total": 88,
+    "withFixture": 88,
     "withoutFixture": 0
   },
   "rows": [
@@ -37,6 +37,23 @@
         "FAIL": 14,
         "CANTTELL": 0,
         "OTHER": 0
+      }
+    },
+    {
+      "ruleId": "rgaa-aria-hidden-text-review",
+      "title": "Visible text hidden from assistive technologies is meant to be ignored",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/aria-hidden-text-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-aria-hidden-text-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-aria-hidden-text-review-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 1
       }
     },
     {

@@ -708,5 +708,9 @@
   "fieldHiddenLabelReview_hint_cantTell": "Vérifiez qu’un attribut title, ou un passage de texte accolé au champ, visible ou qui devient visible à la prise de focus, permet de comprendre la nature de la saisie attendue (RGAA 11.1.3).",
   "dataTableHeadersReview_summary_cantTell_bold_row": "La première ligne de ce tableau contient des cellules de données en gras, qui peuvent être des en-têtes de colonne balisés avec <td>.",
   "dataTableHeadersReview_summary_cantTell_bold_column": "La première colonne de ce tableau contient des cellules de données en gras, qui peuvent être des en-têtes de ligne balisés avec <td>.",
-  "dataTableHeadersReview_hint_cantTell_bold": "Si ces cellules sont des en-têtes, balisez-les avec <th> (ou role=\"columnheader\" ou role=\"rowheader\" dans un tableau ARIA), avec un attribut scope (RGAA 5.6.1, 5.6.2)."
+  "dataTableHeadersReview_hint_cantTell_bold": "Si ces cellules sont des en-têtes, balisez-les avec <th> (ou role=\"columnheader\" ou role=\"rowheader\" dans un tableau ARIA), avec un attribut scope (RGAA 5.6.1, 5.6.2).",
+  "ariaHiddenTextReview_title": "Le texte visible masqué aux technologies d’assistance a vocation à être ignoré",
+  "ariaHiddenTextReview_description": "Signale chaque élément doté de aria-hidden=\"true\" qui contient un texte visible de deux mots ou plus, pour qu’une personne vérifie que le texte est restitué autrement aux technologies d’assistance ou a vocation à être ignoré.",
+  "ariaHiddenTextReview_summary_cantTell": "Ce texte visible (« {{text}} ») est masqué aux technologies d’assistance par aria-hidden=\"true\".",
+  "ariaHiddenTextReview_hint_cantTell": "Vérifiez que le texte est restitué autrement aux technologies d’assistance, ou ne porte aucune information ; sinon, retirez aria-hidden (RGAA 10.8.1)."
 }

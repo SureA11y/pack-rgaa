@@ -56,6 +56,22 @@ The W3C validator accepts both: `aria-expanded` is allowed on a heading, and an 
 ```
 Three validator errors under RGAA 8.2.1: an empty `aria-expanded` value, `aria-label` on a `<div>` with no role (which cannot be named), and `role="heading"` without `aria-level`, which the validator requires although WAI-ARIA gives a default level.
 
+## rgaa-aria-hidden-text-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<p aria-hidden="true">Offre valable jusqu’au 31 mars</p>
+```
+Sighted users read the text, screen reader users never hear it: a person checks that it is given to them another way, or carries no information (RGAA 10.8.1).
+
+**Not applicable**
+```html
+<label>Nom <span aria-hidden="true">*</span></label>
+```
+A sign alone is not text of two words.
+
 ## rgaa-aria-list-item-roles
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*

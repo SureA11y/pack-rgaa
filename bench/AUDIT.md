@@ -113,7 +113,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T10-07 | 10.5 | MISS | No rule: text colour with no background colour (Q4). | open |
 | T10-08 | 10.1.3 | MISS | Runs of `&nbsp;` used for alignment, and fake columns, are not asked about. | open |
 | T10-09 | 10.9, 10.10 | MISS | An active menu item shown only visually (no `aria-current`). | open |
-| T10-10 | 10.8.1 | MISS | Visible, informative text under `aria-hidden="true"` passes. | open |
+| T10-10 | 10.8.1 | MISS | Visible, informative text under `aria-hidden="true"` passes. Now asked about by `rgaa-aria-hidden-text-review` (two words or more of visible text). | done |
 | T10-11 | 10.14 | MISS | Content revealed on `:hover` only. | open |
 | T10-12 | 10.13 | MISS | Author tooltips: no question. | open |
 | T10-13 | 10.2, 10.3, 10.11 | MISS | CSS-reordered content, CSS-only content, reflow at 320 px. | open |

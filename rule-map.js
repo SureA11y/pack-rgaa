@@ -84,6 +84,10 @@ const RGAA_RULE_TESTS = {
       tests: [],
       note: "Flags roles that WAI-ARIA deprecates or reserves for user agents (e.g. generic). The spec only advises against these ('SHOULD NOT'); it does not make them invalid, so this is not a failed 8.2.1 validity condition. No other RGAA test covers the choice of role outside scripted components (7.1.3)."
     },
+    'rgaa-aria-hidden-text-review': {
+      tests: ['10.8.1'],
+      note: 'Asks about each outermost element with aria-hidden="true" (not <html> or <body>) that holds visible text of two words or more: the 10.8.1 technical note says such content « ne sera donc plus vocalisable, mais restera visible », and the test passes it only when it is meant to be ignored, which only a person can tell (the text may repeat a screen-reader-only copy, or be the only place the information is). Focusable content under aria-hidden is failed by aria-hidden-focus.'
+    },
     'aria-hidden-body': {
       tests: ['10.8.1'],
       note: 'Fails aria-hidden="true" on <body>, which hides the whole page from AT. 10.8.1 step 1 lists aria-hidden elements as hidden content, and step 2 requires hidden content to be meant to be ignored, which the whole page never is.'
