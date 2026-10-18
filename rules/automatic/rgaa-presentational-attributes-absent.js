@@ -19,8 +19,9 @@
  *   10.1.2's list as written, so width and height on an <iframe> or a
  *   <video>, and size on an <input>, are reported too. One exception: a
  *   <source> in a <picture> gives the <img> its width and height for its
- *   art direction (HTML added them in 2021, after the list was written),
- *   so it is treated as the <img> is. One occurrence per element, naming
+ *   art direction (HTML added them in 2021, after the list was written):
+ *   they are outside the list's closed exceptions but are the image's
+ *   dimensions, so they are asked about (cantTell) rather than failed. One occurrence per element, naming
  *   every such attribute it carries.
  * @implementation-notes
  * - Opt-in (tag `rgaa`): WCAG does not forbid these attributes, so the rule
@@ -101,6 +102,7 @@ function runInPage(ctx) {
     : helpers.queryAll(selector);
 
   const occurrences = [];
+  const questions = [];
   for (const el of nodes) {
     if (!el || !dom.get(el, 'getAttribute') || !dom.tagName(el)) continue;
     if (dom.namespaceURI(el) && dom.namespaceURI(el) !== HTML_NS) continue;
@@ -127,6 +129,35 @@ function runInPage(ctx) {
       if (dom.hasAttribute(el, 'width')) found.push('width');
       if (dom.hasAttribute(el, 'height')) found.push('height');
     }
+    // width and height on a <source> of a <picture> are outside 10.1.2's
+    // closed list of exceptions, but they are the image's dimensions, as on
+    // its <img>, which HTML allowed there after the list was written: asked.
+    const dimensions = pictureSource
+      ? ['width', 'height'].filter((a) => dom.hasAttribute(el, a))
+      : [];
+    if (dimensions.length) {
+      const attributes = dimensions.join(', ');
+      questions.push(
+        helpers.reportOccurrence(el, {
+          summary: `This <source> of a <picture> carries ${attributes}, which RGAA 10.1.2 allows only on <img>, <object>, <embed>, <canvas> and <svg>.`,
+          hint: "These are the image's dimensions, as on its <img>, which HTML added to <source> after RGAA 4.1 was written. Check whether the audit accepts them; setting the size in CSS settles both.",
+          i18n: {
+            summaryKey: 'presentationalAttributesAbsent_summary_cantTell_pictureSource',
+            hintKey: 'presentationalAttributesAbsent_hint_cantTell_pictureSource',
+            params: { attributes }
+          },
+          uncertainty: {
+            code: 'judgement-required',
+            needed:
+              'Whether width and height on a <source> of a <picture> are accepted under 10.1.2.'
+          },
+          data: {
+            details: { reasonCode: 'pictureSourceDimensions', attributes: dimensions },
+            visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
+          }
+        })
+      );
+    }
     if (!found.length) continue;
 
     const attributes = found.join(', ');
@@ -147,14 +178,12 @@ function runInPage(ctx) {
     );
   }
 
-  if (!occurrences.length) {
+  if (!occurrences.length && !questions.length) {
     return { ruleId: rule.ruleId, outcome: 'pass', severity: 'minor', occurrences: [] };
   }
   return {
     ruleId: rule.ruleId,
-    outcome: 'fail',
-    severity: rule.defaultSeverity || 'minor',
-    occurrences
+    ...helpers.resolveTieredOutcome(occurrences, questions, rule.defaultSeverity || 'minor')
   };
 }
 

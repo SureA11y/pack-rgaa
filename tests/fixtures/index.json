@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 72,
-    "withFixture": 72,
+    "total": 73,
+    "withFixture": 73,
     "withoutFixture": 0
   },
   "rows": [
@@ -340,8 +340,8 @@
       "totalCases": 11,
       "caseCounts": {
         "PASS": 3,
-        "FAIL": 4,
-        "CANTTELL": 1,
+        "FAIL": 2,
+        "CANTTELL": 3,
         "OTHER": 3
       }
     },
@@ -578,8 +578,8 @@
       "totalCases": 8,
       "caseCounts": {
         "PASS": 3,
-        "FAIL": 3,
-        "CANTTELL": 0,
+        "FAIL": 1,
+        "CANTTELL": 2,
         "OTHER": 2
       }
     },
@@ -1111,6 +1111,23 @@
       }
     },
     {
+      "ruleId": "rgaa-svg-decorative-aria-hidden",
+      "title": "Decorative SVGs are hidden with aria-hidden=\"true\"",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-svg-decorative-aria-hidden.js",
+      "testFile": "tests/rules/automatic/rgaa-svg-decorative-aria-hidden.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-svg-decorative-aria-hidden-all-scenarios.html",
+      "totalCases": 6,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 1,
+        "CANTTELL": 2,
+        "OTHER": 3
+      }
+    },
+    {
       "ruleId": "rgaa-svg-hidden-no-alternative",
       "title": "Hidden decorative SVGs carry no text alternative",
       "type": "automatic",
@@ -1136,11 +1153,11 @@
       "testFile": "tests/rules/automatic/rgaa-svg-role-img.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-svg-role-img-all-scenarios.html",
-      "totalCases": 9,
+      "totalCases": 10,
       "caseCounts": {
         "PASS": 2,
-        "FAIL": 3,
-        "CANTTELL": 1,
+        "FAIL": 1,
+        "CANTTELL": 4,
         "OTHER": 3
       }
     },

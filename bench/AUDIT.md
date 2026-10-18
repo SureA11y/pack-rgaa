@@ -1,6 +1,6 @@
 # Audit of the pack against RGAA 4.1.2
 
-Each rule linked to RGAA was checked against the test's text, its official methodology, the glossary, the technical notes and the particular cases, with repro pages run in Chromium on the pack at `49f2f00`. RGAA is the only reference: what other engines do is no evidence.
+Each rule linked to RGAA was checked against the test's text, its official methodology, the glossary, the technical notes and the particular cases, with repro pages run in Chromium on the pack at `49f2f00`.
 
 What the pack aims for: no false positive, and as many of RGAA's failures found as can be, as a fail when RGAA's text makes the verdict certain and as a targeted question when it leaves it to a person.
 
@@ -13,11 +13,11 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 |---|---|---|---|---|
 | T1-01 | 1.1.5, 1.2.4 | FP | An `aria-hidden` sprite sheet whose `<symbol>`s have a `<title>` fails 1.1 and 1.2 on every page, though it draws nothing. | done (631a8d8) |
 | T1-02 | 1.1.5, 1.2.4 | WM | `rgaa-svg-hidden-no-alternative` is linked to both tests, though an image fails one of them, not both. Now 1.2.4 only. | done (631a8d8) |
-| T1-03 | 1.1.1 | WO | `rgaa-img-alt-present` fails every non-spacer `<img>` with no alt under 1.1.1, including images the glossary calls decorative (one before each list item). | decide |
-| T1-04 | 1.1.5 | WO | An exposed SVG with a `<title>` and no `role="img"` fails 1.1.5 even beside text, where it may be decorative (then 1.2.4). | decide |
+| T1-03 | 1.1.1 | WO | `rgaa-img-alt-present` fails every non-spacer `<img>` with no alt under 1.1.1, including images the glossary calls decorative (one before each list item). | done (decision B) |
+| T1-04 | 1.1.5 | WO | An exposed SVG with a `<title>` and no `role="img"` fails 1.1.5 even beside text, where it may be decorative (then 1.2.4). | done (decision B) |
 | T1-05 | 1.1.6–1.1.8 | FP/WO | A 0×0 `<canvas>` fails 1.1.8; a bare canvas, object or embed image fails 1.1 though it may be decorative. | done for 0×0; bare canvas, object, embed: decide |
 | T1-06 | 1.1.1, 1.2.1 | WO | `alt=" "` is reported as no alt; a spacer with `alt=" "` fails 1.1.1 instead of 1.2.1. | done |
-| T1-07 | 1.2.4 | MISS | An exposed decorative SVG without `aria-hidden` (including `role="presentation"`) is never checked against 1.2.4. | open |
+| T1-07 | 1.2.4 | MISS | An exposed decorative SVG without `aria-hidden` (including `role="presentation"`) is never checked against 1.2.4. | done (rgaa-svg-decorative-aria-hidden) |
 | T1-08 | 1.9.2–1.9.5 | MISS | Captioned svg, canvas, object and embed images are not checked. | open |
 | T1-09 | 1.1.1 | MISS | `alt=""` images in a named figure or nav are never asked about (C7). | core |
 | T1-10 | 1.4, 1.5 | MISS | CAPTCHAs: no question (Q5). | open |
@@ -117,17 +117,17 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T10-12 | 10.13 | MISS | Author tooltips: no question. | open |
 | T10-13 | 10.2, 10.3, 10.11 | MISS | CSS-reordered content, CSS-only content, reflow at 320 px. | open |
 | T10-14 | 10.1.2 | FP | `<link rel="mask-icon" color>` in `<head>` fails 10.1.2. | done |
-| T10-15 | 10.1.2 | WO | `width`/`height` on `<source>` in `<picture>` is exempted though RGAA's list is closed (P8). | decide |
+| T10-15 | 10.1.2 | WO | `width`/`height` on `<source>` in `<picture>` is exempted though RGAA's list is closed (P8). | done (decision B: asked) |
 
 ## Theme 11, Forms
 
 | # | Test | Kind | Finding | Status |
 |---|---|---|---|---|
-| T11-01 | 11.2.5 | FP | A `title` that is help text fails, though the `<label>` gives the étiquette (the glossary's order). | decide |
+| T11-01 | 11.2.5 | FP | A `title` that is help text fails, though the `<label>` gives the étiquette (the glossary's order). | done (decision B: asked) |
 | T11-02 | 11.13.1 | FP | An invalid `autocomplete` fails on a field that is not about the user (a search field). | done |
 | T11-03 | 11.2.5 | FP | A switch's state text ("Activé") is taken as its visible label. | done |
 | T11-04 | 11.1.2 | FP | A `<label for>` pointing at an `<input type=hidden>` or a `<div>` fails, though no field is in scope. | won't (a `for` that reaches no field means the field it names lacks the id 11.1.2 checks, as when the id matches nothing) |
-| T11-05 | 11.2.5 | WO | Visible "Recherche", name "Rechercher": the name contains the string. Fail or ask. | decide |
+| T11-05 | 11.2.5 | WO | Visible "Recherche", name "Rechercher": the name contains the string. Fail or ask. | done (decision B: asked) |
 | T11-06 | 11.8 | WO | Lists outside any form fail, though criterion 11.8 says « Dans chaque formulaire ». | won't (test 11.8.1 « Pour chaque balise `<select>` » and its methodology cover every list; only the criterion's title says « formulaire ») |
 | T11-07 | 11.1.3 | MISS | A field whose only `<label>` is visually hidden is never asked about. | open |
 | T11-08 | 11.13.1 | MISS | A personal-data field with no `autocomplete`, or on/off (Q1). | done |

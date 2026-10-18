@@ -174,6 +174,10 @@ function runInPage(ctx) {
     if (['aria-labelledby', 'aria-label', 'title'].some((n) => trim(attr(el, n)))) continue;
     if (hasCaption(el)) continue;
     if (controlOf(el)) continue;
+    // An image map, or an image that takes focus itself, carries
+    // information: rgaa-img-alt-present fails it under 1.1.1.
+    if (dom.hasAttribute(el, 'usemap') || dom.hasAttribute(el, 'ismap')) continue;
+    if (/^\d+$/.test(trim(attr(el, 'tabindex')))) continue;
     applicableCount += 1;
 
     const s = size(el, layout);

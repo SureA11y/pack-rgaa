@@ -4,13 +4,13 @@ This pack's rules and their scenario pages. Every rule should have a `tests/fixt
 
 ## Summary
 
-Total rules: **72**. With fixture: **72**. Without fixture: **0**.
+Total rules: **73**. With fixture: **73**. Without fixture: **0**.
 
 ## Rules WITHOUT a fixture (0)
 
 None — every rule has a fixture.
 
-## Rules WITH a fixture (72)
+## Rules WITH a fixture (73)
 
 | Rule ID | Type | Fixture | Cases | PASS | FAIL | CANTTELL | OTHER |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -33,7 +33,7 @@ None — every rule has a fixture.
 | rgaa-embedded-refresh-review | manual | `tests/fixtures/rgaa-embedded-refresh-review-all-scenarios.html` | 6 | 0 | 0 | 4 | 2 |
 | rgaa-fake-list | manual | `tests/fixtures/rgaa-fake-list-all-scenarios.html` | 7 | 0 | 0 | 0 | 7 |
 | rgaa-field-group-legend | manual | `tests/fixtures/rgaa-field-group-legend-all-scenarios.html` | 10 | 0 | 0 | 0 | 10 |
-| rgaa-field-label-in-name-sources | automatic | `tests/fixtures/rgaa-field-label-in-name-sources-all-scenarios.html` | 11 | 3 | 4 | 1 | 3 |
+| rgaa-field-label-in-name-sources | automatic | `tests/fixtures/rgaa-field-label-in-name-sources-all-scenarios.html` | 11 | 3 | 2 | 3 | 3 |
 | rgaa-field-label-listed-source | automatic | `tests/fixtures/rgaa-field-label-listed-source-all-scenarios.html` | 15 | 4 | 7 | 3 | 1 |
 | rgaa-figure-caption-structure | automatic | `tests/fixtures/rgaa-figure-caption-structure-all-scenarios.html` | 8 | 2 | 4 | 0 | 2 |
 | rgaa-focus-indicator-contrast | automatic | `tests/fixtures/rgaa-focus-indicator-contrast-all-scenarios.html` | 11 | 2 | 3 | 4 | 2 |
@@ -47,7 +47,7 @@ None — every rule has a fixture.
 | rgaa-html-lang-code-valid | automatic | `tests/fixtures/rgaa-html-lang-code-valid-all-scenarios.html` | 1 | 0 | 1 | 0 | 0 |
 | rgaa-html-nesting-valid | automatic | `tests/fixtures/rgaa-html-nesting-valid-all-scenarios.html` | 17 | 5 | 12 | 0 | 0 |
 | rgaa-image-alt-long | manual | `tests/fixtures/rgaa-image-alt-long-all-scenarios.html` | 6 | 0 | 0 | 0 | 6 |
-| rgaa-img-alt-present | automatic | `tests/fixtures/rgaa-img-alt-present-all-scenarios.html` | 8 | 3 | 3 | 0 | 2 |
+| rgaa-img-alt-present | automatic | `tests/fixtures/rgaa-img-alt-present-all-scenarios.html` | 8 | 3 | 1 | 2 | 2 |
 | rgaa-img-decorative-no-alternative | automatic | `tests/fixtures/rgaa-img-decorative-no-alternative-all-scenarios.html` | 9 | 3 | 2 | 2 | 2 |
 | rgaa-img-no-alt-decorative | automatic | `tests/fixtures/rgaa-img-no-alt-decorative-all-scenarios.html` | 8 | 0 | 2 | 2 | 4 |
 | rgaa-keyboard-only-event-handlers | manual | `tests/fixtures/rgaa-keyboard-only-event-handlers-all-scenarios.html` | 10 | 0 | 0 | 4 | 6 |
@@ -79,8 +79,9 @@ None — every rule has a fixture.
 | rgaa-scripted-components-review | manual | `tests/fixtures/rgaa-scripted-components-review-all-scenarios.html` | 12 | 0 | 0 | 0 | 12 |
 | rgaa-skip-link-placement | automatic | `tests/fixtures/rgaa-skip-link-placement-all-scenarios.html` | 1 | 0 | 0 | 1 | 0 |
 | rgaa-skip-link-present | automatic | `tests/fixtures/rgaa-skip-link-present-all-scenarios.html` | 1 | 0 | 1 | 0 | 0 |
+| rgaa-svg-decorative-aria-hidden | automatic | `tests/fixtures/rgaa-svg-decorative-aria-hidden-all-scenarios.html` | 6 | 0 | 1 | 2 | 3 |
 | rgaa-svg-hidden-no-alternative | automatic | `tests/fixtures/rgaa-svg-hidden-no-alternative-all-scenarios.html` | 10 | 3 | 5 | 0 | 2 |
-| rgaa-svg-role-img | automatic | `tests/fixtures/rgaa-svg-role-img-all-scenarios.html` | 9 | 2 | 3 | 1 | 3 |
+| rgaa-svg-role-img | automatic | `tests/fixtures/rgaa-svg-role-img-all-scenarios.html` | 10 | 2 | 1 | 4 | 3 |
 | rgaa-th-scope-row-col | automatic | `tests/fixtures/rgaa-th-scope-row-col-all-scenarios.html` | 7 | 1 | 4 | 0 | 2 |
 | rgaa-title-placeholder-identical | automatic | `tests/fixtures/rgaa-title-placeholder-identical-all-scenarios.html` | 7 | 2 | 0 | 3 | 2 |
 | rgaa-video-captions-track-kind | automatic | `tests/fixtures/rgaa-video-captions-track-kind-all-scenarios.html` | 9 | 2 | 4 | 1 | 2 |

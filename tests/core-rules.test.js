@@ -105,8 +105,8 @@ for (const [ruleId, html, outcome, tests, why] of CASES) {
 
 // img-alt-present's WCAG verdict stays, and rgaa-img-alt-present, which
 // leaves spacers to 1.2, reports RGAA 1.1.1.
-test('alt=" " fails RGAA 1.1.1 through rgaa-img-alt-present, and img-alt-decorative does not ask', () => {
-  const result = runa11yCoreOnHtml(page('<img id="a" src="a.png" alt=" ">'), RGAA);
+test('alt=" " on a link\'s only image fails RGAA 1.1.1 through rgaa-img-alt-present, and img-alt-decorative does not ask', () => {
+  const result = runa11yCoreOnHtml(page('<a href="/"><img id="a" src="a.png" alt=" "></a>'), RGAA);
   const rule = (id) => result.checksResults.find((r) => r.ruleId === id);
   assert.equal(rule('img-alt-decorative').outcome, 'notApplicable');
   assert.equal(rule('img-alt-present').outcome, 'fail');

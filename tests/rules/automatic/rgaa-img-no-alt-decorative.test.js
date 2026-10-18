@@ -108,8 +108,9 @@ test(`${RULE_ID}: under the RGAA profile, a link's only image fails 1.1 and not 
 
   const spacer = runa11yCoreOnHtml(page('<img src="pixel.gif" width="1" height="1">'), opts);
   assert.equal(rollup(spacer, 'rgaa-4.1.2-1.2').outcome, 'fail');
+  // A photo may be decorative or carry information: both criteria ask.
   const photo = runa11yCoreOnHtml(page('<img src="photo.jpg">'), opts);
-  assert.equal(rollup(photo, 'rgaa-4.1.2-1.1').outcome, 'fail');
+  assert.equal(rollup(photo, 'rgaa-4.1.2-1.1').outcome, 'cantTell');
   assert.equal(rollup(photo, 'rgaa-4.1.2-1.2').outcome, 'cantTell');
 });
 

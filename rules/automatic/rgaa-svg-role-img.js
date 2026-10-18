@@ -19,10 +19,13 @@
  *   The <svg> has role="img" (RGAA 1.1.5 step 3; step 4: "Si ce n'est pas
  *   le cas, le test est invalidé"), and its alternative comes from
  *   aria-labelledby or aria-label (step 5).
- *   An alternative without role="img" fails: the author has shown that the
- *   image carries information, and without the role it is not exposed as
- *   an image. If the image were in fact decorative, it would fail 1.2.4
- *   instead, which requires aria-hidden="true" and no alternative.
+ *   An alternative without role="img" fails when the SVG certainly carries
+ *   information: it is the only content of a link or a button, or it takes
+ *   focus itself (tabindex 0 or more). Otherwise it is asked about
+ *   (cantTell): an icon beside a button's text is decorative, and then it
+ *   fails 1.2.4 instead, which requires aria-hidden="true" and no
+ *   alternative; the 1.1.5 methodology leaves that call to a person
+ *   (« déterminer si l'image est porteuse d'information »).
  *   An <svg role="img"> named only by its <title> is asked about
  *   (cantTell): RGAA contradicts itself there. 1.1.5 step 5 lists only
  *   aria-labelledby and aria-label, but 1.3.6 checks "le contenu de
@@ -92,6 +95,39 @@ function runInPage(ctx) {
     return trim(attr(el, 'aria-label')) ? 'aria-label' : '';
   }
 
+  // The only content of a link or a button (its alternative is then the
+  // control's name), or an SVG that takes focus itself: it carries
+  // information, whatever it shows.
+  function certainlyInformative(svg) {
+    if (/^\d+$/.test(trim(attr(svg, 'tabindex')))) return true;
+    let control = null;
+    for (let a = parentOf(svg); a && dom.nodeType(a) === 1 && !control; a = parentOf(a)) {
+      const tag = tagOf(a);
+      const role = helpers.aria.getExplicitRole(a);
+      if (role === 'link' || role === 'button') control = a;
+      else if (!role && ((tag === 'a' && dom.hasAttribute(a, 'href')) || tag === 'button')) {
+        control = a;
+      }
+    }
+    if (!control) return false;
+    const others = Array.from(dom.querySelectorAll(control, 'img, svg')).filter(
+      (n) => n !== svg && !dom.contains(svg, n)
+    );
+    if (others.length) return false;
+    // Text of its own, outside the SVG.
+    let walker = null;
+    try {
+      walker = dom.createTreeWalker(dom.ownerDocument(control), control, 4, null);
+    } catch {}
+    if (!walker) return false;
+    for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+      if (!trim(dom.nodeValue(n))) continue;
+      const p = dom.parentElement(n);
+      if (!p || !dom.closest(p, 'svg')) return false;
+    }
+    return true;
+  }
+
   function titleChildText(el) {
     for (const child of Array.from(dom.querySelectorAll(el, ':scope > *'))) {
       if (tagOf(child) === 'title') return trim(dom.textContent(child));
@@ -141,6 +177,34 @@ function runInPage(ctx) {
     if (mechanism) found.push(mechanism);
     if (title) found.push('<title>');
     const alternatives = found.join(', ');
+    // An alternative does not prove the image carries information: an icon
+    // beside a button's text is decorative, and then fails 1.2.4 instead
+    // (aria-hidden="true", no <title>). RGAA leaves that call to a person
+    // (1.1.5 methodology: « déterminer si l'image est porteuse
+    // d'information »), unless the SVG is a control's only content or takes
+    // focus itself.
+    if (!certainlyInformative(svg)) {
+      cantTells.push(
+        helpers.reportOccurrence(svg, {
+          summary: `This <svg> has a text alternative (${alternatives}) but no role="img". If it carries information, it fails 1.1.5; if it is decorative, 1.2.4.`,
+          hint: 'If the image carries information, add role="img" and name it with aria-label or aria-labelledby. If it is decorative, remove the alternative and add aria-hidden="true".',
+          i18n: {
+            summaryKey: 'svgRoleImg_summary_cantTell_missingRole',
+            hintKey: 'svgRoleImg_hint_fail_missingRole',
+            params: { alternatives }
+          },
+          uncertainty: {
+            code: 'judgement-required',
+            needed: 'Whether the image carries information or is decorative.'
+          },
+          data: {
+            details: { reasonCode: 'missingRoleMayBeDecorative', alternatives: found },
+            visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
+          }
+        })
+      );
+      continue;
+    }
     fails.push(
       helpers.reportOccurrence(svg, {
         summary: `This <svg> has a text alternative (${alternatives}) but no role="img".`,

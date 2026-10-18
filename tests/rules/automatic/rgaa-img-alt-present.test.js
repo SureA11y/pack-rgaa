@@ -17,10 +17,11 @@ function page(body) {
 
 const rollup = (result, id) => result.rulesResults.find((r) => r.ruleId === id);
 
-test(`${RULE_ID}: an image with no text alternative fails`, () => {
+test(`${RULE_ID}: an image that certainly carries information and has no text alternative fails`, () => {
   for (const body of [
-    '<img src="photo.jpg">',
     '<img src="photo.jpg" width="300" height="200" role="presentation" tabindex="0">',
+    '<img src="plan.png" usemap="#m"><map name="m"><area href="/a" alt="A" coords="0,0,1,1"></map>',
+    '<button type="button"><img src="close.png"></button>',
     // The only content of a link carries its information, spacer or not.
     '<a href="/home"><img src="pixel.gif" width="1" height="1"></a>',
     // 1.2 does not apply to a captioned image, so 1.1.1 does.
@@ -33,6 +34,31 @@ test(`${RULE_ID}: an image with no text alternative fails`, () => {
     const occ = rule.occurrences[0];
     assert.equal(occ.data.details.reasonCode, 'missingAlt', body);
     assert.equal(occ.i18n.summaryKey, 'imgAltPresent_summary_fail');
+  }
+});
+
+// It may be decorative (glossary « Image de décoration »: « Une image
+// précédant chaque item d'une liste »), and then it fails 1.2.1 instead.
+test(`${RULE_ID}: an image that may be decorative is asked about`, () => {
+  for (const [body, code] of [
+    ['<img src="photo.jpg">', 'noAltMayBeDecorative'],
+    [
+      '<ul><li><img src="puce.png" width="8" height="8"> Horaires</li></ul>',
+      'noAltMayBeDecorative'
+    ],
+    [
+      '<p><a href="/r">Rapport <img src="pdf.png" width="16" height="16"></a></p>',
+      'noAltMayBeDecorative'
+    ],
+    ['<img src="chart.png" alt=" " width="300" height="200">', 'blankAltMayBeDecorative']
+  ]) {
+    const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'cantTell', {
+      minOccurrences: 1,
+      maxOccurrences: 1
+    });
+    const occ = rule.occurrences[0];
+    assert.equal(occ.data.details.reasonCode, code, body);
+    assert.equal(occ.uncertainty.code, 'judgement-required');
   }
 });
 
@@ -74,7 +100,7 @@ test(`${RULE_ID}: a spacer with no alt fails 1.2 and not 1.1`, () => {
   const photo = runa11yCoreOnHtml(page('<img src="photo.jpg" width="300" height="200">'), {
     engineOptions: { profile: 'rgaa-4.1.2' }
   });
-  assert.equal(rollup(photo, 'rgaa-4.1.2-1.1').outcome, 'fail');
+  assert.equal(rollup(photo, 'rgaa-4.1.2-1.1').outcome, 'cantTell');
   assert.equal(rollup(photo, 'rgaa-4.1.2-1.2').outcome, 'cantTell');
 });
 
@@ -82,13 +108,23 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
   const fixturePath = path.join(__dirname, '../..', 'fixtures', `${RULE_ID}-all-scenarios.html`);
   const result = runa11yCoreOnHtml(fs.readFileSync(fixturePath, 'utf8'), RUN);
   const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 3, maxOccurrences: 3 });
-  const byId = rule.occurrences.map((o) => (o.html.match(/id="([^"]+)"/) || [])[1]);
-  assert.deepEqual(byId, ['iap_case_01', 'iap_case_02', 'iap_case_03']);
+  const byId = rule.occurrences.map((o) => [
+    (o.html.match(/id="([^"]+)"/) || [])[1],
+    o.occurrenceOutcome
+  ]);
+  assert.deepEqual(byId, [
+    ['iap_case_03', 'fail'],
+    ['iap_case_01', 'cantTell'],
+    ['iap_case_02', 'cantTell']
+  ]);
 });
 
 test(`${RULE_ID}: an alt of only spaces fails with its own message, and a spacer with one is left to 1.2`, () => {
   const rule = assertRule(
-    runa11yCoreOnHtml(page('<img src="chart.png" alt=" " width="300" height="200">'), RUN),
+    runa11yCoreOnHtml(
+      page('<a href="/"><img src="logo.png" alt=" " width="120" height="40"></a>'),
+      RUN
+    ),
     RULE_ID,
     'fail'
   );

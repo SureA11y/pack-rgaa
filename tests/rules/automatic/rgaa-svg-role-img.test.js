@@ -30,7 +30,11 @@ test(`${RULE_ID}: role="img" with aria-label or aria-labelledby passes`, () => {
   }
 });
 
-test(`${RULE_ID}: an alternative without role="img" fails and names the alternatives`, () => {
+// An alternative does not prove the image carries information: an SVG that
+// is not a control's only content, nor focusable, may be decorative, and
+// then fails 1.2.4 instead (1.1.5 methodology: « déterminer si l'image est
+// porteuse d'information »).
+test(`${RULE_ID}: an alternative without role="img" is asked about and names the alternatives`, () => {
   const cases = [
     ['<svg><title>Logo</title><circle r="4"/></svg>', ['<title>']],
     ['<svg aria-label="Logo"></svg>', ['aria-label']],
@@ -42,12 +46,36 @@ test(`${RULE_ID}: an alternative without role="img" fails and names the alternat
     ['<svg role="presentation" aria-label="Logo"></svg>', ['aria-label']]
   ];
   for (const [body, alternatives] of cases) {
-    const rule = assertRule(run(body), RULE_ID, 'fail', { minOccurrences: 1, maxOccurrences: 1 });
+    const rule = assertRule(run(body), RULE_ID, 'cantTell', {
+      minOccurrences: 1,
+      maxOccurrences: 1
+    });
     const occ = rule.occurrences[0];
-    assert.equal(occ.data.details.reasonCode, 'missingRoleImg', body);
+    assert.equal(occ.data.details.reasonCode, 'missingRoleMayBeDecorative', body);
     assert.deepEqual(occ.data.details.alternatives, alternatives, body);
     assert.deepEqual(occ.i18n.params, { alternatives: alternatives.join(', ') });
+    assert.equal(occ.uncertainty.code, 'judgement-required');
   }
+});
+
+// The only content of a link or a button, or an SVG that takes focus,
+// carries information: without role="img" it fails 1.1.5.
+test(`${RULE_ID}: an SVG that certainly carries information fails without role="img"`, () => {
+  for (const body of [
+    '<a href="/"><svg><title>Accueil</title><circle r="4"/></svg></a>',
+    '<button type="button"><svg aria-label="Fermer"></svg></button>',
+    '<svg tabindex="0" aria-label="Plan"></svg>'
+  ]) {
+    const rule = assertRule(run(body), RULE_ID, 'fail', { minOccurrences: 1, maxOccurrences: 1 });
+    assert.equal(rule.occurrences[0].data.details.reasonCode, 'missingRoleImg', body);
+  }
+  // Beside the control's own text, the icon may be decorative.
+  const icon = assertRule(
+    run('<button type="button"><svg><title>loupe</title></svg> Rechercher</button>'),
+    RULE_ID,
+    'cantTell'
+  );
+  assert.equal(icon.occurrences[0].data.details.reasonCode, 'missingRoleMayBeDecorative');
 });
 
 test(`${RULE_ID}: role="img" named only by <title> is asked about (D1: RGAA contradicts itself)`, () => {
@@ -109,13 +137,22 @@ function verdicts(body) {
   };
 }
 
-test(`${RULE_ID}: RGAA profile, a named SVG without role="img": WCAG passes it, RGAA 1.1 fails`, () => {
+test(`${RULE_ID}: RGAA profile, a named SVG without role="img": WCAG passes it, RGAA 1.1 asks or fails`, () => {
   for (const body of [
     '<svg><title>Logo</title><circle r="4"/></svg>',
     '<svg aria-label="Logo"></svg>'
   ]) {
-    assert.deepEqual(verdicts(body), { rule: 'fail', rgaa: 'fail', wcagRule: 'pass' }, body);
+    assert.deepEqual(
+      verdicts(body),
+      { rule: 'cantTell', rgaa: 'cantTell', wcagRule: 'pass' },
+      body
+    );
   }
+  assert.deepEqual(verdicts('<a href="/"><svg aria-label="Accueil"></svg></a>'), {
+    rule: 'fail',
+    rgaa: 'fail',
+    wcagRule: 'pass'
+  });
 });
 
 test(`${RULE_ID}: RGAA profile, role="img" named only by <title>: WCAG passes it, RGAA 1.1 asks`, () => {
@@ -143,13 +180,14 @@ test(`${RULE_ID}: RGAA profile, the two standards agree on aria-label with role=
 test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-svg-role-img-all-scenarios.html)`, () => {
   const fixturePath = path.join(__dirname, '../..', 'fixtures', `${RULE_ID}-all-scenarios.html`);
   const result = runa11yCoreOnHtml(fs.readFileSync(fixturePath, 'utf8'), RUN);
-  const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 4, maxOccurrences: 4 });
+  const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 5, maxOccurrences: 5 });
   assert.deepEqual(
     rule.occurrences.map((o) => [(o.html.match(/id="([^"]+)"/) || [])[1], o.occurrenceOutcome]),
     [
-      ['sri_case_01', 'fail'],
-      ['sri_case_02', 'fail'],
-      ['sri_case_03', 'fail'],
+      ['sri_case_10', 'fail'],
+      ['sri_case_01', 'cantTell'],
+      ['sri_case_02', 'cantTell'],
+      ['sri_case_03', 'cantTell'],
       ['sri_case_04', 'cantTell']
     ]
   );

@@ -41,7 +41,7 @@ function renderDoc({ rules, versions, themes, criteria, tests, ruleTests }) {
   );
   out.push('');
   out.push(
-    '> **Review status:** drafted from the RGAA test wording and official methodology, then checked row by row against how other RGAA tools map and flag the same checks; not yet reviewed by an RGAA auditor. Corrections go in `rule-map.js`; this page is regenerated from it.'
+    '> **Review status:** drafted from the RGAA test wording, official methodology and glossary, then checked row by row against them; not yet reviewed by an RGAA auditor. Corrections go in `rule-map.js`; this page is regenerated from it.'
   );
   out.push('');
   out.push(

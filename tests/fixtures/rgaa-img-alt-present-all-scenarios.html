@@ -19,19 +19,21 @@
   <p class="note">
     Each target has a stable <code>id</code> of the form <code>iap_case_NN</code>.
     An exposed <code>&lt;img&gt;</code> with no <code>alt</code> and no other text
-    alternative fails 1.1.1, except a spacer, which is decorative and fails 1.2.1
-    alone (<code>rgaa-img-no-alt-decorative</code>).
+    alternative fails 1.1.1 when it certainly carries information (the only content
+    of a link or button, a caption, an image map, focusable); otherwise it may be
+    decorative and is asked about. A spacer is decorative and fails 1.2.1 alone
+    (<code>rgaa-img-no-alt-decorative</code>).
   </p>
 
-  <h2>A. No text alternative (FAIL)</h2>
+  <h2>A. No text alternative (FAIL when certainly informative, else CANTTELL)</h2>
 
   <div class="case" id="case_01">
-    <div class="case-title">01 — FAIL: photo with no alt</div>
+    <div class="case-title">01 — CANTTELL: photo with no alt (informative: 1.1.1; decorative: 1.2.1)</div>
     <img id="iap_case_01" src="photo.jpg" width="300" height="200">
   </div>
 
   <div class="case" id="case_02">
-    <div class="case-title">02 — FAIL: alt of only spaces</div>
+    <div class="case-title">02 — CANTTELL: alt of only spaces (informative: 1.1.1; decorative: 1.2.1)</div>
     <img id="iap_case_02" src="chart.png" alt=" " width="300" height="200">
   </div>
 

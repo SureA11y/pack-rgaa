@@ -5,7 +5,7 @@
 /**
  * @check rgaa-img-alt-present
  * @atomic true
- * @summary An <img> with no alt attribute fails 1.1.1, unless it is a spacer
+ * @summary An <img> that certainly carries information must have an alt attribute
  * @standard RGAA 4.1.2 (no WCAG Success Criterion)
  * @applicability
  *   Applies to <img> elements included in the accessibility tree, as
@@ -18,20 +18,26 @@
  *   button. A page with none is notApplicable.
  * @expectation
  *   Each applicable <img> has an alt attribute (alt="" included), a
- *   non-empty aria-label or aria-labelledby, or a non-empty title. One with
- *   none of these fails 1.1.1 step 1: RGAA 1.1.1 asks each image carrying
- *   information for a text alternative. A spacer carries none, so it is
- *   decorative, and the alt="" it lacks is 1.2.1's matter, which
- *   rgaa-img-no-alt-decorative fails.
+ *   non-empty aria-label or aria-labelledby, or a non-empty title. RGAA
+ *   1.1.1 asks each image carrying information for a text alternative, and
+ *   1.2.1 asks each decorative one for alt="", so an image with none of
+ *   these fails one of the two, depending on what it is:
+ *   - it fails 1.1.1 when it certainly carries information: it is the only
+ *     content of a link or a button, it has a caption (a <figure> with a
+ *     <figcaption>), it is an image map (usemap or ismap), or it takes
+ *     focus (tabindex 0 or more);
+ *   - otherwise it is asked about (cantTell), since it may be decorative
+ *     (glossary « Image de décoration »: « Une image précédant chaque item
+ *     d'une liste »), and the 1.1.x methodology leaves that call to a
+ *     person; rgaa-img-no-alt-decorative asks the 1.2.1 side.
+ *   A spacer carries no information, so it is decorative, and the alt=""
+ *   it lacks is 1.2.1's matter, which rgaa-img-no-alt-decorative fails.
  * @implementation-notes
  * - img-alt-present, the WCAG rule, fails every such image, spacers
  *   included, as WCAG 1.1.1 covers decorative images too. RGAA splits them:
  *   1.1 for images carrying information, 1.2 for decorative ones. Linked to
  *   1.1.1, img-alt-present failed a spacer under 1.1 as well as
  *   rgaa-img-no-alt-decorative under 1.2. This rule takes 1.1.1 instead.
- * - An image that is not a spacer still fails here, decorative or not: it
- *   fails 1.1.1 if it carries information and 1.2.1 if it does not, and
- *   rgaa-img-no-alt-decorative asks which under 1.2.1.
  * - The spacer test is rgaa-img-no-alt-decorative's: a rendered size of 0
  *   by 0 (an image not loaded yet) says nothing, so it is not a spacer.
  * - Opt-in (tag `rgaa`): the rule runs only under the rgaa-4.1.2 profile,
@@ -181,7 +187,19 @@ function runInPage(ctx) {
   const layout = hasLayout();
 
   const occurrences = [];
+  const questions = [];
   let applicableCount = 0;
+
+  // An image that carries information whatever it shows: the only content
+  // of a link or a button (its alternative is the control's name), a
+  // captioned image (criterion 1.2 does not apply to it), an image map, or
+  // an image that takes focus itself.
+  function certainlyInformative(el) {
+    if (onlyContentOfControl(el) || hasCaption(el)) return true;
+    if (dom.hasAttribute(el, 'usemap') || dom.hasAttribute(el, 'ismap')) return true;
+    const tabindex = trim(attr(el, 'tabindex'));
+    return /^\d+$/.test(tabindex);
+  }
 
   for (const el of nodes) {
     if (!el || !dom.get(el, 'getAttribute')) continue;
@@ -207,6 +225,38 @@ function runInPage(ctx) {
     if (ariaNamed(el)) continue;
     if (trim(attr(el, 'title'))) continue;
 
+    // Only an image that certainly carries information fails 1.1.1: one
+    // that may be decorative (glossary « Image de décoration »: « Une image
+    // précédant chaque item d'une liste ») fails 1.2.1 instead, and RGAA
+    // leaves that call to a person (« déterminer si l'image est porteuse
+    // d'information »).
+    if (!certainlyInformative(el)) {
+      questions.push(
+        helpers.reportOccurrence(el, {
+          summary: blank
+            ? 'This <img> has an alt of only spaces. If it carries information, it fails 1.1.1; if it is decorative, 1.2.1.'
+            : 'This <img> has no alt attribute. If it carries information, it fails 1.1.1; if it is decorative, 1.2.1.',
+          hint: 'If the image carries information, give it an alt that says what it shows. If it is decorative, give it an empty alt (alt="").',
+          i18n: {
+            summaryKey: blank
+              ? 'imgAltPresent_summary_cantTell_blank'
+              : 'imgAltPresent_summary_cantTell',
+            hintKey: 'imgAltPresent_hint_cantTell',
+            params: {}
+          },
+          uncertainty: {
+            code: 'judgement-required',
+            needed: 'Whether the image carries information or is decorative.'
+          },
+          data: {
+            details: { reasonCode: blank ? 'blankAltMayBeDecorative' : 'noAltMayBeDecorative' },
+            visibilityFilter: { targetSet: 'acc', accEligible: null, reasons: [] }
+          }
+        })
+      );
+      continue;
+    }
+
     occurrences.push(
       helpers.reportOccurrence(el, {
         summary: blank
@@ -229,12 +279,10 @@ function runInPage(ctx) {
   if (applicableCount === 0) {
     return { ruleId: rule.ruleId, outcome: 'notApplicable', severity: 'minor', occurrences: [] };
   }
-  if (occurrences.length) {
+  if (occurrences.length || questions.length) {
     return {
       ruleId: rule.ruleId,
-      outcome: 'fail',
-      severity: rule.defaultSeverity || 'serious',
-      occurrences
+      ...helpers.resolveTieredOutcome(occurrences, questions, rule.defaultSeverity || 'serious')
     };
   }
   return { ruleId: rule.ruleId, outcome: 'pass', severity: 'minor', occurrences: [] };

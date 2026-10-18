@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**72 rules total: 57 automatic (decide deterministically; can return `fail`), 15 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**73 rules total: 58 automatic (decide deterministically; can return `fail`), 15 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -14,7 +14,7 @@ Under **What a finding reports**, a rule lists the fields its findings carry in 
 
 See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_SCHEMA.md) for what `type`/`confidence`/`severity` mean on a scan result, and [`WCAG_CONFORMANCE.md`](https://github.com/SureA11y/core/blob/main/docs/WCAG_CONFORMANCE.md) for how these roll up to an SC-level conformance claim.
 
-## Automatic rules (57), can return `fail`
+## Automatic rules (58), can return `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -69,6 +69,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-role-img-aria-name`](#rgaa-role-img-aria-name) | Elements with role="img" are named with aria-labelledby or aria-label | — | — | high | serious |
 | [`rgaa-skip-link-placement`](#rgaa-skip-link-placement) | Skip links are visible and at the same place on every page | — | — | medium | moderate |
 | [`rgaa-skip-link-present`](#rgaa-skip-link-present) | Pages have a skip link to the main content | — | — | high | moderate |
+| [`rgaa-svg-decorative-aria-hidden`](#rgaa-svg-decorative-aria-hidden) | Decorative SVGs are hidden with aria-hidden="true" | — | — | high | minor |
 | [`rgaa-svg-hidden-no-alternative`](#rgaa-svg-hidden-no-alternative) | Hidden decorative SVGs carry no text alternative | — | — | high | minor |
 | [`rgaa-svg-role-img`](#rgaa-svg-role-img) | SVGs with a text alternative have role="img" | — | — | high | serious |
 | [`rgaa-th-scope-row-col`](#rgaa-th-scope-row-col) | Table headers use scope="row" or scope="col", the right one | — | — | high | moderate |
@@ -111,7 +112,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | Rollup ID | Title | Rules |
 |---|---|---|
 | `rgaa-4.1.2-1.1` | Chaque image porteuse d’information a-t-elle une alternative textuelle ? | `area-alt-present`, `img-alt-decorative`, `input-image-alt-present`, `rgaa-area-alt-source`, `rgaa-canvas-role-img`, `rgaa-embed-image-role-img`, `rgaa-img-alt-present`, `rgaa-object-image-role-img`, `rgaa-role-img-aria-name`, `rgaa-svg-role-img`, `server-side-image-map-absent`, `svg-text-alternative-present` |
-| `rgaa-4.1.2-1.2` | Chaque image de décoration est-elle correctement ignorée par les technologies d’assistance ? | `rgaa-canvas-decorative-aria-hidden`, `rgaa-img-decorative-no-alternative`, `rgaa-img-no-alt-decorative`, `rgaa-svg-hidden-no-alternative` |
+| `rgaa-4.1.2-1.2` | Chaque image de décoration est-elle correctement ignorée par les technologies d’assistance ? | `rgaa-canvas-decorative-aria-hidden`, `rgaa-img-decorative-no-alternative`, `rgaa-img-no-alt-decorative`, `rgaa-svg-decorative-aria-hidden`, `rgaa-svg-hidden-no-alternative` |
 | `rgaa-4.1.2-1.3` | Pour chaque image porteuse d’information ayant une alternative textuelle, cette alternative est-elle pertinente (hors cas particuliers) ? | `area-alt-quality`, `canvas-text-alternative-quality`, `embed-text-alternative-quality`, `image-redundant-alt`, `img-alt-quality`, `input-image-alt-decorative`, `input-image-alt-quality`, `object-text-alternative-quality`, `rgaa-image-alt-long`, `svg-text-alternative-quality` |
 | `rgaa-4.1.2-1.9` | Chaque légende d’image est-elle, si nécessaire, correctement reliée à l’image correspondante ? | `rgaa-figure-caption-structure` |
 | `rgaa-4.1.2-10.1` | Dans le site web, des feuilles de styles sont-elles utilisées pour contrôler la présentation de l’information ? | `rgaa-letters-spaced-with-spaces`, `rgaa-presentational-attributes-absent`, `rgaa-presentational-elements-absent` |
@@ -503,7 +504,7 @@ Checks that the aria-label, aria-labelledby, title and &lt;label&gt; of a form f
 
 **Applies to.** Applies to the form fields of RGAA's glossary entry "Champ de saisie de formulaire" (native &lt;input&gt; other than the button types and hidden, &lt;select&gt;, &lt;textarea&gt;, &lt;output&gt;, &lt;progress&gt;, &lt;meter&gt;, and the textbox, searchbox, combobox, spinbutton, slider, listbox, checkbox, radio, switch and progressbar roles) that have a visible label and at least one label source other than the one the visible label is read from. The visible label is the visible text of the field's &lt;label&gt;, else of the elements its aria-labelledby points to, else, for the checkbox, radio and switch roles, the field's own text. A field whose visible label is not tied to it in the markup is not found. A page with no such field is notApplicable.
 
-**Expectation.** RGAA 11.2.5: when present, the aria-label, the text aria-labelledby points to, the title and the content of the &lt;label&gt; each contain the visible label. Punctuation and capital letters are ignored (the particular cases of 11.2); accents are not folded. A source that does not contain it fails.
+**Expectation.** RGAA 11.2.5: when present, the aria-label, the text aria-labelledby points to, the title and the content of the &lt;label&gt; each contain the visible label. Punctuation and capital letters are ignored (the particular cases of 11.2); accents are not folded. The source that gives the accessible name fails when it does not contain it. Another source that does not (a title holding a format hint beside a &lt;label&gt;) is asked about: the test's conditions name every source present, but its methodology and the glossary « Étiquette de champ de formulaire » judge the one that is the étiquette, as 11.9.2 does for buttons. A word that differs only by its ending ("Recherche" for "Rechercher") is asked about too: « contient » may be read as a string or as words.
 
 ### `rgaa-field-label-listed-source`
 
@@ -704,7 +705,14 @@ Checks that each exposed &lt;img&gt; has an alt attribute or another text altern
 
 **Applies to.** Applies to &lt;img&gt; elements included in the accessibility tree, as img-alt-present does: role="presentation" or role="none" leaves an image out only when it is not focusable, and hidden images are left out. A spacer with no alt, or an alt of only spaces, is left out too: an image 2 px wide or high, or less, as rendered or, with no layout, by its width or height attribute, unless it is in a &lt;figure&gt; with a &lt;figcaption&gt; or is the only content of a link or a button. A page with none is notApplicable.
 
-**Expectation.** Each applicable &lt;img&gt; has an alt attribute (alt="" included), a non-empty aria-label or aria-labelledby, or a non-empty title. One with none of these fails 1.1.1 step 1: RGAA 1.1.1 asks each image carrying information for a text alternative. A spacer carries none, so it is decorative, and the alt="" it lacks is 1.2.1's matter, which rgaa-img-no-alt-decorative fails.
+**Expectation.**
+
+Each applicable &lt;img&gt; has an alt attribute (alt="" included), a non-empty aria-label or aria-labelledby, or a non-empty title. RGAA 1.1.1 asks each image carrying information for a text alternative, and 1.2.1 asks each decorative one for alt="", so an image with none of these fails one of the two, depending on what it is:
+
+- it fails 1.1.1 when it certainly carries information: it is the only content of a link or a button, it has a caption (a &lt;figure&gt; with a &lt;figcaption&gt;), it is an image map (usemap or ismap), or it takes focus (tabindex 0 or more);
+- otherwise it is asked about (cantTell), since it may be decorative (glossary « Image de décoration »: « Une image précédant chaque item d'une liste »), and the 1.1.x methodology leaves that call to a person; rgaa-img-no-alt-decorative asks the 1.2.1 side.
+
+A spacer carries no information, so it is decorative, and the alt="" it lacks is 1.2.1's matter, which rgaa-img-no-alt-decorative fails.
 
 ### `rgaa-img-decorative-no-alternative`
 
@@ -1063,7 +1071,7 @@ Checks that no HTML element carries one of the presentational attributes RGAA li
 
 **Applies to.** Applies to any scan scope; whether an HTML element in it carries one of the attributes RGAA 10.1.2 lists is always an answerable question.
 
-**Expectation.** No HTML element carries align, alink, background, basefont, bgcolor, border, cellpadding, cellspacing, char, charoff, clear, color, compact, frameborder, hspace, link, marginheight, marginwidth, text, valign, vlink or vspace; size is allowed only on &lt;select&gt;, and width and height only on &lt;img&gt;, &lt;object&gt;, &lt;embed&gt;, &lt;canvas&gt; and &lt;svg&gt;. That is RGAA 10.1.2's list as written, so width and height on an &lt;iframe&gt; or a &lt;video&gt;, and size on an &lt;input&gt;, are reported too. One exception: a &lt;source&gt; in a &lt;picture&gt; gives the &lt;img&gt; its width and height for its art direction (HTML added them in 2021, after the list was written), so it is treated as the &lt;img&gt; is. One occurrence per element, naming every such attribute it carries.
+**Expectation.** No HTML element carries align, alink, background, basefont, bgcolor, border, cellpadding, cellspacing, char, charoff, clear, color, compact, frameborder, hspace, link, marginheight, marginwidth, text, valign, vlink or vspace; size is allowed only on &lt;select&gt;, and width and height only on &lt;img&gt;, &lt;object&gt;, &lt;embed&gt;, &lt;canvas&gt; and &lt;svg&gt;. That is RGAA 10.1.2's list as written, so width and height on an &lt;iframe&gt; or a &lt;video&gt;, and size on an &lt;input&gt;, are reported too. One exception: a &lt;source&gt; in a &lt;picture&gt; gives the &lt;img&gt; its width and height for its art direction (HTML added them in 2021, after the list was written): they are outside the list's closed exceptions but are the image's dimensions, so they are asked about (cantTell) rather than failed. One occurrence per element, naming every such attribute it carries.
 
 ### `rgaa-presentational-elements-absent`
 
@@ -1151,6 +1159,23 @@ A same-page link outside the main content zone leads to it: its fragment resolve
 
 A link whose target does not exist fails as a broken skip link only when its name or fragment says it leads to the content (« contenu », content, main, principal…); a broken first link that names something else (cookie settings, a menu) is no skip link to the content. It asks instead of failing when no navigation block comes before the main zone and no link leads to it (a one-page site may not need one), and on a skip link whose target exists but is hidden, sits before the zone with links or other focusable elements, but no navigation block, between the two, or sits inside the zone after links or other focusable elements outside navigation, and on a link to the content whose target lies before a navigation block that precedes the zone (a wrapper around a section menu and &lt;main&gt;). A skip link to a target inside navigation, after the zone, or with navigation between it and the zone leads elsewhere (to a menu, a search form, the footer) and does not count.
 
+### `rgaa-svg-decorative-aria-hidden`
+
+**Decorative SVGs are hidden with aria-hidden="true"**
+
+automatic · no formal WCAG SC mapping · confidence high · default severity minor
+
+Checks each &lt;svg&gt; exposed to assistive technologies that may be decorative: fails one marked role="presentation" without aria-hidden="true", and asks about the others.
+
+**Applies to.** Applies to outer &lt;svg&gt; elements exposed to assistive technologies: no aria-hidden="true" on themselves or an ancestor, no role="img" or graphics role, that draw something of their own (not a sprite sheet of &lt;defs&gt; and &lt;symbol&gt;), and that may be decorative: not the only content of a link or a button, not focusable themselves (tabindex 0 or more), and not in a &lt;figure&gt; with a &lt;figcaption&gt; (criterion 1.2 does not apply to an image with a caption). Content hidden with CSS or the hidden attribute is left out. A page with none is notApplicable.
+
+**Expectation.**
+
+RGAA 1.2.4 asks a decorative &lt;svg&gt; for aria-hidden="true", and for no alternative, no non-empty &lt;title&gt; or &lt;desc&gt;, and no title attribute.
+
+- An &lt;svg&gt; with role="presentation" or role="none" fails (presentationWithoutAriaHidden): the author marks it decorative, and unlike 1.2.1 for &lt;img&gt;, 1.2.4 accepts only aria-hidden="true".
+- Any other is asked about (cantTell): if it is decorative, such as an icon beside a button's text, it fails 1.2.4; if it carries information, 1.1.5 applies instead, which rgaa-svg-role-img and svg-text-alternative-present check. The 1.2.x methodology leaves that call to a person.
+
 ### `rgaa-svg-hidden-no-alternative`
 
 **Hidden decorative SVGs carry no text alternative**
@@ -1173,7 +1198,7 @@ Checks that an &lt;svg&gt; named by aria-labelledby, aria-label or &lt;title&gt;
 
 **Applies to.** Applies to outer &lt;svg&gt; elements that carry a text alternative: text referenced by aria-labelledby, a non-empty aria-label, or a non-empty &lt;title&gt; child. An &lt;svg&gt; with aria-hidden="true", on itself or an ancestor, is left out (rgaa-svg-hidden-no-alternative checks it), and so is content hidden with CSS or the hidden attribute. An &lt;svg role="img"&gt; with no alternative at all is left to svg-text-alternative-present. A page with none is notApplicable.
 
-**Expectation.** The &lt;svg&gt; has role="img" (RGAA 1.1.5 step 3; step 4: "Si ce n'est pas le cas, le test est invalidé"), and its alternative comes from aria-labelledby or aria-label (step 5). An alternative without role="img" fails: the author has shown that the image carries information, and without the role it is not exposed as an image. If the image were in fact decorative, it would fail 1.2.4 instead, which requires aria-hidden="true" and no alternative. An &lt;svg role="img"&gt; named only by its &lt;title&gt; is asked about (cantTell): RGAA contradicts itself there. 1.1.5 step 5 lists only aria-labelledby and aria-label, but 1.3.6 checks "le contenu de l'élément &lt;title&gt;" as the alternative of an SVG.
+**Expectation.** The &lt;svg&gt; has role="img" (RGAA 1.1.5 step 3; step 4: "Si ce n'est pas le cas, le test est invalidé"), and its alternative comes from aria-labelledby or aria-label (step 5). An alternative without role="img" fails when the SVG certainly carries information: it is the only content of a link or a button, or it takes focus itself (tabindex 0 or more). Otherwise it is asked about (cantTell): an icon beside a button's text is decorative, and then it fails 1.2.4 instead, which requires aria-hidden="true" and no alternative; the 1.1.5 methodology leaves that call to a person (« déterminer si l'image est porteuse d'information »). An &lt;svg role="img"&gt; named only by its &lt;title&gt; is asked about (cantTell): RGAA contradicts itself there. 1.1.5 step 5 lists only aria-labelledby and aria-label, but 1.3.6 checks "le contenu de l'élément &lt;title&gt;" as the alternative of an SVG.
 
 ### `rgaa-th-scope-row-col`
 

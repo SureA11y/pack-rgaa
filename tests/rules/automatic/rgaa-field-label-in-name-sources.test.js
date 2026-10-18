@@ -24,27 +24,35 @@ function run(body) {
   return runa11yCoreOnHtml(page(body), RUN);
 }
 
-test(`${RULE_ID}: a title that does not contain the label fails (11.2.5 checks every source)`, () => {
+// 11.2.5's conditions name every source present, but its methodology and
+// the glossary « Étiquette de champ de formulaire » judge only the étiquette,
+// the source that gives the name: another source is asked about, as 11.9.2
+// does for buttons.
+test(`${RULE_ID}: a source that does not give the name and lacks the label is asked about`, () => {
   for (const body of [
     '<label for="x">E-mail</label><input id="x" title="Adresse électronique">',
     '<label for="x">Nom</label><input id="x" aria-labelledby="y" title="Famille"><span id="y">Nom de famille</span>',
     '<span id="l">Recherche</span><input aria-labelledby="l" title="Chercher sur le site">'
   ]) {
-    const rule = assertRule(run(body), RULE_ID, 'fail', { maxOccurrences: 1 });
-    assert.deepEqual(reasons(rule), [['fail', 'SOURCE_LACKS_VISIBLE_LABEL']], body);
+    const rule = assertRule(run(body), RULE_ID, 'cantTell', { maxOccurrences: 1 });
+    assert.deepEqual(reasons(rule), [['cantTell', 'SOURCE_LACKS_VISIBLE_LABEL']], body);
     assert.equal(rule.occurrences[0].i18n.params.sources, 'title');
+    assert.equal(
+      rule.occurrences[0].i18n.summaryKey,
+      'fieldLabelInNameSources_summary_cantTell_source'
+    );
   }
 });
 
-test(`${RULE_ID}: a <label> that does not contain the visible label read from aria-labelledby fails`, () => {
+test(`${RULE_ID}: a <label> that does not contain the visible label read from aria-labelledby is asked about`, () => {
   const rule = assertRule(
     run(
       '<span id="l">Recherche</span><label for="x" hidden>Mots</label><input id="x" aria-labelledby="l">'
     ),
     RULE_ID,
-    'fail'
+    'cantTell'
   );
-  assert.deepEqual(reasons(rule), [['fail', 'SOURCE_LACKS_VISIBLE_LABEL']]);
+  assert.deepEqual(reasons(rule), [['cantTell', 'SOURCE_LACKS_VISIBLE_LABEL']]);
   assert.equal(rule.occurrences[0].i18n.params.sources, '<label>');
 });
 
@@ -70,11 +78,11 @@ test(`${RULE_ID}: punctuation and capital letters are ignored, accents are not`,
     assertRule(run(body), RULE_ID, 'pass', { maxOccurrences: 0 });
   }
   const rule = assertRule(
-    run('<label for="x">Déposer</label><input type="file" id="x" title="Deposer un fichier">'),
+    run('<label for="x">Déposer</label><input type="file" id="x" aria-label="Deposer un fichier">'),
     RULE_ID,
     'fail'
   );
-  assert.deepEqual(reasons(rule), [['fail', 'SOURCE_LACKS_VISIBLE_LABEL']]);
+  assert.deepEqual(reasons(rule), [['fail', 'NAME_LACKS_VISIBLE_LABEL']]);
 });
 
 test(`${RULE_ID}: a source that leaves out the text in parentheses is asked about`, () => {
@@ -146,10 +154,10 @@ function rollups(body) {
   return { rgaa: outcome('rgaa-4.1.2-11.2'), wcag: outcome('wcag-2.5.3-label-in-name'), result };
 }
 
-test(`${RULE_ID}: a title without the label is outside WCAG 2.5.3 but fails RGAA 11.2`, () => {
+test(`${RULE_ID}: a title without the label is outside WCAG 2.5.3 and asked about under RGAA 11.2`, () => {
   const r = rollups('<label for="x">E-mail</label><input id="x" title="Adresse électronique">');
   assert.equal(r.wcag, 'notApplicable');
-  assert.equal(r.rgaa, 'fail');
+  assert.equal(r.rgaa, 'cantTell');
   const rgaa = r.result.rulesResults.find((x) => x.ruleId === 'rgaa-4.1.2-11.2');
   assert.ok(!rgaa.data.details.checksIds.includes('label-in-name'));
 });
@@ -181,9 +189,9 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-field-label-in-name-sour
   ]);
   got.sort((a, b) => a[0].localeCompare(b[0]));
   assert.deepEqual(got, [
-    ['fins_case_01', 'fail', 'SOURCE_LACKS_VISIBLE_LABEL'],
+    ['fins_case_01', 'cantTell', 'SOURCE_LACKS_VISIBLE_LABEL'],
     ['fins_case_02', 'fail', 'NAME_LACKS_VISIBLE_LABEL'],
-    ['fins_case_03', 'fail', 'SOURCE_LACKS_VISIBLE_LABEL'],
+    ['fins_case_03', 'cantTell', 'SOURCE_LACKS_VISIBLE_LABEL'],
     ['fins_case_04', 'fail', 'NAME_LACKS_VISIBLE_LABEL'],
     ['fins_case_05', 'cantTell', 'PARENTHESISED_TEXT_MISSING']
   ]);
@@ -199,17 +207,33 @@ test(`${RULE_ID}: screen-reader-only text is left out of the visible label`, () 
   assert.ok(rule && rule.outcome !== 'fail', rule && JSON.stringify(reasons(rule)));
 });
 
-// RGAA's particular cases excuse punctuation, capitals and symbols only: a
-// word that differs by its ending is another word to a voice user, so it
-// fails (nantes: "Recherche" shown, "Rechercher" as the name).
-test(`${RULE_ID}: a word that differs only by its ending fails`, () => {
+// « Contient au moins l'intitulé visible » may be read as a string, which
+// "Rechercher" contains "Recherche" as, or as words, which it does not: a
+// word that differs only by its ending is asked about (nantes: "Recherche"
+// shown, "Rechercher" as the name).
+test(`${RULE_ID}: a word that differs only by its ending is asked about`, () => {
   for (const body of [
-    '<label for="q">Recherche</label><input id="q" title="Rechercher">',
-    '<label for="q">Rechercher</label><input id="q" title="Recherche sur le site">',
-    '<label for="n">Nom</label><input id="n" title="Nombre">'
+    '<label for="q">Recherche</label><input id="q" aria-label="Rechercher">',
+    '<label for="q">Recherche</label><input id="q" title="Rechercher">'
+  ]) {
+    const rule = assertRule(run(body), RULE_ID, 'cantTell', {
+      minOccurrences: 1,
+      maxOccurrences: 1
+    });
+    assert.deepEqual(reasons(rule), [['cantTell', 'POSSIBLE_INFLECTION']], body);
+    assert.equal(
+      rule.occurrences[0].i18n.summaryKey,
+      'fieldLabelInNameSources_summary_cantTell_inflection'
+    );
+  }
+  // A name that does not hold the visible word fails, and short words are
+  // not stretched: "Nom" is not "Nombre".
+  for (const body of [
+    '<label for="q">Rechercher</label><input id="q" aria-label="Recherche sur le site">',
+    '<label for="n">Nom</label><input id="n" aria-label="Nombre">'
   ]) {
     const rule = assertRule(run(body), RULE_ID, 'fail', { minOccurrences: 1, maxOccurrences: 1 });
-    assert.deepEqual(reasons(rule), [['fail', 'SOURCE_LACKS_VISIBLE_LABEL']], body);
+    assert.deepEqual(reasons(rule), [['fail', 'NAME_LACKS_VISIBLE_LABEL']], body);
   }
 });
 

@@ -111,13 +111,21 @@ test(`${RULE_ID}: custom elements are not checked`, () => {
 });
 
 // HTML gives <source> in <picture> the <img>'s width and height, for art
-// direction; elsewhere a <source> has none.
-test(`${RULE_ID}: width and height on a <picture>'s <source> are allowed, as on <img>`, () => {
+// direction, but 10.1.2's list of exceptions is closed: asked about. On any
+// other <source> they fail.
+test(`${RULE_ID}: width and height on a <picture>'s <source> are asked about`, () => {
   const pictured = page(
     '<picture><source srcset="a.avif" type="image/avif" width="800" height="600">' +
       '<img src="a.jpg" alt="Vue" width="800" height="600"></picture>'
   );
-  assertRule(runa11yCoreOnHtml(pictured, RUN), RULE_ID, 'pass', { maxOccurrences: 0 });
+  const rule = assertRule(runa11yCoreOnHtml(pictured, RUN), RULE_ID, 'cantTell', {
+    minOccurrences: 1,
+    maxOccurrences: 1
+  });
+  assert.deepEqual(rule.occurrences[0].data.details, {
+    reasonCode: 'pictureSourceDimensions',
+    attributes: ['width', 'height']
+  });
   const video = page('<video><source src="a.mp4" type="video/mp4" width="800"></video>');
   assertRule(runa11yCoreOnHtml(video, RUN), RULE_ID, 'fail', { minOccurrences: 1 });
 });

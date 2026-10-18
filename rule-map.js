@@ -34,8 +34,8 @@
  * as heading hierarchy and landmarks.
  *
  * REVIEW STATUS: drafted from the RGAA 4.1.2 test wording and methodology
- * (data/), then checked row by row against how other RGAA tools
- * map and flag the same checks. Not yet reviewed by an RGAA auditor.
+ * (data/), then checked row by row against those tests, their methodology
+ * and the glossary. Not yet reviewed by an RGAA auditor.
  */
 
 const RGAA_RULE_TESTS = {
@@ -58,7 +58,7 @@ const RGAA_RULE_TESTS = {
     },
     'aria-allowed-attr': {
       tests: [],
-      note: "Fails when an aria-* attribute is neither global nor supported by the element's role (WCAG 4.1.2). Not linked to 8.2.1, where the W3C validator decides: the rule fails <h2 aria-expanded>, which the validator accepts, skips elements whose role depends on context (a[href], td, section, summary), where the validator reports errors, and skips hidden content, which 8.2.1 judges. rgaa-aria-attribute-conformance reports 8.2.1. Not mapped to 7.1.1 (where other RGAA tools put this check): the rule also fires on static markup, which is not a scripted component."
+      note: "Fails when an aria-* attribute is neither global nor supported by the element's role (WCAG 4.1.2). Not linked to 8.2.1, where the W3C validator decides: the rule fails <h2 aria-expanded>, which the validator accepts, skips elements whose role depends on context (a[href], td, section, summary), where the validator reports errors, and skips hidden content, which 8.2.1 judges. rgaa-aria-attribute-conformance reports 8.2.1. Not mapped to 7.1.1: the rule also fires on static markup, which is not a scripted component."
     },
     'aria-allowed-role': {
       tests: [],
@@ -74,7 +74,7 @@ const RGAA_RULE_TESTS = {
     },
     'aria-checked-state-mismatch': {
       tests: [],
-      note: 'Asks about native checkbox/radio inputs whose explicit aria-checked disagrees with their real state (WCAG 4.1.2). Not linked to 8.2.1: the W3C validator reports any aria-checked on these inputs, whatever its value, and the rule says nothing when the value agrees. rgaa-aria-attribute-conformance reports 8.2.1. Not mapped to 7.1.1 (where other RGAA tools put this check): a native input is not a scripted component.'
+      note: 'Asks about native checkbox/radio inputs whose explicit aria-checked disagrees with their real state (WCAG 4.1.2). Not linked to 8.2.1: the W3C validator reports any aria-checked on these inputs, whatever its value, and the rule says nothing when the value agrees. rgaa-aria-attribute-conformance reports 8.2.1. Not mapped to 7.1.1: a native input is not a scripted component.'
     },
     'aria-conditional-attr': {
       tests: [],
@@ -98,7 +98,7 @@ const RGAA_RULE_TESTS = {
     },
     'aria-prohibited-attr': {
       tests: [],
-      note: 'Fails when aria-label/aria-labelledby is set on roles where ARIA prohibits naming (generic, paragraph, strong...), and asks when the element has text (WCAG 4.1.2). Not linked to 8.2.1: the W3C validator reports every such attribute as an error, including the cases this rule asks about and the ones it exempts inside a widget, and on a native <caption>. rgaa-aria-attribute-conformance reports 8.2.1. Not mapped to 7.1.1 (where other RGAA tools put this check): the rule fires on plain div, span and p elements, which are not scripted components.'
+      note: 'Fails when aria-label/aria-labelledby is set on roles where ARIA prohibits naming (generic, paragraph, strong...), and asks when the element has text (WCAG 4.1.2). Not linked to 8.2.1: the W3C validator reports every such attribute as an error, including the cases this rule asks about and the ones it exempts inside a widget, and on a native <caption>. rgaa-aria-attribute-conformance reports 8.2.1. Not mapped to 7.1.1: the rule fires on plain div, span and p elements, which are not scripted components.'
     },
     'aria-prohibited-children': {
       tests: [],
@@ -106,7 +106,7 @@ const RGAA_RULE_TESTS = {
     },
     'aria-required-attr': {
       tests: [],
-      note: 'Fails when an explicit role lacks a required state/property (e.g. role=checkbox without aria-checked), and asks where WAI-ARIA gives a default value (WCAG 4.1.2). Not linked to 8.2.1: the W3C validator reports those defaulted cases as errors too (role=heading without aria-level). rgaa-aria-attribute-conformance reports 8.2.1. Not mapped to 7.1.1 (where other RGAA tools put this check): its methodology steps (role, name, name consistent with state) do not check state attributes, and the rule also fires on elements no script drives.'
+      note: 'Fails when an explicit role lacks a required state/property (e.g. role=checkbox without aria-checked), and asks where WAI-ARIA gives a default value (WCAG 4.1.2). Not linked to 8.2.1: the W3C validator reports those defaulted cases as errors too (role=heading without aria-level). rgaa-aria-attribute-conformance reports 8.2.1. Not mapped to 7.1.1: its methodology steps (role, name, name consistent with state) do not check state attributes, and the rule also fires on elements no script drives.'
     },
     'aria-required-children': {
       tests: [],
@@ -126,7 +126,7 @@ const RGAA_RULE_TESTS = {
     },
     'aria-roles-valid': {
       tests: [],
-      note: 'Fails when no token of an explicit role is a real, non-abstract WAI-ARIA role, and asks on a native element whose role is unknown (WCAG 4.1.2). Not linked to 8.2.1: the W3C validator reports every unknown token, one in a list (role="bogus button") or written with capitals (role="BUTTON"), which this rule passes. rgaa-aria-role-conformance reports 8.2.1. Not mapped to 7.1.1 (where other RGAA tools put this check): the rule also fires on static markup, which is not a scripted component.'
+      note: 'Fails when no token of an explicit role is a real, non-abstract WAI-ARIA role, and asks on a native element whose role is unknown (WCAG 4.1.2). Not linked to 8.2.1: the W3C validator reports every unknown token, one in a list (role="bogus button") or written with capitals (role="BUTTON"), which this rule passes. rgaa-aria-role-conformance reports 8.2.1. Not mapped to 7.1.1: the rule also fires on static markup, which is not a scripted component.'
     },
     'aria-text': {
       tests: [],
@@ -134,11 +134,11 @@ const RGAA_RULE_TESTS = {
     },
     'aria-valid-attr': {
       tests: [],
-      note: 'Asks about aria-* attribute names not defined by WAI-ARIA (WCAG 4.1.2). Not linked to 8.2.1: the W3C validator reports these as errors, so a question is too weak there, and the rule skips hidden content. rgaa-aria-attribute-conformance reports 8.2.1. Not mapped to 7.1.1 (where other RGAA tools put this check): the rule also fires on static markup, which is not a scripted component.'
+      note: 'Asks about aria-* attribute names not defined by WAI-ARIA (WCAG 4.1.2). Not linked to 8.2.1: the W3C validator reports these as errors, so a question is too weak there, and the rule skips hidden content. rgaa-aria-attribute-conformance reports 8.2.1. Not mapped to 7.1.1: the rule also fires on static markup, which is not a scripted component.'
     },
     'aria-valid-attr-value': {
       tests: [],
-      note: 'Flags recognized aria-* attributes whose value does not match the declared type (WCAG 4.1.2), and asks about an idref list that resolves to nothing. Not linked to 8.2.1: it passes values the W3C validator rejects (aria-expanded="", a token with surrounding spaces) and skips hidden content. rgaa-aria-attribute-conformance reports 8.2.1. Not mapped to 7.1.1 (where other RGAA tools put this check): the rule also fires on static markup, which is not a scripted component.'
+      note: 'Flags recognized aria-* attributes whose value does not match the declared type (WCAG 4.1.2), and asks about an idref list that resolves to nothing. Not linked to 8.2.1: it passes values the W3C validator rejects (aria-expanded="", a token with surrounding spaces) and skips hidden content. rgaa-aria-attribute-conformance reports 8.2.1. Not mapped to 7.1.1: the rule also fires on static markup, which is not a scripted component.'
     },
     'autocomplete-valid': {
       tests: [],
@@ -298,7 +298,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-field-label-in-name-sources': {
       tests: ['11.2.5'],
-      note: 'Fails a form field (glossary "Champ de saisie de formulaire", native and ARIA) with a visible label when its aria-label, the text its aria-labelledby points to, its title or the content of its <label> does not contain that label. That is 11.2.5 as written: each source, when present, contains at least the visible label, not only the one that gives the accessible name. Punctuation and capital letters are ignored (particular cases of 11.2). Asks when the visible label may be a symbol, or when a source differs only by an abbreviation or by text in parentheses. The visible label is read from the <label>, else from aria-labelledby, else from the field\'s own text for the checkbox, radio and switch roles.'
+      note: 'Fails a form field (glossary "Champ de saisie de formulaire", native and ARIA) with a visible label when the source that gives its accessible name (aria-labelledby, aria-label, <label> or title, in the glossary\'s order) does not contain that label. Asks when another source present does not: 11.2.5\'s conditions name each source, but its methodology and the glossary « Étiquette de champ de formulaire » judge the étiquette alone, the conflict 11.9.2 is asked about for buttons. Punctuation and capital letters are ignored (particular cases of 11.2). Asks when the visible label may be a symbol, or when a source differs only by an abbreviation, by text in parentheses, or by the ending of a word of 4 letters or more ("Recherche" for "Rechercher"), since « contient » may be read as a string or as words. The visible label is read from the <label>, else from aria-labelledby, else from the field\'s own text for the checkbox, radio and switch roles.'
     },
     'rgaa-field-label-listed-source': {
       tests: ['11.1.1'],
@@ -314,7 +314,7 @@ const RGAA_RULE_TESTS = {
     },
     'focus-order-semantics': {
       tests: [],
-      note: 'Flags elements with tabindex>=0 and a non-interactive explicit role (heading, list, region...). When such an element is a scripted control, 7.1.1 step 2 (role consistent with its use) directly applies. Legitimately focusable elements such as scrollable regions make this only partial evidence. Not mapped to 7.1.1: only evidence when the element is a scripted component. Not mapped to 12.8.1 (where other RGAA tools put this check): 12.8.1 checks that the tab order is coherent, not the role of what receives focus.'
+      note: 'Flags elements with tabindex>=0 and a non-interactive explicit role (heading, list, region...). When such an element is a scripted control, 7.1.1 step 2 (role consistent with its use) directly applies. Legitimately focusable elements such as scrollable regions make this only partial evidence. Not mapped to 7.1.1: only evidence when the element is a scripted component. Not mapped to 12.8.1: 12.8.1 checks that the tab order is coherent, not the role of what receives focus.'
     },
     'rgaa-form-button-label-in-name-sources': {
       tests: ['11.9.2'],
@@ -334,7 +334,7 @@ const RGAA_RULE_TESTS = {
     },
     'form-control-programmatic-label-quality': {
       tests: ['11.1.3', '11.2.2', '11.2.3', '11.2.4'],
-      note: "Asks about native input/select/textarea controls whose only name is a placeholder, a title, an aria-label, or aria-labelledby pointing only at hidden text; a control not drawn on screen (transparent or clipped away) is left out. Those are the labels 11.1.3 covers, a label that is not visible (masqué, aria-label): its step asks whether a title, or text next to the field, makes the expected input understandable, which only a person can tell. 11.2.2 asks whether a title is relevant (other RGAA tools review title-labelled fields there). Not mapped to 11.1.1: a placeholder-only field meets none of the 11.1.1 conditions, and rgaa-field-label-listed-source fails it there. The rule is filed under WCAG 3.3.2, which RGAA relates to 11.2. Also linked to 11.2.3 and 11.2.4, which ask whether a label given by aria-label, or by a passage linked with aria-labelledby, tells the field's exact function: the rule asks that about fields named only by aria-label or by aria-labelledby, and a question is never a false failure."
+      note: "Asks about native input/select/textarea controls whose only name is a placeholder, a title, an aria-label, or aria-labelledby pointing only at hidden text; a control not drawn on screen (transparent or clipped away) is left out. Those are the labels 11.1.3 covers, a label that is not visible (masqué, aria-label): its step asks whether a title, or text next to the field, makes the expected input understandable, which only a person can tell. 11.2.2 asks whether a title is relevant. Not mapped to 11.1.1: a placeholder-only field meets none of the 11.1.1 conditions, and rgaa-field-label-listed-source fails it there. The rule is filed under WCAG 3.3.2, which RGAA relates to 11.2. Also linked to 11.2.3 and 11.2.4, which ask whether a label given by aria-label, or by a passage linked with aria-labelledby, tells the field's exact function: the rule asks that about fields named only by aria-label or by aria-labelledby, and a question is never a false failure."
     },
     'form-control-single-label': {
       tests: [],
@@ -382,7 +382,7 @@ const RGAA_RULE_TESTS = {
     },
     'html-xml-lang-mismatch': {
       tests: ['8.4.1'],
-      note: "Fails when lang and xml:lang on <html> declare different primary languages, so at least one of them does not give the document's main language (8.4.1 'pertinent'). Not mapped to 8.3.1 (where other RGAA tools put this check): the rule only applies when both attributes are present, so a language is always indicated. Not linked to 8.2.1: the validator compares the full values, so fr-FR against fr is a validity error this rule passes; rgaa-html-elements-attributes-valid reports it under 8.2.1."
+      note: "Fails when lang and xml:lang on <html> declare different primary languages, so at least one of them does not give the document's main language (8.4.1 'pertinent'). Not mapped to 8.3.1: the rule only applies when both attributes are present, so a language is always indicated. Not linked to 8.2.1: the validator compares the full values, so fr-FR against fr is a validity error this rule passes; rgaa-html-elements-attributes-valid reports it under 8.2.1."
     },
     'identical-iframes-same-purpose': {
       tests: [],
@@ -585,7 +585,7 @@ const RGAA_RULE_TESTS = {
     },
     'menuitem-name-present': {
       tests: ['7.1.1'],
-      note: 'Checks that menuitem, menuitemcheckbox and menuitemradio elements have a non-empty name. These are parts of a script-driven menu component, and 7.1.1 step 2 requires an explicit name. Not a form field, so 11.1 does not apply. Not mapped to 11.9.1 (where other RGAA tools put this check): 11.9.1 covers buttons in a form, not menu items.'
+      note: 'Checks that menuitem, menuitemcheckbox and menuitemradio elements have a non-empty name. These are parts of a script-driven menu component, and 7.1.1 step 2 requires an explicit name. Not a form field, so 11.1 does not apply. Not mapped to 11.9.1: 11.9.1 covers buttons in a form, not menu items.'
     },
     'rgaa-meta-redirect-immediate': {
       tests: ['13.1.2'],
@@ -621,7 +621,7 @@ const RGAA_RULE_TESTS = {
     },
     'nested-interactive-controls-absent': {
       tests: [],
-      note: 'Flags interactive controls that contain another operable control (for example a button inside a[href]). Not linked to 8.2.1: the rule fails nesting that uses only ARIA roles, which the W3C validator only warns about (since Nu 26.8.6), and it misses disabled or tabindex descendants the validator rejects; rgaa-html-nesting-valid reports the HTML nesting errors under 8.2.1. Not mapped to 7.1.1 (where other RGAA tools put this check): native nested controls are not scripted components.'
+      note: 'Flags interactive controls that contain another operable control (for example a button inside a[href]). Not linked to 8.2.1: the rule fails nesting that uses only ARIA roles, which the W3C validator only warns about (since Nu 26.8.6), and it misses disabled or tabindex descendants the validator rejects; rgaa-html-nesting-valid reports the HTML nesting errors under 8.2.1. Not mapped to 7.1.1: native nested controls are not scripted components.'
     },
     'no-autoplay-audio': {
       tests: ['4.10.1'],
@@ -653,7 +653,7 @@ const RGAA_RULE_TESTS = {
     },
     'option-name-present': {
       tests: ['11.1.1'],
-      note: 'Checks that role=option has a non-empty name. The RGAA glossary lists option as a form-field role, so an unnamed option fails 11.1.1 (other RGAA tools use 11.1 too). Not mapped to 7.1.1 (where other RGAA tools put this check): it passes when an accessible alternative exists, and the problem is already reported under 11.1.1.'
+      note: 'Checks that role=option has a non-empty name. The RGAA glossary lists option as a form-field role, so an unnamed option fails 11.1.1. Not mapped to 7.1.1: it passes when an accessible alternative exists, and the problem is already reported under 11.1.1.'
     },
     'rgaa-orientation-content-parity': {
       tests: ['13.9.1'],
@@ -697,7 +697,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-presentational-attributes-absent': {
       tests: ['10.1.2'],
-      note: "Fails on each HTML element carrying an attribute 10.1.2 step 1 lists, with its exceptions: size allowed on <select>, width and height on <img>, <object>, <embed>, <canvas> and <svg>. SVG and MathML content is not checked, where those attributes are geometry rather than presentation, and neither are custom elements, whose attributes are the component's own, nor color on <link rel=\"mask-icon\">, the colour of the site's pinned-tab icon. A <source> in a <picture> may carry width and height as the <img> does: they are the image's dimensions, added to HTML after the list was written. Hidden content is checked too, since 10.1.2 judges the generated source."
+      note: "Fails on each HTML element carrying an attribute 10.1.2 step 1 lists, with its exceptions: size allowed on <select>, width and height on <img>, <object>, <embed>, <canvas> and <svg>. SVG and MathML content is not checked, where those attributes are geometry rather than presentation, and neither are custom elements, whose attributes are the component's own, nor color on <link rel=\"mask-icon\">, the colour of the site's pinned-tab icon. Width and height on a <source> in a <picture> are asked about: they are outside the list's closed exceptions, but are the image's dimensions, as on its <img>, added to HTML after the list was written. Hidden content is checked too, since 10.1.2 judges the generated source."
     },
     'presentational-children-focusable-absent': {
       tests: [],
@@ -753,7 +753,7 @@ const RGAA_RULE_TESTS = {
     },
     'skip-link': {
       tests: ['12.7.1', '12.7.2'],
-      note: "Flags skip links whose #fragment does not resolve to a usable target. A skip link is recognised by its wording in the shipped locales ('skip', 'aller au contenu', 'accès direct', 'zum Inhalt springen', 'saltar al contenido', '本文へ') or as the first link of the page placed before main. A dead skip link means the main zone cannot be skipped, which bears on 12.7.1 (where other RGAA tools report a broken skip link), and it fails 12.7.2's condition that the link works ('Le lien est fonctionnel'). The rule does not check the link's visibility or its place across pages, which rgaa-skip-link-placement checks, and a skip link can target zones other than main."
+      note: "Flags skip links whose #fragment does not resolve to a usable target. A skip link is recognised by its wording in the shipped locales ('skip', 'aller au contenu', 'accès direct', 'zum Inhalt springen', 'saltar al contenido', '本文へ') or as the first link of the page placed before main. A dead skip link means the main zone cannot be skipped, which bears on 12.7.1, and it fails 12.7.2's condition that the link works ('Le lien est fonctionnel'). The rule does not check the link's visibility or its place across pages, which rgaa-skip-link-placement checks, and a skip link can target zones other than main."
     },
     'rgaa-skip-link-placement': {
       tests: ['12.7.2'],
@@ -775,6 +775,10 @@ const RGAA_RULE_TESTS = {
       tests: [],
       note: 'Flags <summary> elements with an empty name. A native details/summary disclosure is not script-generated, so 7.1.1 does not strictly apply. 11.9.1 covers only buttons inside a form, and no other candidate test concerns disclosure widgets. The auditor may still choose to treat a scripted summary under 7.1.1.'
     },
+    'rgaa-svg-decorative-aria-hidden': {
+      tests: ['1.2.4'],
+      note: 'Checks each <svg> exposed to assistive technologies that may be decorative (not the only content of a link or button, not focusable, not captioned, not a sprite sheet, no role="img"): fails one with role="presentation" or "none" and no aria-hidden="true", since 1.2.4 condition 1 accepts only aria-hidden="true" for a decorative SVG, and asks about the others, which fail 1.2.4 if decorative and fall under 1.1.5 if they carry information.'
+    },
     'rgaa-svg-hidden-no-alternative': {
       tests: ['1.2.4'],
       note: 'Fails an <svg aria-hidden="true"> that carries a text alternative: aria-label, aria-labelledby, a title attribute, or a non-empty <title> or <desc>, in its own content or in a <symbol>/<svg> it draws through a same-document <use> (as the note of criterion 1.2 asks). aria-hidden marks it decorative, and as a decorative image it breaks conditions 2 to 4 of 1.2.4. Not linked to 1.1.5 as well: a mapping applies to every finding, and such an SVG fails one of the two criteria, not both; if it carries information, hiding it fails 1.1.5 instead, which img-alt-decorative asks about. A sprite sheet, an SVG that draws nothing of its own (only <defs>, <symbol> and the like), is left out: it is no image, and its symbols are checked where a <use> draws them.'
@@ -785,7 +789,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-svg-role-img': {
       tests: ['1.1.5'],
-      note: 'Fails an exposed outer <svg> named by aria-labelledby, aria-label or a <title> child but without role="img": 1.1.5 step 4 says the test is failed without the role. An <svg role="img"> named only by <title> is asked about, since 1.1.5 step 5 lists only the ARIA sources while 1.3.6 treats <title> as the SVG\'s alternative. An unnamed <svg role="img"> is left to svg-text-alternative-present.'
+      note: 'Fails an exposed outer <svg> named by aria-labelledby, aria-label or a <title> child but without role="img": 1.1.5 step 4 says the test is failed without the role. An <svg role="img"> named only by <title> is asked about, since 1.1.5 step 5 lists only the ARIA sources while 1.3.6 treats <title> as the SVG\'s alternative. An unnamed <svg role="img"> is left to svg-text-alternative-present. An SVG with an alternative and no role="img" fails only when it certainly carries information (the only content of a link or button, or focusable); otherwise it is asked about, since it fails 1.2.4 instead if it is decorative.'
     },
     'svg-text-alternative-present': {
       tests: ['1.1.5'],
@@ -817,7 +821,7 @@ const RGAA_RULE_TESTS = {
     },
     'table-th-has-data-cells': {
       tests: [],
-      note: 'Fails a table (not role=presentation) that has <th> but no <td> at all. If the auditor judges it a layout table, the <th> use fails 5.8.1 step 2. If it is a data table whose cells are all marked <th>, no RGAA test forbids that (5.6.4 allows th), so the auditor must decide which applies. Not mapped to 5.8.1: only a failure if the auditor judges the table a layout table. Not mapped to 5.7.1 (where other RGAA tools put this check): a table with no <td> says nothing about the id, scope or role that 5.7.1 checks.'
+      note: 'Fails a table (not role=presentation) that has <th> but no <td> at all. If the auditor judges it a layout table, the <th> use fails 5.8.1 step 2. If it is a data table whose cells are all marked <th>, no RGAA test forbids that (5.6.4 allows th), so the auditor must decide which applies. Not mapped to 5.8.1: only a failure if the auditor judges the table a layout table. Not mapped to 5.7.1: a table with no <td> says nothing about the id, scope or role that 5.7.1 checks.'
     },
     'target-size-minimum': {
       tests: [],

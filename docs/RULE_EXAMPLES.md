@@ -422,9 +422,9 @@ The title starts with the visible label "E-mail", so both label sources contain 
 **Failed**
 ```html
 <label for="mail">E-mail</label>
-<input type="email" id="mail" title="Adresse électronique">
+<input type="email" id="mail" aria-label="Adresse électronique">
 ```
-RGAA 11.2.5 checks every label source present, and the title does not contain the visible label, although the `<label>` gives the accessible name. WCAG 2.5.3 compares only the accessible name, so `label-in-name` does not apply.
+The `aria-label` gives the accessible name, and it does not contain the visible label "E-mail" (RGAA 11.2.5). A source that does not give the name, such as a `title` holding a format hint beside the `<label>`, is asked about instead: the test's conditions name every source, but its methodology and the glossary judge the étiquette alone.
 
 ## rgaa-field-label-listed-source
 
@@ -689,9 +689,9 @@ The image has a text alternative (RGAA 1.1.1).
 
 **Failed**
 ```html
-<img src="chart.png" width="300" height="200">
+<a href="/rapport"><img src="rapport.png" width="120" height="40"></a>
 ```
-The image has no `alt` attribute and no other text alternative. A spacer (2 px or less) is left out: it is decorative, and fails 1.2.1 alone.
+The image is the link's only content, so it carries information, and it has no `alt` attribute and no other text alternative. An image that may be decorative, such as a bullet before a list item, is asked about instead: it then fails 1.2.1. A spacer (2 px or less) is left out: it is decorative, and fails 1.2.1 alone.
 
 ## rgaa-img-decorative-no-alternative
 
@@ -1332,6 +1332,25 @@ A link before the navigation leads to `<main>`.
 ```
 Navigation comes before the main content and no link leads to it. WCAG 2.4.1 accepts the main landmark as a way to bypass the navigation; RGAA 12.7.1 needs a link. Without the `<nav>`, the rule asks instead, since a one-page site may not need a skip link.
 
+## rgaa-svg-decorative-aria-hidden
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Not applicable**
+```html
+<button type="button">
+  <svg aria-hidden="true" width="16" height="16"><rect width="16" height="16"/></svg>
+  Rechercher
+</button>
+```
+The decorative icon is hidden with `aria-hidden="true"`, as RGAA 1.2.4 asks; rgaa-svg-hidden-no-alternative checks the rest of 1.2.4 for it.
+
+**Failed**
+```html
+<p>Contact <svg role="presentation" width="16" height="16"><rect width="16" height="16"/></svg></p>
+```
+The SVG is marked decorative with `role="presentation"`, which RGAA 1.2.4 does not accept: a decorative SVG needs `aria-hidden="true"`. Another exposed SVG that may be decorative is asked about.
+
 ## rgaa-svg-hidden-no-alternative
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -1367,12 +1386,14 @@ The SVG has `role="img"` and an `aria-label`.
 
 **Failed**
 ```html
-<svg width="20" height="20">
-  <title>Logo</title>
-  <circle cx="10" cy="10" r="8"/>
-</svg>
+<a href="/">
+  <svg width="20" height="20">
+    <title>Accueil</title>
+    <circle cx="10" cy="10" r="8"/>
+  </svg>
+</a>
 ```
-The SVG has a text alternative but no `role="img"`.
+The SVG is the link's only content, so it carries information, and it has a text alternative but no `role="img"`. An SVG that may be decorative, such as an icon beside text, is asked about instead: it then fails 1.2.4.
 
 **Flagged (cantTell)**
 ```html
