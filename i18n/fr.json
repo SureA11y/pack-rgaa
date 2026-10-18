@@ -701,5 +701,9 @@
   "fieldLabelEmpty_summary_emptyTitle": "Ce champ a un attribut title, mais il est vide, et le champ n’a pas d’autre étiquette.",
   "fieldLabelEmpty_summary_emptyAriaLabel": "Ce champ a un attribut aria-label, mais il est vide, et le champ n’a pas d’autre étiquette.",
   "fieldLabelEmpty_summary_emptyLabelledby": "Ce champ a un attribut aria-labelledby, mais il ne pointe vers aucun texte, et le champ n’a pas d’autre étiquette.",
-  "fieldLabelEmpty_hint": "Donnez au champ une étiquette qui indique ce qu’il faut saisir, dans sa balise <label> ou une autre source (RGAA {{test}})."
+  "fieldLabelEmpty_hint": "Donnez au champ une étiquette qui indique ce qu’il faut saisir, dans sa balise <label> ou une autre source (RGAA {{test}}).",
+  "fieldHiddenLabelReview_title": "Un champ à l’étiquette masquée reste compréhensible à l’écran",
+  "fieldHiddenLabelReview_description": "Signale chaque champ de formulaire dont la balise <label> est masquée visuellement, pour qu’une personne vérifie qu’un attribut title ou un texte visible accolé au champ permet de comprendre la saisie attendue.",
+  "fieldHiddenLabelReview_summary_cantTell": "L’étiquette de ce champ (« {{label}} ») est masquée visuellement.",
+  "fieldHiddenLabelReview_hint_cantTell": "Vérifiez qu’un attribut title, ou un passage de texte accolé au champ, visible ou qui devient visible à la prise de focus, permet de comprendre la nature de la saisie attendue (RGAA 11.1.3)."
 }

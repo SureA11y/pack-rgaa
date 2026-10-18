@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 86,
-    "withFixture": 86,
+    "total": 87,
+    "withFixture": 87,
     "withoutFixture": 0
   },
   "rows": [
@@ -326,6 +326,23 @@
         "FAIL": 0,
         "CANTTELL": 0,
         "OTHER": 10
+      }
+    },
+    {
+      "ruleId": "rgaa-field-hidden-label-review",
+      "title": "A field with a visually hidden label is understandable from the screen",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/field-hidden-label-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-field-hidden-label-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-field-hidden-label-review-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 1
       }
     },
     {

@@ -7,6 +7,12 @@
       "example": "<html lang=\"fr\"> <!DOCTYPE html> …</html>"
     },
     {
+      "ruleId": "rgaa-field-hidden-label-review",
+      "label": "Flagged (cantTell)",
+      "engine": "notApplicable",
+      "example": "<label for=\"q\" class=\"sr-only\">Rechercher</label><input id=\"q\"><button>OK</button>"
+    },
+    {
       "ruleId": "rgaa-headings-absent-review",
       "label": "Flagged (cantTell)",
       "engine": "notApplicable",

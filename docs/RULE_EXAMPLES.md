@@ -414,6 +414,22 @@ The address fields are grouped, but the group has no `<legend>` saying what it i
 ```
 The group has a legend.
 
+## rgaa-field-hidden-label-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<label for="q" class="sr-only">Rechercher</label><input id="q"><button>OK</button>
+```
+The label is visually hidden: a person checks that a title, or visible text next to the field, makes the expected input understandable (RGAA 11.1.3).
+
+**Not applicable**
+```html
+<label for="q">Rechercher</label><input id="q">
+```
+The label is visible.
+
 ## rgaa-field-label-empty
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*

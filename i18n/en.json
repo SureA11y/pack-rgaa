@@ -701,5 +701,9 @@
   "fieldLabelEmpty_summary_emptyTitle": "This field has a title attribute, but it is empty, and the field has no other label.",
   "fieldLabelEmpty_summary_emptyAriaLabel": "This field has an aria-label, but it is empty, and the field has no other label.",
   "fieldLabelEmpty_summary_emptyLabelledby": "This field has an aria-labelledby, but it points to no text, and the field has no other label.",
-  "fieldLabelEmpty_hint": "Give the field a label that says what to enter, in its <label> or another source (RGAA {{test}})."
+  "fieldLabelEmpty_hint": "Give the field a label that says what to enter, in its <label> or another source (RGAA {{test}}).",
+  "fieldHiddenLabelReview_title": "A field with a visually hidden label is understandable from the screen",
+  "fieldHiddenLabelReview_description": "Flags each form field whose <label> is visually hidden, for a person to check that a title or visible text next to it makes the expected input understandable.",
+  "fieldHiddenLabelReview_summary_cantTell": "This field's label (\"{{label}}\") is visually hidden.",
+  "fieldHiddenLabelReview_hint_cantTell": "Check that a title, or text next to the field that is visible or becomes visible on focus, makes the expected input understandable (RGAA 11.1.3)."
 }

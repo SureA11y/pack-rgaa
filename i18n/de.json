@@ -701,5 +701,9 @@
   "fieldLabelEmpty_summary_emptyTitle": "Dieses Feld hat ein title-Attribut, aber es ist leer, und das Feld hat keine andere Beschriftung.",
   "fieldLabelEmpty_summary_emptyAriaLabel": "Dieses Feld hat ein aria-label, aber es ist leer, und das Feld hat keine andere Beschriftung.",
   "fieldLabelEmpty_summary_emptyLabelledby": "Dieses Feld hat ein aria-labelledby, aber es verweist auf keinen Text, und das Feld hat keine andere Beschriftung.",
-  "fieldLabelEmpty_hint": "Geben Sie dem Feld eine Beschriftung, die sagt, was einzugeben ist, in seinem <label> oder einer anderen Quelle (RGAA {{test}})."
+  "fieldLabelEmpty_hint": "Geben Sie dem Feld eine Beschriftung, die sagt, was einzugeben ist, in seinem <label> oder einer anderen Quelle (RGAA {{test}}).",
+  "fieldHiddenLabelReview_title": "Ein Feld mit visuell verborgener Beschriftung ist vom Bildschirm her verständlich",
+  "fieldHiddenLabelReview_description": "Markiert jedes Formularfeld, dessen <label> visuell verborgen ist, damit eine Person prüft, dass ein title oder sichtbarer Text neben dem Feld die erwartete Eingabe verständlich macht.",
+  "fieldHiddenLabelReview_summary_cantTell": "Die Beschriftung dieses Feldes („{{label}}“) ist visuell verborgen.",
+  "fieldHiddenLabelReview_hint_cantTell": "Prüfen Sie, dass ein title oder Text neben dem Feld, der sichtbar ist oder beim Fokus sichtbar wird, die erwartete Eingabe verständlich macht (RGAA 11.1.3)."
 }

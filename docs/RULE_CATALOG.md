@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**86 rules total: 66 automatic (decide deterministically; can return `fail`), 20 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**87 rules total: 66 automatic (decide deterministically; can return `fail`), 21 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -85,7 +85,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-video-captions-track-kind`](#rgaa-video-captions-track-kind) | Video caption tracks use kind="captions" | — | — | high | moderate |
 | [`rgaa-widget-label-in-name`](#rgaa-widget-label-in-name) | The accessible name of a scripted component contains its visible label | — | — | high | serious |
 
-## Manual rules (20), never `fail`
+## Manual rules (21), never `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -95,6 +95,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-embedded-refresh-review`](#rgaa-embedded-refresh-review) | Embedded content that may refresh itself lets the user control the refresh | — | — | low | moderate |
 | [`rgaa-fake-list`](#rgaa-fake-list) | Text laid out as a list uses list markup | — | — | low | moderate |
 | [`rgaa-field-group-legend`](#rgaa-field-group-legend) | Groups of form fields have a legend | — | — | medium | moderate |
+| [`rgaa-field-hidden-label-review`](#rgaa-field-hidden-label-review) | A field with a visually hidden label is understandable from the screen | — | — | high | moderate |
 | [`rgaa-frame-title-relevant`](#rgaa-frame-title-relevant) | Frame titles are relevant | — | — | high | moderate |
 | [`rgaa-headings-absent-review`](#rgaa-headings-absent-review) | A page with text but no heading is reviewed | — | — | high | moderate |
 | [`rgaa-image-alt-long`](#rgaa-image-alt-long) | Text alternatives of images are short | — | — | medium | minor |
@@ -135,7 +136,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-10.6` | Dans chaque page web, chaque lien dont la nature n’est pas évidente est-il visible par rapport au texte environnant ? | `link-in-text-block`, `rgaa-link-state-colors-review` |
 | `rgaa-4.1.2-10.7` | Dans chaque page web, pour chaque élément recevant le focus, la prise de focus est-elle visible ? | `css-focus-indicator-suppressed`, `css-hidden-focus`, `manual-review`, `rgaa-focus-indicator-contrast` |
 | `rgaa-4.1.2-10.8` | Pour chaque page web, les contenus cachés ont-ils vocation à être ignorés par les technologies d’assistance ? | `aria-hidden-body`, `aria-hidden-focus` |
-| `rgaa-4.1.2-11.1` | Chaque champ de formulaire a-t-il une étiquette ? | `form-control-programmatic-label-quality`, `option-name-present`, `rgaa-field-label-listed-source`, `rgaa-label-for-target-valid` |
+| `rgaa-4.1.2-11.1` | Chaque champ de formulaire a-t-il une étiquette ? | `form-control-programmatic-label-quality`, `option-name-present`, `rgaa-field-hidden-label-review`, `rgaa-field-label-listed-source`, `rgaa-label-for-target-valid` |
 | `rgaa-4.1.2-11.10` | Dans chaque formulaire, le contrôle de saisie est-il utilisé de manière pertinente (hors cas particuliers) ? | `rgaa-invalid-field-message`, `rgaa-required-field-indication` |
 | `rgaa-4.1.2-11.13` | La finalité d’un champ de saisie peut-elle être déduite pour faciliter le remplissage automatique des champs avec les données de l’utilisateur ? | `rgaa-autocomplete-user-field` |
 | `rgaa-4.1.2-11.2` | Chaque étiquette associée à un champ de formulaire est-elle pertinente (hors cas particuliers) ? | `form-control-label-quality`, `form-control-programmatic-label-quality`, `rgaa-field-label-empty`, `rgaa-field-label-in-name-sources`, `rgaa-title-placeholder-identical` |
@@ -511,6 +512,18 @@ Flags a &lt;fieldset&gt; without a legend, or a role="group" or role="radiogroup
 **Applies to.** Applies to &lt;fieldset&gt; elements and elements with role="group" or role="radiogroup" that contain at least one form field (input other than hidden, select, textarea, or an element with a form field role). A page with none is notApplicable. When every group has a legend (or, for an ARIA group, an aria-label or aria-labelledby), the rule passes: 11.6.1 asks that one exists, and whether it is relevant is 11.7's question.
 
 **Expectation.** RGAA 11.6.1 step 2: a &lt;fieldset&gt; has a &lt;legend&gt; child with text; an element with role="group" or role="radiogroup" has an aria-label or an aria-labelledby that resolves to text. A fieldset that itself carries role="group" or role="radiogroup" may use either. aria-label on a plain fieldset, and title on a group, do not count: step 2 names only those mechanisms. A group without one is flagged for a person to decide whether it groups fields of the same kind, which is when RGAA 11.6.1 requires a legend, and, if so, whether every field instead carries a title, aria-label, aria-labelledby or aria-describedby that names the group (step 3).
+
+### `rgaa-field-hidden-label-review`
+
+**A field with a visually hidden label is understandable from the screen**
+
+manual · no formal WCAG SC mapping · confidence high · default severity moderate
+
+Flags each form field whose &lt;label&gt; is visually hidden, for a person to check that a title or visible text next to it makes the expected input understandable.
+
+**Applies to.** Applies to visible form fields (&lt;input&gt; other than hidden and the button types, &lt;select&gt;, &lt;textarea&gt;) whose &lt;label&gt; elements all hold text but are visually hidden (clipped away, 1 by 1 px with their overflow hidden, and the like), and that have no aria-labelledby pointing to visible text. A page with none is notApplicable.
+
+**Expectation.** RGAA 11.1.3 covers a field « ayant une étiquette dont le contenu n'est pas visible » and asks for one of: a title that makes the expected input understandable, a passage next to the field that becomes visible on focus, or a visible passage next to it. Whether the text on screen (a button beside a search field, a placeholder, an icon) does that is for a person: the field is asked about (hiddenLabel), naming whether it has a title.
 
 ### `rgaa-field-label-empty`
 

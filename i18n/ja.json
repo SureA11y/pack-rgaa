@@ -701,5 +701,9 @@
   "fieldLabelEmpty_summary_emptyTitle": "このフィールドには title 属性がありますが空で、ほかにラベルがありません。",
   "fieldLabelEmpty_summary_emptyAriaLabel": "このフィールドには aria-label がありますが空で、ほかにラベルがありません。",
   "fieldLabelEmpty_summary_emptyLabelledby": "このフィールドには aria-labelledby がありますがテキストを指しておらず、ほかにラベルがありません。",
-  "fieldLabelEmpty_hint": "<label> などで、何を入力するかがわかるラベルをフィールドに付けてください（RGAA {{test}}）。"
+  "fieldLabelEmpty_hint": "<label> などで、何を入力するかがわかるラベルをフィールドに付けてください（RGAA {{test}}）。",
+  "fieldHiddenLabelReview_title": "ラベルが視覚的に隠されたフィールドが画面上で理解できる",
+  "fieldHiddenLabelReview_description": "<label> が視覚的に隠されている各フォームフィールドを示し、title や隣接する表示テキストで入力内容がわかるか人が確認できるようにします。",
+  "fieldHiddenLabelReview_summary_cantTell": "このフィールドのラベル（「{{label}}」）は視覚的に隠されています。",
+  "fieldHiddenLabelReview_hint_cantTell": "title、またはフィールドに隣接する表示テキスト（フォーカス時に表示されるものを含む）で、入力内容がわかるか確認してください（RGAA 11.1.3）。"
 }

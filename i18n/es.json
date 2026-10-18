@@ -701,5 +701,9 @@
   "fieldLabelEmpty_summary_emptyTitle": "Este campo tiene un atributo title, pero está vacío, y el campo no tiene otra etiqueta.",
   "fieldLabelEmpty_summary_emptyAriaLabel": "Este campo tiene un aria-label, pero está vacío, y el campo no tiene otra etiqueta.",
   "fieldLabelEmpty_summary_emptyLabelledby": "Este campo tiene un aria-labelledby, pero no apunta a ningún texto, y el campo no tiene otra etiqueta.",
-  "fieldLabelEmpty_hint": "Dé al campo una etiqueta que diga qué introducir, en su <label> u otra fuente (RGAA {{test}})."
+  "fieldLabelEmpty_hint": "Dé al campo una etiqueta que diga qué introducir, en su <label> u otra fuente (RGAA {{test}}).",
+  "fieldHiddenLabelReview_title": "Un campo con la etiqueta oculta visualmente se entiende desde la pantalla",
+  "fieldHiddenLabelReview_description": "Señala cada campo de formulario cuyo <label> está oculto visualmente, para que una persona compruebe que un title o un texto visible junto a él permite entender lo que hay que introducir.",
+  "fieldHiddenLabelReview_summary_cantTell": "La etiqueta de este campo (\"{{label}}\") está oculta visualmente.",
+  "fieldHiddenLabelReview_hint_cantTell": "Compruebe que un title, o un texto junto al campo visible o que se hace visible al recibir el foco, permite entender lo que hay que introducir (RGAA 11.1.3)."
 }

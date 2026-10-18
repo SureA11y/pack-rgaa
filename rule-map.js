@@ -300,6 +300,10 @@ const RGAA_RULE_TESTS = {
       tests: ['11.6.1'],
       note: 'Asks about a <fieldset> holding form fields with no <legend>, or a role="group" or role="radiogroup" holding form fields with no aria-label or aria-labelledby: the only legends 11.6.1 step 2 accepts (aria-label on a plain fieldset and title on a group do not count). 11.6.1 requires a legend on each grouping of fields of the same kind; whether this group is one, and whether each field instead names the group (step 3), is left to a person.'
     },
+    'rgaa-field-hidden-label-review': {
+      tests: ['11.1.3'],
+      note: "Asks about a visible form field whose <label> elements hold text but are all visually hidden, with no aria-labelledby to visible text: 11.1.3 covers a field « ayant une étiquette dont le contenu n'est pas visible », and asks for a title, or a passage next to the field that is or becomes visible, that makes the expected input understandable, which only a person can judge. Fields named only by aria-label, title or a placeholder are asked about by form-control-programmatic-label-quality."
+    },
     'rgaa-field-label-empty': {
       tests: ['11.2.1', '11.2.2', '11.2.3', '11.2.4'],
       note: "Fails a visible form field whose label sources (a <label>, title, aria-label, or aria-labelledby passages that exist) are all empty, once for each empty source: 11.2.1 to 11.2.4 ask whether each « permet de connaître la fonction exacte du champ », and an empty one tells nothing. A field with no source at all, or an aria-labelledby that points to no element, is left to 11.1.1. A <label>'s text leaves out the field's own content and counts the alt of an image inside it."
