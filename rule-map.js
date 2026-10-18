@@ -569,7 +569,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-link-context-review': {
       tests: ['6.1.1', '6.1.2', '6.1.3', '6.1.4'],
-      note: 'Asks about a link named by a generic phrase or a bare file format whose only context is an aria-describedby text or the text of an enclosing <dd>, <dt>, <blockquote> or <figcaption>. The glossary "Contexte du lien" lists only the sentence, the <p>, the <li>, the preceding heading, the associated <th> and the <td>, so the context link-name-quality accepts for WCAG 2.4.4 may not count for 6.1.1 to 6.1.4 step 2. A question, since the link\'s sentence or a preceding heading may still make it explicit.'
+      note: "Asks about a link named by a generic phrase or a bare file format whose only context is an aria-describedby text or the text of an enclosing <dd>, <dt>, <blockquote> or <figcaption>. The glossary \"Contexte du lien\" lists only the sentence, the <p>, the <li>, the preceding heading, the associated <th> and the <td>, so the context link-name-quality accepts for WCAG 2.4.4 may not count for 6.1.1 to 6.1.4 step 2. A question, since the link's sentence or a preceding heading may still make it explicit. Its phrase lists add French phrases to link-name-quality's (« Découvrir », « Plus d'info », « Voir tout »…), and all lists apply on a page with no language."
     },
     'link-in-text-block': {
       tests: ['10.6.1'],

@@ -67,7 +67,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T67-04 | 6.1.5, 7.1.3, 11.2.5, 11.9.2 | MISS | Visible text inside `aria-hidden="true"` is left out of the visible label. | open |
 | T67-05 | 6.1.1–6.1.4 | WM | `identical-links-same-purpose` is unlinked, though glossary note 3 of « Intitulé de lien » is its question. | done |
 | T67-06 | 6.1.2, 6.1.3, 6.1.5 | MISS | Note 2 (a `title` that drops the content's name) and images of text in links are not checked. | open |
-| T67-07 | 6.1.1–6.1.4 | MISS | Gaps in the French generic-phrase list; no list used without `lang`. | open |
+| T67-07 | 6.1.1–6.1.4 | MISS | Gaps in the French generic-phrase list; no list used without `lang`. Fixed in the pack's `rgaa-link-context-review` (more French phrases; every list without `lang`); core's `link-name-quality`, which handles the other links, keeps the gaps: CORE_ISSUES.md. | partial |
 | T67-08 | 6.1 | WO | `link-name-quality` names a link by `title` before content (C4). | core |
 | T67-09 | 7.3.2 | MISS | `onfocus="this.blur()"` is not detected. Now failed by `rgaa-focus-not-removed`; a handler that moves focus elsewhere is asked about. | done |
 | T67-10 | 7.4.1 | MISS | Changes of context on `select`/fields are never asked about. Now asked about by `rgaa-context-change-review` (inline handlers that submit or navigate). | done |
