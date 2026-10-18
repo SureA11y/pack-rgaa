@@ -657,5 +657,7 @@
   "movingContentReview_summary_autoplayVideo": "Dieses Video startet von selbst und hat kein controls-Attribut.",
   "movingContentReview_summary_svgAnimation": "Diese SVG-Animation wiederholt sich endlos.",
   "movingContentReview_summary_movingAnimation": "Dieser Inhalt bewegt sich von selbst mit einer CSS-Animation, die sich endlos wiederholt oder länger als 5 Sekunden dauert.",
-  "movingContentReview_summary_blinkingAnimation": "Dieser Inhalt blinkt von selbst mit einer CSS-Animation, die sich endlos wiederholt oder länger als 5 Sekunden dauert."
+  "movingContentReview_summary_blinkingAnimation": "Dieser Inhalt blinkt von selbst mit einer CSS-Animation, die sich endlos wiederholt oder länger als 5 Sekunden dauert.",
+  "scriptedComponentsReview_summary_cantTell_linkWithoutDestination": "Das href dieses Links ist „{{href}}“: Es führt zu keiner anderen Seite und keiner anderen Stelle, also lässt ein Skript ihn wahrscheinlich wie eine Schaltfläche wirken.",
+  "scriptedComponentsReview_hint_cantTell_linkWithoutDestination": "Wenn der Link wie eine Schaltfläche wirkt (er öffnet, schließt oder ändert etwas auf der Seite), verwenden Sie ein <button> oder geben Sie ihm role=\"button\", damit seine Rolle zutreffend ist (RGAA 7.1.3)."
 }

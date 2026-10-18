@@ -657,5 +657,7 @@
   "movingContentReview_summary_autoplayVideo": "This video plays by itself and has no controls attribute.",
   "movingContentReview_summary_svgAnimation": "This SVG animation repeats indefinitely.",
   "movingContentReview_summary_movingAnimation": "This content moves by itself with a CSS animation that repeats indefinitely or lasts more than 5 seconds.",
-  "movingContentReview_summary_blinkingAnimation": "This content blinks by itself with a CSS animation that repeats indefinitely or lasts more than 5 seconds."
+  "movingContentReview_summary_blinkingAnimation": "This content blinks by itself with a CSS animation that repeats indefinitely or lasts more than 5 seconds.",
+  "scriptedComponentsReview_summary_cantTell_linkWithoutDestination": "This link's href is \"{{href}}\": it leads to no other page or place, so a script likely makes it act as a button.",
+  "scriptedComponentsReview_hint_cantTell_linkWithoutDestination": "If the link acts as a button (it opens, closes or changes something on the page), use a <button> or give it role=\"button\", so that its role is relevant (RGAA 7.1.3)."
 }

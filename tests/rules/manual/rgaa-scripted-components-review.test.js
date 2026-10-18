@@ -196,6 +196,27 @@ test(`${RULE_ID}: state attributes are listed, native elements included (stateAt
   );
 });
 
+// 7.1.3: « Le composant possède un rôle pertinent ». A link that leads
+// nowhere usually acts as a button.
+test(`${RULE_ID}: links that lead nowhere are listed (linkWithoutDestination)`, () => {
+  const body =
+    '<a href="#">Ouvrir le menu</a><a href="#!">Fermer</a><a href="javascript:void(0)">Imprimer</a>' +
+    '<a href="#contenu">Aller au contenu</a><a href="/aide">Aide</a><a href="#" role="button">Menu</a>';
+  const rule = assertRule(run(page(body, SCRIPT)), RULE_ID, 'cantTell', {
+    minOccurrences: 5,
+    maxOccurrences: 5
+  });
+  assert.deepEqual(
+    rule.occurrences.slice(1).map((o) => [o.data.details.reasonCode, o.data.details.href || '']),
+    [
+      ['linkWithoutDestination', '#'],
+      ['linkWithoutDestination', '#!'],
+      ['linkWithoutDestination', 'javascript:'],
+      ['widgetRole', '']
+    ]
+  );
+});
+
 test(`${RULE_ID}: native elements are not listed`, () => {
   const body =
     '<button role="button">Save</button><a href="/h" role="link" onclick="t()">Help</a>' +

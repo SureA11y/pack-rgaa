@@ -1424,6 +1424,13 @@ A button in a form is checked under 11.9.1 by rgaa-form-button-name-present.
 ```
 The page has script, so a person checks every scripted component against RGAA 7.1. The two `role` elements are listed as candidates; `tabs.js` may attach behaviour to other elements that the markup does not show.
 
+**Flagged (cantTell)**
+```html
+<script src="/js/menu.js"></script>
+<a href="#">Ouvrir le menu</a>
+```
+The link leads nowhere, so a script likely makes it act as a button: it is listed for a person to check that its role is relevant (RGAA 7.1.3).
+
 **Not applicable**
 ```html
 <h1>Opening hours</h1>

@@ -761,7 +761,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-scripted-components-review': {
       tests: ['7.1.1', '7.1.2', '7.1.3'],
-      note: 'Asks on every page with script (an executable <script>, an inline event handler, a javascript: URL or a custom element) for a person to check each scripted component against 7.1.1 to 7.1.3. It always asks, because the engine cannot see behaviour attached from script files. It lists candidate elements from the markup (widget roles, tabindex, inline handlers, contenteditable, aria-expanded and similar states) as a starting point, not a complete list. A page with no script is notApplicable, since 7.1 applies to scripts.'
+      note: 'Asks on every page with script (an executable <script>, an inline event handler, a javascript: URL or a custom element) for a person to check each scripted component against 7.1.1 to 7.1.3. It always asks, because the engine cannot see behaviour attached from script files. It lists candidate elements from the markup (widget roles, tabindex, inline handlers, links whose href is "#" or javascript:, which usually act as buttons whose role 7.1.3 asks to be relevant, contenteditable, aria-expanded and similar states) as a starting point, not a complete list. A page with no script is notApplicable, since 7.1 applies to scripts.'
     },
     'scrollable-region-focusable': {
       tests: [],

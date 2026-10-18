@@ -657,5 +657,7 @@
   "movingContentReview_summary_autoplayVideo": "Cette vidéo se lance d’elle-même et n’a pas d’attribut controls.",
   "movingContentReview_summary_svgAnimation": "Cette animation SVG se répète indéfiniment.",
   "movingContentReview_summary_movingAnimation": "Ce contenu bouge de lui-même avec une animation CSS qui se répète indéfiniment ou dure plus de 5 secondes.",
-  "movingContentReview_summary_blinkingAnimation": "Ce contenu clignote de lui-même avec une animation CSS qui se répète indéfiniment ou dure plus de 5 secondes."
+  "movingContentReview_summary_blinkingAnimation": "Ce contenu clignote de lui-même avec une animation CSS qui se répète indéfiniment ou dure plus de 5 secondes.",
+  "scriptedComponentsReview_summary_cantTell_linkWithoutDestination": "Le href de ce lien est « {{href}} » : il ne mène à aucune autre page ni aucun autre endroit, donc un script le fait sans doute agir comme un bouton.",
+  "scriptedComponentsReview_hint_cantTell_linkWithoutDestination": "Si le lien agit comme un bouton (il ouvre, ferme ou modifie quelque chose dans la page), utilisez une balise <button> ou donnez-lui role=\"button\", pour que son rôle soit pertinent (RGAA 7.1.3)."
 }

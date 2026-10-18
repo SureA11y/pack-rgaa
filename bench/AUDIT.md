@@ -62,7 +62,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 |---|---|---|---|---|
 | T67-01 | 6.2.1 | FP | Links whose content comes through a shadow-DOM `<slot>` fail as empty; the label-in-name rules miss them. | done for 6.2.1; label-in-name rules still miss slotted labels: open |
 | T67-02 | 7.1.1, 7.1.3 | MISS | Buttons outside a form are not checked for a name or label-in-name. Now under 7.1.3, which offers no alternative: `rgaa-script-button-name-present` fails a nameless one, and `rgaa-widget-label-in-name` fails a name without its visible label. 7.1.1 stays unlinked, since it accepts an alternative. | done |
-| T67-03 | 7.3.1 | MISS | `onclick` on a non-interactive element (M2). | open |
+| T67-03 | 7.3.1 | MISS | `onclick` on a non-interactive element (M2). Core: CORE_ISSUES C9 (`mouse-only-event-handlers`); the pack's 7.1 question already lists such elements (inlineHandler). | core |
 | T67-04 | 6.1.5, 7.1.3, 11.2.5, 11.9.2 | MISS | Visible text inside `aria-hidden="true"` is left out of the visible label. | open |
 | T67-05 | 6.1.1–6.1.4 | WM | `identical-links-same-purpose` is unlinked, though glossary note 3 of « Intitulé de lien » is its question. | done |
 | T67-06 | 6.1.2, 6.1.3, 6.1.5 | MISS | Note 2 (a `title` that drops the content's name) and images of text in links are not checked. | open |
@@ -72,7 +72,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T67-10 | 7.4.1 | MISS | Changes of context on `select`/fields are never asked about. | open |
 | T67-11 | 7.2.1 | MISS | `<noscript>` alternatives are not asked about. | open |
 | T67-12 | 7.5 | MISS | Status messages get no targeted question. | open |
-| T67-13 | 7.1.1, 7.1.3 | MISS | Links used as buttons (`href="#"` with a click handler) are not listed. | open |
+| T67-13 | 7.1.1, 7.1.3 | MISS | Links used as buttons (`href="#"` with a click handler) are not listed. Now listed by `rgaa-scripted-components-review` (linkWithoutDestination: href `#`, `#!` or `javascript:`). | done |
 | T67-14 | 7.1.1 | FP | Unnamed dialog, tab and menuitem roles fail 7.1 on a page with no script. | won't (an ARIA widget only works through script, so a page with one and no script is a snapshot, not a page RGAA audits; gating core rules on script needs the engine) |
 | T67-15 | 6.1.1–6.1.3 | WM | 6.1.5 failures also fail 6.1.1–6.1.3 by note 1; only the test reported changes. | won't (the criterion already fails) |
 

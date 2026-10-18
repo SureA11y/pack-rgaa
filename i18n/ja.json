@@ -657,5 +657,7 @@
   "movingContentReview_summary_autoplayVideo": "この動画は自動的に再生され、controls 属性がありません。",
   "movingContentReview_summary_svgAnimation": "この SVG アニメーションは無限に繰り返されます。",
   "movingContentReview_summary_movingAnimation": "このコンテンツは、無限に繰り返されるか5秒を超える CSS アニメーションで自動的に動きます。",
-  "movingContentReview_summary_blinkingAnimation": "このコンテンツは、無限に繰り返されるか5秒を超える CSS アニメーションで自動的に点滅します。"
+  "movingContentReview_summary_blinkingAnimation": "このコンテンツは、無限に繰り返されるか5秒を超える CSS アニメーションで自動的に点滅します。",
+  "scriptedComponentsReview_summary_cantTell_linkWithoutDestination": "このリンクの href は「{{href}}」で、他のページや場所に移動しないため、スクリプトによってボタンとして動作している可能性があります。",
+  "scriptedComponentsReview_hint_cantTell_linkWithoutDestination": "リンクがボタンとして動作する（ページ上で何かを開く、閉じる、変更する）なら、<button> を使うか role=\"button\" を付けて、ロールを適切にしてください（RGAA 7.1.3）。"
 }
