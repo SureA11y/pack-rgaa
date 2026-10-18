@@ -655,6 +655,10 @@ const RGAA_RULE_TESTS = {
       tests: ['12.8.1'],
       note: 'Asks about each open dialog marked aria-modal="true", not opened with showModal(), while elements outside it can still take focus: the 12.8.1 methodology says « l\'ordre de tabulation dans une fenêtre modale ne doit considérer que les éléments … au sein de cette fenêtre », and aria-modal does not stop the Tab key. Whether a script keeps focus inside is for a person.'
     },
+    'rgaa-moving-content-review': {
+      tests: ['13.8.1', '13.8.2'],
+      note: 'Asks about content that moves or blinks by itself for more than 5 seconds: a <marquee>, a <video> with autoplay and no controls, an SVG animation repeated indefinitely, and, where the page has a layout, an endless CSS animation (blinking when it animates only opacity, visibility or colours). 13.8.1 and 13.8.2 accept it when the user can stop and restart it, hide it, or see all its information without the movement, which a script may give and only a person can try. Finite CSS animations longer than 5 seconds are not found (see CORE_ISSUES T13-05), nor animated images.'
+    },
     'rgaa-office-document-link': {
       tests: ['13.3.1'],
       note: 'Lists each link, form or submit button that downloads an office document for a person to check one of the conditions of 13.3.1: the document is accessible, or an accessible version is offered. The document is found by the download filename, the address path, a query-string value or the form action, with the Office, OpenDocument, PDF, EPUB and RTF extensions. Downloads started by script or without such an extension are not found.'

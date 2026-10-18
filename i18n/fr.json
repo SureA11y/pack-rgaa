@@ -649,5 +649,13 @@
   "scriptButtonNamePresent_summary_fail_nameMissing": "Ce bouton n’a pas de nom.",
   "scriptButtonNamePresent_hint_fail_nameMissing": "Donnez au bouton un texte visible qui décrit son action, ou un aria-label, aria-labelledby ou title ; pour un bouton image, un alt (RGAA 7.1.3).",
   "scriptButtonNamePresent_summary_cantTell_imageButtonNoAlt": "Ce bouton image n’a ni alt, ni aria-label, ni aria-labelledby, ni title ; le navigateur le nomme avec un « Envoyer » générique.",
-  "scriptButtonNamePresent_hint_cantTell_imageButtonNoAlt": "Donnez au bouton image un alt qui décrit son action, puis vérifiez que le nom est pertinent (RGAA 7.1.3)."
+  "scriptButtonNamePresent_hint_cantTell_imageButtonNoAlt": "Donnez au bouton image un alt qui décrit son action, puis vérifiez que le nom est pertinent (RGAA 7.1.3).",
+  "movingContentReview_title": "Les contenus en mouvement ou clignotants sont contrôlables",
+  "movingContentReview_description": "Signale les contenus qui bougent ou clignotent d’eux-mêmes plus de 5 secondes (marquee, vidéo lancée automatiquement sans contrôles, animations SVG ou CSS sans fin), pour qu’une personne vérifie qu’on peut les arrêter, les masquer ou en lire l’information sans le mouvement.",
+  "movingContentReview_hint_cantTell": "Vérifiez que l’utilisateur peut arrêter et relancer le mouvement, masquer le contenu ou afficher toute son information sans le mouvement, sauf s’il dure 5 secondes ou moins (RGAA 13.8).",
+  "movingContentReview_summary_marquee": "Cette balise <marquee> fait défiler son contenu d’elle-même.",
+  "movingContentReview_summary_autoplayVideo": "Cette vidéo se lance d’elle-même et n’a pas d’attribut controls.",
+  "movingContentReview_summary_svgAnimation": "Cette animation SVG se répète indéfiniment.",
+  "movingContentReview_summary_movingAnimation": "Ce contenu bouge de lui-même avec une animation CSS qui se répète indéfiniment ou dure plus de 5 secondes.",
+  "movingContentReview_summary_blinkingAnimation": "Ce contenu clignote de lui-même avec une animation CSS qui se répète indéfiniment ou dure plus de 5 secondes."
 }

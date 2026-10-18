@@ -649,5 +649,13 @@
   "scriptButtonNamePresent_summary_fail_nameMissing": "このボタンには名前がありません。",
   "scriptButtonNamePresent_hint_fail_nameMissing": "ボタンに動作を説明する表示テキスト、または aria-label、aria-labelledby、title を付けてください。画像ボタンには alt を付けてください（RGAA 7.1.3）。",
   "scriptButtonNamePresent_summary_cantTell_imageButtonNoAlt": "この画像ボタンには alt、aria-label、aria-labelledby、title のいずれもなく、ブラウザは汎用的な「送信」という名前を付けます。",
-  "scriptButtonNamePresent_hint_cantTell_imageButtonNoAlt": "画像ボタンに動作を説明する alt を付け、名前が適切か確認してください（RGAA 7.1.3）。"
+  "scriptButtonNamePresent_hint_cantTell_imageButtonNoAlt": "画像ボタンに動作を説明する alt を付け、名前が適切か確認してください（RGAA 7.1.3）。",
+  "movingContentReview_title": "動くコンテンツや点滅するコンテンツを制御できる",
+  "movingContentReview_description": "5秒を超えて自動的に動いたり点滅したりするコンテンツ（marquee、コントロールのない自動再生動画、終わりのない SVG や CSS アニメーション）を示し、停止、非表示、または動きなしで情報を読めるか人が確認できるようにします。",
+  "movingContentReview_hint_cantTell": "5秒以内に終わる場合を除き、利用者が動きを停止・再開できるか、コンテンツを非表示にできるか、動きなしですべての情報を見られるか確認してください（RGAA 13.8）。",
+  "movingContentReview_summary_marquee": "この <marquee> は内容を自動的にスクロールします。",
+  "movingContentReview_summary_autoplayVideo": "この動画は自動的に再生され、controls 属性がありません。",
+  "movingContentReview_summary_svgAnimation": "この SVG アニメーションは無限に繰り返されます。",
+  "movingContentReview_summary_movingAnimation": "このコンテンツは、無限に繰り返されるか5秒を超える CSS アニメーションで自動的に動きます。",
+  "movingContentReview_summary_blinkingAnimation": "このコンテンツは、無限に繰り返されるか5秒を超える CSS アニメーションで自動的に点滅します。"
 }

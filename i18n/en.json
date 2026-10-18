@@ -649,5 +649,13 @@
   "scriptButtonNamePresent_summary_fail_nameMissing": "This button has no name.",
   "scriptButtonNamePresent_hint_fail_nameMissing": "Give the button visible text that describes its action, or an aria-label, aria-labelledby or title; for an image button, an alt (RGAA 7.1.3).",
   "scriptButtonNamePresent_summary_cantTell_imageButtonNoAlt": "This image button has no alt, aria-label, aria-labelledby or title; the browser names it with a generic \"Submit\".",
-  "scriptButtonNamePresent_hint_cantTell_imageButtonNoAlt": "Give the image button an alt that describes its action, then check that the name is relevant (RGAA 7.1.3)."
+  "scriptButtonNamePresent_hint_cantTell_imageButtonNoAlt": "Give the image button an alt that describes its action, then check that the name is relevant (RGAA 7.1.3).",
+  "movingContentReview_title": "Moving or blinking content can be controlled",
+  "movingContentReview_description": "Flags content that moves or blinks by itself for more than 5 seconds (marquee, autoplaying video without controls, endless SVG or CSS animations), for a person to check that it can be stopped, hidden or read without the movement.",
+  "movingContentReview_hint_cantTell": "Check that the user can stop and restart the movement, hide the content, or see all of its information without the movement, unless it lasts 5 seconds or less (RGAA 13.8).",
+  "movingContentReview_summary_marquee": "This <marquee> scrolls its content by itself.",
+  "movingContentReview_summary_autoplayVideo": "This video plays by itself and has no controls attribute.",
+  "movingContentReview_summary_svgAnimation": "This SVG animation repeats indefinitely.",
+  "movingContentReview_summary_movingAnimation": "This content moves by itself with a CSS animation that repeats indefinitely or lasts more than 5 seconds.",
+  "movingContentReview_summary_blinkingAnimation": "This content blinks by itself with a CSS animation that repeats indefinitely or lasts more than 5 seconds."
 }

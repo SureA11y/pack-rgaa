@@ -1109,6 +1109,22 @@ The dialog is marked modal, but the link behind it can still take focus with the
 ```
 The dialog is not modal, so the page behind it stays in the tab order on purpose.
 
+## rgaa-moving-content-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<video autoplay muted loop src="fond.mp4"></video>
+```
+The video plays by itself and has no controls: a person checks that the user can stop it, hide it, or do without it (RGAA 13.8.1).
+
+**Not applicable**
+```html
+<video controls src="film.mp4"></video>
+```
+The video does not start by itself, and its controls can pause it.
+
 ## rgaa-office-document-link
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*

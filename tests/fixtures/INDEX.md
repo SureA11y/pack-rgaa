@@ -4,13 +4,13 @@ This pack's rules and their scenario pages. Every rule should have a `tests/fixt
 
 ## Summary
 
-Total rules: **79**. With fixture: **79**. Without fixture: **0**.
+Total rules: **80**. With fixture: **80**. Without fixture: **0**.
 
 ## Rules WITHOUT a fixture (0)
 
 None — every rule has a fixture.
 
-## Rules WITH a fixture (79)
+## Rules WITH a fixture (80)
 
 | Rule ID | Type | Fixture | Cases | PASS | FAIL | CANTTELL | OTHER |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -67,6 +67,7 @@ None — every rule has a fixture.
 | rgaa-meta-redirect-immediate | automatic | `tests/fixtures/rgaa-meta-redirect-immediate-all-scenarios.html` | 1 | 0 | 0 | 1 | 0 |
 | rgaa-meta-refresh-no-url-timing | automatic | `tests/fixtures/rgaa-meta-refresh-no-url-timing-all-scenarios.html` | 1 | 0 | 1 | 0 | 0 |
 | rgaa-modal-tab-order | manual | `tests/fixtures/rgaa-modal-tab-order-all-scenarios.html` | 3 | 0 | 0 | 1 | 2 |
+| rgaa-moving-content-review | manual | `tests/fixtures/rgaa-moving-content-review-all-scenarios.html` | 3 | 0 | 0 | 2 | 1 |
 | rgaa-object-image-role-img | automatic | `tests/fixtures/rgaa-object-image-role-img-all-scenarios.html` | 9 | 2 | 2 | 3 | 2 |
 | rgaa-office-document-link | manual | `tests/fixtures/rgaa-office-document-link-all-scenarios.html` | 10 | 0 | 0 | 0 | 10 |
 | rgaa-optgroup-label-not-empty | automatic | `tests/fixtures/rgaa-optgroup-label-not-empty-all-scenarios.html` | 4 | 1 | 2 | 0 | 1 |

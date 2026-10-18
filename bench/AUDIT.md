@@ -161,7 +161,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T13-02 | 12.8.1 | MISS | Focus reaching hidden elements; tabbable content outside an open modal. | done (css-hidden-focus linked, rgaa-modal-tab-order); hidden off-canvas links: core |
 | T13-03 | 13.1.3, 13.1.4 | MISS | Script redirects, countdowns, session limits. | open |
 | T13-04 | 12.11.1 | MISS | Menus that open on hover only. | open |
-| T13-05 | 13.8, 13.7.3 | MISS | Moving and blinking content (marquee, infinite animations, GIFs). | open |
+| T13-05 | 13.8, 13.7.3 | MISS | Moving and blinking content (marquee, infinite animations, GIFs). Now `rgaa-moving-content-review` (13.8.1, 13.8.2) asks about `<marquee>`, autoplay video without controls, endless SVG and CSS animations. Not found: animated images, finite CSS animations (core settles them, CORE_ISSUES T13-05), and 13.7.3 flashes, which need measuring. | done |
 | T13-06 | 13.4.1, 13.5, 13.6 | MISS | Accessible versions of documents; emoji and ASCII art. | open |
 | T13-07 | 12.10, 13.2, 13.10–13.12 | MISS | Script-attached behaviour: needs a listener probe in the crawler. | open |
 | T13-08 | 12.8.2, 12.9.1 | MISS | The page-level reminders say nothing of what to test. | open |
