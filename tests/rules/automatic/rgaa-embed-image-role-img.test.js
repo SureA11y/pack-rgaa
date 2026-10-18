@@ -33,9 +33,9 @@ test(`${RULE_ID}: role="img" with a text alternative passes`, () => {
 
 test(`${RULE_ID}: no alternative and no adjacent link fails`, () => {
   for (const body of [
-    `<a href="/plan"><embed ${IMG}></a>`,
+    `<figure><embed ${IMG}><figcaption>Plan</figcaption></figure>`,
     `<embed ${IMG} role="img">`,
-    `<button type="button"><embed ${IMG}></button><p>Texte</p>`
+    `<embed ${IMG} tabindex="0"><p>Texte</p>`
   ]) {
     const rule = assertRule(run(body), RULE_ID, 'fail', { minOccurrences: 1, maxOccurrences: 1 });
     assert.equal(rule.occurrences[0].data.details.reasonCode, 'noAlternative', body);
@@ -169,4 +169,17 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-embed-image-role-img-all
       ['eiri_case_04', 'adjacentLinkOrButton']
     ]
   );
+});
+
+// Glossary « Image porteuse d'information », notes 1 and 2: the only image of
+// a link or a button is judged as the control's label, under Links (6.1),
+// Forms (11.9) or Scripts (7.1), not under theme 1.
+test(`${RULE_ID}: the only content of a link or a button is left out`, () => {
+  for (const body of [
+    '<a href="/plan"><embed type="image/png" src="p.png"></a>',
+    '<button type="button"><embed type="image/png" src="p.png"></button>',
+    '<form><button><embed type="image/png" src="p.png"></button></form>'
+  ]) {
+    assertRule(run(body), RULE_ID, 'notApplicable');
+  }
 });

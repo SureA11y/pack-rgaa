@@ -21,9 +21,6 @@ test(`${RULE_ID}: an image that certainly carries information and has no text al
   for (const body of [
     '<img src="photo.jpg" width="300" height="200" role="presentation" tabindex="0">',
     '<img src="plan.png" usemap="#m"><map name="m"><area href="/a" alt="A" coords="0,0,1,1"></map>',
-    '<button type="button"><img src="close.png"></button>',
-    // The only content of a link carries its information, spacer or not.
-    '<a href="/home"><img src="pixel.gif" width="1" height="1"></a>',
     // 1.2 does not apply to a captioned image, so 1.1.1 does.
     '<figure><img src="pixel.gif" width="1" height="1"><figcaption>Gap</figcaption></figure>'
   ]) {
@@ -74,8 +71,13 @@ test(`${RULE_ID}: an image with a text alternative passes`, () => {
   }
 });
 
-test(`${RULE_ID}: a spacer, a hidden image and a presentational one are left out`, () => {
+test(`${RULE_ID}: a spacer, a hidden image, a presentational one and a control's only image are left out`, () => {
   for (const body of [
+    // Glossary « Image porteuse d'information », notes 1 and 2: the image
+    // is judged as the link's or button's label, under 6.1, 11.9 or 7.1.
+    '<button type="button"><img src="close.png"></button>',
+    '<a href="/home"><img src="pixel.gif" width="1" height="1"></a>',
+    '<a href="/home"><img src="logo.png" alt=" "></a>',
     '<img src="pixel.gif" width="1" height="1">',
     '<img src="rule.gif" width="600" height="2">',
     '<img src="swirl.png" aria-hidden="true">',
@@ -122,7 +124,9 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
 test(`${RULE_ID}: an alt of only spaces fails with its own message, and a spacer with one is left to 1.2`, () => {
   const rule = assertRule(
     runa11yCoreOnHtml(
-      page('<a href="/"><img src="logo.png" alt=" " width="120" height="40"></a>'),
+      page(
+        '<figure><img src="logo.png" alt=" " width="120" height="40"><figcaption>Logo</figcaption></figure>'
+      ),
       RUN
     ),
     RULE_ID,

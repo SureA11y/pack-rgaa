@@ -96,13 +96,17 @@ test(`${RULE_ID}: an image with an alt, an alternative, a decorative marker or a
 
 // An image with no alt fails one criterion, not both: 1.1 through
 // img-alt-present, and 1.2 here, failed for a spacer and asked otherwise.
-test(`${RULE_ID}: under the RGAA profile, a link's only image fails 1.1 and not 1.2`, () => {
+// Glossary « Image porteuse d'information », note 1: a link's only image
+// is judged as the link's label, under Links.
+test(`${RULE_ID}: under the RGAA profile, a link's only image fails 6.2, not 1.1 or 1.2`, () => {
   const opts = { engineOptions: { profile: 'rgaa-4.1.2' } };
   const icon = runa11yCoreOnHtml(
     page('<a href="https://facebook.com/x"><img src="fb.svg"></a>'),
     opts
   );
-  assert.equal(rollup(icon, 'rgaa-4.1.2-1.1').outcome, 'fail');
+  const images = rollup(icon, 'rgaa-4.1.2-1.1');
+  assert.ok(!images || images.outcome !== 'fail', images && images.outcome);
+  assert.equal(rollup(icon, 'rgaa-4.1.2-6.2').outcome, 'fail');
   const decorative = rollup(icon, 'rgaa-4.1.2-1.2');
   assert.ok(!decorative || decorative.outcome !== 'fail', decorative && decorative.outcome);
 

@@ -170,7 +170,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-canvas-role-img': {
       tests: ['1.1.8'],
-      note: 'Checks each <canvas> not marked decorative. Passes role="img" with aria-labelledby or aria-label (steps 3 and 4), or, without role="img", fallback content (step 6). Fails a <canvas role="img"> with no ARIA name, since the note of the methodology limits its alternative to step 4, a canvas with no role, no fallback content and no link or button after it that aria-label or title names, and one with nothing at all that certainly carries information (the only content of a link or button, captioned, or focusable). Asks about any other canvas with nothing at all, which may be decorative and then fails 1.2.5 instead, and when a link or button follows the canvas. A replacement mechanism cannot be detected.'
+      note: 'Checks each <canvas> not marked decorative. Passes role="img" with aria-labelledby or aria-label (steps 3 and 4), or, without role="img", fallback content (step 6). Fails a <canvas role="img"> with no ARIA name, since the note of the methodology limits its alternative to step 4, a canvas with no role, no fallback content and no link or button after it that aria-label or title names, and one with nothing at all that certainly carries information (captioned, or focusable). Asks about any other canvas with nothing at all, which may be decorative and then fails 1.2.5 instead, and when a link or button follows the canvas. A replacement mechanism cannot be detected. One that is the only content of a link or a button is left out: the glossary « Image porteuse d\'information » (notes 1 and 2) judges its alternative as the control\'s label, under 6.1, 11.9 or 7.1.'
     },
     'canvas-text-alternative-present': {
       tests: [],
@@ -270,7 +270,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-embed-image-role-img': {
       tests: ['1.1.7'],
-      note: 'Checks each <embed type="image/..."> not marked decorative. Passes role="img" with aria-labelledby, aria-label or title. Fails an embed with no text alternative and no link or button right after it, which meets none of the conditions of 1.1.7 short of a replacement mechanism the page would have to offer, when it has role="img" or certainly carries information (the only content of a link or button, captioned, or focusable); asks about any other, which may be decorative and then fails 1.2.6 instead. Asks when there is a text alternative without role="img" (the test wording requires both, the methodology validates on the alternative alone) and when a link or button follows (does it lead to an alternative content?).'
+      note: 'Checks each <embed type="image/..."> not marked decorative. Passes role="img" with aria-labelledby, aria-label or title. Fails an embed with no text alternative and no link or button right after it, which meets none of the conditions of 1.1.7 short of a replacement mechanism the page would have to offer, when it has role="img" or certainly carries information (captioned, or focusable); asks about any other, which may be decorative and then fails 1.2.6 instead. Asks when there is a text alternative without role="img" (the test wording requires both, the methodology validates on the alternative alone) and when a link or button follows (does it lead to an alternative content?). One that is the only content of a link or a button is left out: the glossary « Image porteuse d\'information » (notes 1 and 2) judges its alternative as the control\'s label, under 6.1, 11.9 or 7.1.'
     },
     'embed-text-alternative-present': {
       tests: [],
@@ -437,7 +437,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-img-alt-present': {
       tests: ['1.1.1'],
-      note: 'Fails an exposed <img> with no alt, no ARIA name and no title, as img-alt-present does, except a spacer (2 px wide or high, or less, not captioned, not the only content of a link or button), which is decorative and fails 1.2.1 through rgaa-img-no-alt-decorative instead. An image that is not a spacer still fails 1.1.1 step 1 here: whether it is decorative, so that it fails 1.2.1 instead, is for a person, and rgaa-img-no-alt-decorative asks it under 1.2.1. Not linked to 1.2.1: a mapping applies to every finding, and such an image fails one of the two criteria, not both.'
+      note: "Fails an exposed <img> with no alt, no ARIA name and no title, as img-alt-present does, except a spacer (2 px wide or high, or less, not captioned), which is decorative and fails 1.2.1 through rgaa-img-no-alt-decorative instead. An image that is not a spacer still fails 1.1.1 step 1 here: whether it is decorative, so that it fails 1.2.1 instead, is for a person, and rgaa-img-no-alt-decorative asks it under 1.2.1. Not linked to 1.2.1: a mapping applies to every finding, and such an image fails one of the two criteria, not both. An image that is the only content of a link or a button is left out: the glossary « Image porteuse d'information » (notes 1 and 2) judges its alternative as the control's label, under 6.1, 11.9 or 7.1."
     },
     'img-alt-quality': {
       tests: ['1.3.1'],
@@ -537,7 +537,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-link-content-label-present': {
       tests: ['6.2.1'],
-      note: 'Fails a[href] and role=link elements whose content has no text and no image with a text alternative, even when aria-label, aria-labelledby or title names them: 6.2.1 step 2 checks that the content of the link contains a label (text or alternative), and the glossary "Intitulé de lien", Note 4, fails a link with no content under 6.2. Asks when the content is CSS-generated text, an embedded element, or hidden text beside a name from an attribute. <area> is left to 1.1.2.'
+      note: 'Fails a[href] and role=link elements whose content has no text and no image with a text alternative, even when aria-label, aria-labelledby or title names them: 6.2.1 step 2 checks that the content of the link contains a label (text or alternative), and the glossary "Intitulé de lien", Note 4, fails a link with no content under 6.2. A <canvas>, or an <object> or <embed> of an image type, with no aria-label, aria-labelledby, title or fallback text counts as an image with no alternative. Asks when the content is CSS-generated text, another embedded element, or hidden text beside a name from an attribute. <area> is left to 1.1.2.'
     },
     'rgaa-link-context-review': {
       tests: ['6.1.1', '6.1.2', '6.1.3', '6.1.4'],
@@ -649,7 +649,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-object-image-role-img': {
       tests: ['1.1.6'],
-      note: 'Checks each <object type="image/..."> not marked decorative. Passes role="img" with aria-labelledby, aria-label or title. Fails an object with no text alternative, no fallback content and no link or button right after it, which meets none of the conditions of 1.1.6 short of a replacement mechanism the page would have to offer, when it has role="img" or certainly carries information (the only content of a link or button, captioned, or focusable); asks about any other, which may be decorative and then fails 1.2.3 instead. Asks when there is a text alternative without role="img" (the test wording requires both, the methodology validates on the alternative alone), when a link or button follows (does it lead to an alternative content?), and when there is only fallback content.'
+      note: 'Checks each <object type="image/..."> not marked decorative. Passes role="img" with aria-labelledby, aria-label or title. Fails an object with no text alternative, no fallback content and no link or button right after it, which meets none of the conditions of 1.1.6 short of a replacement mechanism the page would have to offer, when it has role="img" or certainly carries information (captioned, or focusable); asks about any other, which may be decorative and then fails 1.2.3 instead. Asks when there is a text alternative without role="img" (the test wording requires both, the methodology validates on the alternative alone), when a link or button follows (does it lead to an alternative content?), and when there is only fallback content. One that is the only content of a link or a button is left out: the glossary « Image porteuse d\'information » (notes 1 and 2) judges its alternative as the control\'s label, under 6.1, 11.9 or 7.1.'
     },
     'object-text-alternative-present': {
       tests: [],
@@ -753,7 +753,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-role-img-aria-name': {
       tests: ['1.1.1'],
-      note: 'Fails an exposed element with role="img" (not <img>, not an outer <svg>) whose text alternative does not come from aria-labelledby or aria-label, the two sources 1.1.1 step 4 lists for role="img": a title-only name fails, as does no name at all. An element in the SVG namespace named only by a <title> child is asked about, since RGAA contradicts itself on <title> (1.1.5 step 5 against 1.3.6). An element with aria-hidden="true" is left out, as the glossary allows only that for a decorative role="img".'
+      note: 'Fails an exposed element with role="img" (not <img>, not an outer <svg>) whose text alternative does not come from aria-labelledby or aria-label, the two sources 1.1.1 step 4 lists for role="img": a title-only name fails, as does no name at all. An element in the SVG namespace named only by a <title> child is asked about, since RGAA contradicts itself on <title> (1.1.5 step 5 against 1.3.6). An element with aria-hidden="true" is left out, as the glossary allows only that for a decorative role="img", and so is one that is the only content of a link or a button, whose alternative the glossary « Image porteuse d\'information » (notes 1 and 2) judges as the control\'s label.'
     },
     'role-img-text-alternative-present': {
       tests: [],
@@ -825,7 +825,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-svg-role-img': {
       tests: ['1.1.5'],
-      note: 'Fails an exposed outer <svg> named by aria-labelledby, aria-label or a <title> child but without role="img": 1.1.5 step 4 says the test is failed without the role. An <svg role="img"> named only by <title> is asked about, since 1.1.5 step 5 lists only the ARIA sources while 1.3.6 treats <title> as the SVG\'s alternative. An unnamed <svg role="img"> is left to svg-text-alternative-present. An SVG with an alternative and no role="img" fails only when it certainly carries information (the only content of a link or button, or focusable); otherwise it is asked about, since it fails 1.2.4 instead if it is decorative.'
+      note: 'Fails an exposed outer <svg> named by aria-labelledby, aria-label or a <title> child but without role="img": 1.1.5 step 4 says the test is failed without the role. An <svg role="img"> named only by <title> is asked about, since 1.1.5 step 5 lists only the ARIA sources while 1.3.6 treats <title> as the SVG\'s alternative. An unnamed <svg role="img"> is left to svg-text-alternative-present. An SVG with an alternative and no role="img" fails only when it certainly carries information (captioned, or focusable); otherwise it is asked about, since it fails 1.2.4 instead if it is decorative. An SVG that is the only content of a link or a button is left out: the glossary « Image porteuse d\'information » (notes 1 and 2) judges its alternative as the control\'s label, under 6.1, 11.9 or 7.1.'
     },
     'svg-text-alternative-present': {
       tests: ['1.1.5'],

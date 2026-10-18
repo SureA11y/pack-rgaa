@@ -157,7 +157,7 @@ With `role="img"`, only `aria-labelledby` or `aria-label` can provide the altern
 <canvas width="40" height="20"></canvas>
 <a href="/donnees">Données du graphique</a>
 ```
-A person checks that the adjacent link leads to an alternative content. A canvas with nothing at all is asked about too, since it may be decorative (then it fails 1.2.5), unless it certainly carries information, as the only content of a link or button, captioned, or focusable: then it fails.
+A person checks that the adjacent link leads to an alternative content. A canvas with nothing at all is asked about too, since it may be decorative (then it fails 1.2.5), unless it certainly carries information, captioned or focusable: then it fails. An image that is the only content of a link or a button is judged as the control's label, under Links (6.1), Forms (11.9) or Scripts (7.1), as the glossary « Image porteuse d'information » (notes 1 and 2) says.
 
 ## rgaa-complex-table-summary
 
@@ -347,9 +347,9 @@ The embedded image has `role="img"` and a text alternative.
 
 **Failed**
 ```html
-<a href="/plan"><embed type="image/svg+xml" src="chart.svg"></a>
+<figure><embed type="image/svg+xml" src="chart.svg"><figcaption>Ventes</figcaption></figure>
 ```
-The image is the only content of the link, so it carries information, and it has no text alternative and no link or button to an alternative content after it. A bare `<embed>` image that may be decorative is asked about instead: if it is decorative, it fails 1.2.6.
+The image has a caption, so it carries information, and it has no text alternative and no link or button to an alternative content after it. A bare `<embed>` image that may be decorative is asked about instead: if it is decorative, it fails 1.2.6.
 
 **Flagged (cantTell)**
 ```html
@@ -711,9 +711,9 @@ The image has a text alternative (RGAA 1.1.1).
 
 **Failed**
 ```html
-<a href="/rapport"><img src="rapport.png" width="120" height="40"></a>
+<figure><img src="rapport.png" width="120" height="40"><figcaption>Rapport annuel</figcaption></figure>
 ```
-The image is the link's only content, so it carries information, and it has no `alt` attribute and no other text alternative. An image that may be decorative, such as a bullet before a list item, is asked about instead: it then fails 1.2.1. A spacer (2 px or less) is left out: it is decorative, and fails 1.2.1 alone.
+The image has a caption, so it carries information, and it has no `alt` attribute and no other text alternative. An image that is the only content of a link or a button is judged as the control's label, under Links (6.1), Forms (11.9) or Scripts (7.1), as the glossary « Image porteuse d'information » (notes 1 and 2) says. An image that may be decorative, such as a bullet before a list item, is asked about instead: it then fails 1.2.1. A spacer (2 px or less) is left out: it is decorative, and fails 1.2.1 alone.
 
 ## rgaa-img-decorative-no-alternative
 
@@ -1114,9 +1114,9 @@ The image object has `role="img"` and a text alternative.
 
 **Failed**
 ```html
-<a href="/plan"><object type="image/png" data="chart.png"></object></a>
+<figure><object type="image/png" data="chart.png"></object><figcaption>Ventes</figcaption></figure>
 ```
-The image is the only content of the link, so it carries information, and it has no text alternative, no fallback content, and no link or button to an alternative content after it. A bare `<object>` image that may be decorative is asked about instead: if it is decorative, it fails 1.2.3.
+The image has a caption, so it carries information, and it has no text alternative, no fallback content, and no link or button to an alternative content after it. A bare `<object>` image that may be decorative is asked about instead: if it is decorative, it fails 1.2.3.
 
 **Flagged (cantTell)**
 ```html
@@ -1578,14 +1578,12 @@ The SVG has `role="img"` and an `aria-label`.
 
 **Failed**
 ```html
-<a href="/">
-  <svg width="20" height="20">
-    <title>Accueil</title>
-    <circle cx="10" cy="10" r="8"/>
-  </svg>
-</a>
+<svg tabindex="0" width="20" height="20">
+  <title>Plan</title>
+  <circle cx="10" cy="10" r="8"/>
+</svg>
 ```
-The SVG is the link's only content, so it carries information, and it has a text alternative but no `role="img"`. An SVG that may be decorative, such as an icon beside text, is asked about instead: it then fails 1.2.4.
+The SVG takes focus, so it carries information, and it has a text alternative but no `role="img"`. An image that is the only content of a link or a button is judged as the control's label, under Links (6.1), Forms (11.9) or Scripts (7.1), as the glossary « Image porteuse d'information » (notes 1 and 2) says. An SVG that may be decorative, such as an icon beside text, is asked about instead: it then fails 1.2.4.
 
 **Flagged (cantTell)**
 ```html

@@ -297,7 +297,7 @@ automatic · no formal WCAG SC mapping · confidence medium · default severity 
 
 Checks each &lt;canvas&gt; against RGAA 1.1.8: role="img" named by aria-labelledby or aria-label, or fallback content, or a link or button to an alternative content right after it.
 
-**Applies to.** Applies to &lt;canvas&gt; elements. One with aria-hidden="true", on itself or an ancestor, or with role="none"/"presentation", is left out: it is marked decorative, which rgaa-canvas-decorative-aria-hidden checks (1.2.5). A canvas 0 px wide or high, rendered or by its width or height attribute, draws nothing and is no image, so it is left out too. Content hidden with CSS or the hidden attribute is left out too. A page with none is notApplicable.
+**Applies to.** Applies to &lt;canvas&gt; elements. One with aria-hidden="true", on itself or an ancestor, or with role="none"/"presentation", is left out: it is marked decorative, which rgaa-canvas-decorative-aria-hidden checks (1.2.5). A canvas 0 px wide or high, rendered or by its width or height attribute, draws nothing and is no image, so it is left out too. One that is the only content of a link or a button is left out: its alternative is the control's name, which the glossary « Image porteuse d'information » (notes 1 and 2) sends to Links (6.1), Forms (11.9) or Scripts (7.1). Content hidden with CSS or the hidden attribute is left out too. A page with none is notApplicable.
 
 **Expectation.**
 
@@ -310,7 +310,7 @@ Passes: role="img" with aria-labelledby or aria-label; or, without role="img", f
 
 - role="img" with no aria-labelledby or aria-label. The methodology's note is explicit: "si l'élément &lt;canvas&gt; dispose d'un rôle img, son alternative ne peut être fournie que par les techniques listées à l'étape 4", so fallback content, title and an adjacent link do not count;
 - no role="img", an aria-label, aria-labelledby or title, but no fallback content and no link or button after it (the name alone is not one of the step 6 options);
-- nothing at all, on a canvas that certainly carries information: the only content of a link or a button, a captioned canvas, or one that takes focus.
+- nothing at all, on a canvas that certainly carries information: a captioned canvas, or one that takes focus.
 
 Asks (cantTell) about any other canvas with nothing at all (noAlternativeMayBeDecorative): it may be decorative, and then it fails 1.2.5 instead, which asks for aria-hidden="true". Asks (cantTell): no role="img" and no fallback content, but a link or button right after the &lt;canvas&gt; (does it lead to an alternative content?).
 
@@ -450,7 +450,7 @@ automatic · no formal WCAG SC mapping · confidence medium · default severity 
 
 Checks that each &lt;embed type="image/…"&gt; has role="img" and a text alternative (aria-labelledby, aria-label or title), or is followed by a link or button to an alternative content.
 
-**Applies to.** Applies to &lt;embed&gt; elements whose type attribute starts with image/ (RGAA 1.1.7 covers "balise &lt;embed&gt; avec l'attribut type="image/…"" only; an &lt;embed&gt; with another type, or none, is out of scope). An &lt;embed&gt; with aria-hidden="true", on itself or an ancestor, or with role="none"/"presentation", is left out: it is marked decorative, which 1.2.6 covers. Content hidden with CSS or the hidden attribute is left out too. A page with none is notApplicable.
+**Applies to.** Applies to &lt;embed&gt; elements whose type attribute starts with image/ (RGAA 1.1.7 covers "balise &lt;embed&gt; avec l'attribut type="image/…"" only; an &lt;embed&gt; with another type, or none, is out of scope). An &lt;embed&gt; with aria-hidden="true", on itself or an ancestor, or with role="none"/"presentation", is left out: it is marked decorative, which 1.2.6 covers. One that is the only content of a link or a button is left out: its alternative is the control's name, which the glossary « Image porteuse d'information » (notes 1 and 2) sends to Links (6.1), Forms (11.9) or Scripts (7.1). Content hidden with CSS or the hidden attribute is left out too. A page with none is notApplicable.
 
 **Expectation.**
 
@@ -460,7 +460,7 @@ RGAA 1.1.7 passes when one of these holds:
 - it is immediately followed by a link or button that gives access to an alternative content;
 - a mechanism lets the user replace it with an alternative content.
 
-Passes: role="img" and a text alternative. Fails: no text alternative and no link or button right after it, when the embed has role="img" or certainly carries information (the only content of a link or a button, a captioned image, or one that takes focus). Without either, it is asked about (noAlternativeMayBeDecorative): it may be decorative, and then it fails 1.2.6 instead. Asks (cantTell):
+Passes: role="img" and a text alternative. Fails: no text alternative and no link or button right after it, when the embed has role="img" or certainly carries information (a captioned image, or one that takes focus). Without either, it is asked about (noAlternativeMayBeDecorative): it may be decorative, and then it fails 1.2.6 instead. Asks (cantTell):
 
 - a text alternative without role="img". The test wording requires both, but the methodology validates on the alternative alone (steps 2 to 4), so RGAA does not say which reading wins;
 - no text alternative, but a link or button right after the &lt;embed&gt; (does it lead to an alternative content?).
@@ -730,13 +730,13 @@ automatic · no formal WCAG SC mapping · confidence high · default severity se
 
 Checks that each exposed &lt;img&gt; has an alt attribute or another text alternative, except a spacer image, which is decorative.
 
-**Applies to.** Applies to &lt;img&gt; elements included in the accessibility tree, as img-alt-present does: role="presentation" or role="none" leaves an image out only when it is not focusable, and hidden images are left out. A spacer with no alt, or an alt of only spaces, is left out too: an image 2 px wide or high, or less, as rendered or, with no layout, by its width or height attribute, unless it is in a &lt;figure&gt; with a &lt;figcaption&gt; or is the only content of a link or a button. A page with none is notApplicable.
+**Applies to.** Applies to &lt;img&gt; elements included in the accessibility tree, as img-alt-present does: role="presentation" or role="none" leaves an image out only when it is not focusable, and hidden images are left out. A spacer with no alt, or an alt of only spaces, is left out too: an image 2 px wide or high, or less, as rendered or, with no layout, by its width or height attribute, unless it is in a &lt;figure&gt; with a &lt;figcaption&gt;. An image that is the only content of a link or a button is left out: its alternative is the control's name, which the glossary « Image porteuse d'information » (notes 1 and 2) sends to Links (6.1), Forms (11.9) or Scripts (7.1). A page with none is notApplicable.
 
 **Expectation.**
 
 Each applicable &lt;img&gt; has an alt attribute (alt="" included), a non-empty aria-label or aria-labelledby, or a non-empty title. RGAA 1.1.1 asks each image carrying information for a text alternative, and 1.2.1 asks each decorative one for alt="", so an image with none of these fails one of the two, depending on what it is:
 
-- it fails 1.1.1 when it certainly carries information: it is the only content of a link or a button, it has a caption (a &lt;figure&gt; with a &lt;figcaption&gt;), it is an image map (usemap or ismap), or it takes focus (tabindex 0 or more);
+- it fails 1.1.1 when it certainly carries information: it has a caption (a &lt;figure&gt; with a &lt;figcaption&gt;), it is an image map (usemap or ismap), or it takes focus (tabindex 0 or more);
 - otherwise it is asked about (cantTell), since it may be decorative (glossary « Image de décoration »: « Une image précédant chaque item d'une liste »), and the 1.1.x methodology leaves that call to a person; rgaa-img-no-alt-decorative asks the 1.2.1 side.
 
 A spacer carries no information, so it is decorative, and the alt="" it lacks is 1.2.1's matter, which rgaa-img-no-alt-decorative fails.
@@ -858,7 +858,7 @@ Checks that each link holds text or an image with a text alternative, rather tha
 
 **Applies to.** Applies to links included in the accessibility tree: &lt;a&gt; with an href (or, in SVG, an xlink:href), and elements with role="link". An &lt;a href&gt; whose role is another widget (role="button", role="tab") is not a link to assistive technologies and is not matched. &lt;area&gt; is not matched: RGAA judges its text alternative under 1.1.2. A page with no link is notApplicable.
 
-**Expectation.** The content of the link holds text, or an image with a text alternative (alt, aria-label, aria-labelledby, title, or the &lt;title&gt; or &lt;text&gt; of an &lt;svg&gt;). RGAA 6.2.1 asks for "un intitulé entre &lt;a&gt; et &lt;/a&gt;", and its methodology checks that the content of the element contains a label ("texte ou alternative"). A name given only by aria-label, aria-labelledby or title on the link itself does not count: the RGAA glossary "Intitulé (ou nom accessible) de lien", Note 4, says a link with no content fails 6.2. An image that has no text alternative, or that is hidden with aria-hidden="true", gives the link no label. The rule asks instead of failing when the content holds text added by CSS (::before, ::after), an embedded element such as a form field, or an element named by its own aria-label, or when text hidden from assistive technologies (aria-hidden="true") sits beside a name from aria-label, aria-labelledby or title. Hidden text with no such name leaves the link with no label at all, and fails.
+**Expectation.** The content of the link holds text, or an image with a text alternative (alt, aria-label, aria-labelledby, title, or the &lt;title&gt; or &lt;text&gt; of an &lt;svg&gt;). RGAA 6.2.1 asks for "un intitulé entre &lt;a&gt; et &lt;/a&gt;", and its methodology checks that the content of the element contains a label ("texte ou alternative"). A name given only by aria-label, aria-labelledby or title on the link itself does not count: the RGAA glossary "Intitulé (ou nom accessible) de lien", Note 4, says a link with no content fails 6.2. An image that has no text alternative, or that is hidden with aria-hidden="true", gives the link no label; a &lt;canvas&gt;, or an &lt;object&gt; or &lt;embed&gt; of an image type, counts as an image, and its alternative is an aria-label, aria-labelledby, title or fallback text (glossary « Image porteuse d'information », note 1: the alternative of a link's only image is the link's label). The rule asks instead of failing when the content holds text added by CSS (::before, ::after), an embedded element such as a form field, or an element named by its own aria-label, or when text hidden from assistive technologies (aria-hidden="true") sits beside a name from aria-label, aria-labelledby or title. Hidden text with no such name leaves the link with no label at all, and fails.
 
 ### `rgaa-link-context-review`
 
@@ -1035,7 +1035,7 @@ automatic · no formal WCAG SC mapping · confidence medium · default severity 
 
 Checks that each &lt;object type="image/…"&gt; has role="img" and a text alternative (aria-labelledby, aria-label or title), or is followed by a link or button to an alternative content.
 
-**Applies to.** Applies to &lt;object&gt; elements whose type attribute starts with image/ (RGAA 1.1.6 covers "balise &lt;object&gt; avec l'attribut type="image/…"" only; an &lt;object&gt; with another type, or none, is out of scope). An &lt;object&gt; with aria-hidden="true", on itself or an ancestor, or with role="none"/"presentation", is left out: it is marked decorative, which 1.2.3 covers. Content hidden with CSS or the hidden attribute is left out too. A page with none is notApplicable.
+**Applies to.** Applies to &lt;object&gt; elements whose type attribute starts with image/ (RGAA 1.1.6 covers "balise &lt;object&gt; avec l'attribut type="image/…"" only; an &lt;object&gt; with another type, or none, is out of scope). An &lt;object&gt; with aria-hidden="true", on itself or an ancestor, or with role="none"/"presentation", is left out: it is marked decorative, which 1.2.3 covers. One that is the only content of a link or a button is left out: its alternative is the control's name, which the glossary « Image porteuse d'information » (notes 1 and 2) sends to Links (6.1), Forms (11.9) or Scripts (7.1). Content hidden with CSS or the hidden attribute is left out too. A page with none is notApplicable.
 
 **Expectation.**
 
@@ -1045,7 +1045,7 @@ RGAA 1.1.6 passes when one of these holds:
 - it is immediately followed by a link or button that gives access to an alternative content;
 - a mechanism lets the user replace it with an alternative content.
 
-Passes: role="img" and a text alternative. Fails: no text alternative, no fallback content between &lt;object&gt; and &lt;/object&gt;, and no link or button right after it, when the object has role="img" or certainly carries information (the only content of a link or a button, a captioned image, or one that takes focus). Without either, it is asked about (noAlternativeMayBeDecorative): it may be decorative, and then it fails 1.2.3 instead. Asks (cantTell):
+Passes: role="img" and a text alternative. Fails: no text alternative, no fallback content between &lt;object&gt; and &lt;/object&gt;, and no link or button right after it, when the object has role="img" or certainly carries information (a captioned image, or one that takes focus). Without either, it is asked about (noAlternativeMayBeDecorative): it may be decorative, and then it fails 1.2.3 instead. Asks (cantTell):
 
 - a text alternative without role="img". The test wording requires both, but the methodology validates on the alternative alone (steps 3 to 5), so RGAA does not say which reading wins;
 - no text alternative, but a link or button right after the &lt;object&gt; (does it lead to an alternative content?);
@@ -1219,7 +1219,7 @@ automatic · no formal WCAG SC mapping · confidence high · default severity se
 
 Checks that each exposed element with role="img" (other than &lt;img&gt; and an outer &lt;svg&gt;) has a text alternative from aria-labelledby or aria-label, the two sources RGAA accepts.
 
-**Applies to.** Applies to elements whose role attribute starts with the token img, except &lt;img&gt; (RGAA lists its own sources for it) and an outer &lt;svg&gt; (RGAA test 1.1.5, see rgaa-svg-role-img and svg-text-alternative-present). An element with aria-hidden="true", on itself or an ancestor, is left out: the glossary entry "Image de décoration" says an element with role="img" is decorative only with aria-hidden="true". Content hidden with CSS or the hidden attribute is left out too. A page with none is notApplicable.
+**Applies to.** Applies to elements whose role attribute starts with the token img, except &lt;img&gt; (RGAA lists its own sources for it) and an outer &lt;svg&gt; (RGAA test 1.1.5, see rgaa-svg-role-img and svg-text-alternative-present). An element with aria-hidden="true", on itself or an ancestor, is left out: the glossary entry "Image de décoration" says an element with role="img" is decorative only with aria-hidden="true". Content hidden with CSS or the hidden attribute is left out too, and so is an element that is the only content of a link or a button: its alternative is the control's name, which the glossary « Image porteuse d'information » (notes 1 and 2) sends to Links (6.1), Forms (11.9) or Scripts (7.1). A page with none is notApplicable.
 
 **Expectation.** The element has a text alternative from one of the two sources RGAA 1.1.1 step 4 lists for role="img": text referenced by aria-labelledby, or a non-empty aria-label. A name that comes only from the title attribute, or no name at all, fails: the glossary entry "Alternative textuelle (image)" lists title for &lt;img&gt;, &lt;input type="image"&gt;, &lt;object&gt; and &lt;embed&gt; only. An element in the SVG namespace (a &lt;g role="img"&gt;, for example) named only by a &lt;title&gt; child is asked about (cantTell): RGAA contradicts itself on &lt;title&gt; as an SVG alternative (1.1.5 step 5 lists only aria-labelledby and aria-label, while 1.3.6 checks the content of &lt;title&gt;).
 
@@ -1322,9 +1322,9 @@ automatic · no formal WCAG SC mapping · confidence high · default severity se
 
 Checks that an &lt;svg&gt; named by aria-labelledby, aria-label or &lt;title&gt; has role="img", and that its name comes from aria-labelledby or aria-label.
 
-**Applies to.** Applies to outer &lt;svg&gt; elements that carry a text alternative: text referenced by aria-labelledby, a non-empty aria-label, or a non-empty &lt;title&gt; child. An &lt;svg&gt; with aria-hidden="true", on itself or an ancestor, is left out (rgaa-svg-hidden-no-alternative checks it), and so is content hidden with CSS or the hidden attribute. An &lt;svg role="img"&gt; with no alternative at all is left to svg-text-alternative-present. A page with none is notApplicable.
+**Applies to.** Applies to outer &lt;svg&gt; elements that carry a text alternative: text referenced by aria-labelledby, a non-empty aria-label, or a non-empty &lt;title&gt; child. An &lt;svg&gt; with aria-hidden="true", on itself or an ancestor, is left out (rgaa-svg-hidden-no-alternative checks it), and so is content hidden with CSS or the hidden attribute. An &lt;svg role="img"&gt; with no alternative at all is left to svg-text-alternative-present. An &lt;svg&gt; that is the only content of a link or a button is left out: its alternative is the control's name, which the glossary « Image porteuse d'information » (notes 1 and 2) sends to Links (6.1), Forms (11.9) or Scripts (7.1). A page with none is notApplicable.
 
-**Expectation.** The &lt;svg&gt; has role="img" (RGAA 1.1.5 step 3; step 4: "Si ce n'est pas le cas, le test est invalidé"), and its alternative comes from aria-labelledby or aria-label (step 5). An alternative without role="img" fails when the SVG certainly carries information: it is the only content of a link or a button, or it takes focus itself (tabindex 0 or more). Otherwise it is asked about (cantTell): an icon beside a button's text is decorative, and then it fails 1.2.4 instead, which requires aria-hidden="true" and no alternative; the 1.1.5 methodology leaves that call to a person (« déterminer si l'image est porteuse d'information »). An &lt;svg role="img"&gt; named only by its &lt;title&gt; is asked about (cantTell): RGAA contradicts itself there. 1.1.5 step 5 lists only aria-labelledby and aria-label, but 1.3.6 checks "le contenu de l'élément &lt;title&gt;" as the alternative of an SVG.
+**Expectation.** The &lt;svg&gt; has role="img" (RGAA 1.1.5 step 3; step 4: "Si ce n'est pas le cas, le test est invalidé"), and its alternative comes from aria-labelledby or aria-label (step 5). An alternative without role="img" fails when the SVG certainly carries information: it has a caption (a &lt;figure&gt; with a &lt;figcaption&gt;), or it takes focus itself (tabindex 0 or more). Otherwise it is asked about (cantTell): an icon beside a button's text is decorative, and then it fails 1.2.4 instead, which requires aria-hidden="true" and no alternative; the 1.1.5 methodology leaves that call to a person (« déterminer si l'image est porteuse d'information »). An &lt;svg role="img"&gt; named only by its &lt;title&gt; is asked about (cantTell): RGAA contradicts itself there. 1.1.5 step 5 lists only aria-labelledby and aria-label, but 1.3.6 checks "le contenu de l'élément &lt;title&gt;" as the alternative of an SVG.
 
 ### `rgaa-table-title-adjacent`
 

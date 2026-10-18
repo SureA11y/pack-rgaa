@@ -30,7 +30,7 @@ Found by the audit in [AUDIT.md](./AUDIT.md), whose id each entry keeps. The tri
 
 | # | Test | Core rule | Issue | Proposed change | Status |
 |---|---|---|---|---|---|
-| T1-11 | 1.3.1, 1.3.6 | `img-alt-quality`, `svg-text-alternative-quality` | Asks about the alternative of an image that is a link's or button's only content; the glossary « Image porteuse d'information », notes 1 and 2, sends it to Links (6.1) or Forms and Scripts. | Leave those images out, or give them a reason code the pack can keep out of 1.3. | verified |
+| T1-11 | 1.1, 1.3.1, 1.3.6 | `img-alt-quality`, `svg-text-alternative-quality`, `img-alt-decorative` | Asks about the alternative of an image that is a link's or button's only content; the glossary « Image porteuse d'information », notes 1 and 2, sends it to Links (6.1) or Forms and Scripts. `img-alt-decorative` also asks, under 1.1, whether an `<svg>` or `<canvas>` alone in a link is decorative. | Leave those images out, or give them a reason code the pack can keep out of 1.3. | verified |
 | T1-04 | 1.1.5 | `svg-text-alternative-present` | An empty `aria-label=""` counts as a name "intended to be conveyed". | Treat an empty aria-label as no name. | verified |
 | T25-15 | 3.2.2, 3.2.4 | `isLargeText` (contrast helpers) | Weights 600–699 always count as not bold; RGAA does not define bold by a number. | A setting to ask for weights 600–699 between 18.5 and 24 px when the ratio is between 3:1 and 4.5:1. | verified |
 | T25-16 | 3.2.1 | contrast placeholder check | An author placeholder colour below the ratio is only asked about (`PLACEHOLDER_BELOW_THRESHOLD`); no particular case exempts placeholders. | Fail when the placeholder colour is the author's, not the browser's default. | verified |

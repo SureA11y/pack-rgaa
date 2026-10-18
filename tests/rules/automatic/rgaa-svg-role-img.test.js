@@ -62,12 +62,19 @@ test(`${RULE_ID}: an alternative without role="img" is asked about and names the
 // carries information: without role="img" it fails 1.1.5.
 test(`${RULE_ID}: an SVG that certainly carries information fails without role="img"`, () => {
   for (const body of [
-    '<a href="/"><svg><title>Accueil</title><circle r="4"/></svg></a>',
-    '<button type="button"><svg aria-label="Fermer"></svg></button>',
+    '<figure><svg><title>Plan</title><circle r="4"/></svg><figcaption>Plan du site</figcaption></figure>',
     '<svg tabindex="0" aria-label="Plan"></svg>'
   ]) {
     const rule = assertRule(run(body), RULE_ID, 'fail', { minOccurrences: 1, maxOccurrences: 1 });
     assert.equal(rule.occurrences[0].data.details.reasonCode, 'missingRoleImg', body);
+  }
+  // A control's only image is judged as the control's label (glossary
+  // « Image porteuse d'information », notes 1 and 2), outside theme 1.
+  for (const body of [
+    '<a href="/"><svg><title>Accueil</title><circle r="4"/></svg></a>',
+    '<button type="button"><svg aria-label="Fermer"></svg></button>'
+  ]) {
+    assertRule(run(body), RULE_ID, 'notApplicable');
   }
   // Beside the control's own text, the icon may be decorative.
   const icon = assertRule(
@@ -148,7 +155,7 @@ test(`${RULE_ID}: RGAA profile, a named SVG without role="img": WCAG passes it, 
       body
     );
   }
-  assert.deepEqual(verdicts('<a href="/"><svg aria-label="Accueil"></svg></a>'), {
+  assert.deepEqual(verdicts('<svg tabindex="0" aria-label="Accueil"></svg>'), {
     rule: 'fail',
     rgaa: 'fail',
     wcagRule: 'pass'

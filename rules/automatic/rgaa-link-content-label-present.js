@@ -23,7 +23,11 @@
  *   aria-labelledby or title on the link itself does not count: the RGAA
  *   glossary "Intitulé (ou nom accessible) de lien", Note 4, says a link
  *   with no content fails 6.2. An image that has no text alternative, or
- *   that is hidden with aria-hidden="true", gives the link no label. The
+ *   that is hidden with aria-hidden="true", gives the link no label; a
+ *   <canvas>, or an <object> or <embed> of an image type, counts as an
+ *   image, and its alternative is an aria-label, aria-labelledby, title or
+ *   fallback text (glossary « Image porteuse d'information », note 1: the
+ *   alternative of a link's only image is the link's label). The
  *   rule asks instead of failing when the content holds text added by CSS
  *   (::before, ::after), an embedded element such as a form field, or an
  *   element named by its own aria-label, or when text hidden from assistive
@@ -274,9 +278,20 @@ function runInPage(ctx) {
             continue;
           }
           if (!hidden) {
-            const alt = norm(attr(child, 'aria-label')) || norm(attr(child, 'title'));
+            const alt =
+              norm(attr(child, 'aria-label')) ||
+              norm(attr(child, 'aria-labelledby')) ||
+              norm(attr(child, 'title'));
+            // A <canvas>, or an <object> or <embed> of an image type, is an
+            // image: with no alternative, it labels nothing.
+            const image =
+              tag === 'canvas' ||
+              ((tag === 'object' || tag === 'embed') &&
+                /^image\//i.test(String(attr(child, 'type') || '').trim()));
             if ((tag === 'object' || tag === 'embed' || tag === 'canvas') && alt) {
               found.alternative = true;
+            } else if (image) {
+              found.unlabelledImage = true;
             } else {
               found.embedded = true;
             }

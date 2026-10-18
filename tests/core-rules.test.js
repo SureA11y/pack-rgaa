@@ -103,16 +103,17 @@ for (const [ruleId, html, outcome, tests, why] of CASES) {
   });
 }
 
-// img-alt-present's WCAG verdict stays, and rgaa-img-alt-present, which
-// leaves spacers to 1.2, reports RGAA 1.1.1.
-test('alt=" " on a link\'s only image fails RGAA 1.1.1 through rgaa-img-alt-present, and img-alt-decorative does not ask', () => {
+// img-alt-present's WCAG verdict stays. Under RGAA, a link's only image is
+// judged as the link's label (glossary « Image porteuse d'information »,
+// note 1): rgaa-link-content-label-present fails it, not theme 1.
+test('alt=" " on a link\'s only image fails RGAA 6.2.1, not 1.1.1, and img-alt-decorative does not ask', () => {
   const result = runa11yCoreOnHtml(page('<a href="/"><img id="a" src="a.png" alt=" "></a>'), RGAA);
   const rule = (id) => result.checksResults.find((r) => r.ruleId === id);
   assert.equal(rule('img-alt-decorative').outcome, 'notApplicable');
   assert.equal(rule('img-alt-present').outcome, 'fail');
   assert.ok(!rgaaTestsOf(rule('img-alt-present')).includes('1.1.1'));
-  assert.equal(rule('rgaa-img-alt-present').outcome, 'fail');
-  assert.ok(rgaaTestsOf(rule('rgaa-img-alt-present')).includes('1.1.1'));
+  assert.equal(rule('rgaa-img-alt-present').outcome, 'notApplicable');
+  assert.equal(rule('rgaa-link-content-label-present').outcome, 'fail');
 });
 
 // RGAA 5.7.4 covers cells associated with headers that have an id; a cell

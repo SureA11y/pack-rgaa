@@ -13,8 +13,11 @@
  *   only; an <embed> with another type, or none, is out of scope). An
  *   <embed> with aria-hidden="true", on itself or an ancestor, or with
  *   role="none"/"presentation", is left out: it is marked decorative, which
- *   1.2.6 covers. Content hidden with CSS or the hidden attribute is left
- *   out too. A page with none is notApplicable.
+ *   1.2.6 covers. One that is the only content of a link or a button is
+ *   left out: its alternative is the control's name, which the glossary «
+ *   Image porteuse d'information » (notes 1 and 2) sends to Links (6.1),
+ *   Forms (11.9) or Scripts (7.1). Content hidden with CSS or the hidden
+ *   attribute is left out too. A page with none is notApplicable.
  * @expectation
  *   RGAA 1.1.7 passes when one of these holds:
  *   - the <embed> has a text alternative (aria-labelledby, aria-label or
@@ -24,9 +27,8 @@
  *   - a mechanism lets the user replace it with an alternative content.
  *   Passes: role="img" and a text alternative.
  *   Fails: no text alternative and no link or button right after it, when
- *   the embed has role="img" or certainly carries information (the only
- *   content of a link or a button, a captioned image, or one that takes
- *   focus). Without either, it is asked about
+ *   the embed has role="img" or certainly carries information (a captioned
+ *   image, or one that takes focus). Without either, it is asked about
  *   (noAlternativeMayBeDecorative): it may be decorative, and then it fails
  *   1.2.6 instead.
  *   Asks (cantTell):
@@ -152,11 +154,9 @@ function runInPage(ctx) {
 
   const VF = { targetSet: 'dom', accEligible: null, reasons: [] };
 
-  // Certainly informative: the only content of a link or a button, an image
-  // with a caption, or one that takes focus. Anything else may be
-  // decorative, and then 1.2 applies instead.
+  // Certainly informative: an image with a caption, or one that takes
+  // focus. Anything else may be decorative, and then 1.2 applies instead.
   function certainlyInformative(el) {
-    const tagName = (n) => String(dom.localName(n) || '').toLowerCase();
     if (/^\d+$/.test(String(dom.getAttribute(el, 'tabindex') || '').trim())) return true;
     const figure = dom.closest(el, 'figure');
     if (
@@ -167,6 +167,14 @@ function runInPage(ctx) {
     ) {
       return true;
     }
+    return false;
+  }
+
+  // The only content of a link or a button: its alternative is the
+  // control's name, which the glossary « Image porteuse d'information »
+  // (notes 1 and 2) sends to Links (6.1), Forms (11.9) or Scripts (7.1).
+  function onlyContentOfControl(el) {
+    const tagName = (n) => String(dom.localName(n) || '').toLowerCase();
     let control = null;
     for (let a = dom.parentElement(el); a && !control; a = dom.parentElement(a)) {
       const r = helpers.aria.getExplicitRole(a);
@@ -190,6 +198,7 @@ function runInPage(ctx) {
     const type = trim(attr(el, 'type')).toLowerCase();
     if (!type.startsWith('image/')) continue;
     if (insideAriaHidden(el)) continue;
+    if (onlyContentOfControl(el)) continue;
     const role = firstRole(el);
     if (role === 'none' || role === 'presentation') continue;
     applicableCount += 1;

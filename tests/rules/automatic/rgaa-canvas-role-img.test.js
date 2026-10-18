@@ -68,7 +68,7 @@ test(`${RULE_ID}: no alternative at all on a canvas that may be decorative is as
 
 test(`${RULE_ID}: no alternative at all fails with reasonCode noAlternative`, () => {
   const rule = assertRule(
-    run('<a href="/carte"><canvas width="40" height="20"></canvas></a>'),
+    run('<figure><canvas width="40" height="20"></canvas><figcaption>Carte</figcaption></figure>'),
     RULE_ID,
     'fail',
     {
@@ -185,5 +185,18 @@ test(`${RULE_ID}: a canvas 0 px wide or high draws nothing and is left out`, () 
     '<canvas width="300" height="0"></canvas>'
   ]) {
     assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'notApplicable');
+  }
+});
+
+// Glossary « Image porteuse d'information », notes 1 and 2: the only image of
+// a link or a button is judged as the control's label, under Links (6.1),
+// Forms (11.9) or Scripts (7.1), not under theme 1.
+test(`${RULE_ID}: the only content of a link or a button is left out`, () => {
+  for (const body of [
+    '<a href="/plan"><canvas width="40" height="20"></canvas></a>',
+    '<button type="button"><canvas width="40" height="20"></canvas></button>',
+    '<form><button><canvas width="40" height="20"></canvas></button></form>'
+  ]) {
+    assertRule(run(body), RULE_ID, 'notApplicable');
   }
 });

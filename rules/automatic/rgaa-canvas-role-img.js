@@ -10,11 +10,14 @@
  * @applicability
  *   Applies to <canvas> elements. One with aria-hidden="true", on itself or
  *   an ancestor, or with role="none"/"presentation", is left out: it is
- *   marked decorative, which rgaa-canvas-decorative-aria-hidden checks (1.2.5).
- *   A canvas 0 px wide or high, rendered or by its width or height
- *   attribute, draws nothing and is no image, so it is left out too.
- *   Content hidden with CSS or the hidden attribute is left out too. A page
- *   with none is notApplicable.
+ *   marked decorative, which rgaa-canvas-decorative-aria-hidden checks
+ *   (1.2.5). A canvas 0 px wide or high, rendered or by its width or height
+ *   attribute, draws nothing and is no image, so it is left out too. One
+ *   that is the only content of a link or a button is left out: its
+ *   alternative is the control's name, which the glossary « Image porteuse
+ *   d'information » (notes 1 and 2) sends to Links (6.1), Forms (11.9) or
+ *   Scripts (7.1). Content hidden with CSS or the hidden attribute is left
+ *   out too. A page with none is notApplicable.
  * @expectation
  *   RGAA 1.1.8 passes when one of these holds:
  *   - the <canvas> has role="img" and a text alternative from
@@ -34,9 +37,8 @@
  *   - no role="img", an aria-label, aria-labelledby or title, but no
  *     fallback content and no link or button after it (the name alone is
  *     not one of the step 6 options);
- *   - nothing at all, on a canvas that certainly carries information: the
- *     only content of a link or a button, a captioned canvas, or one that
- *     takes focus.
+ *   - nothing at all, on a canvas that certainly carries information: a
+ *     captioned canvas, or one that takes focus.
  *   Asks (cantTell) about any other canvas with nothing at all
  *   (noAlternativeMayBeDecorative): it may be decorative, and then it
  *   fails 1.2.5 instead, which asks for aria-hidden="true".
@@ -181,11 +183,9 @@ function runInPage(ctx) {
   let applicableCount = 0;
   const VF = { targetSet: 'dom', accEligible: null, reasons: [] };
 
-  // Certainly informative: the only content of a link or a button, an image
-  // with a caption, or one that takes focus. Anything else may be
-  // decorative, and then 1.2 applies instead.
+  // Certainly informative: an image with a caption, or one that takes
+  // focus. Anything else may be decorative, and then 1.2 applies instead.
   function certainlyInformative(el) {
-    const tagName = (n) => String(dom.localName(n) || '').toLowerCase();
     if (/^\d+$/.test(String(dom.getAttribute(el, 'tabindex') || '').trim())) return true;
     const figure = dom.closest(el, 'figure');
     if (
@@ -196,6 +196,14 @@ function runInPage(ctx) {
     ) {
       return true;
     }
+    return false;
+  }
+
+  // The only content of a link or a button: its alternative is the
+  // control's name, which the glossary « Image porteuse d'information »
+  // (notes 1 and 2) sends to Links (6.1), Forms (11.9) or Scripts (7.1).
+  function onlyContentOfControl(el) {
+    const tagName = (n) => String(dom.localName(n) || '').toLowerCase();
     let control = null;
     for (let a = dom.parentElement(el); a && !control; a = dom.parentElement(a)) {
       const r = helpers.aria.getExplicitRole(a);
@@ -238,6 +246,7 @@ function runInPage(ctx) {
   for (const el of nodes) {
     if (!el || !dom.get(el, 'getAttribute')) continue;
     if (insideAriaHidden(el)) continue;
+    if (onlyContentOfControl(el)) continue;
     // A canvas 0 px wide or high draws nothing, so it is no image.
     if (drawsNothing(el)) continue;
     const role = firstRole(el);

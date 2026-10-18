@@ -14,18 +14,20 @@
  *   spacer with no alt, or an alt of only spaces, is left out too: an image
  *   2 px wide or high, or less, as rendered
  *   or, with no layout, by its width or height attribute, unless it is in a
- *   <figure> with a <figcaption> or is the only content of a link or a
- *   button. A page with none is notApplicable.
+ *   <figure> with a <figcaption>. An image that is the only content of a
+ *   link or a button is left out: its alternative is the control's name,
+ *   which the glossary « Image porteuse d'information » (notes 1 and 2)
+ *   sends to Links (6.1), Forms (11.9) or Scripts (7.1). A page with none
+ *   is notApplicable.
  * @expectation
  *   Each applicable <img> has an alt attribute (alt="" included), a
  *   non-empty aria-label or aria-labelledby, or a non-empty title. RGAA
  *   1.1.1 asks each image carrying information for a text alternative, and
  *   1.2.1 asks each decorative one for alt="", so an image with none of
  *   these fails one of the two, depending on what it is:
- *   - it fails 1.1.1 when it certainly carries information: it is the only
- *     content of a link or a button, it has a caption (a <figure> with a
- *     <figcaption>), it is an image map (usemap or ismap), or it takes
- *     focus (tabindex 0 or more);
+ *   - it fails 1.1.1 when it certainly carries information: it has a
+ *     caption (a <figure> with a <figcaption>), it is an image map (usemap
+ *     or ismap), or it takes focus (tabindex 0 or more);
  *   - otherwise it is asked about (cantTell), since it may be decorative
  *     (glossary « Image de décoration »: « Une image précédant chaque item
  *     d'une liste »), and the 1.1.x methodology leaves that call to a
@@ -190,12 +192,11 @@ function runInPage(ctx) {
   const questions = [];
   let applicableCount = 0;
 
-  // An image that carries information whatever it shows: the only content
-  // of a link or a button (its alternative is the control's name), a
-  // captioned image (criterion 1.2 does not apply to it), an image map, or
-  // an image that takes focus itself.
+  // An image that carries information whatever it shows: a captioned image
+  // (criterion 1.2 does not apply to it), an image map, or an image that
+  // takes focus itself.
   function certainlyInformative(el) {
-    if (onlyContentOfControl(el) || hasCaption(el)) return true;
+    if (hasCaption(el)) return true;
     if (dom.hasAttribute(el, 'usemap') || dom.hasAttribute(el, 'ismap')) return true;
     const tabindex = trim(attr(el, 'tabindex'));
     return /^\d+$/.test(tabindex);
@@ -206,17 +207,16 @@ function runInPage(ctx) {
     if (!inAccTree(el)) continue;
     const role = helpers.aria.getExplicitRole(el);
     if ((role === 'presentation' || role === 'none') && !focusable(el)) continue;
+    // The only content of a link or a button: its alternative is the
+    // control's name, which the glossary « Image porteuse d'information »
+    // (notes 1 and 2) sends to Links (6.1), Forms (11.9) or Scripts (7.1).
+    if (onlyContentOfControl(el)) continue;
     // alt="" marks a decorative image; an alt of only spaces names nothing.
     const alt = attr(el, 'alt');
     const blank = alt != null && alt !== '' && !trim(alt);
     // A spacer is decorative: rgaa-img-no-alt-decorative fails it under 1.2.1,
     // with no alt or an alt of only spaces.
-    if (
-      (alt == null || blank) &&
-      !hasCaption(el) &&
-      !onlyContentOfControl(el) &&
-      isSpacer(size(el, layout))
-    ) {
+    if ((alt == null || blank) && !hasCaption(el) && isSpacer(size(el, layout))) {
       continue;
     }
     applicableCount += 1;

@@ -204,3 +204,31 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-link-content-label-prese
     ['cantTell', 'contentNotReadable']
   ]);
 });
+
+// A <canvas>, or an <object> or <embed> of an image type, is an image: with
+// no alternative, it gives the link no label. Glossary « Image porteuse
+// d'information », note 1: a link's only image is judged under Links.
+test(`${RULE_ID}: a link whose only content is an image with no alternative fails`, () => {
+  for (const body of [
+    '<a href="/plan"><canvas width="10" height="10"></canvas></a>',
+    '<a href="/plan"><object type="image/png" data="p.png"></object></a>',
+    '<a href="/plan"><embed type="image/png" src="p.png"></a>'
+  ]) {
+    const rule = assertRule(run(body), RULE_ID, 'fail');
+    assert.deepEqual(reasons(rule), [['fail', 'noContentLabel']], body);
+  }
+  for (const body of [
+    '<a href="/plan"><canvas width="10" height="10">Plan du site</canvas></a>',
+    '<a href="/plan"><canvas aria-label="Plan du site"></canvas></a>',
+    '<a href="/plan"><object type="image/png" data="p.png" title="Plan du site"></object></a>'
+  ]) {
+    assertRule(run(body), RULE_ID, 'pass', { maxOccurrences: 0 });
+  }
+  // An object of another type may be named by what it shows: a person checks.
+  const pdf = assertRule(
+    run('<a href="/r"><object type="application/pdf" data="r.pdf"></object></a>'),
+    RULE_ID,
+    'cantTell'
+  );
+  assert.deepEqual(reasons(pdf), [['cantTell', 'contentNotReadable']]);
+});

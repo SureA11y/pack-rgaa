@@ -13,15 +13,18 @@
  *   <title> child. An <svg> with aria-hidden="true", on itself or an
  *   ancestor, is left out (rgaa-svg-hidden-no-alternative checks it), and so is
  *   content hidden with CSS or the hidden attribute. An <svg role="img">
- *   with no alternative at all is left to svg-text-alternative-present. A
- *   page with none is notApplicable.
+ *   with no alternative at all is left to svg-text-alternative-present. An
+ *   <svg> that is the only content of a link or a button is left out: its
+ *   alternative is the control's name, which the glossary « Image porteuse
+ *   d'information » (notes 1 and 2) sends to Links (6.1), Forms (11.9) or
+ *   Scripts (7.1). A page with none is notApplicable.
  * @expectation
  *   The <svg> has role="img" (RGAA 1.1.5 step 3; step 4: "Si ce n'est pas
  *   le cas, le test est invalidé"), and its alternative comes from
  *   aria-labelledby or aria-label (step 5).
  *   An alternative without role="img" fails when the SVG certainly carries
- *   information: it is the only content of a link or a button, or it takes
- *   focus itself (tabindex 0 or more). Otherwise it is asked about
+ *   information: it has a caption (a <figure> with a <figcaption>), or it
+ *   takes focus itself (tabindex 0 or more). Otherwise it is asked about
  *   (cantTell): an icon beside a button's text is decorative, and then it
  *   fails 1.2.4 instead, which requires aria-hidden="true" and no
  *   alternative; the 1.1.5 methodology leaves that call to a person
@@ -95,11 +98,23 @@ function runInPage(ctx) {
     return trim(attr(el, 'aria-label')) ? 'aria-label' : '';
   }
 
-  // The only content of a link or a button (its alternative is then the
-  // control's name), or an SVG that takes focus itself: it carries
-  // information, whatever it shows.
+  // An SVG that takes focus itself, or one with a caption (criterion 1.2
+  // does not apply to it): it carries information, whatever it shows.
   function certainlyInformative(svg) {
     if (/^\d+$/.test(trim(attr(svg, 'tabindex')))) return true;
+    const figure = dom.closest(svg, 'figure');
+    return !!(
+      figure &&
+      Array.from(dom.querySelectorAll(figure, ':scope > figcaption')).some((c) =>
+        trim(dom.textContent(c))
+      )
+    );
+  }
+
+  // The only content of a link or a button: its alternative is the
+  // control's name, which the glossary « Image porteuse d'information »
+  // (notes 1 and 2) sends to Links (6.1), Forms (11.9) or Scripts (7.1).
+  function onlyContentOfControl(svg) {
     let control = null;
     for (let a = parentOf(svg); a && dom.nodeType(a) === 1 && !control; a = parentOf(a)) {
       const tag = tagOf(a);
@@ -146,6 +161,7 @@ function runInPage(ctx) {
     const p = dom.parentElement(svg);
     if (p && dom.get(p, 'closest') && dom.closest(p, 'svg')) continue;
     if (insideAriaHidden(svg)) continue;
+    if (onlyContentOfControl(svg)) continue;
 
     const mechanism = ariaName(svg);
     const title = titleChildText(svg);
@@ -181,8 +197,7 @@ function runInPage(ctx) {
     // beside a button's text is decorative, and then fails 1.2.4 instead
     // (aria-hidden="true", no <title>). RGAA leaves that call to a person
     // (1.1.5 methodology: « déterminer si l'image est porteuse
-    // d'information »), unless the SVG is a control's only content or takes
-    // focus itself.
+    // d'information »), unless the SVG has a caption or takes focus itself.
     if (!certainlyInformative(svg)) {
       cantTells.push(
         helpers.reportOccurrence(svg, {
