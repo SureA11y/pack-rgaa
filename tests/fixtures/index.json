@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 77,
-    "withFixture": 77,
+    "total": 78,
+    "withFixture": 78,
     "withoutFixture": 0
   },
   "rows": [
@@ -802,6 +802,23 @@
         "FAIL": 1,
         "CANTTELL": 0,
         "OTHER": 0
+      }
+    },
+    {
+      "ruleId": "rgaa-markup-for-presentation",
+      "title": "Elements are not used only for presentation",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-markup-for-presentation.js",
+      "testFile": "tests/rules/automatic/rgaa-markup-for-presentation.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-markup-for-presentation-all-scenarios.html",
+      "totalCases": 4,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 2,
+        "CANTTELL": 1,
+        "OTHER": 1
       }
     },
     {

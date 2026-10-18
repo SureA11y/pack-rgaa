@@ -627,5 +627,21 @@
   "dirAttributeValid_summary_fail_irrelevant_ltr": "This element has dir=\"{{value}}\", but its text reads right to left.",
   "dirAttributeValid_hint_fail_irrelevant": "Remove the dir attribute, or set it to the direction the text reads in.",
   "textDirectionMarked_summary_cantTell_short_rtl": "This short text reads right to left, unlike its context, with no dir attribute around it.",
-  "textDirectionMarked_summary_cantTell_short_ltr": "This short text reads left to right, unlike its context, with no dir attribute around it."
+  "textDirectionMarked_summary_cantTell_short_ltr": "This short text reads left to right, unlike its context, with no dir attribute around it.",
+  "markupForPresentation_title": "Elements are not used only for presentation",
+  "markupForPresentation_description": "Fails headings with role=\"presentation\" and paragraphs of only spaces or line breaks; asks about empty paragraphs and <blockquote> elements, runs of <br> and indents made of spaces.",
+  "markupForPresentation_summary_headingPresentation": "This heading has role=\"presentation\", which RGAA does not accept on a heading.",
+  "markupForPresentation_summary_spacerParagraph": "This paragraph holds only spaces or line breaks: it is used to make space.",
+  "markupForPresentation_summary_emptyBlockquote": "This <blockquote> holds no text; check whether it is used for its margins.",
+  "markupForPresentation_summary_emptyParagraph": "This paragraph has no content; check whether it is used to make space.",
+  "markupForPresentation_summary_placeholder": "This element is empty but has a role or aria-live; check whether a script fills it or it is used to make space.",
+  "markupForPresentation_summary_consecutiveBr": "This element uses two or more <br> in a row; check whether they make paragraphs.",
+  "markupForPresentation_summary_spacesForMargin": "This text is indented or aligned with non-breaking spaces; check whether they make a margin.",
+  "markupForPresentation_hint_headingPresentation": "If the text is a heading, remove the role; if it is not, use an element that is not a heading, styled with CSS (RGAA 8.9.1).",
+  "markupForPresentation_hint_spacerParagraph": "Remove the paragraph and make the space with CSS margins or padding (RGAA 8.9.1).",
+  "markupForPresentation_hint_emptyBlockquote": "Remove the <blockquote>, or keep it for quotations only, and indent with CSS (RGAA 8.9.1).",
+  "markupForPresentation_hint_emptyParagraph": "If the paragraph only makes space, remove it and use CSS margins instead (RGAA 8.9.1).",
+  "markupForPresentation_hint_placeholder": "If the element only makes space, remove it and use CSS margins instead (RGAA 8.9.1).",
+  "markupForPresentation_hint_consecutiveBr": "If the line breaks separate paragraphs, mark each paragraph with <p> and space them with CSS (RGAA 8.9.1).",
+  "markupForPresentation_hint_spacesForMargin": "Make margins and alignment with CSS, not with spaces (RGAA 8.9.1)."
 }

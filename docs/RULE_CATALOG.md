@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**77 rules total: 60 automatic (decide deterministically; can return `fail`), 17 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**78 rules total: 61 automatic (decide deterministically; can return `fail`), 17 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -14,7 +14,7 @@ Under **What a finding reports**, a rule lists the fields its findings carry in 
 
 See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_SCHEMA.md) for what `type`/`confidence`/`severity` mean on a scan result, and [`WCAG_CONFORMANCE.md`](https://github.com/SureA11y/core/blob/main/docs/WCAG_CONFORMANCE.md) for how these roll up to an SC-level conformance claim.
 
-## Automatic rules (60), can return `fail`
+## Automatic rules (61), can return `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -53,6 +53,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-link-state-colors-review`](#rgaa-link-state-colors-review) | Link states shown by color alone contrast 3:1 with the surrounding text | — | — | medium | moderate |
 | [`rgaa-listbox-option-groups-absent`](#rgaa-listbox-option-groups-absent) | ARIA listboxes do not group options | — | — | high | moderate |
 | [`rgaa-main-element-structure`](#rgaa-main-element-structure) | Main content uses one visible &lt;main&gt; element | — | — | high | moderate |
+| [`rgaa-markup-for-presentation`](#rgaa-markup-for-presentation) | Elements are not used only for presentation | — | — | high | moderate |
 | [`rgaa-markup-validation-review`](#rgaa-markup-validation-review) | The generated source code passes the W3C validator | — | — | medium | moderate |
 | [`rgaa-media-transcript-adjacent`](#rgaa-media-transcript-adjacent) | Audio and video have an adjacent transcript or a link to one | — | — | medium | moderate |
 | [`rgaa-meta-redirect-immediate`](#rgaa-meta-redirect-immediate) | Meta redirects are immediate | — | — | medium | serious |
@@ -109,7 +110,7 @@ What a scan runs under each profile (`engineOptions.profile`): the rules its tag
 |---|---|---|---|---|---|---|
 | `rgaa-4.1.2` | `rgaa` | version 4.1.2 | — | — | — | 2.1 |
 
-## Rollups (52)
+## Rollups (53)
 
 Each groups rules into one result, as a WCAG rollup does; the standard's own report sections show them.
 
@@ -164,6 +165,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-8.5` | Chaque page web a-t-elle un titre de page ? | `page-title-present` |
 | `rgaa-4.1.2-8.6` | Pour chaque page web ayant un titre de page, ce titre est-il pertinent ? | `page-title-patterns`, `rgaa-page-title-unique` |
 | `rgaa-4.1.2-8.8` | Dans chaque page web, le code de langue de chaque changement de langue est-il valide et pertinent ? | `valid-lang` |
+| `rgaa-4.1.2-8.9` | Dans chaque page web, les balises ne doivent pas être utilisées uniquement à des fins de présentation. Cette règle est-elle respectée ? | `rgaa-markup-for-presentation` |
 | `rgaa-4.1.2-9.1` | Dans chaque page web, l’information est-elle structurée par l’utilisation appropriée de titres ? | `heading-order`, `heading-quality`, `p-as-heading`, `rgaa-heading-content-present`, `rgaa-heading-role-level-present` |
 | `rgaa-4.1.2-9.2` | Dans chaque page web, la structure du document est-elle cohérente (hors cas particuliers) ? | `rgaa-main-element-structure` |
 | `rgaa-4.1.2-9.3` | Dans chaque page web, chaque liste est-elle correctement structurée ? | `definition-list-children-valid`, `dlitem-parent-valid`, `list-children-valid`, `listitem-parent-valid`, `rgaa-aria-list-item-roles`, `rgaa-fake-list` |
@@ -888,6 +890,24 @@ Steps 4 and 5 of RGAA 9.2.1:
 - when there are several &lt;main&gt; elements, all but one carry the hidden attribute. Every &lt;main&gt; is counted, hidden or not: CSS or aria-hidden alone does not do (« l'utilisation d'un style seul restera insuffisante », 9.2 technical note). A &lt;main&gt; hidden only through a hidden ancestor, or inside a closed &lt;details&gt; or &lt;dialog&gt;, is asked about, since the step speaks of the element's own attribute. A page whose every &lt;main&gt; carries hidden is asked about too.
 
 Steps 1, 2 and 6 also name the element: a zone marked with role="banner", "navigation" or "contentinfo" on another element than &lt;header&gt;, &lt;nav&gt; or &lt;footer&gt; fails (roleZoneOnly), unless such an element wraps it or sits inside it. Whether a page's header, navigation and footer zones are marked at all, and step 3 (&lt;nav&gt; kept for navigation zones), are left to a person.
+
+### `rgaa-markup-for-presentation`
+
+**Elements are not used only for presentation**
+
+automatic · no formal WCAG SC mapping · confidence high · default severity moderate
+
+Fails headings with role="presentation" and paragraphs of only spaces or line breaks; asks about empty paragraphs and &lt;blockquote&gt; elements, runs of &lt;br&gt; and indents made of spaces.
+
+**Applies to.** Applies to visible headings with role="presentation" or role="none", paragraphs and &lt;blockquote&gt; elements with no content, runs of two or more &lt;br&gt;, and text indented with non-breaking spaces. A page with none is notApplicable.
+
+**Expectation.**
+
+RGAA 8.9.1: tags other than &lt;div&gt;, &lt;span&gt; and &lt;table&gt; « ne doivent pas être utilisées uniquement à des fins de présentation ». The methodology lists « un titre utilisé comme légende, un élément &lt;blockquote&gt; ou des paragraphes vides ou encore des espaces utilisés pour créer des effets de marges », and accepts role="presentation" on an empty paragraph or a &lt;blockquote&gt; but not on a heading.
+
+- Fails a heading (&lt;h1&gt;-&lt;h6&gt;) with role="presentation" or "none" (headingPresentation): « non-conforme sur un titre ».
+- Fails a paragraph that holds only non-breaking spaces or &lt;br&gt;, without role="presentation" (spacerParagraph): it renders a blank line and nothing else.
+- Asks about (cantTell) a paragraph with no content at all, which may render nothing; a &lt;blockquote&gt; with no text and no image (emptyBlockquote), which renders little more; an empty paragraph or &lt;blockquote&gt; with a role or aria-live, which a script may fill (placeholder); two or more &lt;br&gt; in a row, which may separate paragraphs or lines of an address or a poem; and text that starts with three non-breaking spaces or more, or holds a run of four, which may be a margin made of spaces.
 
 ### `rgaa-markup-validation-review`
 

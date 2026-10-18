@@ -627,5 +627,21 @@
   "dirAttributeValid_summary_fail_irrelevant_ltr": "Cet élément a dir=\"{{value}}\", mais son texte se lit de droite à gauche.",
   "dirAttributeValid_hint_fail_irrelevant": "Retirez l’attribut dir, ou donnez-lui le sens de lecture du texte.",
   "textDirectionMarked_summary_cantTell_short_rtl": "Ce court texte se lit de droite à gauche, contrairement à son contexte, sans attribut dir autour de lui.",
-  "textDirectionMarked_summary_cantTell_short_ltr": "Ce court texte se lit de gauche à droite, contrairement à son contexte, sans attribut dir autour de lui."
+  "textDirectionMarked_summary_cantTell_short_ltr": "Ce court texte se lit de gauche à droite, contrairement à son contexte, sans attribut dir autour de lui.",
+  "markupForPresentation_title": "Les balises ne sont pas utilisées uniquement à des fins de présentation",
+  "markupForPresentation_description": "En échec pour les titres dotés de role=\"presentation\" et les paragraphes faits seulement d’espaces ou de sauts de ligne ; pose la question pour les paragraphes et <blockquote> vides, les suites de <br> et les retraits faits d’espaces.",
+  "markupForPresentation_summary_headingPresentation": "Ce titre a role=\"presentation\", que le RGAA n’accepte pas sur un titre.",
+  "markupForPresentation_summary_spacerParagraph": "Ce paragraphe ne contient que des espaces ou des sauts de ligne : il sert à créer de l’espace.",
+  "markupForPresentation_summary_emptyBlockquote": "Cette balise <blockquote> ne contient aucun texte ; vérifiez si elle sert pour ses marges.",
+  "markupForPresentation_summary_emptyParagraph": "Ce paragraphe n’a aucun contenu ; vérifiez s’il sert à créer de l’espace.",
+  "markupForPresentation_summary_placeholder": "Cet élément est vide mais a un rôle ou aria-live ; vérifiez si un script le remplit ou s’il sert à créer de l’espace.",
+  "markupForPresentation_summary_consecutiveBr": "Cet élément utilise deux <br> ou plus à la suite ; vérifiez s’ils créent des paragraphes.",
+  "markupForPresentation_summary_spacesForMargin": "Ce texte est mis en retrait ou aligné avec des espaces insécables ; vérifiez s’ils créent une marge.",
+  "markupForPresentation_hint_headingPresentation": "Si le texte est un titre, retirez le rôle ; sinon, utilisez un élément qui n’est pas un titre, mis en forme avec CSS (RGAA 8.9.1).",
+  "markupForPresentation_hint_spacerParagraph": "Retirez le paragraphe et créez l’espace avec des marges ou des espacements CSS (RGAA 8.9.1).",
+  "markupForPresentation_hint_emptyBlockquote": "Retirez la balise <blockquote>, ou réservez-la aux citations, et créez le retrait avec CSS (RGAA 8.9.1).",
+  "markupForPresentation_hint_emptyParagraph": "Si le paragraphe ne sert qu’à créer de l’espace, retirez-le et utilisez des marges CSS (RGAA 8.9.1).",
+  "markupForPresentation_hint_placeholder": "Si l’élément ne sert qu’à créer de l’espace, retirez-le et utilisez des marges CSS (RGAA 8.9.1).",
+  "markupForPresentation_hint_consecutiveBr": "Si les sauts de ligne séparent des paragraphes, balisez chaque paragraphe avec <p> et espacez-les avec CSS (RGAA 8.9.1).",
+  "markupForPresentation_hint_spacesForMargin": "Créez les marges et les alignements avec CSS, pas avec des espaces (RGAA 8.9.1)."
 }

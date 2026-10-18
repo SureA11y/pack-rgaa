@@ -579,6 +579,10 @@ const RGAA_RULE_TESTS = {
       tests: ['12.8.1', '12.9.1', '10.7.1'],
       note: 'Always-on page-level prompt to review by keyboard whether focus can leave every component (12.9.1 step 2), whether tab order is coherent (12.8.1 step 2) and whether the focus indicator is visible (10.7.1). It is a reminder only and gives no finding on any element.'
     },
+    'rgaa-markup-for-presentation': {
+      tests: ['8.9.1'],
+      note: 'Fails a heading with role="presentation" or "none", which the 8.9.1 methodology calls « non-conforme sur un titre », and a paragraph of only non-breaking spaces or <br>, an empty paragraph the methodology names among « des paragraphes vides ou encore des espaces utilisés pour créer des effets de marges ». Asks about a paragraph with no content at all, an empty <blockquote>, an empty element a script may fill (role, aria-live), two or more <br> in a row, and text indented or aligned with non-breaking spaces. A paragraph or <blockquote> with role="presentation" is accepted, as the methodology allows.'
+    },
     'rgaa-markup-validation-review': {
       tests: ['8.2.1'],
       note: "Reads the W3C validator report on the generated source, given as the validator.report probe, which is 8.2.1 step 1 (« activer l'option W3C Nu markup checker » on « le code source généré »), and fails each error it lists, CSS messages and warnings aside; a clean report passes. Without a report, with one on the original source (whose errors the parser may repair, and which scripts may change), or with one cut at the engine's 200-item limit, it asks, since the DOM does not show what the parser repaired and the other 8.2.1 rules cover only part of the test."

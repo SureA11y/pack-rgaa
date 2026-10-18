@@ -4,13 +4,13 @@ This pack's rules and their scenario pages. Every rule should have a `tests/fixt
 
 ## Summary
 
-Total rules: **77**. With fixture: **77**. Without fixture: **0**.
+Total rules: **78**. With fixture: **78**. Without fixture: **0**.
 
 ## Rules WITHOUT a fixture (0)
 
 None — every rule has a fixture.
 
-## Rules WITH a fixture (77)
+## Rules WITH a fixture (78)
 
 | Rule ID | Type | Fixture | Cases | PASS | FAIL | CANTTELL | OTHER |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -61,6 +61,7 @@ None — every rule has a fixture.
 | rgaa-link-state-colors-review | automatic | `tests/fixtures/rgaa-link-state-colors-review-all-scenarios.html` | 7 | 0 | 0 | 3 | 4 |
 | rgaa-listbox-option-groups-absent | automatic | `tests/fixtures/rgaa-listbox-option-groups-absent-all-scenarios.html` | 4 | 1 | 2 | 0 | 1 |
 | rgaa-main-element-structure | automatic | `tests/fixtures/rgaa-main-element-structure-all-scenarios.html` | 1 | 0 | 1 | 0 | 0 |
+| rgaa-markup-for-presentation | automatic | `tests/fixtures/rgaa-markup-for-presentation-all-scenarios.html` | 4 | 0 | 2 | 1 | 1 |
 | rgaa-markup-validation-review | automatic | `tests/fixtures/rgaa-markup-validation-review-all-scenarios.html` | 1 | 0 | 0 | 1 | 0 |
 | rgaa-media-transcript-adjacent | automatic | `tests/fixtures/rgaa-media-transcript-adjacent-all-scenarios.html` | 9 | 3 | 0 | 5 | 1 |
 | rgaa-meta-redirect-immediate | automatic | `tests/fixtures/rgaa-meta-redirect-immediate-all-scenarios.html` | 1 | 0 | 0 | 1 | 0 |

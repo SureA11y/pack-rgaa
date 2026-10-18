@@ -627,5 +627,21 @@
   "dirAttributeValid_summary_fail_irrelevant_ltr": "この要素は dir=\"{{value}}\" ですが、そのテキストは右から左に読まれます。",
   "dirAttributeValid_hint_fail_irrelevant": "dir 属性を削除するか、テキストが読まれる方向に設定してください。",
   "textDirectionMarked_summary_cantTell_short_rtl": "この短いテキストは文脈と異なり右から左に読まれ、周囲に dir 属性がありません。",
-  "textDirectionMarked_summary_cantTell_short_ltr": "この短いテキストは文脈と異なり左から右に読まれ、周囲に dir 属性がありません。"
+  "textDirectionMarked_summary_cantTell_short_ltr": "この短いテキストは文脈と異なり左から右に読まれ、周囲に dir 属性がありません。",
+  "markupForPresentation_title": "要素が表示目的だけに使われていない",
+  "markupForPresentation_description": "role=\"presentation\" を持つ見出しと、空白や改行だけの段落を不合格とし、空の段落や <blockquote>、連続する <br>、空白で作ったインデントについては確認を求めます。",
+  "markupForPresentation_summary_headingPresentation": "この見出しには role=\"presentation\" がありますが、RGAA は見出しでこれを認めていません。",
+  "markupForPresentation_summary_spacerParagraph": "この段落には空白か改行しかなく、余白を作るために使われています。",
+  "markupForPresentation_summary_emptyBlockquote": "この <blockquote> にはテキストがありません。余白のために使われていないか確認してください。",
+  "markupForPresentation_summary_emptyParagraph": "この段落には内容がありません。余白を作るために使われていないか確認してください。",
+  "markupForPresentation_summary_placeholder": "この要素は空ですが、ロールまたは aria-live があります。スクリプトが内容を入れるのか、余白を作るために使われているのか確認してください。",
+  "markupForPresentation_summary_consecutiveBr": "この要素は2つ以上の <br> を続けて使っています。段落を作っていないか確認してください。",
+  "markupForPresentation_summary_spacesForMargin": "このテキストはノーブレークスペースでインデントまたは整列されています。余白を作っていないか確認してください。",
+  "markupForPresentation_hint_headingPresentation": "テキストが見出しならロールを削除し、見出しでないなら見出し以外の要素を使い CSS でスタイルを付けてください（RGAA 8.9.1）。",
+  "markupForPresentation_hint_spacerParagraph": "段落を削除し、CSS のマージンやパディングで余白を作ってください（RGAA 8.9.1）。",
+  "markupForPresentation_hint_emptyBlockquote": "<blockquote> を削除するか引用だけに使い、インデントは CSS で作ってください（RGAA 8.9.1）。",
+  "markupForPresentation_hint_emptyParagraph": "段落が余白を作るだけなら削除し、CSS のマージンを使ってください（RGAA 8.9.1）。",
+  "markupForPresentation_hint_placeholder": "要素が余白を作るだけなら削除し、CSS のマージンを使ってください（RGAA 8.9.1）。",
+  "markupForPresentation_hint_consecutiveBr": "改行が段落を区切っているなら、各段落を <p> でマークアップし、CSS で間隔を空けてください（RGAA 8.9.1）。",
+  "markupForPresentation_hint_spacesForMargin": "余白や整列は空白ではなく CSS で作ってください（RGAA 8.9.1）。"
 }

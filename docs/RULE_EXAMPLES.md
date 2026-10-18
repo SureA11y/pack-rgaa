@@ -974,6 +974,34 @@ One `<main>` is visible; the other carries the `hidden` attribute (RGAA 9.2.1 st
 ```
 The second `<main>` is hidden by CSS only; RGAA wants the `hidden` attribute. `role="main"` with no `<main>` element fails too, as do `role="banner"`, `"navigation"` or `"contentinfo"` on another element than `<header>`, `<nav>` or `<footer>`, and a page with text and no `<main>`. A page with no text of its own (only a frame or a canvas) is asked about, and a page without the HTML5 doctype is not applicable.
 
+## rgaa-markup-for-presentation
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Failed**
+```html
+<h2 role="presentation">Nos services</h2>
+```
+RGAA's 8.9.1 methodology accepts `role="presentation"` on an empty paragraph or a `<blockquote>`, but calls it « non-conforme sur un titre ».
+
+**Failed**
+```html
+<p>Texte</p><p>&nbsp;</p><p>Suite</p>
+```
+The paragraph holds only a non-breaking space: it is used to make space, one of the misuses the methodology names (RGAA 8.9.1).
+
+**Flagged (cantTell)**
+```html
+<p>Première ligne<br><br>Deuxième ligne</p>
+```
+Two line breaks in a row may separate paragraphs, or lines of a poem: a person checks.
+
+**Not applicable**
+```html
+<blockquote><p>Une citation</p></blockquote>
+```
+The `<blockquote>` holds a quotation.
+
 ## rgaa-markup-validation-review
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id. It has no `notApplicable` branch: RGAA 8.2 applies to every page.*

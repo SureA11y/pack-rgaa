@@ -627,5 +627,21 @@
   "dirAttributeValid_summary_fail_irrelevant_ltr": "Este elemento tiene dir=\"{{value}}\", pero su texto se lee de derecha a izquierda.",
   "dirAttributeValid_hint_fail_irrelevant": "Quite el atributo dir, o dele el sentido en que se lee el texto.",
   "textDirectionMarked_summary_cantTell_short_rtl": "Este texto corto se lee de derecha a izquierda, a diferencia de su contexto, sin un atributo dir a su alrededor.",
-  "textDirectionMarked_summary_cantTell_short_ltr": "Este texto corto se lee de izquierda a derecha, a diferencia de su contexto, sin un atributo dir a su alrededor."
+  "textDirectionMarked_summary_cantTell_short_ltr": "Este texto corto se lee de izquierda a derecha, a diferencia de su contexto, sin un atributo dir a su alrededor.",
+  "markupForPresentation_title": "Las etiquetas no se usan solo con fines de presentación",
+  "markupForPresentation_description": "Falla los encabezados con role=\"presentation\" y los párrafos hechos solo de espacios o saltos de línea; pregunta por los párrafos y <blockquote> vacíos, las series de <br> y las sangrías hechas con espacios.",
+  "markupForPresentation_summary_headingPresentation": "Este encabezado tiene role=\"presentation\", que el RGAA no acepta en un encabezado.",
+  "markupForPresentation_summary_spacerParagraph": "Este párrafo solo contiene espacios o saltos de línea: se usa para crear espacio.",
+  "markupForPresentation_summary_emptyBlockquote": "Este <blockquote> no contiene texto; compruebe si se usa por sus márgenes.",
+  "markupForPresentation_summary_emptyParagraph": "Este párrafo no tiene contenido; compruebe si se usa para crear espacio.",
+  "markupForPresentation_summary_placeholder": "Este elemento está vacío pero tiene un rol o aria-live; compruebe si un script lo rellena o si se usa para crear espacio.",
+  "markupForPresentation_summary_consecutiveBr": "Este elemento usa dos o más <br> seguidos; compruebe si crean párrafos.",
+  "markupForPresentation_summary_spacesForMargin": "Este texto se sangra o alinea con espacios de no separación; compruebe si crean un margen.",
+  "markupForPresentation_hint_headingPresentation": "Si el texto es un encabezado, quite el rol; si no lo es, use un elemento que no sea un encabezado, con estilo CSS (RGAA 8.9.1).",
+  "markupForPresentation_hint_spacerParagraph": "Quite el párrafo y cree el espacio con márgenes o rellenos CSS (RGAA 8.9.1).",
+  "markupForPresentation_hint_emptyBlockquote": "Quite el <blockquote>, o resérvelo para las citas, y cree la sangría con CSS (RGAA 8.9.1).",
+  "markupForPresentation_hint_emptyParagraph": "Si el párrafo solo crea espacio, quítelo y use márgenes CSS (RGAA 8.9.1).",
+  "markupForPresentation_hint_placeholder": "Si el elemento solo crea espacio, quítelo y use márgenes CSS (RGAA 8.9.1).",
+  "markupForPresentation_hint_consecutiveBr": "Si los saltos de línea separan párrafos, marque cada párrafo con <p> y sepárelos con CSS (RGAA 8.9.1).",
+  "markupForPresentation_hint_spacesForMargin": "Cree los márgenes y alineaciones con CSS, no con espacios (RGAA 8.9.1)."
 }
