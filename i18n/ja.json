@@ -752,5 +752,6 @@
   "statusMessageReview_description": "ステータスメッセージのように見える要素（aria-live、または alert、message、error などのクラス）で、status、alert、log、progressbar のロールがないものを示し、必要なロールを人が確認できるようにします。",
   "statusMessageReview_summary_cantTell_liveWithoutRole": "この要素には aria-live がありますが、role=\"status\"、\"alert\"、\"log\"、\"progressbar\" がありません（「{{text}}」）。",
   "statusMessageReview_summary_cantTell_possibleStatusMessage": "この要素はステータスメッセージのように見えます（「{{text}}」）が、role=\"status\"、\"alert\"、\"log\"、\"progressbar\" がありません。",
-  "statusMessageReview_hint_cantTell": "ステータスメッセージなら、成功・結果・状態には role=\"status\"、エラーや提案には role=\"alert\"、進行状況には role=\"log\"、\"progressbar\"、\"status\" を使ってください（RGAA 7.5）。"
+  "statusMessageReview_hint_cantTell": "ステータスメッセージなら、成功・結果・状態には role=\"status\"、エラーや提案には role=\"alert\"、進行状況には role=\"log\"、\"progressbar\"、\"status\" を使ってください（RGAA 7.5）。",
+  "mediaTranscriptAdjacent_summary_cantTell_mention": "この <{{element}}> の隣のテキストはトランスクリプトに触れていますが、その内容もリンクもありません。"
 }

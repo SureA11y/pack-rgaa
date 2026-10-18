@@ -752,5 +752,6 @@
   "statusMessageReview_description": "Flags elements that look like status messages (aria-live, or a class such as alert, message or error) with no status, alert, log or progressbar role, for a person to check the role they need.",
   "statusMessageReview_summary_cantTell_liveWithoutRole": "This element has aria-live but no role=\"status\", \"alert\", \"log\" or \"progressbar\" (\"{{text}}\").",
   "statusMessageReview_summary_cantTell_possibleStatusMessage": "This element looks like a status message (\"{{text}}\") but has no role=\"status\", \"alert\", \"log\" or \"progressbar\".",
-  "statusMessageReview_hint_cantTell": "If it is a status message, use role=\"status\" for a success, result or state, role=\"alert\" for an error or a suggestion, and role=\"log\", \"progressbar\" or \"status\" for a progress (RGAA 7.5)."
+  "statusMessageReview_hint_cantTell": "If it is a status message, use role=\"status\" for a success, result or state, role=\"alert\" for an error or a suggestion, and role=\"log\", \"progressbar\" or \"status\" for a progress (RGAA 7.5).",
+  "mediaTranscriptAdjacent_summary_cantTell_mention": "The text next to this <{{element}}> mentions a transcript but neither holds it nor links to it."
 }

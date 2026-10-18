@@ -752,5 +752,6 @@
   "statusMessageReview_description": "Markiert Elemente, die wie Statusmeldungen aussehen (aria-live oder eine Klasse wie alert, message oder error), ohne Rolle status, alert, log oder progressbar, damit eine Person prüft, welche Rolle sie brauchen.",
   "statusMessageReview_summary_cantTell_liveWithoutRole": "Dieses Element hat aria-live, aber kein role=\"status\", \"alert\", \"log\" oder \"progressbar\" („{{text}}“).",
   "statusMessageReview_summary_cantTell_possibleStatusMessage": "Dieses Element sieht wie eine Statusmeldung aus („{{text}}“), hat aber kein role=\"status\", \"alert\", \"log\" oder \"progressbar\".",
-  "statusMessageReview_hint_cantTell": "Wenn es eine Statusmeldung ist, verwenden Sie role=\"status\" für einen Erfolg, ein Ergebnis oder einen Zustand, role=\"alert\" für einen Fehler oder einen Vorschlag und role=\"log\", \"progressbar\" oder \"status\" für einen Fortschritt (RGAA 7.5)."
+  "statusMessageReview_hint_cantTell": "Wenn es eine Statusmeldung ist, verwenden Sie role=\"status\" für einen Erfolg, ein Ergebnis oder einen Zustand, role=\"alert\" für einen Fehler oder einen Vorschlag und role=\"log\", \"progressbar\" oder \"status\" für einen Fortschritt (RGAA 7.5).",
+  "mediaTranscriptAdjacent_summary_cantTell_mention": "Der Text neben diesem <{{element}}> erwähnt ein Transkript, enthält es aber nicht und verlinkt nicht darauf."
 }

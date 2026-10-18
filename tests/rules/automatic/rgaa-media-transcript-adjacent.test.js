@@ -194,3 +194,22 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
     'mta_case_05'
   ]);
 });
+
+// A short text that only mentions a transcript neither holds it nor leads
+// to it.
+test(`${RULE_ID}: a text that only mentions a transcript is asked about`, () => {
+  for (const body of [
+    '<video controls></video><p>Transcription à venir.</p>',
+    '<video controls></video><p>Pas de transcription disponible pour cette vidéo.</p>'
+  ]) {
+    const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'cantTell');
+    assert.equal(rule.occurrences[0].data.details.reasonCode, 'transcriptMentionOnly', body);
+  }
+  const long =
+    '<video controls></video><div><h3>Transcription</h3><p>' +
+    'Bonjour et bienvenue dans cette présentation de la nouvelle médiathèque de la ville. '.repeat(
+      3
+    ) +
+    '</p></div>';
+  assertRule(runa11yCoreOnHtml(page(long), RUN), RULE_ID, 'pass');
+});

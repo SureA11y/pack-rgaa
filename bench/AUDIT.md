@@ -43,7 +43,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T25-07 | 5.7.2, 5.7.3 | WO | An invalid `scope`, or `rowgroup`/`colgroup`, only asks, though 5.7 fails either way. | done |
 | T25-08 | 5.7.1 | MISS | A `th` with no scope, id or role in a table with headers on both axes (M6). Now `rgaa-th-association-present`: fails it in a both-axes table without spans; asks once about other tables. | done |
 | T25-09 | 5.7.2 | FN | 5.7 passes when `scope` points the wrong way. | done |
-| T25-10 | 4.1 | FN | Media next to text that only mentions a transcript, or says there is none, passes. | open |
+| T25-10 | 4.1 | FN | Media next to text that only mentions a transcript, or says there is none, passes. Now asked about (transcriptMentionOnly): a block passes only when it holds a link or button to the transcript, or 30 words or more. | done |
 | T25-11 | 4.3.2 | MISS | `<track kind="caption">` (an invalid kind, never displayed) is not failed. | done |
 | T25-12 | 3.2.x | WM | Every 3.2 failure names all four tests instead of the one its size and weight fall under. | core |
 | T25-13 | 3.2 | WO | Fails though the page offers a contrast mechanism (each test's second condition). | core |

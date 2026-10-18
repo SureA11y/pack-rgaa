@@ -629,7 +629,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-media-transcript-adjacent': {
       tests: ['4.1.1', '4.1.2', '4.1.3'],
-      note: 'Passes an <audio>/<video> whose neighbour just before or after it in the code is a link or button naming a transcript, or a block whose text does, which is the presence step (step 2) of 4.1.1 to 4.1.3 as the glossary "Lien ou bouton adjacent" defines adjacency. Otherwise it asks: the media may not need a transcript, or a video may meet 4.1.2/4.1.3 through audio description. It cannot tell audio-only, video-only and synchronised media apart, so each finding carries the three tests.'
+      note: 'Passes an <audio>/<video> whose neighbour just before or after it in the code is a link or button naming a transcript, or a block that holds such a link or the transcript itself (30 words or more), which is the presence step (step 2) of 4.1.1 to 4.1.3 as the glossary "Lien ou bouton adjacent" defines adjacency. A short text that only mentions a transcript (« Transcription à venir ») is asked about. Otherwise it asks: the media may not need a transcript, or a video may meet 4.1.2/4.1.3 through audio description. It cannot tell audio-only, video-only and synchronised media apart, so each finding carries the three tests.'
     },
     'menuitem-name-present': {
       tests: ['7.1.1'],
