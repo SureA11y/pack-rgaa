@@ -537,7 +537,7 @@
   "complexTableSummaryQuality_summary_cantTell": "Esta tabla parece una tabla de datos compleja y tiene un resumen. Compruebe que explica cómo está organizada la tabla.",
   "complexTableSummaryQuality_hint_cantTell": "El resumen debe decir qué contiene la tabla y cómo están dispuestos sus encabezados, no solo repetir su título. Puede estar en el <caption>, oculto con CSS si hace falta, o en un pasaje vinculado con aria-describedby.",
   "dataTableHeadersReview_title": "Las tablas sin celdas de encabezado se revisan en busca de encabezados sin marcar",
-  "dataTableHeadersReview_description": "Señala una tabla de al menos dos filas y dos columnas sin <th> ni rol columnheader o rowheader, para que una persona compruebe si es una tabla de datos cuyos encabezados deberían marcarse.",
+  "dataTableHeadersReview_description": "Señala una tabla de al menos dos filas y dos columnas sin <th> ni rol columnheader o rowheader, o una tabla cuya primera fila o columna contiene celdas de datos en negrita, para que una persona compruebe si hay encabezados que marcar.",
   "dataTableHeadersReview_summary_cantTell": "Esta tabla no tiene celdas de encabezado. Si es una tabla de datos, compruebe si su primera fila o columna contiene encabezados.",
   "dataTableHeadersReview_hint_cantTell": "Marque con <th> cada encabezado que se aplique a toda una columna o fila (o con role=\"columnheader\" o role=\"rowheader\" en una tabla ARIA). Si la tabla solo sirve para maquetar, dele role=\"presentation\".",
   "officeDocumentLink_title": "Los documentos ofimáticos descargables son accesibles o tienen una versión accesible",
@@ -705,5 +705,8 @@
   "fieldHiddenLabelReview_title": "Un campo con la etiqueta oculta visualmente se entiende desde la pantalla",
   "fieldHiddenLabelReview_description": "Señala cada campo de formulario cuyo <label> está oculto visualmente, para que una persona compruebe que un title o un texto visible junto a él permite entender lo que hay que introducir.",
   "fieldHiddenLabelReview_summary_cantTell": "La etiqueta de este campo (\"{{label}}\") está oculta visualmente.",
-  "fieldHiddenLabelReview_hint_cantTell": "Compruebe que un title, o un texto junto al campo visible o que se hace visible al recibir el foco, permite entender lo que hay que introducir (RGAA 11.1.3)."
+  "fieldHiddenLabelReview_hint_cantTell": "Compruebe que un title, o un texto junto al campo visible o que se hace visible al recibir el foco, permite entender lo que hay que introducir (RGAA 11.1.3).",
+  "dataTableHeadersReview_summary_cantTell_bold_row": "La primera fila de esta tabla contiene celdas de datos en negrita, que pueden ser encabezados de columna marcados con <td>.",
+  "dataTableHeadersReview_summary_cantTell_bold_column": "La primera columna de esta tabla contiene celdas de datos en negrita, que pueden ser encabezados de fila marcados con <td>.",
+  "dataTableHeadersReview_hint_cantTell_bold": "Si estas celdas son encabezados, márquelas con <th> (o role=\"columnheader\" o role=\"rowheader\" en una tabla ARIA), con un scope (RGAA 5.6.1, 5.6.2)."
 }

@@ -164,3 +164,34 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
   const ids = rule.occurrences.map((o) => (o.html.match(/id="([^"]+)"/) || [])[1]);
   assert.deepEqual(ids, ['dthr_case_01', 'dthr_case_02', 'dthr_case_03']);
 });
+
+// Headers marked up as bold <td> fail 5.6.1 or 5.6.2; only a person can say
+// they are headers.
+test(`${RULE_ID}: a first row or column of bold data cells in a table with headers is asked about`, () => {
+  for (const [body, axis] of [
+    [
+      '<table><tr><th>Ville</th><th>2024</th></tr><tr><td><strong>Paris</strong></td><td>1</td></tr><tr><td><b>Lyon</b></td><td>2</td></tr></table>',
+      'column'
+    ],
+    [
+      '<table><tr><td></td><td><strong>2023</strong></td><td><strong>2024</strong></td></tr><tr><th>Paris</th><td>1</td><td>2</td></tr></table>',
+      'row'
+    ]
+  ]) {
+    const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'cantTell', {
+      minOccurrences: 1,
+      maxOccurrences: 1
+    });
+    assert.deepEqual(
+      [rule.occurrences[0].data.details.reasonCode, rule.occurrences[0].data.details.axis],
+      ['BOLD_CELLS_MAY_BE_HEADERS', axis],
+      body
+    );
+  }
+  for (const body of [
+    '<table><tr><th>Ville</th><th>2024</th></tr><tr><td>Paris</td><td>1</td></tr><tr><td>Lyon</td><td>2</td></tr></table>',
+    '<table><tr><th>Ville</th><th>2024</th></tr><tr><td><strong>Paris</strong> centre</td><td>1</td></tr><tr><td><b>Lyon</b></td><td>2</td></tr></table>'
+  ]) {
+    assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'notApplicable');
+  }
+});

@@ -226,7 +226,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-data-table-headers-review': {
       tests: ['5.3.1', '5.6.1', '5.6.2'],
-      note: 'Asks about a table of at least two rows and two columns that has no header cell at all (no <th>, no columnheader or rowheader role), and is not role="presentation" or "none". If it is a data table, its headers over a whole column or row fail 5.6.1 or 5.6.2 unless marked with <th> or those roles; only a person can say whether it is a data table and which cells are headers. If it is a layout table, 5.3.1 asks it for role="presentation", which it lacks; the question covers that test too. A table with at least one header is not asked about.'
+      note: 'Asks about a table of at least two rows and two columns that has no header cell at all (no <th>, no columnheader or rowheader role), and is not role="presentation" or "none". If it is a data table, its headers over a whole column or row fail 5.6.1 or 5.6.2 unless marked with <th> or those roles; only a person can say whether it is a data table and which cells are headers. If it is a layout table, 5.3.1 asks it for role="presentation", which it lacks; the question covers that test too. In a table with headers and no spans, a first row or first column (two cells or more) of bold data cells is asked about too: headers marked up as <td> fail 5.6.1 or 5.6.2.'
     },
     'definition-list-children-valid': {
       tests: ['9.3.3'],

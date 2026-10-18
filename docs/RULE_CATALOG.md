@@ -386,11 +386,11 @@ Checks that visible text has a contrast ratio of at least 4.5:1, or 3:1 for text
 
 manual · no formal WCAG SC mapping · confidence medium · default severity moderate
 
-Flags a table of at least two rows and two columns with no &lt;th&gt; and no columnheader or rowheader role, for a person to check whether it is a data table whose headers should be marked up.
+Flags a table of at least two rows and two columns with no &lt;th&gt; and no columnheader or rowheader role, or a table whose first row or column holds bold data cells, for a person to check whether headers should be marked up.
 
-**Applies to.** Applies to a &lt;table&gt;, or an element with role="table", that has at least two rows and two columns and no header cell at all: no &lt;th&gt; (without another role) and no cell with role="columnheader" or role="rowheader". Tables with role="presentation" or "none" are left out, and so is a table with no text in its cells.
+**Applies to.** Applies to a &lt;table&gt;, or an element with role="table", that has at least two rows and two columns and no header cell at all: no &lt;th&gt; (without another role) and no cell with role="columnheader" or role="rowheader". Tables with role="presentation" or "none" are left out, and so is a table with no text in its cells. A table that has headers, no spans, and a first row or first column (of two cells or more) whose cells are all bold data cells applies too.
 
-**Expectation.** Each such table is asked about (cantTell). RGAA 5.6.1 and 5.6.2 want each header that applies to a whole column or row marked with &lt;th&gt; or a columnheader or rowheader role. A data table usually has headers in its first row or column, but only a person can tell whether this one does, or whether it is a layout table, which 5.3 and 5.8 cover.
+**Expectation.** Each such table is asked about (cantTell). RGAA 5.6.1 and 5.6.2 want each header that applies to a whole column or row marked with &lt;th&gt; or a columnheader or rowheader role. A data table usually has headers in its first row or column, but only a person can tell whether this one does, or whether it is a layout table, which 5.3 and 5.8 cover. In a table with headers, a first row or column of bold data cells (&lt;strong&gt;, &lt;b&gt;, or a font weight of 600 or more) is asked about (BOLD_CELLS_MAY_BE_HEADERS): headers marked up as &lt;td&gt; fail 5.6.1 or 5.6.2.
 
 ### `rgaa-dir-attribute-valid`
 

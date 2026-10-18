@@ -537,7 +537,7 @@
   "complexTableSummaryQuality_summary_cantTell": "Diese Tabelle wirkt wie eine komplexe Datentabelle und hat eine Zusammenfassung. Prüfen Sie, ob sie erklärt, wie die Tabelle aufgebaut ist.",
   "complexTableSummaryQuality_hint_cantTell": "Die Zusammenfassung sollte sagen, was die Tabelle enthält und wie ihre Überschriften angeordnet sind, nicht nur ihren Titel wiederholen. Sie kann in der <caption> stehen, bei Bedarf per CSS ausgeblendet, oder in einem mit aria-describedby verknüpften Textabschnitt.",
   "dataTableHeadersReview_title": "Tabellen ohne Kopfzellen werden auf nicht ausgezeichnete Überschriften geprüft",
-  "dataTableHeadersReview_description": "Markiert eine Tabelle mit mindestens zwei Zeilen und zwei Spalten ohne <th> und ohne columnheader- oder rowheader-Rolle, damit eine Person prüft, ob es eine Datentabelle ist, deren Überschriften ausgezeichnet werden sollten.",
+  "dataTableHeadersReview_description": "Markiert eine Tabelle mit mindestens zwei Zeilen und zwei Spalten ohne <th> und ohne columnheader- oder rowheader-Rolle, oder eine Tabelle, deren erste Zeile oder Spalte fette Datenzellen enthält, damit eine Person prüft, ob Kopfzellen ausgezeichnet werden müssen.",
   "dataTableHeadersReview_summary_cantTell": "Diese Tabelle hat keine Kopfzellen. Falls es eine Datentabelle ist, prüfen Sie, ob ihre erste Zeile oder Spalte Überschriften enthält.",
   "dataTableHeadersReview_hint_cantTell": "Zeichnen Sie jede Überschrift, die für eine ganze Spalte oder Zeile gilt, mit <th> aus (oder mit role=\"columnheader\" oder role=\"rowheader\" in einer ARIA-Tabelle). Dient die Tabelle nur dem Layout, geben Sie ihr stattdessen role=\"presentation\".",
   "officeDocumentLink_title": "Herunterladbare Office-Dokumente sind barrierefrei oder haben eine barrierefreie Version",
@@ -705,5 +705,8 @@
   "fieldHiddenLabelReview_title": "Ein Feld mit visuell verborgener Beschriftung ist vom Bildschirm her verständlich",
   "fieldHiddenLabelReview_description": "Markiert jedes Formularfeld, dessen <label> visuell verborgen ist, damit eine Person prüft, dass ein title oder sichtbarer Text neben dem Feld die erwartete Eingabe verständlich macht.",
   "fieldHiddenLabelReview_summary_cantTell": "Die Beschriftung dieses Feldes („{{label}}“) ist visuell verborgen.",
-  "fieldHiddenLabelReview_hint_cantTell": "Prüfen Sie, dass ein title oder Text neben dem Feld, der sichtbar ist oder beim Fokus sichtbar wird, die erwartete Eingabe verständlich macht (RGAA 11.1.3)."
+  "fieldHiddenLabelReview_hint_cantTell": "Prüfen Sie, dass ein title oder Text neben dem Feld, der sichtbar ist oder beim Fokus sichtbar wird, die erwartete Eingabe verständlich macht (RGAA 11.1.3).",
+  "dataTableHeadersReview_summary_cantTell_bold_row": "Die erste Zeile dieser Tabelle enthält fette Datenzellen, die als <td> ausgezeichnete Spaltenüberschriften sein können.",
+  "dataTableHeadersReview_summary_cantTell_bold_column": "Die erste Spalte dieser Tabelle enthält fette Datenzellen, die als <td> ausgezeichnete Zeilenüberschriften sein können.",
+  "dataTableHeadersReview_hint_cantTell_bold": "Wenn diese Zellen Überschriften sind, zeichnen Sie sie mit <th> aus (oder mit role=\"columnheader\" oder role=\"rowheader\" in einer ARIA-Tabelle), mit einem scope (RGAA 5.6.1, 5.6.2)."
 }

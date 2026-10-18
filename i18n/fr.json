@@ -537,7 +537,7 @@
   "complexTableSummaryQuality_summary_cantTell": "Ce tableau semble être un tableau de données complexe et a un résumé. Vérifiez qu’il explique comment le tableau est organisé.",
   "complexTableSummaryQuality_hint_cantTell": "Le résumé doit donner la nature et la structure du tableau, et pas seulement reprendre son titre. Il peut figurer dans la balise <caption>, masqué via CSS si nécessaire, ou dans un passage de texte lié avec aria-describedby.",
   "dataTableHeadersReview_title": "Les tableaux sans cellule d’en-tête sont vérifiés pour des en-têtes non structurés",
-  "dataTableHeadersReview_description": "Signale un tableau d’au moins deux lignes et deux colonnes sans balise <th> ni rôle columnheader ou rowheader, pour qu’une personne vérifie s’il s’agit d’un tableau de données dont les en-têtes doivent être structurés.",
+  "dataTableHeadersReview_description": "Signale un tableau d’au moins deux lignes et deux colonnes sans balise <th> ni rôle columnheader ou rowheader, ou un tableau dont la première ligne ou colonne contient des cellules de données en gras, pour qu’une personne vérifie si des en-têtes doivent être structurés.",
   "dataTableHeadersReview_summary_cantTell": "Ce tableau n’a aucune cellule d’en-tête. S’il s’agit d’un tableau de données, vérifiez si sa première ligne ou sa première colonne contient des en-têtes.",
   "dataTableHeadersReview_hint_cantTell": "Structurez chaque en-tête qui s’applique à toute une colonne ou toute une ligne avec une balise <th> (ou role=\"columnheader\" ou role=\"rowheader\" dans un tableau ARIA). Si le tableau sert uniquement à la mise en forme, donnez-lui plutôt role=\"presentation\".",
   "officeDocumentLink_title": "Les documents bureautiques en téléchargement sont accessibles ou ont une version accessible",
@@ -705,5 +705,8 @@
   "fieldHiddenLabelReview_title": "Un champ à l’étiquette masquée reste compréhensible à l’écran",
   "fieldHiddenLabelReview_description": "Signale chaque champ de formulaire dont la balise <label> est masquée visuellement, pour qu’une personne vérifie qu’un attribut title ou un texte visible accolé au champ permet de comprendre la saisie attendue.",
   "fieldHiddenLabelReview_summary_cantTell": "L’étiquette de ce champ (« {{label}} ») est masquée visuellement.",
-  "fieldHiddenLabelReview_hint_cantTell": "Vérifiez qu’un attribut title, ou un passage de texte accolé au champ, visible ou qui devient visible à la prise de focus, permet de comprendre la nature de la saisie attendue (RGAA 11.1.3)."
+  "fieldHiddenLabelReview_hint_cantTell": "Vérifiez qu’un attribut title, ou un passage de texte accolé au champ, visible ou qui devient visible à la prise de focus, permet de comprendre la nature de la saisie attendue (RGAA 11.1.3).",
+  "dataTableHeadersReview_summary_cantTell_bold_row": "La première ligne de ce tableau contient des cellules de données en gras, qui peuvent être des en-têtes de colonne balisés avec <td>.",
+  "dataTableHeadersReview_summary_cantTell_bold_column": "La première colonne de ce tableau contient des cellules de données en gras, qui peuvent être des en-têtes de ligne balisés avec <td>.",
+  "dataTableHeadersReview_hint_cantTell_bold": "Si ces cellules sont des en-têtes, balisez-les avec <th> (ou role=\"columnheader\" ou role=\"rowheader\" dans un tableau ARIA), avec un attribut scope (RGAA 5.6.1, 5.6.2)."
 }

@@ -537,7 +537,7 @@
   "complexTableSummaryQuality_summary_cantTell": "このテーブルは複雑なデータテーブルのようで、要約があります。表の構成を説明しているか確認してください。",
   "complexTableSummaryQuality_hint_cantTell": "要約では、表の内容と見出しの配置を説明し、タイトルを繰り返すだけにしないでください。<caption> 内（必要なら CSS で非表示）か、aria-describedby で関連付けた文章に置けます。",
   "dataTableHeadersReview_title": "見出しセルのない表について、マークアップされていない見出しがないかを確認する",
-  "dataTableHeadersReview_description": "2 行 2 列以上で、<th> も columnheader/rowheader ロールもない表を検出し、見出しをマークアップすべきデータテーブルかどうかを人が確認できるようにします。",
+  "dataTableHeadersReview_description": "見出しセル（<th>、columnheader、rowheader）のない2行2列以上の表、または最初の行や列に太字のデータセルがある表を示し、見出しをマークアップすべきか人が確認できるようにします。",
   "dataTableHeadersReview_summary_cantTell": "この表には見出しセルがありません。データテーブルであれば、最初の行または列に見出しがないか確認してください。",
   "dataTableHeadersReview_hint_cantTell": "列全体または行全体に適用される見出しは <th> (ARIA の表では role=\"columnheader\" または role=\"rowheader\") でマークアップしてください。レイアウトのためだけの表であれば、代わりに role=\"presentation\" を指定してください。",
   "officeDocumentLink_title": "ダウンロードできるオフィス文書がアクセシブルであるか、アクセシブルな版がある",
@@ -705,5 +705,8 @@
   "fieldHiddenLabelReview_title": "ラベルが視覚的に隠されたフィールドが画面上で理解できる",
   "fieldHiddenLabelReview_description": "<label> が視覚的に隠されている各フォームフィールドを示し、title や隣接する表示テキストで入力内容がわかるか人が確認できるようにします。",
   "fieldHiddenLabelReview_summary_cantTell": "このフィールドのラベル（「{{label}}」）は視覚的に隠されています。",
-  "fieldHiddenLabelReview_hint_cantTell": "title、またはフィールドに隣接する表示テキスト（フォーカス時に表示されるものを含む）で、入力内容がわかるか確認してください（RGAA 11.1.3）。"
+  "fieldHiddenLabelReview_hint_cantTell": "title、またはフィールドに隣接する表示テキスト（フォーカス時に表示されるものを含む）で、入力内容がわかるか確認してください（RGAA 11.1.3）。",
+  "dataTableHeadersReview_summary_cantTell_bold_row": "この表の最初の行には太字のデータセルがあり、<td> でマークアップされた列見出しの可能性があります。",
+  "dataTableHeadersReview_summary_cantTell_bold_column": "この表の最初の列には太字のデータセルがあり、<td> でマークアップされた行見出しの可能性があります。",
+  "dataTableHeadersReview_hint_cantTell_bold": "これらのセルが見出しなら、<th>（ARIA の表では role=\"columnheader\" または role=\"rowheader\"）と scope でマークアップしてください（RGAA 5.6.1、5.6.2）。"
 }
