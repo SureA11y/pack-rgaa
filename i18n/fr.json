@@ -729,5 +729,9 @@
   "contextChangeReview_title": "Un changement de contexte déclenché par un champ est annoncé",
   "contextChangeReview_description": "Signale chaque champ de formulaire dont le gestionnaire envoie un formulaire ou charge une autre page quand sa valeur change, pour qu’une personne vérifie qu’un texte avertit l’utilisateur avant.",
   "contextChangeReview_summary_cantTell": "Le gestionnaire {{attribute}} de ce champ (« {{code}} ») change le contexte quand sa valeur change, sans bouton ni lien.",
-  "contextChangeReview_hint_cantTell": "Vérifiez qu’un texte placé avant le champ avertit de ce qui se passe, ou déclenchez le changement par un bouton explicite (RGAA 7.4.1)."
+  "contextChangeReview_hint_cantTell": "Vérifiez qu’un texte placé avant le champ avertit de ce qui se passe, ou déclenchez le changement par un bouton explicite (RGAA 7.4.1).",
+  "selectFakeGroupsReview_title": "Les options sont regroupées avec <optgroup>, pas avec de faux intitulés",
+  "selectFakeGroupsReview_description": "Signale chaque balise <select> sans <optgroup> dont des options désactivées ou encadrées de tirets servent d’intitulés, pour qu’une personne vérifie si les items doivent être regroupés avec <optgroup>.",
+  "selectFakeGroupsReview_summary_cantTell": "Cette liste n’a pas de balise <optgroup>, mais son option « {{text}} » ressemble à un intitulé de groupe.",
+  "selectFakeGroupsReview_hint_cantTell": "Si les items forment des groupes, placez chaque groupe dans une balise <optgroup> dont l’attribut label le nomme, au lieu d’une option servant d’intitulé (RGAA 11.8.1)."
 }

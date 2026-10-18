@@ -819,6 +819,10 @@ const RGAA_RULE_TESTS = {
       tests: ['12.7.1', '12.7.2'],
       note: "Flags skip links whose #fragment does not resolve to a usable target. A skip link is recognised by its wording in the shipped locales ('skip', 'aller au contenu', 'accès direct', 'zum Inhalt springen', 'saltar al contenido', '本文へ') or as the first link of the page placed before main. A dead skip link means the main zone cannot be skipped, which bears on 12.7.1, and it fails 12.7.2's condition that the link works ('Le lien est fonctionnel'). The rule does not check the link's visibility or its place across pages, which rgaa-skip-link-placement checks, and a skip link can target zones other than main."
     },
+    'rgaa-select-fake-groups-review': {
+      tests: ['11.8.1'],
+      note: "Asks about a <select> with no <optgroup> that holds options used as group headings: two disabled options or more after the first (a single one is often an item out of stock), or an option framed by dashes or similar signs. 11.8.1 asks whether « les items de même nature d'une liste de choix sont regroupés avec une balise <optgroup>, si nécessaire », and such headings show the author grouped them visually, while assistive technologies read them as more choices. Whether grouping is needed is for a person."
+    },
     'rgaa-skip-link-placement': {
       tests: ['12.7.2'],
       note: "Fails a skip link (a same-page link outside the main zone that leads to it, as rgaa-skip-link-present finds one) that is not visible even when it takes focus, measured in a browser: no size, outside the page, clipped, transparent or visibility: hidden. That is 12.7.2 condition 3 (« visible ou, à défaut, visible à la prise de focus »). With the crawl.skipLinks probe, it fails a link more than 24px away on another page measured at the same window width (condition 1, « situé à la même place dans la présentation ») and asks when its focus order differs (condition 2, relative order is a person's call). It asks when only one page is available, when something may cover the link, and in jsdom. Condition 4 (the link works) is skip-link's."

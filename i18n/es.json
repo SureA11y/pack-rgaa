@@ -729,5 +729,9 @@
   "contextChangeReview_title": "Un cambio de contexto iniciado por un campo se anuncia antes",
   "contextChangeReview_description": "Señala cada campo de formulario cuyo gestor envía un formulario o carga otra página cuando cambia su valor, para que una persona compruebe que un texto avisa antes al usuario.",
   "contextChangeReview_summary_cantTell": "El gestor {{attribute}} de este campo (\"{{code}}\") cambia el contexto cuando cambia su valor, sin botón ni enlace.",
-  "contextChangeReview_hint_cantTell": "Compruebe que un texto antes del campo avisa de lo que pasa, o inicie el cambio con un botón explícito (RGAA 7.4.1)."
+  "contextChangeReview_hint_cantTell": "Compruebe que un texto antes del campo avisa de lo que pasa, o inicie el cambio con un botón explícito (RGAA 7.4.1).",
+  "selectFakeGroupsReview_title": "Las opciones se agrupan con <optgroup>, no con falsas opciones de encabezado",
+  "selectFakeGroupsReview_description": "Señala cada <select> sin <optgroup> cuyas opciones incluyen encabezados desactivados o enmarcados con guiones, para que una persona compruebe si los elementos deben agruparse con <optgroup>.",
+  "selectFakeGroupsReview_summary_cantTell": "Esta lista no tiene <optgroup>, pero su opción \"{{text}}\" parece un encabezado de grupo.",
+  "selectFakeGroupsReview_hint_cantTell": "Si los elementos forman grupos, ponga cada grupo en un <optgroup> cuyo label lo nombre, en lugar de una opción de encabezado (RGAA 11.8.1)."
 }

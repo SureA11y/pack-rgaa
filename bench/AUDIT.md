@@ -136,7 +136,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T11-10 | 11.9.1 | MISS | Rolls up as pass whenever a button has any name. | open |
 | T11-11 | 11.2.1, 11.2.2 | MISS | An empty `<label for>` or `title` as the only étiquette is not failed (M5). Now failed by `rgaa-field-label-empty` (11.2.1–11.2.4, also empty aria-label and aria-labelledby passages). | done |
 | T11-12 | 11.2.3, 11.2.4 | WM | The aria-label and aria-labelledby relevance questions are filed under 11.2.2. | done |
-| T11-13 | 11.8.1 | MISS | Groups faked with disabled or dashed options. | open |
+| T11-13 | 11.8.1 | MISS | Groups faked with disabled or dashed options. Now asked about by `rgaa-select-fake-groups-review`. | done |
 | T11-14 | 11.5.1 | MISS | Same-name checkbox sets and `role=radio` sets (Q13). | open |
 | T11-15 | 11.4 | MISS | Label placement (Q15). | open |
 | T11-16 | 11.13.1 | MISS | An `autocomplete` value that contradicts the field. | open |

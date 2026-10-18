@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**91 rules total: 67 automatic (decide deterministically; can return `fail`), 24 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**92 rules total: 67 automatic (decide deterministically; can return `fail`), 25 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -86,7 +86,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-video-captions-track-kind`](#rgaa-video-captions-track-kind) | Video caption tracks use kind="captions" | — | — | high | moderate |
 | [`rgaa-widget-label-in-name`](#rgaa-widget-label-in-name) | The accessible name of a scripted component contains its visible label | — | — | high | serious |
 
-## Manual rules (24), never `fail`
+## Manual rules (25), never `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -112,6 +112,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-office-document-link`](#rgaa-office-document-link) | Downloadable office documents are accessible or have an accessible version | — | — | high | moderate |
 | [`rgaa-radio-group-present`](#rgaa-radio-group-present) | Radio buttons sharing a name are grouped | — | — | medium | moderate |
 | [`rgaa-scripted-components-review`](#rgaa-scripted-components-review) | Scripted components are compatible with assistive technologies | — | — | medium | moderate |
+| [`rgaa-select-fake-groups-review`](#rgaa-select-fake-groups-review) | Options are grouped with &lt;optgroup&gt;, not with fake heading options | — | — | high | moderate |
 | [`rgaa-table-title-adjacent`](#rgaa-table-title-adjacent) | A heading just before a data table is tied to it if it is its title | — | — | high | moderate |
 | [`rgaa-viewport-zoom-review`](#rgaa-viewport-zoom-review) | Text can reach 200% zoom despite a viewport meta tag that limits zoom | — | — | medium | serious |
 
@@ -146,7 +147,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-11.2` | Chaque étiquette associée à un champ de formulaire est-elle pertinente (hors cas particuliers) ? | `form-control-label-quality`, `form-control-programmatic-label-quality`, `rgaa-field-label-empty`, `rgaa-field-label-in-name-sources`, `rgaa-title-placeholder-identical` |
 | `rgaa-4.1.2-11.5` | Dans chaque formulaire, les champs de même nature sont-ils regroupés, si nécessaire ? | `rgaa-radio-group-present` |
 | `rgaa-4.1.2-11.6` | Dans chaque formulaire, chaque regroupement de champs de même nature a-t-il une légende ? | `rgaa-field-group-legend` |
-| `rgaa-4.1.2-11.8` | Dans chaque formulaire, les items de même nature d’une liste de choix sont-ils regroupés de manière pertinente ? | `rgaa-listbox-option-groups-absent`, `rgaa-optgroup-label-not-empty`, `rgaa-optgroup-label-present` |
+| `rgaa-4.1.2-11.8` | Dans chaque formulaire, les items de même nature d’une liste de choix sont-ils regroupés de manière pertinente ? | `rgaa-listbox-option-groups-absent`, `rgaa-optgroup-label-not-empty`, `rgaa-optgroup-label-present`, `rgaa-select-fake-groups-review` |
 | `rgaa-4.1.2-11.9` | Dans chaque formulaire, l’intitulé de chaque bouton est-il pertinent (hors cas particuliers) ? | `rgaa-form-button-label-in-name-sources`, `rgaa-form-button-name-present` |
 | `rgaa-4.1.2-12.6` | Les zones de regroupement de contenus présentes dans plusieurs pages web (zones d’en-tête, de navigation principale, de contenu principal, de pied de page et de moteur de recherche) peuvent-elles être atteintes ou évitées ? | `rgaa-page-zones-reachable` |
 | `rgaa-4.1.2-12.7` | Dans chaque page web, un lien d’évitement ou d’accès rapide à la zone de contenu principal est-il présent (hors cas particuliers) ? | `rgaa-skip-link-placement`, `rgaa-skip-link-present`, `skip-link` |
@@ -1352,6 +1353,18 @@ On a page with script, asks a person to check every scripted component against R
 **Applies to.** Applies to every page that contains script, in the scanned document or any open shadow root inside it: an executable &lt;script&gt; element, an inline event handler attribute (onclick and the like) on any element, a href, src, action or formaction starting with "javascript:", or a custom element (a tag name with a hyphen, which only works through script). A page with none of these is notApplicable: RGAA 7.1 asks about scripts, and with no script nothing can create or drive a custom component.
 
 **Expectation.** Always cantTell on a page with script, never pass or fail. One occurrence at the scan root asks a person to check that every scripted component exposes its name, role, value, settings and state changes to assistive technologies (RGAA 7.1.1), is rendered correctly by them (7.1.2) and has a relevant name and role, with a name that contains its visible label (7.1.3), or that an accessible alternative exists. Behaviour attached from script files (addEventListener) cannot be seen in the markup, so this question stands even when nothing else is listed. After it, one occurrence per candidate element found in the markup, as a starting list for the auditor, never a complete one.
+
+### `rgaa-select-fake-groups-review`
+
+**Options are grouped with &lt;optgroup&gt;, not with fake heading options**
+
+manual · no formal WCAG SC mapping · confidence high · default severity moderate
+
+Flags each &lt;select&gt; without &lt;optgroup&gt; whose options include disabled or dash-framed headings, for a person to check whether the items should be grouped with &lt;optgroup&gt;.
+
+**Applies to.** Applies to &lt;select&gt; elements with no &lt;optgroup&gt; that hold an option used as a group heading: two disabled options or more after the first one (a single one is often an item out of stock), or an option whose text is framed by dashes or similar signs (« -- Europe -- », « === Fruits === »). The first option, often a « Choisissez » placeholder, is left out. A page with none is notApplicable.
+
+**Expectation.** RGAA 11.8.1: « les items de même nature d'une liste de choix sont-ils regroupés avec une balise &lt;optgroup&gt;, si nécessaire ? » A fake heading option shows that the author grouped the items visually; assistive technologies read it as one more choice. Whether grouping is needed is for a person, so the list is asked about (fakeGroupHeading).
 
 ### `rgaa-skip-link-placement`
 

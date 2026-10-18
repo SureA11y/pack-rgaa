@@ -729,5 +729,9 @@
   "contextChangeReview_title": "A change of context from a field is announced first",
   "contextChangeReview_description": "Flags each form field whose inline handler submits a form or loads another page when its value changes, for a person to check that a text warns the user first.",
   "contextChangeReview_summary_cantTell": "This field's {{attribute}} handler (\"{{code}}\") changes the context when its value changes, without a button or a link.",
-  "contextChangeReview_hint_cantTell": "Check that a text before the field warns of what happens, or start the change with an explicit button (RGAA 7.4.1)."
+  "contextChangeReview_hint_cantTell": "Check that a text before the field warns of what happens, or start the change with an explicit button (RGAA 7.4.1).",
+  "selectFakeGroupsReview_title": "Options are grouped with <optgroup>, not with fake heading options",
+  "selectFakeGroupsReview_description": "Flags each <select> without <optgroup> whose options include disabled or dash-framed headings, for a person to check whether the items should be grouped with <optgroup>.",
+  "selectFakeGroupsReview_summary_cantTell": "This list has no <optgroup>, but its option \"{{text}}\" looks like a group heading.",
+  "selectFakeGroupsReview_hint_cantTell": "If the items fall into groups, put each group in an <optgroup> whose label names it, instead of a heading option (RGAA 11.8.1)."
 }

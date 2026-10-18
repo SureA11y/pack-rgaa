@@ -729,5 +729,9 @@
   "contextChangeReview_title": "フィールドから始まるコンテキストの変化が事前に知らされる",
   "contextChangeReview_description": "値が変わるとフォームを送信したり別のページを読み込んだりするインラインハンドラーを持つ各フォームフィールドを示し、事前にテキストで知らせているか人が確認できるようにします。",
   "contextChangeReview_summary_cantTell": "このフィールドの {{attribute}} ハンドラー（「{{code}}」）は、ボタンやリンクなしで、値が変わるとコンテキストを変えます。",
-  "contextChangeReview_hint_cantTell": "フィールドの前のテキストで何が起きるか知らせているか確認するか、明示的なボタンで変更を開始してください（RGAA 7.4.1）。"
+  "contextChangeReview_hint_cantTell": "フィールドの前のテキストで何が起きるか知らせているか確認するか、明示的なボタンで変更を開始してください（RGAA 7.4.1）。",
+  "selectFakeGroupsReview_title": "選択肢は見出し風の選択肢ではなく <optgroup> でグループ化されている",
+  "selectFakeGroupsReview_description": "<optgroup> がなく、無効化された選択肢や罫線で囲まれた見出し風の選択肢を含む各 <select> を示し、<optgroup> でグループ化すべきか人が確認できるようにします。",
+  "selectFakeGroupsReview_summary_cantTell": "このリストには <optgroup> がありませんが、選択肢「{{text}}」はグループの見出しのように見えます。",
+  "selectFakeGroupsReview_hint_cantTell": "項目がグループに分かれるなら、見出し用の選択肢ではなく、label でグループ名を示す <optgroup> に各グループを入れてください（RGAA 11.8.1）。"
 }

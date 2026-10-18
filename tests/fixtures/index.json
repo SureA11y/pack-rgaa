@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 91,
-    "withFixture": 91,
+    "total": 92,
+    "withFixture": 92,
     "withoutFixture": 0
   },
   "rows": [
@@ -1329,6 +1329,23 @@
         "FAIL": 0,
         "CANTTELL": 0,
         "OTHER": 12
+      }
+    },
+    {
+      "ruleId": "rgaa-select-fake-groups-review",
+      "title": "Options are grouped with <optgroup>, not with fake heading options",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/select-fake-groups-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-select-fake-groups-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-select-fake-groups-review-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 1
       }
     },
     {

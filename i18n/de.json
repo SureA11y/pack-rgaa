@@ -729,5 +729,9 @@
   "contextChangeReview_title": "Ein von einem Feld ausgelöster Kontextwechsel wird vorher angekündigt",
   "contextChangeReview_description": "Markiert jedes Formularfeld, dessen Handler ein Formular sendet oder eine andere Seite lädt, wenn sich sein Wert ändert, damit eine Person prüft, dass ein Text vorher darauf hinweist.",
   "contextChangeReview_summary_cantTell": "Der {{attribute}}-Handler dieses Feldes („{{code}}“) wechselt den Kontext, wenn sich sein Wert ändert, ohne Schaltfläche oder Link.",
-  "contextChangeReview_hint_cantTell": "Prüfen Sie, dass ein Text vor dem Feld darauf hinweist, was geschieht, oder lösen Sie den Wechsel mit einer eindeutigen Schaltfläche aus (RGAA 7.4.1)."
+  "contextChangeReview_hint_cantTell": "Prüfen Sie, dass ein Text vor dem Feld darauf hinweist, was geschieht, oder lösen Sie den Wechsel mit einer eindeutigen Schaltfläche aus (RGAA 7.4.1).",
+  "selectFakeGroupsReview_title": "Optionen werden mit <optgroup> gruppiert, nicht mit falschen Überschriftsoptionen",
+  "selectFakeGroupsReview_description": "Markiert jedes <select> ohne <optgroup>, dessen Optionen deaktivierte oder mit Strichen umrahmte Überschriften enthalten, damit eine Person prüft, ob die Einträge mit <optgroup> gruppiert werden sollten.",
+  "selectFakeGroupsReview_summary_cantTell": "Diese Liste hat kein <optgroup>, aber ihre Option „{{text}}“ sieht wie eine Gruppenüberschrift aus.",
+  "selectFakeGroupsReview_hint_cantTell": "Wenn die Einträge Gruppen bilden, setzen Sie jede Gruppe in ein <optgroup>, dessen label sie benennt, statt einer Überschriftsoption (RGAA 11.8.1)."
 }

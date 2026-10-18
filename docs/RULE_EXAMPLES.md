@@ -1582,6 +1582,22 @@ The link leads nowhere, so a script likely makes it act as a button: it is liste
 ```
 The page has no script element, inline handler, `javascript:` URL or custom element, so nothing can create or control a scripted component.
 
+## rgaa-select-fake-groups-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<select><option>Choisissez</option><option>-- Fruits --</option><option>Pomme</option><option>-- Légumes --</option><option>Carotte</option></select>
+```
+The dashed options are group headings that screen readers read as choices: a person checks whether <optgroup> should group the items (RGAA 11.8.1).
+
+**Not applicable**
+```html
+<select><optgroup label="Fruits"><option>Pomme</option></optgroup></select>
+```
+The items are grouped with <optgroup>.
+
 ## rgaa-skip-link-placement
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
