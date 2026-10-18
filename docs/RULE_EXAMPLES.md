@@ -1496,7 +1496,7 @@ The Arabic text reads right to left in a page that reads left to right, and no e
 ```html
 <p>Le mot شكرا veut dire merci.</p>
 ```
-One word reads right to left inside a French sentence: a person checks whether it is a passage that needs `dir="rtl"`.
+One word reads right to left inside a French sentence: a person checks whether it needs `dir="rtl"`. So is a link of one or two words, such as « العربية » in a language menu, which a browser shows the same with or without `dir`.
 
 **Not applicable**
 ```html

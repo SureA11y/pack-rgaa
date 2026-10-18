@@ -21,15 +21,16 @@
  *   RGAA 8.10.1: « chaque texte dont le sens de lecture est différent du
  *   sens de lecture par défaut est contenu dans une balise possédant un
  *   attribut dir ».
- *   - It fails (directionNotMarked) when an element's whole text reads in
- *     the other direction, or when a run of three words or more does,
- *     with no dir between it and its context. In a right-to-left context,
- *     a whole element of one or two left-to-right words (a brand name, a
- *     link to a site) is asked about instead.
- *   - A shorter run inside other text, such as a word quoted in a
- *     sentence, is asked about (cantTell): it is a change of direction,
- *     but whether it is a passage or a name is for a person. So is text in
- *     a <bdi> with no dir, which browsers isolate but RGAA does not name.
+ *   - It fails (directionNotMarked) when a text of three words or more
+ *     reads in the other direction, as a whole element or a run inside
+ *     other text, with no dir between it and its context.
+ *   - A text of one or two words is asked about (cantTell): a whole
+ *     element (shortText), such as « العربية » in a language menu, or a
+ *     run inside other text (shortRun), such as a word quoted in a
+ *     sentence. The letter of 8.10.1 covers it, but a browser shows one or
+ *     two words the same with or without dir, so whether it needs one is
+ *     for a person. So is text in a <bdi> with no dir (bdiWithoutDir),
+ *     which browsers isolate but RGAA does not name.
  * @implementation-notes
  * - One occurrence per element: the highest element whose text all reads
  *   in the other direction, or the parent of a shorter run.
@@ -41,7 +42,7 @@ const id = 'rgaa-text-direction-marked';
 const meta = {
   title: 'Text in the other reading direction is marked with dir',
   description:
-    'Fails text that reads right to left in a left-to-right context, or the reverse, with no dir attribute around it; asks about short runs inside other text.',
+    'Fails text of three words or more that reads right to left in a left-to-right context, or the reverse, with no dir attribute around it; asks about shorter texts.',
   i18n: {
     titleKey: 'textDirectionMarked_title',
     descriptionKey: 'textDirectionMarked_description'
@@ -221,7 +222,10 @@ function runInPage(ctx) {
   const NAME = { ltr: 'left to right', rtl: 'right to left' };
   for (const [el, t] of targets) {
     const words = t.whole ? norm(dom.textContent(el)).split(' ').length : t.maxRun;
-    const certain = !t.bdi && (t.maxRun >= 3 || words >= 3 || (t.whole && t.other === 'rtl'));
+    // A text of one or two words (a language menu's « العربية », a name)
+    // displays the same with or without dir: it is asked about.
+    const certain = !t.bdi && (t.maxRun >= 3 || words >= 3);
+    const kind = t.bdi ? 'bdi' : t.whole ? 'short' : 'run';
     const params = {
       direction: t.other,
       text: norm(dom.textContent(el)).slice(0, 60)
@@ -242,23 +246,30 @@ function runInPage(ctx) {
     } else {
       cantTells.push(
         helpers.reportOccurrence(el, {
-          summary: t.bdi
-            ? `This text reads ${NAME[t.other]}, unlike its context, inside a <bdi> with no dir attribute.`
-            : `This text holds a short run that reads ${NAME[t.other]}, unlike its context, with no dir attribute around it.`,
-          hint: `If the run is a passage of text in that direction, put it in an element with dir="${t.other}" (RGAA 8.10.1).`,
+          summary: {
+            bdi: `This text reads ${NAME[t.other]}, unlike its context, inside a <bdi> with no dir attribute.`,
+            short: `This short text reads ${NAME[t.other]}, unlike its context, with no dir attribute around it.`,
+            run: `This text holds a short run that reads ${NAME[t.other]}, unlike its context, with no dir attribute around it.`
+          }[kind],
+          hint: `If the text reads in that direction, put it in an element with dir="${t.other}" (RGAA 8.10.1).`,
           i18n: {
-            summaryKey: t.bdi
-              ? `textDirectionMarked_summary_cantTell_bdi_${t.other}`
-              : `textDirectionMarked_summary_cantTell_${t.other}`,
+            summaryKey: {
+              bdi: `textDirectionMarked_summary_cantTell_bdi_${t.other}`,
+              short: `textDirectionMarked_summary_cantTell_short_${t.other}`,
+              run: `textDirectionMarked_summary_cantTell_${t.other}`
+            }[kind],
             hintKey: 'textDirectionMarked_hint_cantTell',
             params
           },
           uncertainty: {
             code: 'judgement-required',
-            needed: 'Whether the run is a passage that reads in the other direction.'
+            needed: 'Whether the text needs dir to read in the other direction.'
           },
           data: {
-            details: { reasonCode: t.bdi ? 'bdiWithoutDir' : 'shortRun', ...params },
+            details: {
+              reasonCode: { bdi: 'bdiWithoutDir', short: 'shortText', run: 'shortRun' }[kind],
+              ...params
+            },
             visibilityFilter: VF
           }
         })

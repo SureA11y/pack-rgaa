@@ -28,7 +28,6 @@ test(`${RULE_ID}: text in the other direction with no dir fails`, () => {
       'p',
       'rtl'
     ],
-    ['<ul><li><a href="/ar" lang="ar">العربية</a></li></ul>', '', 'li', 'rtl'],
     [`<p>On dit ${AR} pour accueillir.</p>`, '', 'p', 'rtl'],
     ['<p>Visit Google Maps today</p>', 'dir="rtl"', 'p', 'ltr']
   ]) {
@@ -44,10 +43,14 @@ test(`${RULE_ID}: text in the other direction with no dir fails`, () => {
   }
 });
 
-test(`${RULE_ID}: a short run inside other text, or a <bdi> with no dir, is asked about`, () => {
+test(`${RULE_ID}: a text of one or two words, or a <bdi> with no dir, is asked about`, () => {
   for (const [body, attrs, code] of [
     ['<p>Le mot شكرا veut dire merci.</p>', '', 'shortRun'],
-    ['<p>مرحبا <span>Google</span></p>', 'dir="rtl"', 'shortRun'],
+    // The letter of 8.10.1 covers it, but one or two words display the
+    // same with or without dir.
+    ['<ul><li><a href="/ar" lang="ar">العربية</a></li></ul>', '', 'shortText'],
+    ['<p>مرحبا بكم</p>', '', 'shortText'],
+    ['<p>مرحبا <span>Google</span></p>', 'dir="rtl"', 'shortText'],
     ['<p>Utilisateur <bdi>إيان</bdi> : 3 messages</p>', '', 'bdiWithoutDir']
   ]) {
     const rule = assertRule(runa11yCoreOnHtml(page(body, attrs), RUN), RULE_ID, 'cantTell', {

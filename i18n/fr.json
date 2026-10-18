@@ -614,7 +614,7 @@
   "invalidFieldMessage_summary_cantTell_errormessage": "Ce champ est marqué aria-invalid=\"true\" ; son message n’est lié que par aria-errormessage, qui ne fait pas partie des emplacements que nomme le RGAA 11.10.4.",
   "invalidFieldMessage_hint_cantTell": "Vérifiez que le message d’erreur est visible dans l’étiquette du champ, ou liez-le avec aria-describedby (RGAA 11.10.4, 11.10.7).",
   "textDirectionMarked_title": "Le texte dans l’autre sens de lecture est signalé par dir",
-  "textDirectionMarked_description": "En échec quand un texte se lit de droite à gauche dans un contexte de gauche à droite, ou l’inverse, sans attribut dir autour de lui ; pose la question pour les courts passages au sein d’un autre texte.",
+  "textDirectionMarked_description": "En échec quand un texte de trois mots ou plus se lit de droite à gauche dans un contexte de gauche à droite, ou l’inverse, sans attribut dir autour de lui ; pose la question pour les textes plus courts.",
   "textDirectionMarked_summary_fail_rtl": "Ce texte se lit de droite à gauche, contrairement à son contexte, et aucun élément qui l’entoure n’a d’attribut dir.",
   "textDirectionMarked_summary_fail_ltr": "Ce texte se lit de gauche à droite, contrairement à son contexte, et aucun élément qui l’entoure n’a d’attribut dir.",
   "textDirectionMarked_hint_fail": "Placez le texte dans un élément doté de dir=\"{{direction}}\" (RGAA 8.10.1).",
@@ -622,8 +622,10 @@
   "textDirectionMarked_summary_cantTell_ltr": "Ce texte contient un court passage qui se lit de gauche à droite, contrairement à son contexte, sans attribut dir autour de lui.",
   "textDirectionMarked_summary_cantTell_bdi_rtl": "Ce texte se lit de droite à gauche, contrairement à son contexte, dans une balise <bdi> sans attribut dir.",
   "textDirectionMarked_summary_cantTell_bdi_ltr": "Ce texte se lit de gauche à droite, contrairement à son contexte, dans une balise <bdi> sans attribut dir.",
-  "textDirectionMarked_hint_cantTell": "Si le passage est un texte dans ce sens de lecture, placez-le dans un élément doté de dir=\"{{direction}}\" (RGAA 8.10.1).",
+  "textDirectionMarked_hint_cantTell": "Si le texte se lit dans ce sens, placez-le dans un élément doté de dir=\"{{direction}}\" (RGAA 8.10.1).",
   "dirAttributeValid_summary_fail_irrelevant_rtl": "Cet élément a dir=\"{{value}}\", mais son texte se lit de gauche à droite.",
   "dirAttributeValid_summary_fail_irrelevant_ltr": "Cet élément a dir=\"{{value}}\", mais son texte se lit de droite à gauche.",
-  "dirAttributeValid_hint_fail_irrelevant": "Retirez l’attribut dir, ou donnez-lui le sens de lecture du texte."
+  "dirAttributeValid_hint_fail_irrelevant": "Retirez l’attribut dir, ou donnez-lui le sens de lecture du texte.",
+  "textDirectionMarked_summary_cantTell_short_rtl": "Ce court texte se lit de droite à gauche, contrairement à son contexte, sans attribut dir autour de lui.",
+  "textDirectionMarked_summary_cantTell_short_ltr": "Ce court texte se lit de gauche à droite, contrairement à son contexte, sans attribut dir autour de lui."
 }

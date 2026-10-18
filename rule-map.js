@@ -853,7 +853,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-text-direction-marked': {
       tests: ['8.10.1'],
-      note: 'Fails text whose letters read in the direction opposite to its context (the nearest dir="ltr" or dir="rtl", or left to right with none, as the glossary « Sens de lecture » says) with no dir between them: an element whose whole text reads that way, or a run of three words or more. 8.10.1: « chaque texte dont le sens de lecture est différent du sens de lecture par défaut est contenu dans une balise possédant un attribut dir ». Asks about a shorter run inside other text, a whole element of one or two left-to-right words in a right-to-left context, and text in a <bdi> with no dir. Text under dir="auto" is left to rgaa-dir-attribute-valid; code is left out.'
+      note: 'Fails text whose letters read in the direction opposite to its context (the nearest dir="ltr" or dir="rtl", or left to right with none, as the glossary « Sens de lecture » says) with no dir between them: three words or more, as a whole element or a run inside other text. 8.10.1: « chaque texte dont le sens de lecture est différent du sens de lecture par défaut est contenu dans une balise possédant un attribut dir ». Asks about a text of one or two words, a whole element (« العربية » in a language menu) or a run inside other text: the letter of the test covers it, but a browser shows one or two words the same with or without dir. Asks about text in a <bdi> with no dir too. Text under dir="auto" is left to rgaa-dir-attribute-valid; code is left out.'
     },
     'textbox-name-present': {
       tests: [],

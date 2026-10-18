@@ -614,7 +614,7 @@
   "invalidFieldMessage_summary_cantTell_errormessage": "このフィールドは aria-invalid=\"true\" とマークされています。メッセージは aria-errormessage でのみ関連付けられており、これは RGAA 11.10.4 が挙げる場所ではありません。",
   "invalidFieldMessage_hint_cantTell": "エラーメッセージがフィールドのラベルに表示されているか確認するか、aria-describedby で関連付けてください（RGAA 11.10.4、11.10.7）。",
   "textDirectionMarked_title": "逆方向に読むテキストは dir で示されている",
-  "textDirectionMarked_description": "左から右の文脈で右から左に読むテキスト、またはその逆で、周囲に dir 属性がないものを不合格とし、他のテキスト内の短い部分については確認を求めます。",
+  "textDirectionMarked_description": "左から右の文脈で右から左に読む3語以上のテキスト、またはその逆で、周囲に dir 属性がないものを不合格とし、それより短いテキストについては確認を求めます。",
   "textDirectionMarked_summary_fail_rtl": "このテキストは文脈と異なり右から左に読まれますが、周囲のどの要素にも dir 属性がありません。",
   "textDirectionMarked_summary_fail_ltr": "このテキストは文脈と異なり左から右に読まれますが、周囲のどの要素にも dir 属性がありません。",
   "textDirectionMarked_hint_fail": "テキストを dir=\"{{direction}}\" を持つ要素に入れてください（RGAA 8.10.1）。",
@@ -622,8 +622,10 @@
   "textDirectionMarked_summary_cantTell_ltr": "このテキストには、文脈と異なり左から右に読まれる短い部分があり、周囲に dir 属性がありません。",
   "textDirectionMarked_summary_cantTell_bdi_rtl": "このテキストは文脈と異なり右から左に読まれ、dir 属性のない <bdi> の中にあります。",
   "textDirectionMarked_summary_cantTell_bdi_ltr": "このテキストは文脈と異なり左から右に読まれ、dir 属性のない <bdi> の中にあります。",
-  "textDirectionMarked_hint_cantTell": "その部分がその方向に読むテキストであれば、dir=\"{{direction}}\" を持つ要素に入れてください（RGAA 8.10.1）。",
+  "textDirectionMarked_hint_cantTell": "テキストがその方向に読まれるなら、dir=\"{{direction}}\" を持つ要素に入れてください（RGAA 8.10.1）。",
   "dirAttributeValid_summary_fail_irrelevant_rtl": "この要素は dir=\"{{value}}\" ですが、そのテキストは左から右に読まれます。",
   "dirAttributeValid_summary_fail_irrelevant_ltr": "この要素は dir=\"{{value}}\" ですが、そのテキストは右から左に読まれます。",
-  "dirAttributeValid_hint_fail_irrelevant": "dir 属性を削除するか、テキストが読まれる方向に設定してください。"
+  "dirAttributeValid_hint_fail_irrelevant": "dir 属性を削除するか、テキストが読まれる方向に設定してください。",
+  "textDirectionMarked_summary_cantTell_short_rtl": "この短いテキストは文脈と異なり右から左に読まれ、周囲に dir 属性がありません。",
+  "textDirectionMarked_summary_cantTell_short_ltr": "この短いテキストは文脈と異なり左から右に読まれ、周囲に dir 属性がありません。"
 }

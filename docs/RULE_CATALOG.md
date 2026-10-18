@@ -1250,7 +1250,7 @@ Checks that an &lt;svg&gt; named by aria-labelledby, aria-label or &lt;title&gt;
 
 automatic · no formal WCAG SC mapping · confidence high · default severity moderate
 
-Fails text that reads right to left in a left-to-right context, or the reverse, with no dir attribute around it; asks about short runs inside other text.
+Fails text of three words or more that reads right to left in a left-to-right context, or the reverse, with no dir attribute around it; asks about shorter texts.
 
 **Applies to.** Applies to visible text whose strong characters read in the direction opposite to that of its context: right-to-left letters (Hebrew, Arabic, Syriac, Thaana, NKo and related blocks) where the direction is left to right, or other letters where it is right to left. The context is the nearest ancestor whose dir is ltr or rtl, and left to right with none (glossary « Sens de lecture »: « le sens de lecture par défaut est de gauche à droite »). Text under dir="auto" is left to rgaa-dir-attribute-valid; code, scripts and styles are left out. A page with none is notApplicable.
 
@@ -1258,8 +1258,8 @@ Fails text that reads right to left in a left-to-right context, or the reverse, 
 
 RGAA 8.10.1: « chaque texte dont le sens de lecture est différent du sens de lecture par défaut est contenu dans une balise possédant un attribut dir ».
 
-- It fails (directionNotMarked) when an element's whole text reads in the other direction, or when a run of three words or more does, with no dir between it and its context. In a right-to-left context, a whole element of one or two left-to-right words (a brand name, a link to a site) is asked about instead.
-- A shorter run inside other text, such as a word quoted in a sentence, is asked about (cantTell): it is a change of direction, but whether it is a passage or a name is for a person. So is text in a &lt;bdi&gt; with no dir, which browsers isolate but RGAA does not name.
+- It fails (directionNotMarked) when a text of three words or more reads in the other direction, as a whole element or a run inside other text, with no dir between it and its context.
+- A text of one or two words is asked about (cantTell): a whole element (shortText), such as « العربية » in a language menu, or a run inside other text (shortRun), such as a word quoted in a sentence. The letter of 8.10.1 covers it, but a browser shows one or two words the same with or without dir, so whether it needs one is for a person. So is text in a &lt;bdi&gt; with no dir (bdiWithoutDir), which browsers isolate but RGAA does not name.
 
 ### `rgaa-th-scope-row-col`
 

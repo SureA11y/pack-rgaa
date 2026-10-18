@@ -614,7 +614,7 @@
   "invalidFieldMessage_summary_cantTell_errormessage": "Dieses Feld ist mit aria-invalid=\"true\" markiert; seine Meldung ist nur mit aria-errormessage verknüpft, das nicht zu den Stellen gehört, die RGAA 11.10.4 nennt.",
   "invalidFieldMessage_hint_cantTell": "Prüfen Sie, dass die Fehlermeldung in der Beschriftung des Feldes sichtbar ist, oder verknüpfen Sie sie mit aria-describedby (RGAA 11.10.4, 11.10.7).",
   "textDirectionMarked_title": "Text in der anderen Leserichtung ist mit dir gekennzeichnet",
-  "textDirectionMarked_description": "Schlägt bei Text fehl, der in einem Kontext von links nach rechts von rechts nach links gelesen wird oder umgekehrt, ohne dir-Attribut um ihn herum; fragt bei kurzen Abschnitten innerhalb anderen Textes nach.",
+  "textDirectionMarked_description": "Schlägt bei Text von drei oder mehr Wörtern fehl, der in einem Kontext von links nach rechts von rechts nach links gelesen wird oder umgekehrt, ohne dir-Attribut um ihn herum; fragt bei kürzeren Texten nach.",
   "textDirectionMarked_summary_fail_rtl": "Dieser Text wird anders als sein Kontext von rechts nach links gelesen, und kein Element um ihn herum hat ein dir-Attribut.",
   "textDirectionMarked_summary_fail_ltr": "Dieser Text wird anders als sein Kontext von links nach rechts gelesen, und kein Element um ihn herum hat ein dir-Attribut.",
   "textDirectionMarked_hint_fail": "Setzen Sie den Text in ein Element mit dir=\"{{direction}}\" (RGAA 8.10.1).",
@@ -622,8 +622,10 @@
   "textDirectionMarked_summary_cantTell_ltr": "Dieser Text enthält einen kurzen Abschnitt, der anders als sein Kontext von links nach rechts gelesen wird, ohne dir-Attribut um ihn herum.",
   "textDirectionMarked_summary_cantTell_bdi_rtl": "Dieser Text wird anders als sein Kontext von rechts nach links gelesen, in einem <bdi> ohne dir-Attribut.",
   "textDirectionMarked_summary_cantTell_bdi_ltr": "Dieser Text wird anders als sein Kontext von links nach rechts gelesen, in einem <bdi> ohne dir-Attribut.",
-  "textDirectionMarked_hint_cantTell": "Wenn der Abschnitt ein Text in dieser Richtung ist, setzen Sie ihn in ein Element mit dir=\"{{direction}}\" (RGAA 8.10.1).",
+  "textDirectionMarked_hint_cantTell": "Wenn der Text in dieser Richtung gelesen wird, setzen Sie ihn in ein Element mit dir=\"{{direction}}\" (RGAA 8.10.1).",
   "dirAttributeValid_summary_fail_irrelevant_rtl": "Dieses Element hat dir=\"{{value}}\", aber sein Text wird von links nach rechts gelesen.",
   "dirAttributeValid_summary_fail_irrelevant_ltr": "Dieses Element hat dir=\"{{value}}\", aber sein Text wird von rechts nach links gelesen.",
-  "dirAttributeValid_hint_fail_irrelevant": "Entfernen Sie das dir-Attribut oder setzen Sie es auf die Richtung, in der der Text gelesen wird."
+  "dirAttributeValid_hint_fail_irrelevant": "Entfernen Sie das dir-Attribut oder setzen Sie es auf die Richtung, in der der Text gelesen wird.",
+  "textDirectionMarked_summary_cantTell_short_rtl": "Dieser kurze Text wird anders als sein Kontext von rechts nach links gelesen, ohne dir-Attribut um ihn herum.",
+  "textDirectionMarked_summary_cantTell_short_ltr": "Dieser kurze Text wird anders als sein Kontext von links nach rechts gelesen, ohne dir-Attribut um ihn herum."
 }

@@ -614,7 +614,7 @@
   "invalidFieldMessage_summary_cantTell_errormessage": "Este campo está marcado con aria-invalid=\"true\"; su mensaje solo está vinculado con aria-errormessage, que no es uno de los lugares que nombra el RGAA 11.10.4.",
   "invalidFieldMessage_hint_cantTell": "Compruebe que el mensaje de error es visible en la etiqueta del campo, o vincúlelo con aria-describedby (RGAA 11.10.4, 11.10.7).",
   "textDirectionMarked_title": "El texto en el otro sentido de lectura está marcado con dir",
-  "textDirectionMarked_description": "Falla un texto que se lee de derecha a izquierda en un contexto de izquierda a derecha, o al revés, sin un atributo dir a su alrededor; pregunta por los fragmentos cortos dentro de otro texto.",
+  "textDirectionMarked_description": "Falla un texto de tres palabras o más que se lee de derecha a izquierda en un contexto de izquierda a derecha, o al revés, sin un atributo dir a su alrededor; pregunta por los textos más cortos.",
   "textDirectionMarked_summary_fail_rtl": "Este texto se lee de derecha a izquierda, a diferencia de su contexto, y ningún elemento a su alrededor tiene un atributo dir.",
   "textDirectionMarked_summary_fail_ltr": "Este texto se lee de izquierda a derecha, a diferencia de su contexto, y ningún elemento a su alrededor tiene un atributo dir.",
   "textDirectionMarked_hint_fail": "Ponga el texto en un elemento con dir=\"{{direction}}\" (RGAA 8.10.1).",
@@ -622,8 +622,10 @@
   "textDirectionMarked_summary_cantTell_ltr": "Este texto contiene un fragmento corto que se lee de izquierda a derecha, a diferencia de su contexto, sin un atributo dir a su alrededor.",
   "textDirectionMarked_summary_cantTell_bdi_rtl": "Este texto se lee de derecha a izquierda, a diferencia de su contexto, dentro de un <bdi> sin atributo dir.",
   "textDirectionMarked_summary_cantTell_bdi_ltr": "Este texto se lee de izquierda a derecha, a diferencia de su contexto, dentro de un <bdi> sin atributo dir.",
-  "textDirectionMarked_hint_cantTell": "Si el fragmento es un texto en ese sentido, póngalo en un elemento con dir=\"{{direction}}\" (RGAA 8.10.1).",
+  "textDirectionMarked_hint_cantTell": "Si el texto se lee en ese sentido, póngalo en un elemento con dir=\"{{direction}}\" (RGAA 8.10.1).",
   "dirAttributeValid_summary_fail_irrelevant_rtl": "Este elemento tiene dir=\"{{value}}\", pero su texto se lee de izquierda a derecha.",
   "dirAttributeValid_summary_fail_irrelevant_ltr": "Este elemento tiene dir=\"{{value}}\", pero su texto se lee de derecha a izquierda.",
-  "dirAttributeValid_hint_fail_irrelevant": "Quite el atributo dir, o dele el sentido en que se lee el texto."
+  "dirAttributeValid_hint_fail_irrelevant": "Quite el atributo dir, o dele el sentido en que se lee el texto.",
+  "textDirectionMarked_summary_cantTell_short_rtl": "Este texto corto se lee de derecha a izquierda, a diferencia de su contexto, sin un atributo dir a su alrededor.",
+  "textDirectionMarked_summary_cantTell_short_ltr": "Este texto corto se lee de izquierda a derecha, a diferencia de su contexto, sin un atributo dir a su alrededor."
 }
