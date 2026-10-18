@@ -152,7 +152,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T12-04 | 12.7.1 | FP | A broken first link that is not about the main content fails `skipLinkTargetMissing`. | done |
 | T12-05 | 12.7.1 | WO | A skip link landing before a section menu is dropped, then the page fails as having none. | done |
 | T12-06 | 12.7 | FN | A skip link that is never visible passes: `rgaa-skip-link-placement` lacks the breadcrumb fix (P2). | done |
-| T12-07 | 12.6.1 | FN | Passes when no zone is recognised. | open |
+| T12-07 | 12.6.1 | FN | Passes when no zone is recognised. Now asks about a block of three links or more outside the main content that no landmark or name identifies (ZONE_UNIDENTIFIED). | done |
 | T12-08 | 13.1, 13.3, 13.9 | WO | A criterion rolls up notApplicable or pass though some of its tests are not checked. | core |
 | T12-09 | 12.6.1 | WO | Untargeted questions on blocks inside other landmarks. | open |
 | T12-10 | 12.7.2 | MISS | An `aria-hidden` skip link passes 12.7. Now asked about by `rgaa-skip-link-present` (skipLinkAriaHidden): it works with the keyboard, but screen reader users cannot find it. | done |

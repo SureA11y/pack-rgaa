@@ -30,7 +30,10 @@
  *     (ZONE_SKIP_LINK), a button just before it controls it (ZONE_TOGGLE),
  *     or a same-page link leads to it (whether that link is visible,
  *     ZONE_QUICK_LINK); and when it has none of these (ZONE_NO_MECHANISM).
- *     A page with no main landmark is asked about too (MAIN_NOT_FOUND).
+ *     A page with no main landmark is asked about too (MAIN_NOT_FOUND),
+ *     and so is a block of three links or more outside the main content,
+ *     with no landmark around it and no name that says what it is
+ *     (ZONE_UNIDENTIFIED): it is likely a header, navigation or footer.
  * @implementation-notes
  * - Landmarks are read with helpers.getLandmarkRole, as core's landmark
  *   rules read them: the role attribute's first token, else the element's
@@ -340,6 +343,13 @@ function runInPage(ctx) {
         `This area ("${p.hint}") has no landmark role, no heading opening it, and no link or button to reach, skip or hide it.`,
       needed: 'Whether this block is an area of the page, and if so how it can be reached.'
     },
+    ZONE_UNIDENTIFIED: {
+      key: 'unidentified',
+      summary: () =>
+        'This block of links outside the main content has no landmark role and nothing that names it as an area.',
+      needed:
+        'Whether this block is the header, navigation or footer, and if so how it can be reached.'
+    },
     MAIN_NOT_FOUND: {
       key: 'mainNotFound',
       summary: () =>
@@ -389,6 +399,34 @@ function runInPage(ctx) {
   if (!landmarks.main.length && !candidates.some((c) => c.zone === 'main')) {
     ask('MAIN_NOT_FOUND', dom.body(document) || dom.documentElement(document), '', 'main');
   }
+
+  // A block of three links or more outside the main content, with no
+  // landmark around it and no name that says what it is, is likely a
+  // header, a navigation or a footer the rule could not identify.
+  const inLandmark = (el) => {
+    for (let a = el; a && dom.nodeType(a) === 1; a = dom.parentElement(a)) {
+      if (landmarkOf(a)) return true;
+    }
+    return false;
+  };
+  const linksIn = (el) =>
+    Array.from(dom.querySelectorAll(el, 'a[href]')).filter((a) => isEligible(a)).length;
+  const mains = landmarks.main.concat(candidates.filter((c) => c.zone === 'main').map((c) => c.el));
+  const unnamed = [];
+  if (mains.length) {
+    for (const el of query('body div, body ul, body ol, body section, body aside, body p')) {
+      if (!el || !isEligible(el) || inLandmark(el)) continue;
+      if (mains.some((m) => dom.contains(m, el) || dom.contains(el, m))) continue;
+      if (candidates.some((c) => dom.contains(c.el, el) || dom.contains(el, c.el))) continue;
+      if (unnamed.some((u) => dom.contains(u, el))) continue;
+      if (linksIn(el) < 3) continue;
+      for (let i = unnamed.length - 1; i >= 0; i--) {
+        if (dom.contains(el, unnamed[i])) unnamed.splice(i, 1);
+      }
+      unnamed.push(el);
+    }
+  }
+  for (const el of unnamed) ask('ZONE_UNIDENTIFIED', el, '', 'unknown');
 
   if (questions.length) {
     return {

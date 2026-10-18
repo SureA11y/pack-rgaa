@@ -720,5 +720,6 @@
   "objectEmbedDecorativeAriaHidden_summary_fail_role": "This <{{tag}} role=\"{{role}}\"> is marked decorative but has no aria-hidden=\"true\".",
   "objectEmbedDecorativeAriaHidden_hint_fail_role": "Add aria-hidden=\"true\" to a decorative image, and give it no aria-label, aria-labelledby or title (RGAA {{test}}).",
   "objectEmbedDecorativeAriaHidden_summary_cantTell_content": "This <{{tag}} role=\"{{role}}\"> has no aria-hidden=\"true\" and has content between <{{tag}}> and </{{tag}}>.",
-  "objectEmbedDecorativeAriaHidden_hint_cantTell_content": "If the image carries information, remove the role and keep the content as its alternative. If it is decorative, add aria-hidden=\"true\" and remove the content."
+  "objectEmbedDecorativeAriaHidden_hint_cantTell_content": "If the image carries information, remove the role and keep the content as its alternative. If it is decorative, add aria-hidden=\"true\" and remove the content.",
+  "pageZonesReachable_summary_cantTell_unidentified": "This block of links outside the main content has no landmark role and nothing that names it as an area."
 }

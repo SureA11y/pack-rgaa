@@ -720,5 +720,6 @@
   "objectEmbedDecorativeAriaHidden_summary_fail_role": "Dieses <{{tag}} role=\"{{role}}\"> ist als dekorativ markiert, hat aber kein aria-hidden=\"true\".",
   "objectEmbedDecorativeAriaHidden_hint_fail_role": "Fügen Sie einem dekorativen Bild aria-hidden=\"true\" hinzu, ohne aria-label, aria-labelledby oder title (RGAA {{test}}).",
   "objectEmbedDecorativeAriaHidden_summary_cantTell_content": "Dieses <{{tag}} role=\"{{role}}\"> hat kein aria-hidden=\"true\" und hat Inhalt zwischen <{{tag}}> und </{{tag}}>.",
-  "objectEmbedDecorativeAriaHidden_hint_cantTell_content": "Trägt das Bild Informationen, entfernen Sie die Rolle und behalten Sie den Inhalt als Alternative. Ist es dekorativ, fügen Sie aria-hidden=\"true\" hinzu und entfernen Sie den Inhalt."
+  "objectEmbedDecorativeAriaHidden_hint_cantTell_content": "Trägt das Bild Informationen, entfernen Sie die Rolle und behalten Sie den Inhalt als Alternative. Ist es dekorativ, fügen Sie aria-hidden=\"true\" hinzu und entfernen Sie den Inhalt.",
+  "pageZonesReachable_summary_cantTell_unidentified": "Dieser Linkblock außerhalb des Hauptinhalts hat keine Landmark-Rolle, und nichts bezeichnet ihn als Bereich."
 }

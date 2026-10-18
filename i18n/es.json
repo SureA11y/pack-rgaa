@@ -720,5 +720,6 @@
   "objectEmbedDecorativeAriaHidden_summary_fail_role": "Este <{{tag}} role=\"{{role}}\"> está marcado como decorativo pero no tiene aria-hidden=\"true\".",
   "objectEmbedDecorativeAriaHidden_hint_fail_role": "Añada aria-hidden=\"true\" a una imagen decorativa, sin aria-label, aria-labelledby ni title (RGAA {{test}}).",
   "objectEmbedDecorativeAriaHidden_summary_cantTell_content": "Este <{{tag}} role=\"{{role}}\"> no tiene aria-hidden=\"true\" y tiene contenido entre <{{tag}}> y </{{tag}}>.",
-  "objectEmbedDecorativeAriaHidden_hint_cantTell_content": "Si la imagen transmite información, quite el rol y conserve el contenido como su alternativa. Si es decorativa, añada aria-hidden=\"true\" y quite el contenido."
+  "objectEmbedDecorativeAriaHidden_hint_cantTell_content": "Si la imagen transmite información, quite el rol y conserve el contenido como su alternativa. Si es decorativa, añada aria-hidden=\"true\" y quite el contenido.",
+  "pageZonesReachable_summary_cantTell_unidentified": "Este bloque de enlaces fuera del contenido principal no tiene rol de punto de referencia y nada lo identifica como una zona."
 }

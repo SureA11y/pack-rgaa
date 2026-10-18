@@ -737,7 +737,7 @@ const RGAA_RULE_TESTS = {
     },
     'password-paste-enabled': {
       tests: [],
-      note: 'Concerns WCAG 3.3.8 Accessible Authentication (WCAG 2.2), which RGAA 4.1.2 does not include. No RGAA test covers paste blocking on authentication fields.'
+      note: 'Concerns WCAG 3.3.8 Accessible Authentication (WCAG 2.2), which RGAA 4.1.2 does not include. No RGAA test covers paste blocking on authentication fields. Asks too about a block of three links or more outside the main content with no landmark around it and no name that says what it is, likely a header, navigation or footer the rule could not identify (a page with only <main> recognised used to pass).'
     },
     'presentation-role-conflict': {
       tests: [],

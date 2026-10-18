@@ -720,5 +720,6 @@
   "objectEmbedDecorativeAriaHidden_summary_fail_role": "この <{{tag}} role=\"{{role}}\"> は装飾とマークされていますが、aria-hidden=\"true\" がありません。",
   "objectEmbedDecorativeAriaHidden_hint_fail_role": "装飾画像には aria-label、aria-labelledby、title を付けずに aria-hidden=\"true\" を追加してください（RGAA {{test}}）。",
   "objectEmbedDecorativeAriaHidden_summary_cantTell_content": "この <{{tag}} role=\"{{role}}\"> には aria-hidden=\"true\" がなく、<{{tag}}> と </{{tag}}> の間に内容があります。",
-  "objectEmbedDecorativeAriaHidden_hint_cantTell_content": "画像が情報を伝えるならロールを削除し、内容を代替として残してください。装飾なら aria-hidden=\"true\" を追加し、内容を削除してください。"
+  "objectEmbedDecorativeAriaHidden_hint_cantTell_content": "画像が情報を伝えるならロールを削除し、内容を代替として残してください。装飾なら aria-hidden=\"true\" を追加し、内容を削除してください。",
+  "pageZonesReachable_summary_cantTell_unidentified": "メインコンテンツ外のこのリンクのまとまりにはランドマークロールがなく、領域であることを示すものもありません。"
 }

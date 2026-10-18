@@ -720,5 +720,6 @@
   "objectEmbedDecorativeAriaHidden_summary_fail_role": "Cette balise <{{tag}} role=\"{{role}}\"> est marquée comme décorative mais n’a pas d’attribut aria-hidden=\"true\".",
   "objectEmbedDecorativeAriaHidden_hint_fail_role": "Ajoutez aria-hidden=\"true\" à une image de décoration, sans aria-label, aria-labelledby ni title (RGAA {{test}}).",
   "objectEmbedDecorativeAriaHidden_summary_cantTell_content": "Cette balise <{{tag}} role=\"{{role}}\"> n’a pas d’attribut aria-hidden=\"true\" et a un contenu entre <{{tag}}> et </{{tag}}>.",
-  "objectEmbedDecorativeAriaHidden_hint_cantTell_content": "Si l’image est porteuse d’information, retirez le rôle et gardez le contenu comme contenu alternatif. Si elle est de décoration, ajoutez aria-hidden=\"true\" et supprimez le contenu."
+  "objectEmbedDecorativeAriaHidden_hint_cantTell_content": "Si l’image est porteuse d’information, retirez le rôle et gardez le contenu comme contenu alternatif. Si elle est de décoration, ajoutez aria-hidden=\"true\" et supprimez le contenu.",
+  "pageZonesReachable_summary_cantTell_unidentified": "Ce bloc de liens hors du contenu principal n’a pas de rôle de point de repère et rien ne l’identifie comme une zone."
 }
