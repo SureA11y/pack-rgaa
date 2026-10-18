@@ -741,5 +741,11 @@
   "scriptRedirectReview_title": "スクリプトによる遅延リダイレクトを制御できる",
   "scriptRedirectReview_description": "タイマーから別のアドレスを読み込む各インラインスクリプトを示し、利用者がリダイレクトを停止、延長、または事前に知らされるか人が確認できるようにします。",
   "scriptRedirectReview_summary_cantTell": "このスクリプトは遅延後に別のアドレスを読み込みます（「{{code}}」）。",
-  "scriptRedirectReview_hint_cantTell": "利用者がリダイレクトを停止・再開できるか、遅延を10倍以上に延長できるか、延長のための20秒の猶予とともに警告されるか確認してください（RGAA 13.1.3）。"
+  "scriptRedirectReview_hint_cantTell": "利用者がリダイレクトを停止・再開できるか、遅延を10倍以上に延長できるか、延長のための20秒の猶予とともに警告されるか確認してください（RGAA 13.1.3）。",
+  "crypticContentReview_title": "暗号的なコンテンツに title があるか文脈で説明されている",
+  "crypticContentReview_description": "title のない顔文字、絵文字、アスキーアートを示し、隣接するテキストが意味を説明しているか人が確認できるようにします。",
+  "crypticContentReview_summary_cantTell_emoticon": "このコンテンツには title のない顔文字（「{{sample}}」）があります。",
+  "crypticContentReview_summary_cantTell_emoji": "このコンテンツには title のない絵文字（「{{sample}}」）があります。",
+  "crypticContentReview_summary_cantTell_asciiArt": "このコンテンツには title のないアスキーアート（「{{sample}}」）があります。",
+  "crypticContentReview_hint_cantTell": "隣接するテキストが意味を説明しているか確認するか、title を付けてください。絵文字には role=\"img\" と aria-label で名前を付けられます（RGAA 13.5.1）。"
 }

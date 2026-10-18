@@ -741,5 +741,11 @@
   "scriptRedirectReview_title": "A timed redirection done by a script can be controlled",
   "scriptRedirectReview_description": "Flags each inline script that loads another address from a timer, for a person to check that the user can stop, extend or be warned of the redirection.",
   "scriptRedirectReview_summary_cantTell": "This script loads another address after a delay (\"{{code}}\").",
-  "scriptRedirectReview_hint_cantTell": "Check that the user can stop or restart the redirection, extend its delay ten times at least, or is warned with twenty seconds to extend it (RGAA 13.1.3)."
+  "scriptRedirectReview_hint_cantTell": "Check that the user can stop or restart the redirection, extend its delay ten times at least, or is warned with twenty seconds to extend it (RGAA 13.1.3).",
+  "crypticContentReview_title": "Cryptic content has a title or is defined by its context",
+  "crypticContentReview_description": "Flags text emoticons, emoji and ASCII art with no title, for a person to check that the text next to them says what they mean.",
+  "crypticContentReview_summary_cantTell_emoticon": "This content holds an emoticon (\"{{sample}}\") with no title.",
+  "crypticContentReview_summary_cantTell_emoji": "This content holds an emoji (\"{{sample}}\") with no title.",
+  "crypticContentReview_summary_cantTell_asciiArt": "This content holds ASCII art (\"{{sample}}\") with no title.",
+  "crypticContentReview_hint_cantTell": "Check that the text next to it says what it means, or give it a title; for an emoji, role=\"img\" with an aria-label names it (RGAA 13.5.1)."
 }

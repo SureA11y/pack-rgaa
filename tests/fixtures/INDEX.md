@@ -4,13 +4,13 @@ This pack's rules and their scenario pages. Every rule should have a `tests/fixt
 
 ## Summary
 
-Total rules: **94**. With fixture: **94**. Without fixture: **0**.
+Total rules: **95**. With fixture: **95**. Without fixture: **0**.
 
 ## Rules WITHOUT a fixture (0)
 
 None — every rule has a fixture.
 
-## Rules WITH a fixture (94)
+## Rules WITH a fixture (95)
 
 | Rule ID | Type | Fixture | Cases | PASS | FAIL | CANTTELL | OTHER |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -26,6 +26,7 @@ None — every rule has a fixture.
 | rgaa-complex-table-summary-quality | manual | `tests/fixtures/rgaa-complex-table-summary-quality-all-scenarios.html` | 7 | 0 | 0 | 3 | 4 |
 | rgaa-context-change-review | manual | `tests/fixtures/rgaa-context-change-review-all-scenarios.html` | 2 | 0 | 0 | 1 | 1 |
 | rgaa-contrast-minimum | automatic | `tests/fixtures/rgaa-contrast-minimum-all-scenarios.html` | 7 | 4 | 3 | 0 | 0 |
+| rgaa-cryptic-content-review | manual | `tests/fixtures/rgaa-cryptic-content-review-all-scenarios.html` | 2 | 0 | 0 | 1 | 1 |
 | rgaa-current-item-review | manual | `tests/fixtures/rgaa-current-item-review-all-scenarios.html` | 2 | 0 | 0 | 1 | 1 |
 | rgaa-data-table-headers-review | manual | `tests/fixtures/rgaa-data-table-headers-review-all-scenarios.html` | 7 | 0 | 0 | 3 | 4 |
 | rgaa-dir-attribute-valid | automatic | `tests/fixtures/rgaa-dir-attribute-valid-all-scenarios.html` | 8 | 2 | 4 | 0 | 2 |

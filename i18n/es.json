@@ -741,5 +741,11 @@
   "scriptRedirectReview_title": "Una redirección diferida hecha por un script se puede controlar",
   "scriptRedirectReview_description": "Señala cada script en línea que carga otra dirección desde un temporizador, para que una persona compruebe que el usuario puede detener, ampliar o ser avisado de la redirección.",
   "scriptRedirectReview_summary_cantTell": "Este script carga otra dirección tras un retraso (\"{{code}}\").",
-  "scriptRedirectReview_hint_cantTell": "Compruebe que el usuario puede detener o reanudar la redirección, ampliar su retraso diez veces al menos, o recibe un aviso con veinte segundos para ampliarlo (RGAA 13.1.3)."
+  "scriptRedirectReview_hint_cantTell": "Compruebe que el usuario puede detener o reanudar la redirección, ampliar su retraso diez veces al menos, o recibe un aviso con veinte segundos para ampliarlo (RGAA 13.1.3).",
+  "crypticContentReview_title": "El contenido críptico tiene un title o lo define su contexto",
+  "crypticContentReview_description": "Señala los emoticonos de texto, emojis y arte ASCII sin title, para que una persona compruebe que el texto junto a ellos dice lo que significan.",
+  "crypticContentReview_summary_cantTell_emoticon": "Este contenido tiene un emoticono (\"{{sample}}\") sin title.",
+  "crypticContentReview_summary_cantTell_emoji": "Este contenido tiene un emoji (\"{{sample}}\") sin title.",
+  "crypticContentReview_summary_cantTell_asciiArt": "Este contenido tiene arte ASCII (\"{{sample}}\") sin title.",
+  "crypticContentReview_hint_cantTell": "Compruebe que el texto contiguo dice lo que significa, o dele un title; a un emoji lo nombra role=\"img\" con un aria-label (RGAA 13.5.1)."
 }

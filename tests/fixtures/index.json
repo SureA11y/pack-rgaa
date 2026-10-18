@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 94,
-    "withFixture": 94,
+    "total": 95,
+    "withFixture": 95,
     "withoutFixture": 0
   },
   "rows": [
@@ -207,6 +207,23 @@
         "FAIL": 3,
         "CANTTELL": 0,
         "OTHER": 0
+      }
+    },
+    {
+      "ruleId": "rgaa-cryptic-content-review",
+      "title": "Cryptic content has a title or is defined by its context",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/cryptic-content-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-cryptic-content-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-cryptic-content-review-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 1
       }
     },
     {

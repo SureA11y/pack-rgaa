@@ -741,5 +741,11 @@
   "scriptRedirectReview_title": "Une redirection différée faite par un script est contrôlable",
   "scriptRedirectReview_description": "Signale chaque script en ligne qui charge une autre adresse depuis une minuterie, pour qu’une personne vérifie que l’utilisateur peut arrêter, prolonger la redirection ou en être averti.",
   "scriptRedirectReview_summary_cantTell": "Ce script charge une autre adresse après un délai (« {{code}} »).",
-  "scriptRedirectReview_hint_cantTell": "Vérifiez que l’utilisateur peut arrêter ou relancer la redirection, augmenter son délai de dix fois au moins, ou en est averti avec vingt secondes pour le prolonger (RGAA 13.1.3)."
+  "scriptRedirectReview_hint_cantTell": "Vérifiez que l’utilisateur peut arrêter ou relancer la redirection, augmenter son délai de dix fois au moins, ou en est averti avec vingt secondes pour le prolonger (RGAA 13.1.3).",
+  "crypticContentReview_title": "Un contenu cryptique a un attribut title ou est défini par son contexte",
+  "crypticContentReview_description": "Signale les émoticônes, emojis et arts ASCII sans attribut title, pour qu’une personne vérifie que le texte adjacent dit ce qu’ils signifient.",
+  "crypticContentReview_summary_cantTell_emoticon": "Ce contenu contient une émoticône (« {{sample}} ») sans attribut title.",
+  "crypticContentReview_summary_cantTell_emoji": "Ce contenu contient un emoji (« {{sample}} ») sans attribut title.",
+  "crypticContentReview_summary_cantTell_asciiArt": "Ce contenu contient de l’art ASCII (« {{sample}} ») sans attribut title.",
+  "crypticContentReview_hint_cantTell": "Vérifiez que le contexte adjacent en donne la définition, ou ajoutez un attribut title ; pour un emoji, role=\"img\" avec un aria-label le nomme (RGAA 13.5.1)."
 }

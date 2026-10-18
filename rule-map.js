@@ -220,6 +220,10 @@ const RGAA_RULE_TESTS = {
       tests: ['10.7.1'],
       note: "Flags tab-order elements whose outline is removed, by a :focus/:focus-visible rule or by a rule with no state such as a { outline: none }, with no border, box-shadow or background replacement in any matching focus rule. That is 10.7.1 condition 1 (native focus style removed) and step 2 (visual focus indicator present). The 3:1 contrast part of step 2 is rgaa-focus-indicator-contrast's."
     },
+    'rgaa-cryptic-content-review': {
+      tests: ['13.5.1'],
+      note: 'Asks about text emoticons (« :-) », « ;) », « <3 »…), emoji and ASCII art (a <pre> of three lines or more mostly made of signs) with no title on themselves or their parent, outside code and not named by role="img" or hidden: 13.5.1 asks each « contenu cryptique (art ASCII, émoticône, syntaxe cryptique) » for a title or « une définition donnée par le contexte adjacent », and whether the context defines it is for a person.'
+    },
     'css-hidden-focus': {
       tests: ['10.7.1', '12.8.1'],
       note: 'Flags keyboard-focusable elements that are visually hidden (opacity 0, clipped, off-screen, zero-size with overflow hidden), so taking focus on them gives no visible indication. An element that a :focus/:focus-visible rule brings back into view, such as an off-screen skip link, is not flagged. This is evidence for 10.7.1 step 2 on focusable elements, and for 12.8.1: Tab stops on elements a person cannot see, such as the links of a closed off-canvas menu, make the tab order incoherent. It is not 10.8.1, because the content stays exposed to AT and the problem is purely visual.',

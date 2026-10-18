@@ -741,5 +741,11 @@
   "scriptRedirectReview_title": "Eine zeitverzögerte Weiterleitung per Skript lässt sich steuern",
   "scriptRedirectReview_description": "Markiert jedes eingebettete Skript, das über einen Timer eine andere Adresse lädt, damit eine Person prüft, dass Nutzende die Weiterleitung anhalten, verlängern oder vorher gewarnt werden können.",
   "scriptRedirectReview_summary_cantTell": "Dieses Skript lädt nach einer Verzögerung eine andere Adresse („{{code}}“).",
-  "scriptRedirectReview_hint_cantTell": "Prüfen Sie, dass Nutzende die Weiterleitung anhalten oder neu starten, ihre Verzögerung mindestens verzehnfachen oder mit zwanzig Sekunden Vorlauf zur Verlängerung gewarnt werden können (RGAA 13.1.3)."
+  "scriptRedirectReview_hint_cantTell": "Prüfen Sie, dass Nutzende die Weiterleitung anhalten oder neu starten, ihre Verzögerung mindestens verzehnfachen oder mit zwanzig Sekunden Vorlauf zur Verlängerung gewarnt werden können (RGAA 13.1.3).",
+  "crypticContentReview_title": "Kryptische Inhalte haben ein title oder werden durch den Kontext erklärt",
+  "crypticContentReview_description": "Markiert Text-Emoticons, Emojis und ASCII-Art ohne title, damit eine Person prüft, dass der Text daneben sagt, was sie bedeuten.",
+  "crypticContentReview_summary_cantTell_emoticon": "Dieser Inhalt enthält ein Emoticon („{{sample}}“) ohne title.",
+  "crypticContentReview_summary_cantTell_emoji": "Dieser Inhalt enthält ein Emoji („{{sample}}“) ohne title.",
+  "crypticContentReview_summary_cantTell_asciiArt": "Dieser Inhalt enthält ASCII-Art („{{sample}}“) ohne title.",
+  "crypticContentReview_hint_cantTell": "Prüfen Sie, dass der Text daneben sagt, was es bedeutet, oder geben Sie ein title; ein Emoji benennt role=\"img\" mit einem aria-label (RGAA 13.5.1)."
 }

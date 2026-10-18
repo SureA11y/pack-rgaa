@@ -256,6 +256,38 @@ Bold text of 18.5px is large for RGAA (3.2.4), so 3.54:1 is enough. WCAG makes b
 ```
 Bold text below 18.5px needs 4.5:1 (3.2.2); #888888 on white is 3.54:1.
 
+## rgaa-cryptic-content-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<p>Merci pour votre visite :-)</p>
+```
+The emoticon has no title: a person checks that the text next to it says what it means (RGAA 13.5.1).
+
+**Not applicable**
+```html
+<p><abbr title="sourire">:-)</abbr></p>
+```
+The emoticon has a title; whether it is relevant is 13.6.1's matter.
+
+## rgaa-current-item-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<nav><ul><li class="active"><a href="/">Accueil</a></li><li><a href="/contact">Contact</a></li></ul></nav>
+```
+Only a class marks the active page, the glossary's first example of information given by position or shape: a person checks, and aria-current="page" fixes it (RGAA 10.9.1).
+
+**Not applicable**
+```html
+<nav><a href="/" class="active" aria-current="page">Accueil</a></nav>
+```
+aria-current tells the active page.
+
 ## rgaa-data-table-headers-review
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -277,22 +309,6 @@ No cell is a header. If this is a data table, "Name" and "Age" are column header
 </table>
 ```
 The table has header cells, so the question does not come up. A table with `role="presentation"` is not asked about either.
-
-## rgaa-current-item-review
-
-*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
-
-**Flagged (cantTell)**
-```html
-<nav><ul><li class="active"><a href="/">Accueil</a></li><li><a href="/contact">Contact</a></li></ul></nav>
-```
-Only a class marks the active page, the glossary's first example of information given by position or shape: a person checks, and aria-current="page" fixes it (RGAA 10.9.1).
-
-**Not applicable**
-```html
-<nav><a href="/" class="active" aria-current="page">Accueil</a></nav>
-```
-aria-current tells the active page.
 
 ## rgaa-dir-attribute-valid
 
