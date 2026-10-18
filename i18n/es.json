@@ -761,5 +761,9 @@
   "htmlElementsAttributesValid_summary_fail_typeValue": "Este <{{element}}> tiene type=\"{{value}}\", que no es un tipo que HTML defina para él.",
   "htmlElementsAttributesValid_hint_fail_typeValue": "Use uno de los tipos que define HTML: para un <button>, submit, reset o button.",
   "htmlNestingValid_summary_fail_flowInPhrasing": "Este <{{element}}> está dentro de un <{{parent}}>, que solo puede contener contenido de frase, como texto, <span> o <img>.",
-  "htmlNestingValid_hint_fail_flowInPhrasing": "Use dentro un elemento de frase como <span>, o saque el bloque."
+  "htmlNestingValid_hint_fail_flowInPhrasing": "Use dentro un elemento de frase como <span>, o saque el bloque.",
+  "colorReferenceReview_title": "Un texto que remite a un color no da la información solo por el color",
+  "colorReferenceReview_description": "Señala los textos que indican algo por un color (« indiqués en rouge », « shown in green »), para que una persona compruebe que la información también se da de otra forma.",
+  "colorReferenceReview_summary_cantTell": "Este texto remite a un color (\"{{sample}}\"); compruebe que la información no se da solo por el color.",
+  "colorReferenceReview_hint_cantTell": "Dé también la misma información de otra forma: una palabra, un signo como un asterisco o una forma (RGAA 3.1.2)."
 }

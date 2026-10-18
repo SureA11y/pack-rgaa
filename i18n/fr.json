@@ -761,5 +761,9 @@
   "htmlElementsAttributesValid_summary_fail_typeValue": "Cette balise <{{element}}> a type=\"{{value}}\", qui n’est pas un type que HTML définit pour elle.",
   "htmlElementsAttributesValid_hint_fail_typeValue": "Utilisez un des types que HTML définit : pour une balise <button>, submit, reset ou button.",
   "htmlNestingValid_summary_fail_flowInPhrasing": "Cette balise <{{element}}> est dans une balise <{{parent}}>, qui ne peut contenir que du contenu phrasé, comme du texte, une balise <span> ou <img>.",
-  "htmlNestingValid_hint_fail_flowInPhrasing": "Utilisez à l’intérieur un élément phrasé comme <span>, ou sortez-en le bloc."
+  "htmlNestingValid_hint_fail_flowInPhrasing": "Utilisez à l’intérieur un élément phrasé comme <span>, ou sortez-en le bloc.",
+  "colorReferenceReview_title": "Un texte qui renvoie à une couleur ne donne pas l’information par la couleur seule",
+  "colorReferenceReview_description": "Signale les textes qui indiquent quelque chose par une couleur (« indiqués en rouge », « shown in green »), pour qu’une personne vérifie que l’information est aussi donnée autrement.",
+  "colorReferenceReview_summary_cantTell": "Ce texte renvoie à une couleur (« {{sample}} ») ; vérifiez que l’information n’est pas donnée uniquement par la couleur.",
+  "colorReferenceReview_hint_cantTell": "Donnez aussi la même information autrement : un mot, un signe comme un astérisque, ou une forme (RGAA 3.1.2)."
 }

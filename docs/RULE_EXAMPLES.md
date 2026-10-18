@@ -175,6 +175,22 @@ With `role="img"`, only `aria-labelledby` or `aria-label` can provide the altern
 ```
 A person checks that the adjacent link leads to an alternative content. A canvas with nothing at all is asked about too, since it may be decorative (then it fails 1.2.5), unless it certainly carries information, captioned or focusable: then it fails. An image that is the only content of a link or a button is judged as the control's label, under Links (6.1), Forms (11.9) or Scripts (7.1), as the glossary « Image porteuse d'information » (notes 1 and 2) says.
 
+## rgaa-color-reference-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<p>Les champs indiqués en rouge sont obligatoires.</p>
+```
+The text indicates required fields by a colour: a person checks that they are also marked another way, such as an asterisk or the word « obligatoire » (RGAA 3.1.2).
+
+**Not applicable**
+```html
+<p>T-shirt rouge en coton bio.</p>
+```
+The colour names a product; it indicates nothing on the page.
+
 ## rgaa-complex-table-summary
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*

@@ -4,13 +4,13 @@ This pack's rules and their scenario pages. Every rule should have a `tests/fixt
 
 ## Summary
 
-Total rules: **96**. With fixture: **96**. Without fixture: **0**.
+Total rules: **97**. With fixture: **97**. Without fixture: **0**.
 
 ## Rules WITHOUT a fixture (0)
 
 None — every rule has a fixture.
 
-## Rules WITH a fixture (96)
+## Rules WITH a fixture (97)
 
 | Rule ID | Type | Fixture | Cases | PASS | FAIL | CANTTELL | OTHER |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -22,6 +22,7 @@ None — every rule has a fixture.
 | rgaa-autocomplete-user-field | automatic | `tests/fixtures/rgaa-autocomplete-user-field-all-scenarios.html` | 6 | 1 | 1 | 2 | 2 |
 | rgaa-canvas-decorative-aria-hidden | automatic | `tests/fixtures/rgaa-canvas-decorative-aria-hidden-all-scenarios.html` | 8 | 2 | 3 | 1 | 2 |
 | rgaa-canvas-role-img | automatic | `tests/fixtures/rgaa-canvas-role-img-all-scenarios.html` | 9 | 2 | 4 | 1 | 2 |
+| rgaa-color-reference-review | manual | `tests/fixtures/rgaa-color-reference-review-all-scenarios.html` | 3 | 0 | 0 | 2 | 1 |
 | rgaa-complex-table-summary | manual | `tests/fixtures/rgaa-complex-table-summary-all-scenarios.html` | 8 | 0 | 0 | 0 | 8 |
 | rgaa-complex-table-summary-quality | manual | `tests/fixtures/rgaa-complex-table-summary-quality-all-scenarios.html` | 7 | 0 | 0 | 3 | 4 |
 | rgaa-context-change-review | manual | `tests/fixtures/rgaa-context-change-review-all-scenarios.html` | 2 | 0 | 0 | 1 | 1 |

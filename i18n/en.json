@@ -761,5 +761,9 @@
   "htmlElementsAttributesValid_summary_fail_typeValue": "This <{{element}}> has type=\"{{value}}\", which is not a type HTML defines for it.",
   "htmlElementsAttributesValid_hint_fail_typeValue": "Use one of the types HTML defines: for a <button>, submit, reset or button.",
   "htmlNestingValid_summary_fail_flowInPhrasing": "This <{{element}}> is inside a <{{parent}}>, which may only hold phrasing content such as text, <span> or <img>.",
-  "htmlNestingValid_hint_fail_flowInPhrasing": "Use a phrasing element such as <span> inside it, or move the block out of it."
+  "htmlNestingValid_hint_fail_flowInPhrasing": "Use a phrasing element such as <span> inside it, or move the block out of it.",
+  "colorReferenceReview_title": "Text that refers to a colour does not give the information by colour alone",
+  "colorReferenceReview_description": "Flags text that indicates something by a colour (« indiqués en rouge », « shown in green »), for a person to check that the information is also given another way.",
+  "colorReferenceReview_summary_cantTell": "This text refers to a colour (\"{{sample}}\"); check that the information is not given by colour alone.",
+  "colorReferenceReview_hint_cantTell": "Give the same information another way as well: a word, a sign such as an asterisk, or a shape (RGAA 3.1.2)."
 }

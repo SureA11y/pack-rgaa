@@ -761,5 +761,9 @@
   "htmlElementsAttributesValid_summary_fail_typeValue": "この <{{element}}> の type=\"{{value}}\" は、HTML がこの要素に定義している型ではありません。",
   "htmlElementsAttributesValid_hint_fail_typeValue": "HTML が定義する型を使ってください。<button> なら submit、reset、button です。",
   "htmlNestingValid_summary_fail_flowInPhrasing": "この <{{element}}> は、テキスト、<span>、<img> などのフレージングコンテンツしか入れられない <{{parent}}> の中にあります。",
-  "htmlNestingValid_hint_fail_flowInPhrasing": "中では <span> などのフレージング要素を使うか、ブロックを外に出してください。"
+  "htmlNestingValid_hint_fail_flowInPhrasing": "中では <span> などのフレージング要素を使うか、ブロックを外に出してください。",
+  "colorReferenceReview_title": "色に言及するテキストは、色だけで情報を伝えない",
+  "colorReferenceReview_description": "色で何かを示すテキスト（« indiqués en rouge »、« shown in green »）を示し、情報が他の方法でも伝えられているかを人が確認できるようにします。",
+  "colorReferenceReview_summary_cantTell": "このテキストは色に言及しています（「{{sample}}」）。情報が色だけで伝えられていないか確認してください。",
+  "colorReferenceReview_hint_cantTell": "同じ情報を、言葉、アスタリスクなどの記号、形など、他の方法でも伝えてください（RGAA 3.1.2）。"
 }

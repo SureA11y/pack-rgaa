@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**96 rules total: 67 automatic (decide deterministically; can return `fail`), 29 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**97 rules total: 67 automatic (decide deterministically; can return `fail`), 30 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -86,11 +86,12 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-video-captions-track-kind`](#rgaa-video-captions-track-kind) | Video caption tracks use kind="captions" | — | — | high | moderate |
 | [`rgaa-widget-label-in-name`](#rgaa-widget-label-in-name) | The accessible name of a scripted component contains its visible label | — | — | high | serious |
 
-## Manual rules (29), never `fail`
+## Manual rules (30), never `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
 | [`rgaa-aria-hidden-text-review`](#rgaa-aria-hidden-text-review) | Visible text hidden from assistive technologies is meant to be ignored | — | — | high | moderate |
+| [`rgaa-color-reference-review`](#rgaa-color-reference-review) | Text that refers to a colour does not give the information by colour alone | — | — | high | minor |
 | [`rgaa-complex-table-summary`](#rgaa-complex-table-summary) | Complex data tables have a summary | — | — | medium | moderate |
 | [`rgaa-complex-table-summary-quality`](#rgaa-complex-table-summary-quality) | Complex data table summaries are relevant | — | — | medium | moderate |
 | [`rgaa-context-change-review`](#rgaa-context-change-review) | A change of context from a field is announced first | — | — | high | moderate |
@@ -128,7 +129,7 @@ What a scan runs under each profile (`engineOptions.profile`): the rules its tag
 |---|---|---|---|---|---|---|
 | `rgaa-4.1.2` | `rgaa` | version 4.1.2 | — | — | — | 2.1 |
 
-## Rollups (61)
+## Rollups (62)
 
 Each groups rules into one result, as a WCAG rollup does; the standard's own report sections show them.
 
@@ -165,6 +166,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-13.9` | Dans chaque page web, le contenu proposé est-il consultable quelle que soit l’orientation de l’écran (portrait ou paysage) (hors cas particuliers) ? | `css-orientation-lock`, `rgaa-orientation-content-parity` |
 | `rgaa-4.1.2-2.1` | Chaque cadre a-t-il un titre de cadre ? | `rgaa-frame-title-attribute-present` |
 | `rgaa-4.1.2-2.2` | Pour chaque cadre ayant un titre de cadre, ce titre de cadre est-il pertinent ? | `rgaa-frame-title-relevant` |
+| `rgaa-4.1.2-3.1` | Dans chaque page web, l’information ne doit pas être donnée uniquement par la couleur. Cette règle est-elle respectée ? | `rgaa-color-reference-review` |
 | `rgaa-4.1.2-3.2` | Dans chaque page web, le contraste entre la couleur du texte et la couleur de son arrière-plan est-il suffisamment élevé (hors cas particuliers) ? | `contrast-computable`, `rgaa-contrast-minimum` |
 | `rgaa-4.1.2-4.1` | Chaque média temporel pré-enregistré a-t-il, si nécessaire, une transcription textuelle ou une audiodescription (hors cas particuliers) ? | `rgaa-media-transcript-adjacent` |
 | `rgaa-4.1.2-4.10` | Chaque son déclenché automatiquement est-il contrôlable par l’utilisateur ? | `no-autoplay-audio` |
@@ -343,6 +345,18 @@ Passes: role="img" with aria-labelledby or aria-label; or, without role="img", f
 - nothing at all, on a canvas that certainly carries information: a captioned canvas, or one that takes focus.
 
 Asks (cantTell) about any other canvas with nothing at all (noAlternativeMayBeDecorative): it may be decorative, and then it fails 1.2.5 instead, which asks for aria-hidden="true". Asks (cantTell): no role="img" and no fallback content, but a link or button right after the &lt;canvas&gt; (does it lead to an alternative content?).
+
+### `rgaa-color-reference-review`
+
+**Text that refers to a colour does not give the information by colour alone**
+
+manual · no formal WCAG SC mapping · confidence high · default severity minor
+
+Flags text that indicates something by a colour (« indiqués en rouge », « shown in green »), for a person to check that the information is also given another way.
+
+**Applies to.** Applies to visible text that indicates something by a colour: « les champs indiqués en rouge », « les cases en vert », « shown in red », « the green items ». A colour name alone (« un t-shirt rouge ») does not count: the colour must follow a verb such as indiquer, signaler, marquer, surligner, afficher, or come with a word for a part of the page (champ, case, ligne, élément, texte, field, item, row, text…). Text in code, scripts, styles and form controls is left out. A page with none is notApplicable.
+
+**Expectation.** RGAA 3.1.2: « Pour chaque indication de couleur donnée par un texte, l’information ne doit pas être donnée uniquement par la couleur ». Each such text is asked about (colorReference), one occurrence per element: whether the same information is also given another way (a word, a sign, a shape) is for a person.
 
 ### `rgaa-complex-table-summary`
 

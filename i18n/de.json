@@ -761,5 +761,9 @@
   "htmlElementsAttributesValid_summary_fail_typeValue": "Dieses <{{element}}> hat type=\"{{value}}\", einen Typ, den HTML dafür nicht definiert.",
   "htmlElementsAttributesValid_hint_fail_typeValue": "Verwenden Sie einen der Typen, die HTML definiert: für ein <button> submit, reset oder button.",
   "htmlNestingValid_summary_fail_flowInPhrasing": "Dieses <{{element}}> steht in einem <{{parent}}>, das nur Phrasing-Inhalt wie Text, <span> oder <img> enthalten darf.",
-  "htmlNestingValid_hint_fail_flowInPhrasing": "Verwenden Sie darin ein Phrasing-Element wie <span>, oder verschieben Sie den Block heraus."
+  "htmlNestingValid_hint_fail_flowInPhrasing": "Verwenden Sie darin ein Phrasing-Element wie <span>, oder verschieben Sie den Block heraus.",
+  "colorReferenceReview_title": "Ein Text, der auf eine Farbe verweist, gibt die Information nicht nur über die Farbe",
+  "colorReferenceReview_description": "Markiert Texte, die etwas über eine Farbe angeben (« indiqués en rouge », « shown in green »), damit eine Person prüft, dass die Information auch anders gegeben wird.",
+  "colorReferenceReview_summary_cantTell": "Dieser Text verweist auf eine Farbe („{{sample}}“); prüfen Sie, dass die Information nicht nur über die Farbe gegeben wird.",
+  "colorReferenceReview_hint_cantTell": "Geben Sie dieselbe Information auch anders: mit einem Wort, einem Zeichen wie einem Sternchen oder einer Form (RGAA 3.1.2)."
 }

@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 96,
-    "withFixture": 96,
+    "total": 97,
+    "withFixture": 97,
     "withoutFixture": 0
   },
   "rows": [
@@ -139,6 +139,23 @@
         "FAIL": 4,
         "CANTTELL": 1,
         "OTHER": 2
+      }
+    },
+    {
+      "ruleId": "rgaa-color-reference-review",
+      "title": "Text that refers to a colour does not give the information by colour alone",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/color-reference-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-color-reference-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-color-reference-review-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 2,
+        "OTHER": 1
       }
     },
     {

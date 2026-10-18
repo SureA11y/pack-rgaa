@@ -54,7 +54,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T25-18 | 5.1.1 | FN | A complex table whose `aria-describedby` resolves to nothing passes. Now asked about: aria-describedby counts only when it points to text. | done |
 | T25-19 | 5.6.1, 5.6.2 | MISS | Row or column headers marked up as bold `td` are not asked about. Now asked about by `rgaa-data-table-headers-review` (BOLD_CELLS_MAY_BE_HEADERS) in tables with headers and no spans. | done |
 | T25-20 | 2.1.1, 2.2.1 | FN | `title="&nbsp;"` passes 2.1 and escapes 2.2. | done |
-| T25-21 | 3.1 | MISS | No rule: information given by colour alone. | open |
+| T25-21 | 3.1 | MISS | No rule: information given by colour alone. 3.1.2 now asked about by `rgaa-color-reference-review` (text that indicates something by a colour). Still open: 3.1.1 and 3.1.3–3.1.6 (colour itself, images, CSS, media), which only a person can see. | partial |
 | T25-22 | 3.2 | WO | `background-image:none,none` and one-colour gradients ask (C3). | core |
 
 ## Themes 6–7, Links, Scripts

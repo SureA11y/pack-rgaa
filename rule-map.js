@@ -188,6 +188,10 @@ const RGAA_RULE_TESTS = {
       tests: [],
       note: 'Checks that role=combobox has a name from aria-label, aria-labelledby, title or an associated label. It accepts a wrapping <label> and a placeholder on a text-like <input>, which 11.1.1 does not list, so a placeholder-only field passes here while it fails 11.1.1. Not mapped to 11.1.1: rgaa-field-label-listed-source reports 11.1.1 for every form field, from the sources 11.1.1 lists only. Not mapped to 7.1.1: it passes when an accessible alternative exists.'
     },
+    'rgaa-color-reference-review': {
+      tests: ['3.1.2'],
+      note: 'Asks about visible text that indicates something by a colour, outside code, scripts and form controls: a colour after a verb such as indiquer, signaler, marquer, surligner or afficher (« indiqués en rouge », « shown in red »), or with a word for a part of the page (« les champs en rouge », « the green items »), in French, English, Spanish or German whatever the page’s language. 3.1.2 asks, « pour chaque indication de couleur donnée par un texte », that the information is not given by colour alone; whether it is also given another way is for a person. A colour name alone (« un t-shirt rouge ») is not an indication.'
+    },
     'rgaa-complex-table-summary': {
       tests: ['5.1.1'],
       note: 'Asks whether a summary is available for a <table> or role="table" the rule takes as complex: a header cell outside both the first row and the first column, a cell with a headers attribute, a header with scope="rowgroup" or "colgroup", or first-row (or first-column) headers that each span a group of columns (or rows), as in RGAA\'s definition of a complex data table. A table with an aria-describedby that points to some text is not asked about (one pointing to a missing or empty element marks no summary), nor one with a summary attribute in a document whose doctype is not HTML5 (5.1.1 step 2 accepts summary only before HTML5). The summary may sit in the caption or next to the table, which only a person can judge.'
