@@ -278,6 +278,22 @@ No cell is a header. If this is a data table, "Name" and "Age" are column header
 ```
 The table has header cells, so the question does not come up. A table with `role="presentation"` is not asked about either.
 
+## rgaa-current-item-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<nav><ul><li class="active"><a href="/">Accueil</a></li><li><a href="/contact">Contact</a></li></ul></nav>
+```
+Only a class marks the active page, the glossary's first example of information given by position or shape: a person checks, and aria-current="page" fixes it (RGAA 10.9.1).
+
+**Not applicable**
+```html
+<nav><a href="/" class="active" aria-current="page">Accueil</a></nav>
+```
+aria-current tells the active page.
+
 ## rgaa-dir-attribute-valid
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*

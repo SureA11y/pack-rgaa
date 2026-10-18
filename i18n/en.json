@@ -733,5 +733,9 @@
   "selectFakeGroupsReview_title": "Options are grouped with <optgroup>, not with fake heading options",
   "selectFakeGroupsReview_description": "Flags each <select> without <optgroup> whose options include disabled or dash-framed headings, for a person to check whether the items should be grouped with <optgroup>.",
   "selectFakeGroupsReview_summary_cantTell": "This list has no <optgroup>, but its option \"{{text}}\" looks like a group heading.",
-  "selectFakeGroupsReview_hint_cantTell": "If the items fall into groups, put each group in an <optgroup> whose label names it, instead of a heading option (RGAA 11.8.1)."
+  "selectFakeGroupsReview_hint_cantTell": "If the items fall into groups, put each group in an <optgroup> whose label names it, instead of a heading option (RGAA 11.8.1).",
+  "currentItemReview_title": "The active item of a menu is not shown by its look alone",
+  "currentItemReview_description": "Flags each navigation link marked current by a class only, with no aria-current and no text that says so, for a person to check how the active page is told.",
+  "currentItemReview_summary_cantTell": "This navigation link (\"{{label}}\") is marked as the current one by a class only, with no aria-current and no text that says so.",
+  "currentItemReview_hint_cantTell": "If the class shows the active page, add aria-current=\"page\" to the link, or a text that says so (RGAA 10.9.1)."
 }

@@ -733,5 +733,9 @@
   "selectFakeGroupsReview_title": "Optionen werden mit <optgroup> gruppiert, nicht mit falschen Überschriftsoptionen",
   "selectFakeGroupsReview_description": "Markiert jedes <select> ohne <optgroup>, dessen Optionen deaktivierte oder mit Strichen umrahmte Überschriften enthalten, damit eine Person prüft, ob die Einträge mit <optgroup> gruppiert werden sollten.",
   "selectFakeGroupsReview_summary_cantTell": "Diese Liste hat kein <optgroup>, aber ihre Option „{{text}}“ sieht wie eine Gruppenüberschrift aus.",
-  "selectFakeGroupsReview_hint_cantTell": "Wenn die Einträge Gruppen bilden, setzen Sie jede Gruppe in ein <optgroup>, dessen label sie benennt, statt einer Überschriftsoption (RGAA 11.8.1)."
+  "selectFakeGroupsReview_hint_cantTell": "Wenn die Einträge Gruppen bilden, setzen Sie jede Gruppe in ein <optgroup>, dessen label sie benennt, statt einer Überschriftsoption (RGAA 11.8.1).",
+  "currentItemReview_title": "Der aktive Menüeintrag wird nicht nur durch sein Aussehen angezeigt",
+  "currentItemReview_description": "Markiert jeden Navigationslink, der nur durch eine Klasse als aktuell gekennzeichnet ist, ohne aria-current und ohne Text, der das sagt, damit eine Person prüft, wie die aktive Seite angezeigt wird.",
+  "currentItemReview_summary_cantTell": "Dieser Navigationslink („{{label}}“) ist nur durch eine Klasse als aktuell gekennzeichnet, ohne aria-current und ohne Text, der das sagt.",
+  "currentItemReview_hint_cantTell": "Wenn die Klasse die aktive Seite anzeigt, fügen Sie dem Link aria-current=\"page\" hinzu oder einen Text, der das sagt (RGAA 10.9.1)."
 }

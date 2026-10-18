@@ -248,6 +248,10 @@ const RGAA_RULE_TESTS = {
       tests: ['7.1.1'],
       note: 'Checks that role=dialog/alertdialog (the first concrete token of the role attribute) and an open native <dialog> have a name from aria-label, aria-labelledby or title. A dialog is a script-driven interface component, and 7.1.1 step 2 requires it to have an explicit name. No other RGAA test covers dialog naming. Medium because 7.1.1 can still pass through an accessible alternative.'
     },
+    'rgaa-current-item-review': {
+      tests: ['10.9.1'],
+      note: 'Asks about each link inside <nav>, role="navigation" or role="menubar" marked as the current one by a class (active, current, selected, is-active…, on the link or its list item) with no aria-current and no text that says so: 10.9.1 forbids information given « uniquement par la forme, taille ou position », and the glossary « Indication donnée par la forme, la taille ou la position » gives the visual marker of the active page in a navigation menu as its first example. The class may change nothing on screen, so a person checks.'
+    },
     'rgaa-dir-attribute-valid': {
       tests: ['8.10.2'],
       note: 'Fails a dir attribute whose value is not rtl or ltr, which is the first condition of 8.10.2 ("La valeur de l’attribut dir est conforme (rtl ou ltr)"). dir="auto", valid HTML, fails too on text that reads in the reverse direction of its context, since RGAA names only the two values; on other text it is not applicable, as 8.10.2 step 1 covers only the passages of 8.10.1. A value with surrounding spaces fails: browsers ignore it. The second condition, relevance, fails a dir that changes the direction on text whose letters all read in the old one (dir="rtl" on French text): such a value cannot be « pertinente ». Other questions of relevance need a human.'

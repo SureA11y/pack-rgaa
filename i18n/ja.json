@@ -733,5 +733,9 @@
   "selectFakeGroupsReview_title": "選択肢は見出し風の選択肢ではなく <optgroup> でグループ化されている",
   "selectFakeGroupsReview_description": "<optgroup> がなく、無効化された選択肢や罫線で囲まれた見出し風の選択肢を含む各 <select> を示し、<optgroup> でグループ化すべきか人が確認できるようにします。",
   "selectFakeGroupsReview_summary_cantTell": "このリストには <optgroup> がありませんが、選択肢「{{text}}」はグループの見出しのように見えます。",
-  "selectFakeGroupsReview_hint_cantTell": "項目がグループに分かれるなら、見出し用の選択肢ではなく、label でグループ名を示す <optgroup> に各グループを入れてください（RGAA 11.8.1）。"
+  "selectFakeGroupsReview_hint_cantTell": "項目がグループに分かれるなら、見出し用の選択肢ではなく、label でグループ名を示す <optgroup> に各グループを入れてください（RGAA 11.8.1）。",
+  "currentItemReview_title": "メニューのアクティブな項目が見た目だけで示されていない",
+  "currentItemReview_description": "クラスだけで現在の項目とされ、aria-current もそれを示すテキストもない各ナビゲーションリンクを示し、アクティブなページの伝え方を人が確認できるようにします。",
+  "currentItemReview_summary_cantTell": "このナビゲーションリンク（「{{label}}」）はクラスだけで現在の項目とされ、aria-current もそれを示すテキストもありません。",
+  "currentItemReview_hint_cantTell": "クラスがアクティブなページを示すなら、リンクに aria-current=\"page\" か、それを示すテキストを追加してください（RGAA 10.9.1）。"
 }

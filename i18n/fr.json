@@ -733,5 +733,9 @@
   "selectFakeGroupsReview_title": "Les options sont regroupées avec <optgroup>, pas avec de faux intitulés",
   "selectFakeGroupsReview_description": "Signale chaque balise <select> sans <optgroup> dont des options désactivées ou encadrées de tirets servent d’intitulés, pour qu’une personne vérifie si les items doivent être regroupés avec <optgroup>.",
   "selectFakeGroupsReview_summary_cantTell": "Cette liste n’a pas de balise <optgroup>, mais son option « {{text}} » ressemble à un intitulé de groupe.",
-  "selectFakeGroupsReview_hint_cantTell": "Si les items forment des groupes, placez chaque groupe dans une balise <optgroup> dont l’attribut label le nomme, au lieu d’une option servant d’intitulé (RGAA 11.8.1)."
+  "selectFakeGroupsReview_hint_cantTell": "Si les items forment des groupes, placez chaque groupe dans une balise <optgroup> dont l’attribut label le nomme, au lieu d’une option servant d’intitulé (RGAA 11.8.1).",
+  "currentItemReview_title": "L’élément actif d’un menu n’est pas indiqué par sa seule apparence",
+  "currentItemReview_description": "Signale chaque lien de navigation marqué comme courant par une seule classe, sans aria-current ni texte qui le dise, pour qu’une personne vérifie comment la page active est indiquée.",
+  "currentItemReview_summary_cantTell": "Ce lien de navigation (« {{label}} ») est marqué comme courant par une seule classe, sans aria-current ni texte qui le dise.",
+  "currentItemReview_hint_cantTell": "Si la classe signale la page active, ajoutez aria-current=\"page\" au lien, ou un texte qui le dise (RGAA 10.9.1)."
 }

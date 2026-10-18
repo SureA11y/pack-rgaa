@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 92,
-    "withFixture": 92,
+    "total": 93,
+    "withFixture": 93,
     "withoutFixture": 0
   },
   "rows": [
@@ -207,6 +207,23 @@
         "FAIL": 3,
         "CANTTELL": 0,
         "OTHER": 0
+      }
+    },
+    {
+      "ruleId": "rgaa-current-item-review",
+      "title": "The active item of a menu is not shown by its look alone",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/current-item-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-current-item-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-current-item-review-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 1
       }
     },
     {

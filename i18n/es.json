@@ -733,5 +733,9 @@
   "selectFakeGroupsReview_title": "Las opciones se agrupan con <optgroup>, no con falsas opciones de encabezado",
   "selectFakeGroupsReview_description": "Señala cada <select> sin <optgroup> cuyas opciones incluyen encabezados desactivados o enmarcados con guiones, para que una persona compruebe si los elementos deben agruparse con <optgroup>.",
   "selectFakeGroupsReview_summary_cantTell": "Esta lista no tiene <optgroup>, pero su opción \"{{text}}\" parece un encabezado de grupo.",
-  "selectFakeGroupsReview_hint_cantTell": "Si los elementos forman grupos, ponga cada grupo en un <optgroup> cuyo label lo nombre, en lugar de una opción de encabezado (RGAA 11.8.1)."
+  "selectFakeGroupsReview_hint_cantTell": "Si los elementos forman grupos, ponga cada grupo en un <optgroup> cuyo label lo nombre, en lugar de una opción de encabezado (RGAA 11.8.1).",
+  "currentItemReview_title": "El elemento activo de un menú no se indica solo por su aspecto",
+  "currentItemReview_description": "Señala cada enlace de navegación marcado como actual solo por una clase, sin aria-current ni texto que lo diga, para que una persona compruebe cómo se indica la página activa.",
+  "currentItemReview_summary_cantTell": "Este enlace de navegación (\"{{label}}\") está marcado como actual solo por una clase, sin aria-current ni texto que lo diga.",
+  "currentItemReview_hint_cantTell": "Si la clase indica la página activa, añada aria-current=\"page\" al enlace, o un texto que lo diga (RGAA 10.9.1)."
 }

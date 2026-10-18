@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**92 rules total: 67 automatic (decide deterministically; can return `fail`), 25 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**93 rules total: 67 automatic (decide deterministically; can return `fail`), 26 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -86,7 +86,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-video-captions-track-kind`](#rgaa-video-captions-track-kind) | Video caption tracks use kind="captions" | — | — | high | moderate |
 | [`rgaa-widget-label-in-name`](#rgaa-widget-label-in-name) | The accessible name of a scripted component contains its visible label | — | — | high | serious |
 
-## Manual rules (25), never `fail`
+## Manual rules (26), never `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -94,6 +94,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-complex-table-summary`](#rgaa-complex-table-summary) | Complex data tables have a summary | — | — | medium | moderate |
 | [`rgaa-complex-table-summary-quality`](#rgaa-complex-table-summary-quality) | Complex data table summaries are relevant | — | — | medium | moderate |
 | [`rgaa-context-change-review`](#rgaa-context-change-review) | A change of context from a field is announced first | — | — | high | moderate |
+| [`rgaa-current-item-review`](#rgaa-current-item-review) | The active item of a menu is not shown by its look alone | — | — | high | moderate |
 | [`rgaa-data-table-headers-review`](#rgaa-data-table-headers-review) | Tables with no header cells are checked for unmarked headers | — | — | medium | moderate |
 | [`rgaa-embedded-refresh-review`](#rgaa-embedded-refresh-review) | Embedded content that may refresh itself lets the user control the refresh | — | — | low | moderate |
 | [`rgaa-fake-list`](#rgaa-fake-list) | Text laid out as a list uses list markup | — | — | low | moderate |
@@ -124,7 +125,7 @@ What a scan runs under each profile (`engineOptions.profile`): the rules its tag
 |---|---|---|---|---|---|---|
 | `rgaa-4.1.2` | `rgaa` | version 4.1.2 | — | — | — | 2.1 |
 
-## Rollups (58)
+## Rollups (59)
 
 Each groups rules into one result, as a WCAG rollup does; the standard's own report sections show them.
 
@@ -141,6 +142,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-10.6` | Dans chaque page web, chaque lien dont la nature n’est pas évidente est-il visible par rapport au texte environnant ? | `link-in-text-block`, `rgaa-link-state-colors-review` |
 | `rgaa-4.1.2-10.7` | Dans chaque page web, pour chaque élément recevant le focus, la prise de focus est-elle visible ? | `css-focus-indicator-suppressed`, `css-hidden-focus`, `manual-review`, `rgaa-focus-indicator-contrast` |
 | `rgaa-4.1.2-10.8` | Pour chaque page web, les contenus cachés ont-ils vocation à être ignorés par les technologies d’assistance ? | `aria-hidden-body`, `aria-hidden-focus`, `rgaa-aria-hidden-text-review` |
+| `rgaa-4.1.2-10.9` | Dans chaque page web, l’information ne doit pas être donnée uniquement par la forme, taille ou position. Cette règle est-elle respectée ? | `rgaa-current-item-review` |
 | `rgaa-4.1.2-11.1` | Chaque champ de formulaire a-t-il une étiquette ? | `form-control-programmatic-label-quality`, `option-name-present`, `rgaa-field-hidden-label-review`, `rgaa-field-label-listed-source`, `rgaa-label-for-target-valid` |
 | `rgaa-4.1.2-11.10` | Dans chaque formulaire, le contrôle de saisie est-il utilisé de manière pertinente (hors cas particuliers) ? | `rgaa-invalid-field-message`, `rgaa-required-field-indication` |
 | `rgaa-4.1.2-11.13` | La finalité d’un champ de saisie peut-elle être déduite pour faciliter le remplissage automatique des champs avec les données de l’utilisateur ? | `rgaa-autocomplete-user-field` |
@@ -410,6 +412,18 @@ Checks that visible text has a contrast ratio of at least 4.5:1, or 3:1 for text
 **Expectation.** Every computable text node reaches the ratio RGAA 3.2 requires for its size: 3:1 for text of 24px or more (3.2.3), and for bold text (computed weight 700 or more) of 18.5px or more (3.2.4); 4.5:1 for everything else (3.2.1, 3.2.2). The only difference from contrast-minimum is the bold threshold: WCAG's 14pt is about 18.67px, so bold text from 18.5px up to 18.67px needs 3:1 here and 4.5:1 there.
 
 **Margin.** `contrast-ratio`, in a ratio: the value must reach the threshold, and the result's `margin` names the element that came closest while meeting it.
+
+### `rgaa-current-item-review`
+
+**The active item of a menu is not shown by its look alone**
+
+manual · no formal WCAG SC mapping · confidence high · default severity moderate
+
+Flags each navigation link marked current by a class only, with no aria-current and no text that says so, for a person to check how the active page is told.
+
+**Applies to.** Applies to links inside a navigation (&lt;nav&gt;, role="navigation" or role="menubar") that are marked as the current one by a class (active, current, selected, is-active…, on the link or its list item), with no aria-current on them and no text inside that says so. A page with none is notApplicable.
+
+**Expectation.** RGAA 10.9.1: information is not given « uniquement par la forme, taille ou position », and the glossary « Indication donnée par la forme, la taille ou la position » gives as its first example « la présence d'un marqueur visuel, pour indiquer la page active dans un menu de navigation ». Such a link is asked about (currentByLookOnly): if the class shows the active page, it needs aria-current="page" or a text that says so.
 
 ### `rgaa-data-table-headers-review`
 
