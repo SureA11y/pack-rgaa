@@ -636,7 +636,7 @@
   "markupForPresentation_summary_emptyParagraph": "This paragraph has no content; check whether it is used to make space.",
   "markupForPresentation_summary_placeholder": "This element is empty but has a role or aria-live; check whether a script fills it or it is used to make space.",
   "markupForPresentation_summary_consecutiveBr": "This element uses two or more <br> in a row; check whether they make paragraphs.",
-  "markupForPresentation_summary_spacesForMargin": "This text is indented or aligned with non-breaking spaces; check whether they make a margin.",
+  "markupForPresentation_summary_spacesForMargin": "This text is indented with non-breaking spaces; check whether they make a margin.",
   "markupForPresentation_hint_headingPresentation": "If the text is a heading, remove the role; if it is not, use an element that is not a heading, styled with CSS (RGAA 8.9.1).",
   "markupForPresentation_hint_spacerParagraph": "Remove the paragraph and make the space with CSS margins or padding (RGAA 8.9.1).",
   "markupForPresentation_hint_emptyBlockquote": "Remove the <blockquote>, or keep it for quotations only, and indent with CSS (RGAA 8.9.1).",
@@ -753,5 +753,7 @@
   "statusMessageReview_summary_cantTell_liveWithoutRole": "This element has aria-live but no role=\"status\", \"alert\", \"log\" or \"progressbar\" (\"{{text}}\").",
   "statusMessageReview_summary_cantTell_possibleStatusMessage": "This element looks like a status message (\"{{text}}\") but has no role=\"status\", \"alert\", \"log\" or \"progressbar\".",
   "statusMessageReview_hint_cantTell": "If it is a status message, use role=\"status\" for a success, result or state, role=\"alert\" for an error or a suggestion, and role=\"log\", \"progressbar\" or \"status\" for a progress (RGAA 7.5).",
-  "mediaTranscriptAdjacent_summary_cantTell_mention": "The text next to this <{{element}}> mentions a transcript but neither holds it nor links to it."
+  "mediaTranscriptAdjacent_summary_cantTell_mention": "The text next to this <{{element}}> mentions a transcript but neither holds it nor links to it.",
+  "lettersSpacedWithSpaces_summary_cantTell_columns": "This text lines up words with runs of spaces (\"{{text}}\"), as a table or columns would.",
+  "lettersSpacedWithSpaces_hint_cantTell_columns": "If the spaces simulate a table or columns, use a <table> or CSS layout instead (RGAA 10.1.3)."
 }

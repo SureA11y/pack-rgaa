@@ -636,7 +636,7 @@
   "markupForPresentation_summary_emptyParagraph": "この段落には内容がありません。余白を作るために使われていないか確認してください。",
   "markupForPresentation_summary_placeholder": "この要素は空ですが、ロールまたは aria-live があります。スクリプトが内容を入れるのか、余白を作るために使われているのか確認してください。",
   "markupForPresentation_summary_consecutiveBr": "この要素は2つ以上の <br> を続けて使っています。段落を作っていないか確認してください。",
-  "markupForPresentation_summary_spacesForMargin": "このテキストはノーブレークスペースでインデントまたは整列されています。余白を作っていないか確認してください。",
+  "markupForPresentation_summary_spacesForMargin": "このテキストはノーブレークスペースでインデントされています。余白を作っていないか確認してください。",
   "markupForPresentation_hint_headingPresentation": "テキストが見出しならロールを削除し、見出しでないなら見出し以外の要素を使い CSS でスタイルを付けてください（RGAA 8.9.1）。",
   "markupForPresentation_hint_spacerParagraph": "段落を削除し、CSS のマージンやパディングで余白を作ってください（RGAA 8.9.1）。",
   "markupForPresentation_hint_emptyBlockquote": "<blockquote> を削除するか引用だけに使い、インデントは CSS で作ってください（RGAA 8.9.1）。",
@@ -753,5 +753,7 @@
   "statusMessageReview_summary_cantTell_liveWithoutRole": "この要素には aria-live がありますが、role=\"status\"、\"alert\"、\"log\"、\"progressbar\" がありません（「{{text}}」）。",
   "statusMessageReview_summary_cantTell_possibleStatusMessage": "この要素はステータスメッセージのように見えます（「{{text}}」）が、role=\"status\"、\"alert\"、\"log\"、\"progressbar\" がありません。",
   "statusMessageReview_hint_cantTell": "ステータスメッセージなら、成功・結果・状態には role=\"status\"、エラーや提案には role=\"alert\"、進行状況には role=\"log\"、\"progressbar\"、\"status\" を使ってください（RGAA 7.5）。",
-  "mediaTranscriptAdjacent_summary_cantTell_mention": "この <{{element}}> の隣のテキストはトランスクリプトに触れていますが、その内容もリンクもありません。"
+  "mediaTranscriptAdjacent_summary_cantTell_mention": "この <{{element}}> の隣のテキストはトランスクリプトに触れていますが、その内容もリンクもありません。",
+  "lettersSpacedWithSpaces_summary_cantTell_columns": "このテキストは連続した空白で単語を揃えています（「{{text}}」）。表や段組みのような使い方です。",
+  "lettersSpacedWithSpaces_hint_cantTell_columns": "空白で表や段組みを表現しているなら、代わりに <table> か CSS レイアウトを使ってください（RGAA 10.1.3）。"
 }

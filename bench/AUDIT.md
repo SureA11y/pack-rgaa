@@ -111,7 +111,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T10-05 | 10.12.1 | FP | `<body>` taken as clipping when its overflow goes to the viewport (C2). | core |
 | T10-06 | 10.6.1 | WO | Links at 3:1 always ask, though the hover and focus states can be read (Q14). | open |
 | T10-07 | 10.5 | MISS | No rule: text colour with no background colour (Q4). | open |
-| T10-08 | 10.1.3 | MISS | Runs of `&nbsp;` used for alignment, and fake columns, are not asked about. | open |
+| T10-08 | 10.1.3 | MISS | Runs of `&nbsp;` used for alignment, and fake columns, are not asked about. Now asked about by `rgaa-letters-spaced-with-spaces` (spacesAsTable in a `<pre>`, spacesAsColumns elsewhere); the 8.9.1 rule keeps only margins made of spaces. | done |
 | T10-09 | 10.9, 10.10 | MISS | An active menu item shown only visually (no `aria-current`). Now asked about by `rgaa-current-item-review` (10.9.1). | done |
 | T10-10 | 10.8.1 | MISS | Visible, informative text under `aria-hidden="true"` passes. Now asked about by `rgaa-aria-hidden-text-review` (two words or more of visible text). | done |
 | T10-11 | 10.14 | MISS | Content revealed on `:hover` only. | open |
@@ -165,6 +165,6 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T13-05 | 13.8, 13.7.3 | MISS | Moving and blinking content (marquee, infinite animations, GIFs). Now `rgaa-moving-content-review` (13.8.1, 13.8.2) asks about `<marquee>`, autoplay video without controls, endless SVG and CSS animations. Not found: animated images, finite CSS animations (core settles them, CORE_ISSUES T13-05), and 13.7.3 flashes, which need measuring. | done |
 | T13-06 | 13.4.1, 13.5, 13.6 | MISS | Accessible versions of documents; emoji and ASCII art. 13.5.1 now asked about by `rgaa-cryptic-content-review` (emoticons, emoji, ASCII art without title). Still open: 13.4.1 (accessible versions of documents) and 13.6.1. | partial |
 | T13-07 | 12.10, 13.2, 13.10–13.12 | MISS | Script-attached behaviour: needs a listener probe in the crawler. | open |
-| T13-08 | 12.8.2, 12.9.1 | MISS | The page-level reminders say nothing of what to test. | open |
+| T13-08 | 12.8.2, 12.9.1 | MISS | The page-level reminders say nothing of what to test. The reminder is core's `manual-review`; listed in CORE_ISSUES.md. | core |
 | T12-13 | 12.1 | MISS | Fewer than two ways to navigate (Q15). | open |
 | T12-14 | 12.1–12.5, 12.7.2 | design | « Ensemble de pages »: never pass, fail or mark notApplicable from one page; compare pages only within one ensemble. | open |

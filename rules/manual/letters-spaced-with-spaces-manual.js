@@ -14,12 +14,18 @@
  *   inline text: its own text nodes joined with the text of its inline
  *   children (span, b, a, ...), so letters split across spans
  *   ("<span>S</span> <span>O</span> ...") are read as one run. It is read
- *   outside <pre>, <code>, <textarea>, <script> and <style>. A page with
- *   none is notApplicable.
+ *   outside <pre>, <code>, <textarea>, <script> and <style>. Applies too
+ *   to a <pre> (not of code) with two lines or more that hold runs of three
+ *   spaces or more between words, and to a text with two runs or more of
+ *   three non-breaking spaces between words. A page with none is
+ *   notApplicable.
  * @expectation
  *   Such text is flagged for a person to confirm whether it is a word
  *   spaced out with spaces, which RGAA 10.1.3 forbids: a screen reader
  *   spells it letter by letter. CSS letter-spacing gives the same look.
+ *   Words lined up with runs of spaces are asked about too (spacesAsTable
+ *   in a <pre>, spacesAsColumns elsewhere): 10.1.3 forbids spaces used
+ *   « pour simuler des tableaux » or « des colonnes de texte ».
  * @implementation-notes
  * - Manual (cantTell): a row of single letters can be a list of options or
  *   an example, not a word.
@@ -149,6 +155,54 @@ function runInPage(ctx) {
         }
       })
     );
+  }
+
+  // 10.1.3 conditions 2 and 3: spaces that simulate a table or columns. A
+  // <pre> whose lines hold runs of three spaces or more between words, or
+  // a text with two runs or more of three non-breaking spaces between words.
+  const RUN = /\S[ \u00a0]{3,}\S/;
+  const NBSP_RUN = /\S\u00a0{3,}\S/g;
+  const flagged = new Set();
+  function askColumns(el, kind, sample) {
+    if (flagged.has(el)) return;
+    flagged.add(el);
+    occurrences.push(
+      helpers.reportOccurrence(el, {
+        summary: `This text lines up words with runs of spaces ("${sample}"), as a table or columns would.`,
+        hint: 'If the spaces simulate a table or columns, use a <table> or CSS layout instead (RGAA 10.1.3).',
+        i18n: {
+          summaryKey: 'lettersSpacedWithSpaces_summary_cantTell_columns',
+          hintKey: 'lettersSpacedWithSpaces_hint_cantTell_columns',
+          params: { text: sample }
+        },
+        data: {
+          details: { reasonCode: kind, text: sample },
+          visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
+        }
+      })
+    );
+  }
+  const pres = helpers.queryAllSmart ? helpers.queryAllSmart('pre') : helpers.queryAll('pre');
+  for (const pre of pres) {
+    const inCode = dom.closest(pre, 'code, kbd, samp, textarea, script, style, template');
+    if (!pre || inCode || dom.querySelectorAll(pre, 'code, kbd, samp').length) {
+      continue;
+    }
+    const lines = String(dom.textContent(pre) || '')
+      .split('\n')
+      .filter((l) => RUN.test(l));
+    if (lines.length >= 2) askColumns(pre, 'spacesAsTable', lines[0].trim().slice(0, 60));
+  }
+  for (const el of nodes) {
+    if (!el || dom.closest(el, SKIP) || dom.closest(el, 'pre') || flagged.has(el)) continue;
+    for (const n of Array.from(dom.childNodes(el) || [])) {
+      if (dom.nodeType(n) !== 3) continue;
+      const t = String(dom.nodeValue(n) || '');
+      if ((t.match(NBSP_RUN) || []).length >= 2) {
+        askColumns(el, 'spacesAsColumns', t.replace(/\s+/g, ' ').trim().slice(0, 60));
+        break;
+      }
+    }
   }
 
   if (!occurrences.length) {

@@ -636,7 +636,7 @@
   "markupForPresentation_summary_emptyParagraph": "Este párrafo no tiene contenido; compruebe si se usa para crear espacio.",
   "markupForPresentation_summary_placeholder": "Este elemento está vacío pero tiene un rol o aria-live; compruebe si un script lo rellena o si se usa para crear espacio.",
   "markupForPresentation_summary_consecutiveBr": "Este elemento usa dos o más <br> seguidos; compruebe si crean párrafos.",
-  "markupForPresentation_summary_spacesForMargin": "Este texto se sangra o alinea con espacios de no separación; compruebe si crean un margen.",
+  "markupForPresentation_summary_spacesForMargin": "Este texto se sangra con espacios de no separación; compruebe si crean un margen.",
   "markupForPresentation_hint_headingPresentation": "Si el texto es un encabezado, quite el rol; si no lo es, use un elemento que no sea un encabezado, con estilo CSS (RGAA 8.9.1).",
   "markupForPresentation_hint_spacerParagraph": "Quite el párrafo y cree el espacio con márgenes o rellenos CSS (RGAA 8.9.1).",
   "markupForPresentation_hint_emptyBlockquote": "Quite el <blockquote>, o resérvelo para las citas, y cree la sangría con CSS (RGAA 8.9.1).",
@@ -753,5 +753,7 @@
   "statusMessageReview_summary_cantTell_liveWithoutRole": "Este elemento tiene aria-live pero no role=\"status\", \"alert\", \"log\" ni \"progressbar\" (\"{{text}}\").",
   "statusMessageReview_summary_cantTell_possibleStatusMessage": "Este elemento parece un mensaje de estado (\"{{text}}\") pero no tiene role=\"status\", \"alert\", \"log\" ni \"progressbar\".",
   "statusMessageReview_hint_cantTell": "Si es un mensaje de estado, use role=\"status\" para un éxito, un resultado o un estado, role=\"alert\" para un error o una sugerencia, y role=\"log\", \"progressbar\" o \"status\" para un progreso (RGAA 7.5).",
-  "mediaTranscriptAdjacent_summary_cantTell_mention": "El texto junto a este <{{element}}> menciona una transcripción, pero no la contiene ni enlaza a ella."
+  "mediaTranscriptAdjacent_summary_cantTell_mention": "El texto junto a este <{{element}}> menciona una transcripción, pero no la contiene ni enlaza a ella.",
+  "lettersSpacedWithSpaces_summary_cantTell_columns": "Este texto alinea palabras con series de espacios (\"{{text}}\"), como lo haría una tabla o unas columnas.",
+  "lettersSpacedWithSpaces_hint_cantTell_columns": "Si los espacios simulan una tabla o columnas, use en su lugar una <table> o un diseño CSS (RGAA 10.1.3)."
 }

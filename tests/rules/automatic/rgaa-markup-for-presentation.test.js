@@ -43,8 +43,7 @@ test(`${RULE_ID}: what may be legitimate is asked about`, () => {
     ['<p role="status"></p>', 'placeholder'],
     ['<p aria-live="polite">&nbsp;</p>', 'placeholder'],
     ['<p>Première ligne<br><br>Deuxième ligne</p>', 'consecutiveBr'],
-    ['<p>&nbsp;&nbsp;&nbsp;&nbsp;Texte en retrait</p>', 'spacesForMargin'],
-    ['<p>Nom&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Prix</p>', 'spacesForMargin']
+    ['<p>&nbsp;&nbsp;&nbsp;&nbsp;Texte en retrait</p>', 'spacesForMargin']
   ]) {
     const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'cantTell', {
       minOccurrences: 1,
@@ -64,6 +63,8 @@ test(`${RULE_ID}: content, role="presentation" on a paragraph, addresses and cod
     '<p>Ligne 1<br>Ligne 2</p>',
     '<address>1 rue de la Paix<br><br>75002 Paris</address>',
     '<p>10&nbsp;000&nbsp;€</p>',
+    // Runs between words are 10.1.3's matter.
+    '<p>Nom&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Prix</p>',
     '<pre>&nbsp;&nbsp;&nbsp;&nbsp;code</pre>',
     '<p hidden>&nbsp;</p>'
   ]) {

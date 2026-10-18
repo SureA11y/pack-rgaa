@@ -951,9 +951,9 @@ manual · no formal WCAG SC mapping · confidence medium · default severity min
 
 Flags text where four or more single letters in a row (three capitals when they are the whole text) are separated by spaces, for a person to confirm whether a word is spaced out that way.
 
-**Applies to.** Applies to text with four or more single letters in a row separated by spaces ("S O L D E S"), or three capital letters in a row when they are the whole text of the element ("T O P"). The text is the element's inline text: its own text nodes joined with the text of its inline children (span, b, a, ...), so letters split across spans ("&lt;span&gt;S&lt;/span&gt; &lt;span&gt;O&lt;/span&gt; ...") are read as one run. It is read outside &lt;pre&gt;, &lt;code&gt;, &lt;textarea&gt;, &lt;script&gt; and &lt;style&gt;. A page with none is notApplicable.
+**Applies to.** Applies to text with four or more single letters in a row separated by spaces ("S O L D E S"), or three capital letters in a row when they are the whole text of the element ("T O P"). The text is the element's inline text: its own text nodes joined with the text of its inline children (span, b, a, ...), so letters split across spans ("&lt;span&gt;S&lt;/span&gt; &lt;span&gt;O&lt;/span&gt; ...") are read as one run. It is read outside &lt;pre&gt;, &lt;code&gt;, &lt;textarea&gt;, &lt;script&gt; and &lt;style&gt;. Applies too to a &lt;pre&gt; (not of code) with two lines or more that hold runs of three spaces or more between words, and to a text with two runs or more of three non-breaking spaces between words. A page with none is notApplicable.
 
-**Expectation.** Such text is flagged for a person to confirm whether it is a word spaced out with spaces, which RGAA 10.1.3 forbids: a screen reader spells it letter by letter. CSS letter-spacing gives the same look.
+**Expectation.** Such text is flagged for a person to confirm whether it is a word spaced out with spaces, which RGAA 10.1.3 forbids: a screen reader spells it letter by letter. CSS letter-spacing gives the same look. Words lined up with runs of spaces are asked about too (spacesAsTable in a &lt;pre&gt;, spacesAsColumns elsewhere): 10.1.3 forbids spaces used « pour simuler des tableaux » or « des colonnes de texte ».
 
 ### `rgaa-link-content-label-present`
 
@@ -1052,7 +1052,7 @@ RGAA 8.9.1: tags other than &lt;div&gt;, &lt;span&gt; and &lt;table&gt; « ne do
 
 - Fails a heading (&lt;h1&gt;-&lt;h6&gt;) with role="presentation" or "none" (headingPresentation): « non-conforme sur un titre ».
 - Fails a paragraph that holds only non-breaking spaces or &lt;br&gt;, without role="presentation" (spacerParagraph): it renders a blank line and nothing else.
-- Asks about (cantTell) a paragraph with no content at all, which may render nothing; a &lt;blockquote&gt; with no text and no image (emptyBlockquote), which renders little more; an empty paragraph or &lt;blockquote&gt; with a role or aria-live, which a script may fill (placeholder); two or more &lt;br&gt; in a row, which may separate paragraphs or lines of an address or a poem; and text that starts with three non-breaking spaces or more, or holds a run of four, which may be a margin made of spaces.
+- Asks about (cantTell) a paragraph with no content at all, which may render nothing; a &lt;blockquote&gt; with no text and no image (emptyBlockquote), which renders little more; an empty paragraph or &lt;blockquote&gt; with a role or aria-live, which a script may fill (placeholder); two or more &lt;br&gt; in a row, which may separate paragraphs or lines of an address or a poem; and text that starts with three non-breaking spaces or more, which may be a margin made of spaces. Runs of spaces between words, which may simulate a table or columns, are 10.1.3's matter (rgaa-letters-spaced-with-spaces).
 
 ### `rgaa-markup-validation-review`
 

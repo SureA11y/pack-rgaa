@@ -561,7 +561,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-letters-spaced-with-spaces': {
       tests: ['10.1.3'],
-      note: 'Asks about four or more single letters in a row separated by spaces (three capitals when they are the whole text), read across inline elements, the first condition of 10.1.3 ("Les espaces ne sont pas utilisées pour séparer les lettres d’un mot"). Spaces used to simulate tables or columns (the other two conditions) are not looked for.'
+      note: 'Asks about four or more single letters in a row separated by spaces (three capitals when they are the whole text), read across inline elements, the first condition of 10.1.3 ("Les espaces ne sont pas utilisées pour séparer les lettres d’un mot"). Also asks about words lined up with runs of spaces, the other two conditions (« pour simuler des tableaux », « des colonnes de texte »): a <pre> (not of code) with two lines or more holding runs of three spaces between words, or a text with two runs or more of three non-breaking spaces.'
     },
     'rgaa-link-content-label-present': {
       tests: ['6.2.1'],
@@ -617,7 +617,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-markup-for-presentation': {
       tests: ['8.9.1'],
-      note: 'Fails a heading with role="presentation" or "none", which the 8.9.1 methodology calls « non-conforme sur un titre », and a paragraph of only non-breaking spaces or <br>, an empty paragraph the methodology names among « des paragraphes vides ou encore des espaces utilisés pour créer des effets de marges ». Asks about a paragraph with no content at all, an empty <blockquote>, an empty element a script may fill (role, aria-live), two or more <br> in a row, and text indented or aligned with non-breaking spaces. A paragraph or <blockquote> with role="presentation" is accepted, as the methodology allows.'
+      note: 'Fails a heading with role="presentation" or "none", which the 8.9.1 methodology calls « non-conforme sur un titre », and a paragraph of only non-breaking spaces or <br>, an empty paragraph the methodology names among « des paragraphes vides ou encore des espaces utilisés pour créer des effets de marges ». Asks about a paragraph with no content at all, an empty <blockquote>, an empty element a script may fill (role, aria-live), two or more <br> in a row, and text indented with non-breaking spaces. A paragraph or <blockquote> with role="presentation" is accepted, as the methodology allows.'
     },
     'rgaa-markup-validation-review': {
       tests: ['8.2.1'],

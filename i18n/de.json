@@ -636,7 +636,7 @@
   "markupForPresentation_summary_emptyParagraph": "Dieser Absatz hat keinen Inhalt; prüfen Sie, ob er dazu dient, Abstand zu schaffen.",
   "markupForPresentation_summary_placeholder": "Dieses Element ist leer, hat aber eine Rolle oder aria-live; prüfen Sie, ob ein Skript es füllt oder ob es Abstand schafft.",
   "markupForPresentation_summary_consecutiveBr": "Dieses Element verwendet zwei oder mehr <br> hintereinander; prüfen Sie, ob sie Absätze bilden.",
-  "markupForPresentation_summary_spacesForMargin": "Dieser Text wird mit geschützten Leerzeichen eingerückt oder ausgerichtet; prüfen Sie, ob sie einen Rand bilden.",
+  "markupForPresentation_summary_spacesForMargin": "Dieser Text wird mit geschützten Leerzeichen eingerückt; prüfen Sie, ob sie einen Rand bilden.",
   "markupForPresentation_hint_headingPresentation": "Wenn der Text eine Überschrift ist, entfernen Sie die Rolle; wenn nicht, verwenden Sie ein Element, das keine Überschrift ist, und gestalten Sie es mit CSS (RGAA 8.9.1).",
   "markupForPresentation_hint_spacerParagraph": "Entfernen Sie den Absatz und schaffen Sie den Abstand mit CSS-Rändern oder -Innenabständen (RGAA 8.9.1).",
   "markupForPresentation_hint_emptyBlockquote": "Entfernen Sie das <blockquote> oder verwenden Sie es nur für Zitate, und rücken Sie mit CSS ein (RGAA 8.9.1).",
@@ -753,5 +753,7 @@
   "statusMessageReview_summary_cantTell_liveWithoutRole": "Dieses Element hat aria-live, aber kein role=\"status\", \"alert\", \"log\" oder \"progressbar\" („{{text}}“).",
   "statusMessageReview_summary_cantTell_possibleStatusMessage": "Dieses Element sieht wie eine Statusmeldung aus („{{text}}“), hat aber kein role=\"status\", \"alert\", \"log\" oder \"progressbar\".",
   "statusMessageReview_hint_cantTell": "Wenn es eine Statusmeldung ist, verwenden Sie role=\"status\" für einen Erfolg, ein Ergebnis oder einen Zustand, role=\"alert\" für einen Fehler oder einen Vorschlag und role=\"log\", \"progressbar\" oder \"status\" für einen Fortschritt (RGAA 7.5).",
-  "mediaTranscriptAdjacent_summary_cantTell_mention": "Der Text neben diesem <{{element}}> erwähnt ein Transkript, enthält es aber nicht und verlinkt nicht darauf."
+  "mediaTranscriptAdjacent_summary_cantTell_mention": "Der Text neben diesem <{{element}}> erwähnt ein Transkript, enthält es aber nicht und verlinkt nicht darauf.",
+  "lettersSpacedWithSpaces_summary_cantTell_columns": "Dieser Text richtet Wörter mit Folgen von Leerzeichen aus („{{text}}“), wie es eine Tabelle oder Spalten täten.",
+  "lettersSpacedWithSpaces_hint_cantTell_columns": "Wenn die Leerzeichen eine Tabelle oder Spalten nachahmen, verwenden Sie stattdessen eine <table> oder ein CSS-Layout (RGAA 10.1.3)."
 }

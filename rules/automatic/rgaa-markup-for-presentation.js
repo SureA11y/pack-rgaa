@@ -29,8 +29,10 @@
  *     (emptyBlockquote), which renders little more; an empty paragraph
  *     or <blockquote> with a role or aria-live, which a script may fill
  *     (placeholder); two or more <br> in a row, which may separate
- *     paragraphs or lines of an address or a poem; and text that starts with three non-breaking spaces or more,
- *     or holds a run of four, which may be a margin made of spaces.
+ *     paragraphs or lines of an address or a poem; and text that starts
+ *     with three non-breaking spaces or more, which may be a margin made of
+ *     spaces. Runs of spaces between words, which may simulate a table or
+ *     columns, are 10.1.3's matter (rgaa-letters-spaced-with-spaces).
  * @implementation-notes
  * - <address>, <pre>, <code>, <textarea> and editable regions are left
  *   out of the <br> and space checks.
@@ -170,7 +172,7 @@ function runInPage(ctx) {
     consecutiveBr:
       'This element uses two or more <br> in a row; check whether they make paragraphs.',
     spacesForMargin:
-      'This text is indented or aligned with non-breaking spaces; check whether they make a margin.'
+      'This text is indented with non-breaking spaces; check whether they make a margin.'
   };
   const HINT = {
     headingPresentation:
@@ -230,8 +232,7 @@ function runInPage(ctx) {
     if (!v.includes(NBSP + NBSP + NBSP)) continue;
     if (!v.replace(/[\s ]/g, '')) continue;
     const lead = /^[\s]* {3,}/.test(v);
-    const run = / {4,}/.test(v);
-    if (!lead && !run) continue;
+    if (!lead) continue;
     const p = dom.parentElement(n);
     if (!p || seen.has(p) || skipped(p) || !visible(p)) continue;
     applicable += 1;
