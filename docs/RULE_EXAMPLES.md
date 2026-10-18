@@ -224,6 +224,22 @@ A complex table with a summary in its caption: a person checks that it explains 
 ```
 In an HTML5 document the `summary` attribute is not a summary, so the table has none to judge; rgaa-complex-table-summary asks about it under 5.1.1. Under an HTML 4.01 doctype the same table is flagged.
 
+## rgaa-context-change-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<select onchange="this.form.submit()" aria-label="Langue"><option>Français</option><option>English</option></select>
+```
+Choosing an option submits the form at once: a person checks that a text before the list warns of it (RGAA 7.4.1).
+
+**Not applicable**
+```html
+<select aria-label="Langue"><option>Français</option></select><button>Changer</button>
+```
+An explicit button starts the change.
+
 ## rgaa-contrast-minimum
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -1165,6 +1181,22 @@ The page reloads every 20 hours, the limit RGAA 13.1.1 accepts. WCAG 2.2.1 exemp
 <meta http-equiv="refresh" content="30">
 ```
 The page reloads itself every 30 seconds. A redirect to another address is `rgaa-meta-redirect-immediate`'s matter.
+
+## rgaa-noscript-alternative-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<noscript><p>Activez JavaScript pour voir la carte.</p></noscript>
+```
+A person checks that the alternative gives content and features similar to the script's; this message gives neither (RGAA 7.2.1).
+
+**Not applicable**
+```html
+<noscript><img src="pixel.gif" width="1" height="1" alt=""></noscript>
+```
+A tracking image is no alternative.
 
 ## rgaa-object-embed-decorative-aria-hidden
 

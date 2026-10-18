@@ -721,5 +721,13 @@
   "objectEmbedDecorativeAriaHidden_hint_fail_role": "装飾画像には aria-label、aria-labelledby、title を付けずに aria-hidden=\"true\" を追加してください（RGAA {{test}}）。",
   "objectEmbedDecorativeAriaHidden_summary_cantTell_content": "この <{{tag}} role=\"{{role}}\"> には aria-hidden=\"true\" がなく、<{{tag}}> と </{{tag}}> の間に内容があります。",
   "objectEmbedDecorativeAriaHidden_hint_cantTell_content": "画像が情報を伝えるならロールを削除し、内容を代替として残してください。装飾なら aria-hidden=\"true\" を追加し、内容を削除してください。",
-  "pageZonesReachable_summary_cantTell_unidentified": "メインコンテンツ外のこのリンクのまとまりにはランドマークロールがなく、領域であることを示すものもありません。"
+  "pageZonesReachable_summary_cantTell_unidentified": "メインコンテンツ外のこのリンクのまとまりにはランドマークロールがなく、領域であることを示すものもありません。",
+  "noscriptAlternativeReview_title": "<noscript> の代替が同等のコンテンツと機能を提供する",
+  "noscriptAlternativeReview_description": "テキストを含む各 <noscript> 要素を示し、スクリプトと同等のコンテンツと機能を提供するか人が確認できるようにします。",
+  "noscriptAlternativeReview_summary_cantTell": "この <noscript> の代替は「{{text}}」と表示します。",
+  "noscriptAlternativeReview_hint_cantTell": "JavaScript が無効のとき、スクリプトと同等のコンテンツと機能を提供するか確認してください。JavaScript を有効にするよう求めるだけのメッセージはどちらも提供しません（RGAA 7.2.1）。",
+  "contextChangeReview_title": "フィールドから始まるコンテキストの変化が事前に知らされる",
+  "contextChangeReview_description": "値が変わるとフォームを送信したり別のページを読み込んだりするインラインハンドラーを持つ各フォームフィールドを示し、事前にテキストで知らせているか人が確認できるようにします。",
+  "contextChangeReview_summary_cantTell": "このフィールドの {{attribute}} ハンドラー（「{{code}}」）は、ボタンやリンクなしで、値が変わるとコンテキストを変えます。",
+  "contextChangeReview_hint_cantTell": "フィールドの前のテキストで何が起きるか知らせているか確認するか、明示的なボタンで変更を開始してください（RGAA 7.4.1）。"
 }

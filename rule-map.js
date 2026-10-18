@@ -196,6 +196,10 @@ const RGAA_RULE_TESTS = {
       tests: ['5.2.1'],
       note: "Asks whether the summary of a complex data table is relevant, which is 5.2.1 step 2. Complex tables are found as rgaa-complex-table-summary finds them for 5.1.1. The summary is a <caption> with text, an aria-describedby that points to text, or, before HTML5 only, a summary attribute (5.1.1 step 2). A table with no summary is 5.1.1's matter."
     },
+    'rgaa-context-change-review': {
+      tests: ['7.4.1'],
+      note: 'Asks about each <select>, <input> or <textarea> whose inline onchange, oninput or onblur handler submits a form, uses location, sets an href or opens a window: 7.4.1 passes a change of context only when a text warns of it before it happens or when an explicit button or link starts it, and a field is neither, so a person checks for the warning. Handlers attached from script files are not seen.'
+    },
     'contrast-computable': {
       tests: ['3.2.1', '3.2.2', '3.2.3', '3.2.4'],
       note: 'Returns cantTell for visible text whose contrast cannot be computed (background image or gradient, blend mode, filter, text-shadow, opacity). This marks the text that 3.2.1 to 3.2.4 step 1 must find and measure by hand; it never gives a verdict. It does not check the paired CSS color declarations of 10.5, so 10.5 is not mapped.'
@@ -658,6 +662,10 @@ const RGAA_RULE_TESTS = {
     'nested-interactive-controls-absent': {
       tests: [],
       note: 'Flags interactive controls that contain another operable control (for example a button inside a[href]). Not linked to 8.2.1: the rule fails nesting that uses only ARIA roles, which the W3C validator only warns about (since Nu 26.8.6), and it misses disabled or tabindex descendants the validator rejects; rgaa-html-nesting-valid reports the HTML nesting errors under 8.2.1. Not mapped to 7.1.1: native nested controls are not scripted components.'
+    },
+    'rgaa-noscript-alternative-review': {
+      tests: ['7.2.1'],
+      note: "Asks about each <noscript> in the body whose content holds text (tags stripped, since browsers with scripting on keep it as raw text): 7.2.1 passes a script whose « alternative entre <noscript> et </noscript> permet d'accéder à des contenus et des fonctionnalités similaires », which only a person can compare. A <noscript> holding only a tracking image or frame is left out."
     },
     'no-autoplay-audio': {
       tests: ['4.10.1'],

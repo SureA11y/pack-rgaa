@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>rgaa-context-change-review — scenario fixture</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.4; margin: 24px; }
+    h1 { font-size: 20px; margin: 0 0 16px; }
+    h2 { font-size: 16px; margin: 22px 0 10px; }
+    .note { font-size: 12px; opacity: 0.85; margin: 8px 0 16px; }
+    .case { border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin: 10px 0; }
+    .case-title { font-weight: 700; margin: 0 0 8px; }
+  </style>
+</head>
+<body>
+  <h1>Scenario fixture: <code>rgaa-context-change-review</code> (RGAA 7.4.1)</h1>
+
+  <p class="note">
+    Each target has a stable <code>id</code> of the form <code>ccr_case_NN</code>.
+    A change of context started from a field is announced by a text first.
+  </p>
+
+  <div class="case" id="case_01">
+    <div class="case-title">01 — CANTTELL: a list that submits its form when it changes</div>
+    <form><select onchange="this.form.submit()" aria-label="Langue" id="ccr_case_01"><option>Français</option><option>English</option></select></form>
+  </div>
+
+  <div class="case" id="case_02">
+    <div class="case-title">02 — NOT APPLICABLE: a list with a submit button</div>
+    <form><select aria-label="Langue" id="ccr_case_02"><option>Français</option></select><button>Changer</button></form>
+  </div>
+</body>
+</html>

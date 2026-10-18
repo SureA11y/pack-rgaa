@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 89,
-    "withFixture": 89,
+    "total": 91,
+    "withFixture": 91,
     "withoutFixture": 0
   },
   "rows": [
@@ -173,6 +173,23 @@
         "FAIL": 0,
         "CANTTELL": 3,
         "OTHER": 4
+      }
+    },
+    {
+      "ruleId": "rgaa-context-change-review",
+      "title": "A change of context from a field is announced first",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/context-change-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-context-change-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-context-change-review-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 1
       }
     },
     {
@@ -1022,6 +1039,23 @@
         "PASS": 0,
         "FAIL": 0,
         "CANTTELL": 2,
+        "OTHER": 1
+      }
+    },
+    {
+      "ruleId": "rgaa-noscript-alternative-review",
+      "title": "A <noscript> alternative gives similar content and features",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/noscript-alternative-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-noscript-alternative-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-noscript-alternative-review-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
         "OTHER": 1
       }
     },

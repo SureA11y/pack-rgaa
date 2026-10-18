@@ -70,8 +70,8 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T67-07 | 6.1.1–6.1.4 | MISS | Gaps in the French generic-phrase list; no list used without `lang`. | open |
 | T67-08 | 6.1 | WO | `link-name-quality` names a link by `title` before content (C4). | core |
 | T67-09 | 7.3.2 | MISS | `onfocus="this.blur()"` is not detected. Now failed by `rgaa-focus-not-removed`; a handler that moves focus elsewhere is asked about. | done |
-| T67-10 | 7.4.1 | MISS | Changes of context on `select`/fields are never asked about. | open |
-| T67-11 | 7.2.1 | MISS | `<noscript>` alternatives are not asked about. | open |
+| T67-10 | 7.4.1 | MISS | Changes of context on `select`/fields are never asked about. Now asked about by `rgaa-context-change-review` (inline handlers that submit or navigate). | done |
+| T67-11 | 7.2.1 | MISS | `<noscript>` alternatives are not asked about. Now asked about by `rgaa-noscript-alternative-review`. | done |
 | T67-12 | 7.5 | MISS | Status messages get no targeted question. | open |
 | T67-13 | 7.1.1, 7.1.3 | MISS | Links used as buttons (`href="#"` with a click handler) are not listed. Now listed by `rgaa-scripted-components-review` (linkWithoutDestination: href `#`, `#!` or `javascript:`). | done |
 | T67-14 | 7.1.1 | FP | Unnamed dialog, tab and menuitem roles fail 7.1 on a page with no script. | won't (an ARIA widget only works through script, so a page with one and no script is a snapshot, not a page RGAA audits; gating core rules on script needs the engine) |

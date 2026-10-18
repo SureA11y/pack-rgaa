@@ -721,5 +721,13 @@
   "objectEmbedDecorativeAriaHidden_hint_fail_role": "Añada aria-hidden=\"true\" a una imagen decorativa, sin aria-label, aria-labelledby ni title (RGAA {{test}}).",
   "objectEmbedDecorativeAriaHidden_summary_cantTell_content": "Este <{{tag}} role=\"{{role}}\"> no tiene aria-hidden=\"true\" y tiene contenido entre <{{tag}}> y </{{tag}}>.",
   "objectEmbedDecorativeAriaHidden_hint_cantTell_content": "Si la imagen transmite información, quite el rol y conserve el contenido como su alternativa. Si es decorativa, añada aria-hidden=\"true\" y quite el contenido.",
-  "pageZonesReachable_summary_cantTell_unidentified": "Este bloque de enlaces fuera del contenido principal no tiene rol de punto de referencia y nada lo identifica como una zona."
+  "pageZonesReachable_summary_cantTell_unidentified": "Este bloque de enlaces fuera del contenido principal no tiene rol de punto de referencia y nada lo identifica como una zona.",
+  "noscriptAlternativeReview_title": "Una alternativa <noscript> da acceso a contenidos y funciones similares",
+  "noscriptAlternativeReview_description": "Señala cada elemento <noscript> con texto, para que una persona compruebe que da contenidos y funciones similares a los del script.",
+  "noscriptAlternativeReview_summary_cantTell": "Esta alternativa <noscript> dice \"{{text}}\".",
+  "noscriptAlternativeReview_hint_cantTell": "Compruebe que, con JavaScript desactivado, da contenidos y funciones similares a los del script; un mensaje que pide activar JavaScript no da ninguno (RGAA 7.2.1).",
+  "contextChangeReview_title": "Un cambio de contexto iniciado por un campo se anuncia antes",
+  "contextChangeReview_description": "Señala cada campo de formulario cuyo gestor envía un formulario o carga otra página cuando cambia su valor, para que una persona compruebe que un texto avisa antes al usuario.",
+  "contextChangeReview_summary_cantTell": "El gestor {{attribute}} de este campo (\"{{code}}\") cambia el contexto cuando cambia su valor, sin botón ni enlace.",
+  "contextChangeReview_hint_cantTell": "Compruebe que un texto antes del campo avisa de lo que pasa, o inicie el cambio con un botón explícito (RGAA 7.4.1)."
 }

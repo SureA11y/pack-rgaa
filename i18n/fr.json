@@ -721,5 +721,13 @@
   "objectEmbedDecorativeAriaHidden_hint_fail_role": "Ajoutez aria-hidden=\"true\" à une image de décoration, sans aria-label, aria-labelledby ni title (RGAA {{test}}).",
   "objectEmbedDecorativeAriaHidden_summary_cantTell_content": "Cette balise <{{tag}} role=\"{{role}}\"> n’a pas d’attribut aria-hidden=\"true\" et a un contenu entre <{{tag}}> et </{{tag}}>.",
   "objectEmbedDecorativeAriaHidden_hint_cantTell_content": "Si l’image est porteuse d’information, retirez le rôle et gardez le contenu comme contenu alternatif. Si elle est de décoration, ajoutez aria-hidden=\"true\" et supprimez le contenu.",
-  "pageZonesReachable_summary_cantTell_unidentified": "Ce bloc de liens hors du contenu principal n’a pas de rôle de point de repère et rien ne l’identifie comme une zone."
+  "pageZonesReachable_summary_cantTell_unidentified": "Ce bloc de liens hors du contenu principal n’a pas de rôle de point de repère et rien ne l’identifie comme une zone.",
+  "noscriptAlternativeReview_title": "Une alternative <noscript> donne accès à des contenus et fonctionnalités similaires",
+  "noscriptAlternativeReview_description": "Signale chaque balise <noscript> contenant du texte, pour qu’une personne vérifie qu’elle donne accès à des contenus et des fonctionnalités similaires à ceux du script.",
+  "noscriptAlternativeReview_summary_cantTell": "Cette alternative <noscript> indique « {{text}} ».",
+  "noscriptAlternativeReview_hint_cantTell": "Vérifiez que, JavaScript désactivé, elle donne accès à des contenus et des fonctionnalités similaires à ceux du script ; un message demandant d’activer JavaScript n’en donne aucun (RGAA 7.2.1).",
+  "contextChangeReview_title": "Un changement de contexte déclenché par un champ est annoncé",
+  "contextChangeReview_description": "Signale chaque champ de formulaire dont le gestionnaire envoie un formulaire ou charge une autre page quand sa valeur change, pour qu’une personne vérifie qu’un texte avertit l’utilisateur avant.",
+  "contextChangeReview_summary_cantTell": "Le gestionnaire {{attribute}} de ce champ (« {{code}} ») change le contexte quand sa valeur change, sans bouton ni lien.",
+  "contextChangeReview_hint_cantTell": "Vérifiez qu’un texte placé avant le champ avertit de ce qui se passe, ou déclenchez le changement par un bouton explicite (RGAA 7.4.1)."
 }

@@ -4,13 +4,13 @@ This pack's rules and their scenario pages. Every rule should have a `tests/fixt
 
 ## Summary
 
-Total rules: **89**. With fixture: **89**. Without fixture: **0**.
+Total rules: **91**. With fixture: **91**. Without fixture: **0**.
 
 ## Rules WITHOUT a fixture (0)
 
 None — every rule has a fixture.
 
-## Rules WITH a fixture (89)
+## Rules WITH a fixture (91)
 
 | Rule ID | Type | Fixture | Cases | PASS | FAIL | CANTTELL | OTHER |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -24,6 +24,7 @@ None — every rule has a fixture.
 | rgaa-canvas-role-img | automatic | `tests/fixtures/rgaa-canvas-role-img-all-scenarios.html` | 9 | 2 | 4 | 1 | 2 |
 | rgaa-complex-table-summary | manual | `tests/fixtures/rgaa-complex-table-summary-all-scenarios.html` | 8 | 0 | 0 | 0 | 8 |
 | rgaa-complex-table-summary-quality | manual | `tests/fixtures/rgaa-complex-table-summary-quality-all-scenarios.html` | 7 | 0 | 0 | 3 | 4 |
+| rgaa-context-change-review | manual | `tests/fixtures/rgaa-context-change-review-all-scenarios.html` | 2 | 0 | 0 | 1 | 1 |
 | rgaa-contrast-minimum | automatic | `tests/fixtures/rgaa-contrast-minimum-all-scenarios.html` | 7 | 4 | 3 | 0 | 0 |
 | rgaa-data-table-headers-review | manual | `tests/fixtures/rgaa-data-table-headers-review-all-scenarios.html` | 7 | 0 | 0 | 3 | 4 |
 | rgaa-dir-attribute-valid | automatic | `tests/fixtures/rgaa-dir-attribute-valid-all-scenarios.html` | 8 | 2 | 4 | 0 | 2 |
@@ -74,6 +75,7 @@ None — every rule has a fixture.
 | rgaa-meta-refresh-no-url-timing | automatic | `tests/fixtures/rgaa-meta-refresh-no-url-timing-all-scenarios.html` | 1 | 0 | 1 | 0 | 0 |
 | rgaa-modal-tab-order | manual | `tests/fixtures/rgaa-modal-tab-order-all-scenarios.html` | 3 | 0 | 0 | 1 | 2 |
 | rgaa-moving-content-review | manual | `tests/fixtures/rgaa-moving-content-review-all-scenarios.html` | 3 | 0 | 0 | 2 | 1 |
+| rgaa-noscript-alternative-review | manual | `tests/fixtures/rgaa-noscript-alternative-review-all-scenarios.html` | 2 | 0 | 0 | 1 | 1 |
 | rgaa-object-embed-decorative-aria-hidden | automatic | `tests/fixtures/rgaa-object-embed-decorative-aria-hidden-all-scenarios.html` | 2 | 1 | 1 | 0 | 0 |
 | rgaa-object-image-role-img | automatic | `tests/fixtures/rgaa-object-image-role-img-all-scenarios.html` | 9 | 2 | 2 | 3 | 2 |
 | rgaa-office-document-link | manual | `tests/fixtures/rgaa-office-document-link-all-scenarios.html` | 10 | 0 | 0 | 0 | 10 |

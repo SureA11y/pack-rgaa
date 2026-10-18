@@ -721,5 +721,13 @@
   "objectEmbedDecorativeAriaHidden_hint_fail_role": "Fügen Sie einem dekorativen Bild aria-hidden=\"true\" hinzu, ohne aria-label, aria-labelledby oder title (RGAA {{test}}).",
   "objectEmbedDecorativeAriaHidden_summary_cantTell_content": "Dieses <{{tag}} role=\"{{role}}\"> hat kein aria-hidden=\"true\" und hat Inhalt zwischen <{{tag}}> und </{{tag}}>.",
   "objectEmbedDecorativeAriaHidden_hint_cantTell_content": "Trägt das Bild Informationen, entfernen Sie die Rolle und behalten Sie den Inhalt als Alternative. Ist es dekorativ, fügen Sie aria-hidden=\"true\" hinzu und entfernen Sie den Inhalt.",
-  "pageZonesReachable_summary_cantTell_unidentified": "Dieser Linkblock außerhalb des Hauptinhalts hat keine Landmark-Rolle, und nichts bezeichnet ihn als Bereich."
+  "pageZonesReachable_summary_cantTell_unidentified": "Dieser Linkblock außerhalb des Hauptinhalts hat keine Landmark-Rolle, und nichts bezeichnet ihn als Bereich.",
+  "noscriptAlternativeReview_title": "Eine <noscript>-Alternative bietet ähnliche Inhalte und Funktionen",
+  "noscriptAlternativeReview_description": "Markiert jedes <noscript>-Element mit Text, damit eine Person prüft, dass es ähnliche Inhalte und Funktionen bietet wie das Skript.",
+  "noscriptAlternativeReview_summary_cantTell": "Diese <noscript>-Alternative sagt „{{text}}“.",
+  "noscriptAlternativeReview_hint_cantTell": "Prüfen Sie, dass sie bei ausgeschaltetem JavaScript ähnliche Inhalte und Funktionen bietet wie das Skript; eine Bitte, JavaScript einzuschalten, bietet keine (RGAA 7.2.1).",
+  "contextChangeReview_title": "Ein von einem Feld ausgelöster Kontextwechsel wird vorher angekündigt",
+  "contextChangeReview_description": "Markiert jedes Formularfeld, dessen Handler ein Formular sendet oder eine andere Seite lädt, wenn sich sein Wert ändert, damit eine Person prüft, dass ein Text vorher darauf hinweist.",
+  "contextChangeReview_summary_cantTell": "Der {{attribute}}-Handler dieses Feldes („{{code}}“) wechselt den Kontext, wenn sich sein Wert ändert, ohne Schaltfläche oder Link.",
+  "contextChangeReview_hint_cantTell": "Prüfen Sie, dass ein Text vor dem Feld darauf hinweist, was geschieht, oder lösen Sie den Wechsel mit einer eindeutigen Schaltfläche aus (RGAA 7.4.1)."
 }
