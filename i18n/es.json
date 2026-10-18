@@ -757,5 +757,9 @@
   "lettersSpacedWithSpaces_summary_cantTell_columns": "Este texto alinea palabras con series de espacios (\"{{text}}\"), como lo haría una tabla o unas columnas.",
   "lettersSpacedWithSpaces_hint_cantTell_columns": "Si los espacios simulan una tabla o columnas, use en su lugar una <table> o un diseño CSS (RGAA 10.1.3).",
   "autocompleteUserField_summary_cantTell_contradictsType": "El valor autocomplete \"{{value}}\" de este campo nombra un dato que un campo de tipo \"{{type}}\" no contiene.",
-  "autocompleteUserField_hint_cantTell_contradictsType": "Compruebe cuál de los dos es incorrecto: dé al campo el valor autocomplete que corresponde a lo que pide, o el tipo que corresponde al valor (RGAA 11.13.1)."
+  "autocompleteUserField_hint_cantTell_contradictsType": "Compruebe cuál de los dos es incorrecto: dé al campo el valor autocomplete que corresponde a lo que pide, o el tipo que corresponde al valor (RGAA 11.13.1).",
+  "htmlElementsAttributesValid_summary_fail_typeValue": "Este <{{element}}> tiene type=\"{{value}}\", que no es un tipo que HTML defina para él.",
+  "htmlElementsAttributesValid_hint_fail_typeValue": "Use uno de los tipos que define HTML: para un <button>, submit, reset o button.",
+  "htmlNestingValid_summary_fail_flowInPhrasing": "Este <{{element}}> está dentro de un <{{parent}}>, que solo puede contener contenido de frase, como texto, <span> o <img>.",
+  "htmlNestingValid_hint_fail_flowInPhrasing": "Use dentro un elemento de frase como <span>, o saque el bloque."
 }

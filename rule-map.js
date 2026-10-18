@@ -406,7 +406,7 @@ const RGAA_RULE_TESTS = {
     },
     'html-lang-attr-present': {
       tests: [],
-      note: 'Fails when lang on <html> is missing or empty, or its primary subtag is not a registered language subtag (WCAG 3.1.1). Not linked to 8.3.1 or 8.4.1: 8.3.1 also accepts xml:lang (the attribute XHTML 1.1 asks for) and a language on every text or one of its parents, such as <body lang>, which this rule fails; and the registry it checks against leaves out ISO 639-2 codes such as fra, which 8.4.1 accepts. rgaa-page-language-present reports 8.3.1 and rgaa-html-lang-code-valid 8.4.1.'
+      note: 'Fails when lang on <html> is missing or empty, or its primary subtag is not a registered language subtag (WCAG 3.1.1). Not linked to 8.3.1 or 8.4.1: 8.3.1 also accepts xml:lang (the attribute XHTML 1.1 asks for) and a language on every text or one of its parents, such as <body lang>, which this rule fails; and the registry it checks against leaves out ISO 639-2 codes such as fra, which 8.4.1 accepts. rgaa-page-language-present reports 8.3.1 and rgaa-html-lang-code-valid 8.4.1. Also fails a type on <input> or <button> that is not one of its keywords (type="bouton"), as the validator does.'
     },
     'rgaa-html-lang-code-valid': {
       tests: ['8.4.1'],
@@ -422,7 +422,7 @@ const RGAA_RULE_TESTS = {
     },
     'identical-iframes-same-purpose': {
       tests: [],
-      note: 'Flags iframe/frame elements that share an accessible name but embed different resources (WCAG 4.1.2). Not linked to 2.2.1, which judges only the title attribute: this rule groups frames by accessible name, which may come from aria-label. rgaa-frame-title-attribute-present fails an empty title under 2.1.1, and rgaa-frame-title-relevant asks whether a non-empty one is relevant.'
+      note: 'Flags iframe/frame elements that share an accessible name but embed different resources (WCAG 4.1.2). Not linked to 2.2.1, which judges only the title attribute: this rule groups frames by accessible name, which may come from aria-label. rgaa-frame-title-attribute-present fails an empty title under 2.1.1, and rgaa-frame-title-relevant asks whether a non-empty one is relevant. Also fails flow content (div, p, a list, a table, a heading…) inside an element whose content model is phrasing only (button, label, span, a heading, p…), through a transparent <a>, as the validator does.'
     },
     'identical-links-same-purpose': {
       tests: ['6.1.1', '6.1.2', '6.1.3', '6.1.4'],

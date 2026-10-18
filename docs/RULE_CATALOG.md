@@ -779,6 +779,7 @@ Checks, hidden content included, for obsolete or unknown elements and for invali
 - scopeElement: scope on an element other than th or td (on td it is only a validator warning);
 - headersTarget / headersEmpty: a headers token that names no th of the same table (a td, a caption, an element outside the table or in a nested table), or an empty headers attribute;
 - optgroupLabel: an optgroup with no label attribute and no legend child;
+- typeValue: a type on input or button that is not one of its keywords (case aside), spaces included (type="bouton");
 - inputImageAlt: input type=image with no alt, or an empty one;
 - autocompleteValue: an empty autocomplete, a token list that is not a valid autofill detail list, on or off on input type=hidden, or a form autocomplete other than on or off. Disabled fields are included;
 - autocompleteControl: a field name whose control group the input type does not accept (street-address on a text input, email on a number input);
@@ -814,6 +815,7 @@ Checks, hidden content included, that lists, description lists, links, buttons, 
 - listItemParent: an li whose parent is not ul, ol or menu, whatever role the parent has;
 - dlChild / dlText / dlGroupOrder / dlMixedGroups / dlItemParent: the dl content model. A dl holds groups of one or more dt followed by one or more dd, or div elements that each hold one such group (script and template are allowed anywhere); no other element and no text. A dt or dd must sit in a dl, or in a div child of a dl;
 - interactiveDescendant / tabindexDescendant: interactive content (a, button, details, embed, iframe, label, select, textarea, input other than type=hidden, img[usemap], audio or video with controls) or an element with a tabindex attribute inside an a or a button. The rule applies to every a, with or without href, and counts a disabled control or a hidden descendant too, as the validator does;
+- flowInPhrasing: flow content (div, p, a list, a table, a heading, a sectioning element…) inside an element whose content model is phrasing only (button, label, span, b, i, em, strong, a heading, p…), through transparent a, ins, del or map;
 - ismapOutsideLink: an img with ismap and no a[href] ancestor;
 - extraMain: more than one main element in the document without its own hidden attribute. A main hidden by CSS, aria-hidden or a hidden ancestor still counts.
 

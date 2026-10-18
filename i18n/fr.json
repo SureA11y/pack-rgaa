@@ -757,5 +757,9 @@
   "lettersSpacedWithSpaces_summary_cantTell_columns": "Ce texte aligne des mots avec des suites d’espaces (« {{text}} »), comme le ferait un tableau ou des colonnes.",
   "lettersSpacedWithSpaces_hint_cantTell_columns": "Si les espaces simulent un tableau ou des colonnes, utilisez plutôt une balise <table> ou une mise en page CSS (RGAA 10.1.3).",
   "autocompleteUserField_summary_cantTell_contradictsType": "La valeur autocomplete « {{value}} » de ce champ désigne une donnée qu’un champ de type « {{type}} » ne contient pas.",
-  "autocompleteUserField_hint_cantTell_contradictsType": "Vérifiez lequel des deux est faux : donnez au champ la valeur autocomplete qui correspond à ce qu’il demande, ou le type qui correspond à la valeur (RGAA 11.13.1)."
+  "autocompleteUserField_hint_cantTell_contradictsType": "Vérifiez lequel des deux est faux : donnez au champ la valeur autocomplete qui correspond à ce qu’il demande, ou le type qui correspond à la valeur (RGAA 11.13.1).",
+  "htmlElementsAttributesValid_summary_fail_typeValue": "Cette balise <{{element}}> a type=\"{{value}}\", qui n’est pas un type que HTML définit pour elle.",
+  "htmlElementsAttributesValid_hint_fail_typeValue": "Utilisez un des types que HTML définit : pour une balise <button>, submit, reset ou button.",
+  "htmlNestingValid_summary_fail_flowInPhrasing": "Cette balise <{{element}}> est dans une balise <{{parent}}>, qui ne peut contenir que du contenu phrasé, comme du texte, une balise <span> ou <img>.",
+  "htmlNestingValid_hint_fail_flowInPhrasing": "Utilisez à l’intérieur un élément phrasé comme <span>, ou sortez-en le bloc."
 }

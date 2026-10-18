@@ -757,5 +757,9 @@
   "lettersSpacedWithSpaces_summary_cantTell_columns": "Dieser Text richtet Wörter mit Folgen von Leerzeichen aus („{{text}}“), wie es eine Tabelle oder Spalten täten.",
   "lettersSpacedWithSpaces_hint_cantTell_columns": "Wenn die Leerzeichen eine Tabelle oder Spalten nachahmen, verwenden Sie stattdessen eine <table> oder ein CSS-Layout (RGAA 10.1.3).",
   "autocompleteUserField_summary_cantTell_contradictsType": "Der autocomplete-Wert „{{value}}“ dieses Feldes nennt eine Angabe, die ein Feld vom Typ „{{type}}“ nicht enthält.",
-  "autocompleteUserField_hint_cantTell_contradictsType": "Prüfen Sie, welches von beiden falsch ist: Geben Sie dem Feld den autocomplete-Wert, der zu seiner Abfrage passt, oder den Typ, der zum Wert passt (RGAA 11.13.1)."
+  "autocompleteUserField_hint_cantTell_contradictsType": "Prüfen Sie, welches von beiden falsch ist: Geben Sie dem Feld den autocomplete-Wert, der zu seiner Abfrage passt, oder den Typ, der zum Wert passt (RGAA 11.13.1).",
+  "htmlElementsAttributesValid_summary_fail_typeValue": "Dieses <{{element}}> hat type=\"{{value}}\", einen Typ, den HTML dafür nicht definiert.",
+  "htmlElementsAttributesValid_hint_fail_typeValue": "Verwenden Sie einen der Typen, die HTML definiert: für ein <button> submit, reset oder button.",
+  "htmlNestingValid_summary_fail_flowInPhrasing": "Dieses <{{element}}> steht in einem <{{parent}}>, das nur Phrasing-Inhalt wie Text, <span> oder <img> enthalten darf.",
+  "htmlNestingValid_hint_fail_flowInPhrasing": "Verwenden Sie darin ein Phrasing-Element wie <span>, oder verschieben Sie den Block heraus."
 }

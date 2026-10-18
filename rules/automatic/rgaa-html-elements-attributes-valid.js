@@ -41,6 +41,8 @@
  *     a nested table), or an empty headers attribute;
  *   - optgroupLabel: an optgroup with no label attribute and no legend
  *     child;
+ *   - typeValue: a type on input or button that is not one of its
+ *     keywords (case aside), spaces included (type="bouton");
  *   - inputImageAlt: input type=image with no alt, or an empty one;
  *   - autocompleteValue: an empty autocomplete, a token list that is not a
  *     valid autofill detail list, on or off on input type=hidden, or a form
@@ -330,6 +332,10 @@ function runInPage(ctx) {
       () => 'This <optgroup> has no label attribute.',
       'Give the <optgroup> a label attribute that names the group.'
     ],
+    typeValue: [
+      (p) => `This <${p.element}> has type="${p.value}", which is not a type HTML defines for it.`,
+      'Use one of the types HTML defines: for a <button>, submit, reset or button.'
+    ],
     inputImageAlt: [
       () => 'This image button has no alt attribute, or an empty one.',
       'Give the <input type="image"> an alt attribute that says what the button does.'
@@ -501,6 +507,18 @@ function runInPage(ctx) {
             .trim()
             .toLowerCase()
         : '';
+
+    // An enumerated type matches its keyword exactly, case aside: an
+    // unknown value (« bouton »), or one with spaces, is a validator error.
+    if ((tag === 'input' || tag === 'button') && dom.hasAttribute(el, 'type')) {
+      const raw = String(attr(el, 'type'));
+      const known =
+        tag === 'button'
+          ? ['submit', 'reset', 'button'].includes(raw.toLowerCase())
+          : AUTOCOMPLETE_TYPES.has(raw.toLowerCase()) ||
+            NO_AUTOCOMPLETE_TYPES.has(raw.toLowerCase());
+      if (!known) report(el, 'typeValue', { value: raw, element: tag });
+    }
 
     if (tag === 'input' && inputType === 'image') {
       if (!dom.hasAttribute(el, 'alt') || attr(el, 'alt') === '') report(el, 'inputImageAlt', {});

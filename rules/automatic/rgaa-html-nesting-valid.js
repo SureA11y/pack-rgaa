@@ -34,6 +34,10 @@
  *     element with a tabindex attribute inside an a or a button. The rule
  *     applies to every a, with or without href, and counts a disabled
  *     control or a hidden descendant too, as the validator does;
+ *   - flowInPhrasing: flow content (div, p, a list, a table, a heading,
+ *     a sectioning element…) inside an element whose content model is
+ *     phrasing only (button, label, span, b, i, em, strong, a heading, p…),
+ *     through transparent a, ins, del or map;
  *   - ismapOutsideLink: an img with ismap and no a[href] ancestor;
  *   - extraMain: more than one main element in the document without its
  *     own hidden attribute. A main hidden by CSS, aria-hidden or a hidden
@@ -157,6 +161,11 @@ function runInPage(ctx) {
       (p) => `This <${p.element}> has a tabindex attribute and is nested in <${p.ancestor}>.`,
       'Remove the tabindex attribute, or move the element out of the link or button.'
     ],
+    flowInPhrasing: [
+      (p) =>
+        `This <${p.element}> is inside a <${p.parent}>, which may only hold phrasing content such as text, <span> or <img>.`,
+      'Use a phrasing element such as <span> inside it, or move the block out of it.'
+    ],
     ismapOutsideLink: [
       () => 'This <img> has the ismap attribute but no <a href> ancestor.',
       'Remove the ismap attribute, or put the image in a link with an href.'
@@ -235,6 +244,75 @@ function runInPage(ctx) {
   const ismaps = query('img[ismap]');
   const mains = query('main');
 
+  // Flow content inside an element whose content model is phrasing only:
+  // « Element div not allowed as child of element button ». <a>, <ins>,
+  // <del> and <map> are transparent, so their parent's model applies.
+  const PHRASING_ONLY = new Set([
+    'button',
+    'label',
+    'span',
+    'b',
+    'i',
+    'em',
+    'strong',
+    'small',
+    'abbr',
+    'cite',
+    'code',
+    'q',
+    's',
+    'sub',
+    'sup',
+    'u',
+    'mark',
+    'time',
+    'h1',
+    'h2',
+    'h3',
+    'h4',
+    'h5',
+    'h6',
+    'p'
+  ]);
+  const FLOW_ONLY = new Set([
+    'address',
+    'article',
+    'aside',
+    'blockquote',
+    'details',
+    'dialog',
+    'div',
+    'dl',
+    'fieldset',
+    'figure',
+    'footer',
+    'form',
+    'header',
+    'hr',
+    'main',
+    'nav',
+    'ol',
+    'p',
+    'pre',
+    'section',
+    'table',
+    'ul',
+    'h1',
+    'h2',
+    'h3',
+    'h4',
+    'h5',
+    'h6'
+  ]);
+  const TRANSPARENT = new Set(['a', 'ins', 'del', 'map']);
+  const flowInPhrasing = [];
+  for (const d of query(Array.from(FLOW_ONLY).join(', '))) {
+    if (!isHtml(d)) continue;
+    let p = parentElementOf(d);
+    while (p && isHtml(p) && TRANSPARENT.has(tagOf(p))) p = parentElementOf(p);
+    if (p && isHtml(p) && PHRASING_ONLY.has(tagOf(p))) flowInPhrasing.push([d, p]);
+  }
+
   const applicable =
     lists.length +
     items.length +
@@ -242,7 +320,8 @@ function runInPage(ctx) {
     dlItems.length +
     containers.length +
     ismaps.length +
-    mains.length;
+    mains.length +
+    flowInPhrasing.length;
   if (!applicable) return result('notApplicable');
 
   const doctype = helpers.getDoctypeInfo ? helpers.getDoctypeInfo() : { kind: 'html5' };
@@ -377,6 +456,10 @@ function runInPage(ctx) {
         ancestor: tagOf(anc)
       });
     }
+  }
+
+  for (const [d, p] of flowInPhrasing) {
+    report(d, 'flowInPhrasing', { element: tagOf(d), parent: tagOf(p) });
   }
 
   // img[ismap]: needs an a[href] ancestor.

@@ -420,3 +420,25 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
     Array.from({ length: 12 }, (_, i) => `heav_case_${String(i + 1).padStart(2, '0')}`)
   );
 });
+
+// Nu: « Bad value bouton for attribute type on element button ».
+test(`${RULE_ID}: a type that is not one of the element's keywords fails`, () => {
+  for (const body of [
+    '<button type="bouton">OK</button>',
+    '<input type="txt" aria-label="Nom">',
+    '<input type=" text " aria-label="Nom">'
+  ]) {
+    const r = runa11yCoreOnHtml(page(body), RUN).checksResults.find((c) => c.ruleId === RULE_ID);
+    assert.ok(
+      r.occurrences.some((o) => o.data.details.reasonCode === 'typeValue'),
+      body
+    );
+  }
+  for (const body of [
+    '<button type="BUTTON">OK</button>',
+    '<input type="Email" aria-label="Courriel">'
+  ]) {
+    const r = runa11yCoreOnHtml(page(body), RUN).checksResults.find((c) => c.ruleId === RULE_ID);
+    assert.ok(!r.occurrences.some((o) => o.data.details.reasonCode === 'typeValue'), body);
+  }
+});

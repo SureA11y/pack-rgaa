@@ -94,7 +94,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T89-11 | 8.4.1 | MISS | A wrong default language passes; `und`, `mul` pass (Q7). | open |
 | T89-12 | 8.7.1 | MISS | No rule: changes of language (Q6). | open |
 | T89-13 | 9.4 | MISS | No rule: quotations (Q12). | open |
-| T89-14 | 8.2.1 | MISS | Frequent validator errors (`<button><div>`, `type=bouton`, roles outside their container…) only ask. | open |
+| T89-14 | 8.2.1 | MISS | Frequent validator errors (`<button><div>`, `type=bouton`, roles outside their container…) only ask. Now failed: flow content in a phrasing-only element (`rgaa-html-nesting-valid`, flowInPhrasing) and an unknown type value (`rgaa-html-elements-attributes-valid`, typeValue). Still asked: ARIA roles outside their container, which is not a validator error in every case. | partial |
 | T89-15 | 9.1.3 | WO | `p-as-heading` asks about numbers and link-only paragraphs (C5). | core |
 | T89-16 | 8.4, 8.8, 8.10, 9.1 | WO | Criteria with a « pertinent » condition pass on validity alone. | open |
 | T89-17 | 9.3.1, 9.3.2 | WM | Every list finding names both the unordered and the ordered test. | open |
