@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 84,
-    "withFixture": 84,
+    "total": 85,
+    "withFixture": 85,
     "withoutFixture": 0
   },
   "rows": [
@@ -394,6 +394,23 @@
         "FAIL": 3,
         "CANTTELL": 4,
         "OTHER": 2
+      }
+    },
+    {
+      "ruleId": "rgaa-focus-not-removed",
+      "title": "Scripts do not remove focus from an element that receives it",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-focus-not-removed.js",
+      "testFile": "tests/rules/automatic/rgaa-focus-not-removed.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-focus-not-removed-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 1,
+        "CANTTELL": 0,
+        "OTHER": 1
       }
     },
     {

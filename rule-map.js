@@ -312,6 +312,10 @@ const RGAA_RULE_TESTS = {
       tests: ['1.9.1'],
       note: 'For a <figure> holding an image and a <figcaption> with text, fails when the figure has no role="figure" or role="group", or no aria-label identical to the caption: conditions 2 and 3 of 1.9.1. Conditions 1 and 4 (figure and figcaption) are what make the rule apply, so a caption given another way is not found.'
     },
+    'rgaa-focus-not-removed': {
+      tests: ['7.3.2'],
+      note: "Fails an element whose inline onfocus or onfocusin handler calls blur() on it (this.blur(), blur(), event.target.blur(), document.activeElement.blur()): 7.3.2 says « Un script ne doit pas supprimer le focus d'un élément qui le reçoit », and the particular case of 7.3, a feature with no universal equivalent, does not cover it. Asks when the handler gives focus to another element, which a widget may do on purpose. Handlers attached from script files are not seen."
+    },
     'rgaa-focus-indicator-contrast': {
       tests: ['10.7.1'],
       note: "Fails an element in the tab order whose native outline a focus rule replaces or removes, when every outline, border and box-shadow of its focus style is below 3:1 against both the background behind it and the element's own background, and nothing else changes on focus. That is the contrast part of 10.7.1 step 2 (« suffisamment contrastée (ratio de contraste égal ou supérieur à 3.0) »). It asks when a color, a background or the cascade cannot be worked out, when the indicator reaches 3:1 on one side only, or when the focus style is something else (background, text color, another element). An element that keeps the browser A style drawn on an ancestor or a label on focus (:focus-within, :has(:focus), or any change there in a browser) is not measured, so the element is asked about rather than failed on its own outline.'s outline meets condition 1 and is not checked. In a browser the element is focused and the rendered indicator is measured against what is painted on each side, so variables, @media and the cascade are settled there."

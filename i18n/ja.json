@@ -688,5 +688,11 @@
   "objectImageRoleImg_summary_cantTell_mayBeDecorative": "この画像オブジェクトには代替テキストがありません。情報を伝えるなら 1.1.6 に不適合、装飾なら aria-hidden=\"true\" が必要です（1.2.3）。",
   "objectImageRoleImg_hint_cantTell_mayBeDecorative": "画像が情報を伝えるなら <object> に role=\"img\" と aria-label または aria-labelledby を付けるか、代替コンテンツへのリンクやボタンを続けてください。装飾なら aria-hidden=\"true\" を追加してください。",
   "embedImageRoleImg_summary_cantTell_mayBeDecorative": "この埋め込み画像には代替テキストがありません。情報を伝えるなら 1.1.7 に不適合、装飾なら aria-hidden=\"true\" が必要です（1.2.6）。",
-  "embedImageRoleImg_hint_cantTell_mayBeDecorative": "画像が情報を伝えるなら <embed> に role=\"img\" と aria-label または aria-labelledby を付けるか、代替コンテンツへのリンクやボタンを続けてください。装飾なら aria-hidden=\"true\" を追加してください。"
+  "embedImageRoleImg_hint_cantTell_mayBeDecorative": "画像が情報を伝えるなら <embed> に role=\"img\" と aria-label または aria-labelledby を付けるか、代替コンテンツへのリンクやボタンを続けてください。装飾なら aria-hidden=\"true\" を追加してください。",
+  "focusNotRemoved_title": "スクリプトがフォーカスを受け取った要素からフォーカスを奪わない",
+  "focusNotRemoved_description": "インラインの onfocus ハンドラーが要素からフォーカスを外す場合は不合格とし、別の要素にフォーカスを移す場合は確認を求めます。",
+  "focusNotRemoved_summary_fail": "この要素の {{attribute}} ハンドラー（「{{code}}」）は、フォーカスを受け取るとすぐにそれを外します。",
+  "focusNotRemoved_hint_fail": "blur() の呼び出しを削除してください。キーボード利用者が要素に到達して操作し、フォーカスの位置を確認できる必要があります（RGAA 7.3.2）。",
+  "focusNotRemoved_summary_cantTell": "この要素の {{attribute}} ハンドラー（「{{code}}」）は、フォーカスを受け取ると別の要素にフォーカスを移します。",
+  "focusNotRemoved_hint_cantTell": "要素がフォーカスを保持するか、同じコンポーネントのアクティブな項目などへ意図的にフォーカスを移しているか確認してください（RGAA 7.3.2）。"
 }

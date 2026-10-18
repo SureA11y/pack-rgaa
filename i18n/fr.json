@@ -688,5 +688,11 @@
   "objectImageRoleImg_summary_cantTell_mayBeDecorative": "Cette image objet n’a pas d’alternative textuelle. Si elle est porteuse d’information, elle est en échec au test 1.1.6 ; si elle est de décoration, elle doit avoir aria-hidden=\"true\" (1.2.3).",
   "objectImageRoleImg_hint_cantTell_mayBeDecorative": "Si l’image est porteuse d’information, donnez à la balise <object> role=\"img\" et un aria-label ou aria-labelledby, ou faites-la suivre d’un lien ou bouton vers un contenu alternatif ; si elle est de décoration, ajoutez aria-hidden=\"true\".",
   "embedImageRoleImg_summary_cantTell_mayBeDecorative": "Cette image embarquée n’a pas d’alternative textuelle. Si elle est porteuse d’information, elle est en échec au test 1.1.7 ; si elle est de décoration, elle doit avoir aria-hidden=\"true\" (1.2.6).",
-  "embedImageRoleImg_hint_cantTell_mayBeDecorative": "Si l’image est porteuse d’information, donnez à la balise <embed> role=\"img\" et un aria-label ou aria-labelledby, ou faites-la suivre d’un lien ou bouton vers un contenu alternatif ; si elle est de décoration, ajoutez aria-hidden=\"true\"."
+  "embedImageRoleImg_hint_cantTell_mayBeDecorative": "Si l’image est porteuse d’information, donnez à la balise <embed> role=\"img\" et un aria-label ou aria-labelledby, ou faites-la suivre d’un lien ou bouton vers un contenu alternatif ; si elle est de décoration, ajoutez aria-hidden=\"true\".",
+  "focusNotRemoved_title": "Les scripts ne suppriment pas le focus d’un élément qui le reçoit",
+  "focusNotRemoved_description": "En échec pour un élément dont le gestionnaire onfocus lui retire le focus ; pose la question quand le gestionnaire déplace le focus vers un autre élément.",
+  "focusNotRemoved_summary_fail": "Le gestionnaire {{attribute}} de cet élément (« {{code}} ») lui retire le focus dès qu’il le reçoit.",
+  "focusNotRemoved_hint_fail": "Retirez l’appel à blur() : un utilisateur du clavier doit pouvoir atteindre et utiliser l’élément, et voir où se trouve le focus (RGAA 7.3.2).",
+  "focusNotRemoved_summary_cantTell": "Le gestionnaire {{attribute}} de cet élément (« {{code}} ») déplace le focus vers un autre élément quand il le reçoit.",
+  "focusNotRemoved_hint_cantTell": "Vérifiez que l’élément garde le focus, ou que le focus passe volontairement à une partie du même composant, comme son élément actif (RGAA 7.3.2)."
 }

@@ -688,5 +688,11 @@
   "objectImageRoleImg_summary_cantTell_mayBeDecorative": "Dieses Bildobjekt hat keine Textalternative. Trägt es Informationen, verstößt es gegen 1.1.6; ist es dekorativ, braucht es aria-hidden=\"true\" (1.2.3).",
   "objectImageRoleImg_hint_cantTell_mayBeDecorative": "Trägt das Bild Informationen, geben Sie dem <object> role=\"img\" und ein aria-label oder aria-labelledby, oder lassen Sie ihm einen Link oder eine Schaltfläche zu einem alternativen Inhalt folgen; ist es dekorativ, fügen Sie aria-hidden=\"true\" hinzu.",
   "embedImageRoleImg_summary_cantTell_mayBeDecorative": "Dieses eingebettete Bild hat keine Textalternative. Trägt es Informationen, verstößt es gegen 1.1.7; ist es dekorativ, braucht es aria-hidden=\"true\" (1.2.6).",
-  "embedImageRoleImg_hint_cantTell_mayBeDecorative": "Trägt das Bild Informationen, geben Sie dem <embed> role=\"img\" und ein aria-label oder aria-labelledby, oder lassen Sie ihm einen Link oder eine Schaltfläche zu einem alternativen Inhalt folgen; ist es dekorativ, fügen Sie aria-hidden=\"true\" hinzu."
+  "embedImageRoleImg_hint_cantTell_mayBeDecorative": "Trägt das Bild Informationen, geben Sie dem <embed> role=\"img\" und ein aria-label oder aria-labelledby, oder lassen Sie ihm einen Link oder eine Schaltfläche zu einem alternativen Inhalt folgen; ist es dekorativ, fügen Sie aria-hidden=\"true\" hinzu.",
+  "focusNotRemoved_title": "Skripte entziehen einem Element, das den Fokus erhält, den Fokus nicht",
+  "focusNotRemoved_description": "Schlägt bei einem Element fehl, dessen onfocus-Handler ihm den Fokus entzieht; fragt nach, wenn der Handler den Fokus auf ein anderes Element setzt.",
+  "focusNotRemoved_summary_fail": "Der {{attribute}}-Handler dieses Elements („{{code}}“) entzieht ihm den Fokus, sobald es ihn erhält.",
+  "focusNotRemoved_hint_fail": "Entfernen Sie den Aufruf von blur(): Wer die Tastatur nutzt, muss das Element erreichen, bedienen und sehen können, wo der Fokus ist (RGAA 7.3.2).",
+  "focusNotRemoved_summary_cantTell": "Der {{attribute}}-Handler dieses Elements („{{code}}“) setzt den Fokus auf ein anderes Element, wenn es ihn erhält.",
+  "focusNotRemoved_hint_cantTell": "Prüfen Sie, dass das Element den Fokus behält oder dass der Fokus absichtlich an einen Teil derselben Komponente geht, etwa ihr aktives Element (RGAA 7.3.2)."
 }

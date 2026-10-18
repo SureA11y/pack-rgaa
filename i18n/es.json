@@ -688,5 +688,11 @@
   "objectImageRoleImg_summary_cantTell_mayBeDecorative": "Esta imagen objeto no tiene alternativa textual. Si transmite información, falla el 1.1.6; si es decorativa, necesita aria-hidden=\"true\" (1.2.3).",
   "objectImageRoleImg_hint_cantTell_mayBeDecorative": "Si la imagen transmite información, dé al <object> role=\"img\" y un aria-label o aria-labelledby, o haga que la siga un enlace o botón a un contenido alternativo; si es decorativa, añada aria-hidden=\"true\".",
   "embedImageRoleImg_summary_cantTell_mayBeDecorative": "Esta imagen incrustada no tiene alternativa textual. Si transmite información, falla el 1.1.7; si es decorativa, necesita aria-hidden=\"true\" (1.2.6).",
-  "embedImageRoleImg_hint_cantTell_mayBeDecorative": "Si la imagen transmite información, dé al <embed> role=\"img\" y un aria-label o aria-labelledby, o haga que la siga un enlace o botón a un contenido alternativo; si es decorativa, añada aria-hidden=\"true\"."
+  "embedImageRoleImg_hint_cantTell_mayBeDecorative": "Si la imagen transmite información, dé al <embed> role=\"img\" y un aria-label o aria-labelledby, o haga que la siga un enlace o botón a un contenido alternativo; si es decorativa, añada aria-hidden=\"true\".",
+  "focusNotRemoved_title": "Los scripts no quitan el foco a un elemento que lo recibe",
+  "focusNotRemoved_description": "Falla un elemento cuyo gestor onfocus le quita el foco; pregunta cuando el gestor mueve el foco a otro elemento.",
+  "focusNotRemoved_summary_fail": "El gestor {{attribute}} de este elemento (\"{{code}}\") le quita el foco en cuanto lo recibe.",
+  "focusNotRemoved_hint_fail": "Quite la llamada a blur(): quien usa el teclado debe poder llegar al elemento, usarlo y ver dónde está el foco (RGAA 7.3.2).",
+  "focusNotRemoved_summary_cantTell": "El gestor {{attribute}} de este elemento (\"{{code}}\") mueve el foco a otro elemento cuando lo recibe.",
+  "focusNotRemoved_hint_cantTell": "Compruebe que el elemento conserva el foco, o que el foco pasa a propósito a una parte del mismo componente, como su elemento activo (RGAA 7.3.2)."
 }

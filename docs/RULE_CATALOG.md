@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**84 rules total: 64 automatic (decide deterministically; can return `fail`), 20 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**85 rules total: 65 automatic (decide deterministically; can return `fail`), 20 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -14,7 +14,7 @@ Under **What a finding reports**, a rule lists the fields its findings carry in 
 
 See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_SCHEMA.md) for what `type`/`confidence`/`severity` mean on a scan result, and [`WCAG_CONFORMANCE.md`](https://github.com/SureA11y/core/blob/main/docs/WCAG_CONFORMANCE.md) for how these roll up to an SC-level conformance claim.
 
-## Automatic rules (64), can return `fail`
+## Automatic rules (65), can return `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -35,6 +35,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-field-label-listed-source`](#rgaa-field-label-listed-source) | Form fields have a label from a source RGAA lists | — | — | high | serious |
 | [`rgaa-figure-caption-structure`](#rgaa-figure-caption-structure) | Images with a caption use the figure structure RGAA describes | — | — | high | minor |
 | [`rgaa-focus-indicator-contrast`](#rgaa-focus-indicator-contrast) | Author focus indicators have a contrast ratio of at least 3:1 | — | — | medium | serious |
+| [`rgaa-focus-not-removed`](#rgaa-focus-not-removed) | Scripts do not remove focus from an element that receives it | — | — | high | serious |
 | [`rgaa-form-button-label-in-name-sources`](#rgaa-form-button-label-in-name-sources) | The accessible name of a button in a form contains its visible label | — | — | high | serious |
 | [`rgaa-form-button-name-present`](#rgaa-form-button-name-present) | Buttons in a form have a label | — | — | high | serious |
 | [`rgaa-frame-title-attribute-present`](#rgaa-frame-title-attribute-present) | Frames have a title attribute | — | — | high | serious |
@@ -165,7 +166,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-6.1` | Chaque lien est-il explicite (hors cas particuliers) ? | `identical-links-same-purpose`, `link-name-quality`, `rgaa-link-context-review`, `rgaa-link-label-in-name-sources` |
 | `rgaa-4.1.2-6.2` | Dans chaque page web, chaque lien a-t-il un intitulé ? | `rgaa-link-content-label-present` |
 | `rgaa-4.1.2-7.1` | Chaque script est-il, si nécessaire, compatible avec les technologies d’assistance ? | `aria-role-name-present`, `dialog-name-present`, `menuitem-name-present`, `rgaa-script-button-name-present`, `rgaa-scripted-components-review`, `rgaa-widget-label-in-name`, `tab-name-present`, `treeitem-name-present` |
-| `rgaa-4.1.2-7.3` | Chaque script est-il contrôlable par le clavier et par tout dispositif de pointage (hors cas particuliers) ? | `mouse-only-event-handlers`, `rgaa-keyboard-only-event-handlers` |
+| `rgaa-4.1.2-7.3` | Chaque script est-il contrôlable par le clavier et par tout dispositif de pointage (hors cas particuliers) ? | `mouse-only-event-handlers`, `rgaa-focus-not-removed`, `rgaa-keyboard-only-event-handlers` |
 | `rgaa-4.1.2-8.1` | Chaque page web est-elle définie par un type de document ? | `rgaa-doctype-position`, `rgaa-doctype-present`, `rgaa-doctype-valid` |
 | `rgaa-4.1.2-8.10` | Dans chaque page web, les changements du sens de lecture sont-ils signalés ? | `rgaa-dir-attribute-valid`, `rgaa-text-direction-marked` |
 | `rgaa-4.1.2-8.2` | Pour chaque page web, le code source généré est-il valide selon le type de document spécifié ? | `duplicate-id`, `rgaa-aria-attribute-conformance`, `rgaa-aria-role-conformance`, `rgaa-html-elements-attributes-valid`, `rgaa-html-nesting-valid`, `rgaa-markup-validation-review` |
@@ -559,6 +560,23 @@ Checks that an outline, border or box-shadow drawn by a :focus or :focus-visible
 **Expectation.** RGAA 10.7.1, step 2: the indicator is « suffisamment contrastée (ratio de contraste égal ou supérieur à 3.0) ». Each outline, border or box-shadow of the focus style is measured against the two colors it touches: the background behind the element and the element's own background (only the latter for an inset shadow). The element passes when one indicator reaches 3:1 against both. It fails when every indicator is below 3:1 against both and nothing else changes on focus. It is asked about (cantTell) otherwise: a color or background the engine cannot compute (background image, gradient, `var()`, a translucent page root in strict contrast mode), a blurred shadow, an indicator that reaches 3:1 against one side only, a focus style made of other changes (background, text color, underline, a pseudo-element, a rule that styles another element), or a cascade the engine cannot settle. Margin (`contrast-ratio`): of the focus indicators that reach 3:1 against every color next to them, the one closest to it, with its lowest ratio unrounded; `context.property` names the outline, border or box-shadow. `measuredCount` counts the elements whose focus style was judged.
 
 **Margin.** `contrast-ratio`, in a ratio: the value must reach the threshold, and the result's `margin` names the element that came closest while meeting it.
+
+### `rgaa-focus-not-removed`
+
+**Scripts do not remove focus from an element that receives it**
+
+automatic · no formal WCAG SC mapping · confidence high · default severity serious
+
+Fails an element whose inline onfocus handler blurs it; asks about one whose handler moves focus to another element.
+
+**Applies to.** Applies to elements with an inline onfocus or onfocusin handler that calls blur() or moves focus to another element. A page with none is notApplicable.
+
+**Expectation.**
+
+RGAA 7.3.2: « Un script ne doit pas supprimer le focus d'un élément qui le reçoit. »
+
+- A handler that blurs the element (this.blur(), blur(), event.target.blur(), document.activeElement.blur()) fails (blurOnFocus): the element loses focus as it gets it. The particular case of 7.3, a feature with no universal equivalent such as freehand drawing, does not cover removing focus.
+- A handler that gives focus to another element is asked about (focusMovedOnFocus): a widget may pass focus on to its active part on purpose, which only a person can judge.
 
 ### `rgaa-form-button-label-in-name-sources`
 

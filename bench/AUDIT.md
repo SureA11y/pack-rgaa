@@ -69,7 +69,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T67-06 | 6.1.2, 6.1.3, 6.1.5 | MISS | Note 2 (a `title` that drops the content's name) and images of text in links are not checked. | open |
 | T67-07 | 6.1.1–6.1.4 | MISS | Gaps in the French generic-phrase list; no list used without `lang`. | open |
 | T67-08 | 6.1 | WO | `link-name-quality` names a link by `title` before content (C4). | core |
-| T67-09 | 7.3.2 | MISS | `onfocus="this.blur()"` is not detected. | open |
+| T67-09 | 7.3.2 | MISS | `onfocus="this.blur()"` is not detected. Now failed by `rgaa-focus-not-removed`; a handler that moves focus elsewhere is asked about. | done |
 | T67-10 | 7.4.1 | MISS | Changes of context on `select`/fields are never asked about. | open |
 | T67-11 | 7.2.1 | MISS | `<noscript>` alternatives are not asked about. | open |
 | T67-12 | 7.5 | MISS | Status messages get no targeted question. | open |

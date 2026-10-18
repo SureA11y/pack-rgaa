@@ -489,6 +489,22 @@ The outline that replaces the browser's own is black on white, 21:1.
 ```
 The box-shadow is visible, which is all WCAG 2.4.7 asks, but #eee on white is 1.16:1, below the 3:1 RGAA 10.7.1 requires. A focus style the engine cannot measure (a background image, a CSS variable, a background or text-color change) is asked about instead.
 
+## rgaa-focus-not-removed
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Failed**
+```html
+<a href="/actualites" onfocus="this.blur()">Actualités</a>
+```
+The link loses focus as soon as it receives it: RGAA 7.3.2 says « Un script ne doit pas supprimer le focus d'un élément qui le reçoit ».
+
+**Not applicable**
+```html
+<a href="/actualites" onfocus="this.classList.add('actif')">Actualités</a>
+```
+The handler keeps focus on the link.
+
 ## rgaa-form-button-label-in-name-sources
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*

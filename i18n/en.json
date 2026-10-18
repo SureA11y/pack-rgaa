@@ -688,5 +688,11 @@
   "objectImageRoleImg_summary_cantTell_mayBeDecorative": "This image object has no text alternative. If it carries information, it fails 1.1.6; if it is decorative, it needs aria-hidden=\"true\" (1.2.3).",
   "objectImageRoleImg_hint_cantTell_mayBeDecorative": "If the image carries information, give the <object> role=\"img\" and an aria-label or aria-labelledby, or follow it with a link or button to an alternative content; if it is decorative, add aria-hidden=\"true\".",
   "embedImageRoleImg_summary_cantTell_mayBeDecorative": "This image embed has no text alternative. If it carries information, it fails 1.1.7; if it is decorative, it needs aria-hidden=\"true\" (1.2.6).",
-  "embedImageRoleImg_hint_cantTell_mayBeDecorative": "If the image carries information, give the <embed> role=\"img\" and an aria-label or aria-labelledby, or follow it with a link or button to an alternative content; if it is decorative, add aria-hidden=\"true\"."
+  "embedImageRoleImg_hint_cantTell_mayBeDecorative": "If the image carries information, give the <embed> role=\"img\" and an aria-label or aria-labelledby, or follow it with a link or button to an alternative content; if it is decorative, add aria-hidden=\"true\".",
+  "focusNotRemoved_title": "Scripts do not remove focus from an element that receives it",
+  "focusNotRemoved_description": "Fails an element whose inline onfocus handler blurs it; asks about one whose handler moves focus to another element.",
+  "focusNotRemoved_summary_fail": "This element's {{attribute}} handler (\"{{code}}\") removes focus from it as soon as it receives it.",
+  "focusNotRemoved_hint_fail": "Remove the blur() call: a keyboard user must be able to reach and use the element, and see where focus is (RGAA 7.3.2).",
+  "focusNotRemoved_summary_cantTell": "This element's {{attribute}} handler (\"{{code}}\") moves focus to another element when it receives it.",
+  "focusNotRemoved_hint_cantTell": "Check that the element keeps focus, or that focus moves on purpose to a part of the same component, such as its active item (RGAA 7.3.2)."
 }

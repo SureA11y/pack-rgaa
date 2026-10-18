@@ -4,13 +4,13 @@ This pack's rules and their scenario pages. Every rule should have a `tests/fixt
 
 ## Summary
 
-Total rules: **84**. With fixture: **84**. Without fixture: **0**.
+Total rules: **85**. With fixture: **85**. Without fixture: **0**.
 
 ## Rules WITHOUT a fixture (0)
 
 None — every rule has a fixture.
 
-## Rules WITH a fixture (84)
+## Rules WITH a fixture (85)
 
 | Rule ID | Type | Fixture | Cases | PASS | FAIL | CANTTELL | OTHER |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -37,6 +37,7 @@ None — every rule has a fixture.
 | rgaa-field-label-listed-source | automatic | `tests/fixtures/rgaa-field-label-listed-source-all-scenarios.html` | 15 | 4 | 7 | 3 | 1 |
 | rgaa-figure-caption-structure | automatic | `tests/fixtures/rgaa-figure-caption-structure-all-scenarios.html` | 8 | 2 | 4 | 0 | 2 |
 | rgaa-focus-indicator-contrast | automatic | `tests/fixtures/rgaa-focus-indicator-contrast-all-scenarios.html` | 11 | 2 | 3 | 4 | 2 |
+| rgaa-focus-not-removed | automatic | `tests/fixtures/rgaa-focus-not-removed-all-scenarios.html` | 2 | 0 | 1 | 0 | 1 |
 | rgaa-form-button-label-in-name-sources | automatic | `tests/fixtures/rgaa-form-button-label-in-name-sources-all-scenarios.html` | 9 | 2 | 3 | 2 | 2 |
 | rgaa-form-button-name-present | automatic | `tests/fixtures/rgaa-form-button-name-present-all-scenarios.html` | 9 | 3 | 3 | 2 | 1 |
 | rgaa-frame-title-attribute-present | automatic | `tests/fixtures/rgaa-frame-title-attribute-present-all-scenarios.html` | 10 | 1 | 6 | 0 | 3 |
