@@ -9,13 +9,16 @@
  * @standard RGAA 4.1.2 (no WCAG Success Criterion)
  * @applicability
  *   Applies to <figure> elements that contain an image (<img>,
- *   <input type="image"> or an element with role="img") and a <figcaption>
+ *   <input type="image"> or an element with role="img", for 1.9.1; an
+ *   <object> or <embed> of an image type, an <svg> or a <canvas>, for 1.9.2
+ *   to 1.9.5, which set the same conditions) and a <figcaption>
  *   with text, both rendered: a caption or an image hidden with CSS or the
  *   hidden attribute is none to a user (glossary « Contenu caché »). A
  *   page with none is notApplicable.
  * @expectation
  *   The <figure> has role="figure" or role="group", and an aria-label whose
- *   text is the same as the caption's, whitespace collapsed (RGAA 1.9.1).
+ *   text is the same as the caption's, whitespace collapsed (RGAA 1.9.1 to
+ *   1.9.5).
  *   The caption being inside a <figcaption> is what makes the figure
  *   applicable.
  * @implementation-notes
@@ -86,15 +89,25 @@ function runInPage(ctx) {
     );
     const captionText = caption ? collapse(dom.textContent(caption)) : '';
     // An element with role img is one whose role resolves to img: role="link img" is a link.
+    // 1.9.1 covers <img>, image buttons and role="img"; 1.9.2 to 1.9.5 set
+    // the same conditions for image objects, image embeds, <svg> and
+    // <canvas>.
     const image = Array.from(
-      dom.querySelectorAll(figure, 'img, input[type="image" i], [role~="img" i]')
-    ).find(
-      (el) =>
-        dom.closest(el, 'figure') === figure &&
-        shown(el) &&
-        (dom.matches(el, 'img, input[type="image" i]') ||
-          helpers.aria.getExplicitRole(el) === 'img')
-    );
+      dom.querySelectorAll(
+        figure,
+        'img, input[type="image" i], [role~="img" i], svg, canvas, object[type^="image/" i], embed[type^="image/" i]'
+      )
+    ).find((el) => {
+      if (dom.closest(el, 'figure') !== figure || !shown(el)) return false;
+      if (dom.matches(el, 'svg')) {
+        const p = dom.parentElement(el);
+        return !(p && dom.closest(p, 'svg'));
+      }
+      return (
+        dom.matches(el, 'img, input[type="image" i], canvas, object, embed') ||
+        helpers.aria.getExplicitRole(el) === 'img'
+      );
+    });
     if (!captionText || !image) continue;
     applicableCount += 1;
 
@@ -133,7 +146,12 @@ function runInPage(ctx) {
           params: {}
         },
         data: {
-          details: { reasonCode, reasons, caption: captionText },
+          details: {
+            reasonCode,
+            reasons,
+            caption: captionText,
+            element: String(dom.localName(image) || '').toLowerCase()
+          },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })

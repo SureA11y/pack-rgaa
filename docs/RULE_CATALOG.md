@@ -582,9 +582,9 @@ automatic · no formal WCAG SC mapping · confidence high · default severity mi
 
 Checks that a &lt;figure&gt; holding an image and a &lt;figcaption&gt; has role="figure" or "group" and an aria-label matching the caption.
 
-**Applies to.** Applies to &lt;figure&gt; elements that contain an image (&lt;img&gt;, &lt;input type="image"&gt; or an element with role="img") and a &lt;figcaption&gt; with text, both rendered: a caption or an image hidden with CSS or the hidden attribute is none to a user (glossary « Contenu caché »). A page with none is notApplicable.
+**Applies to.** Applies to &lt;figure&gt; elements that contain an image (&lt;img&gt;, &lt;input type="image"&gt; or an element with role="img", for 1.9.1; an &lt;object&gt; or &lt;embed&gt; of an image type, an &lt;svg&gt; or a &lt;canvas&gt;, for 1.9.2 to 1.9.5, which set the same conditions) and a &lt;figcaption&gt; with text, both rendered: a caption or an image hidden with CSS or the hidden attribute is none to a user (glossary « Contenu caché »). A page with none is notApplicable.
 
-**Expectation.** The &lt;figure&gt; has role="figure" or role="group", and an aria-label whose text is the same as the caption's, whitespace collapsed (RGAA 1.9.1). The caption being inside a &lt;figcaption&gt; is what makes the figure applicable.
+**Expectation.** The &lt;figure&gt; has role="figure" or role="group", and an aria-label whose text is the same as the caption's, whitespace collapsed (RGAA 1.9.1 to 1.9.5). The caption being inside a &lt;figcaption&gt; is what makes the figure applicable.
 
 ### `rgaa-focus-indicator-contrast`
 

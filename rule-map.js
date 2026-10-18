@@ -321,8 +321,8 @@ const RGAA_RULE_TESTS = {
       note: 'Fails a form field (those of the glossary entry "Champ de saisie de formulaire", native and ARIA, without option, optgroup and datalist) that has none of the sources 11.1.1 lists: an aria-labelledby pointing to text, an aria-label, a <label for> or a title. A placeholder, the field\'s own content and an <output>\'s value do not count. Asks instead when the only label is a <label> wrapping the field without for (the glossary "Étiquette de champ de formulaire" accepts any <label>, while 11.1.1 names a <label> with for), when a <label for> points at an element a label cannot name, and when the only source present is empty. It takes over 11.1.1 from the WCAG field-name rules, which accept a wrapping label, a placeholder or a name from content.'
     },
     'rgaa-figure-caption-structure': {
-      tests: ['1.9.1'],
-      note: 'For a <figure> holding an image and a <figcaption> with text, fails when the figure has no role="figure" or role="group", or no aria-label identical to the caption: conditions 2 and 3 of 1.9.1. Conditions 1 and 4 (figure and figcaption) are what make the rule apply, so a caption given another way is not found.'
+      tests: ['1.9.1', '1.9.2', '1.9.3', '1.9.4', '1.9.5'],
+      note: 'For a <figure> holding an image (<img>, image button or role="img" for 1.9.1; an image <object>, image <embed>, <svg> or <canvas> for 1.9.2 to 1.9.5, which set the same conditions) and a <figcaption> with text, fails when the figure has no role="figure" or role="group", or no aria-label identical to the caption: conditions 2 and 3 of each of those tests. Conditions 1 and 4 (figure and figcaption) are what make the rule apply, so a caption given another way is not found.'
     },
     'rgaa-focus-not-removed': {
       tests: ['7.3.2'],

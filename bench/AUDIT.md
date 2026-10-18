@@ -19,7 +19,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T1-06 | 1.1.1, 1.2.1 | WO | `alt=" "` is reported as no alt; a spacer with `alt=" "` fails 1.1.1 instead of 1.2.1. | done |
 | T1-07 | 1.2.4 | MISS | An exposed decorative SVG without `aria-hidden` (including `role="presentation"`) is never checked against 1.2.4. | done (rgaa-svg-decorative-aria-hidden) |
 | T1-15 | 1.1.1, 1.1.5–1.1.8, 6.2.1 | WM | An image that is a link's or button's only content failed theme 1; the glossary « Image porteuse d'information » (notes 1 and 2) judges it as the control's label, under Links, Forms or Scripts. Now left out of the theme-1 rules (`<img>`, `<svg>`, `<canvas>`, `<object>`, `<embed>`, `role="img"`), and `rgaa-link-content-label-present` fails a link whose only content is a `<canvas>`, `<object>` or `<embed>` image with no alternative. | done |
-| T1-08 | 1.9.2–1.9.5 | MISS | Captioned svg, canvas, object and embed images are not checked. | open |
+| T1-08 | 1.9.2–1.9.5 | MISS | Captioned svg, canvas, object and embed images are not checked. Now checked by `rgaa-figure-caption-structure`, linked to 1.9.1–1.9.5. | done |
 | T1-09 | 1.1.1 | MISS | `alt=""` images in a named figure or nav are never asked about (C7). | core |
 | T1-10 | 1.4, 1.5 | MISS | CAPTCHAs: no question (Q5). | open |
 | T1-11 | 1.3.1, 1.3.6 | WM | Relevance asked about images that are a link's or button's only content, which the glossary sends to 6.1 and 11.9. | core |

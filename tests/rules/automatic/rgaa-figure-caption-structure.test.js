@@ -94,6 +94,29 @@ test(`${RULE_ID}: image buttons and role="img" count as images`, () => {
   }
 });
 
+// 1.9.2 to 1.9.5 set the same conditions for image objects, image embeds,
+// <svg> and <canvas>.
+test(`${RULE_ID}: image objects and embeds, <svg> and <canvas> count as images`, () => {
+  for (const [image, element] of [
+    ['<object type="image/png" data="a.png"></object>', 'object'],
+    ['<embed type="image/svg+xml" src="a.svg">', 'embed'],
+    ['<svg width="10" height="10"><rect width="10" height="10"/></svg>', 'svg'],
+    ['<canvas width="10" height="10"></canvas>', 'canvas']
+  ]) {
+    const rule = assertRule(runa11yCoreOnHtml(page(figure('', image)), RUN), RULE_ID, 'fail');
+    assert.equal(rule.occurrences[0].data.details.element, element, image);
+  }
+  // An object of another type is no image.
+  assertRule(
+    runa11yCoreOnHtml(
+      page(figure('', '<object type="application/pdf" data="a.pdf"></object>')),
+      RUN
+    ),
+    RULE_ID,
+    'notApplicable'
+  );
+});
+
 test(`${RULE_ID}: opt-in, so a default run does not include it`, () => {
   const result = runa11yCoreOnHtml(page(figure('')));
   assert.ok(!result.checksResults.some((r) => r.ruleId === RULE_ID));
