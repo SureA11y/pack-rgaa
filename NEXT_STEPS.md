@@ -55,7 +55,7 @@ Suggested order for the open items, most useful first:
 8. T1-12 (rest of 1.6, 1.7): only 1.6.9 is checked so far.
 9. The rest of the open list.
 
-Owner decisions still pending:
+Still to do, approved by the owner:
 
 - The owner approved rewording commit `dab2b17` ("Ask where RGAA leaves
   the call to a person…"), whose last bullet says the map notes "no longer
