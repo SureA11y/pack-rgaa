@@ -4,13 +4,13 @@ This pack's rules and their scenario pages. Every rule should have a `tests/fixt
 
 ## Summary
 
-Total rules: **78**. With fixture: **78**. Without fixture: **0**.
+Total rules: **79**. With fixture: **79**. Without fixture: **0**.
 
 ## Rules WITHOUT a fixture (0)
 
 None — every rule has a fixture.
 
-## Rules WITH a fixture (78)
+## Rules WITH a fixture (79)
 
 | Rule ID | Type | Fixture | Cases | PASS | FAIL | CANTTELL | OTHER |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -80,6 +80,7 @@ None — every rule has a fixture.
 | rgaa-radio-group-present | manual | `tests/fixtures/rgaa-radio-group-present-all-scenarios.html` | 6 | 0 | 0 | 0 | 6 |
 | rgaa-required-field-indication | automatic | `tests/fixtures/rgaa-required-field-indication-all-scenarios.html` | 5 | 1 | 2 | 1 | 1 |
 | rgaa-role-img-aria-name | automatic | `tests/fixtures/rgaa-role-img-aria-name-all-scenarios.html` | 9 | 2 | 3 | 1 | 3 |
+| rgaa-script-button-name-present | automatic | `tests/fixtures/rgaa-script-button-name-present-all-scenarios.html` | 3 | 1 | 1 | 0 | 1 |
 | rgaa-scripted-components-review | manual | `tests/fixtures/rgaa-scripted-components-review-all-scenarios.html` | 12 | 0 | 0 | 0 | 12 |
 | rgaa-skip-link-placement | automatic | `tests/fixtures/rgaa-skip-link-placement-all-scenarios.html` | 1 | 0 | 0 | 1 | 0 |
 | rgaa-skip-link-present | automatic | `tests/fixtures/rgaa-skip-link-present-all-scenarios.html` | 1 | 0 | 1 | 0 | 0 |
@@ -91,5 +92,5 @@ None — every rule has a fixture.
 | rgaa-title-placeholder-identical | automatic | `tests/fixtures/rgaa-title-placeholder-identical-all-scenarios.html` | 7 | 2 | 0 | 3 | 2 |
 | rgaa-video-captions-track-kind | automatic | `tests/fixtures/rgaa-video-captions-track-kind-all-scenarios.html` | 9 | 2 | 4 | 1 | 2 |
 | rgaa-viewport-zoom-review | manual | `tests/fixtures/rgaa-viewport-zoom-review-all-scenarios.html` | 1 | 0 | 0 | 1 | 0 |
-| rgaa-widget-label-in-name | automatic | `tests/fixtures/rgaa-widget-label-in-name-all-scenarios.html` | 6 | 1 | 2 | 1 | 2 |
+| rgaa-widget-label-in-name | automatic | `tests/fixtures/rgaa-widget-label-in-name-all-scenarios.html` | 7 | 1 | 3 | 1 | 2 |
 

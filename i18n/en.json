@@ -114,7 +114,7 @@
   "formButtonLabelInNameSources_summary_cantTell_nearMatch": "{{element}}: the {{sources}} of this button differs from its visible label \"{{visibleLabel}}\" only by an abbreviation or by text in parentheses.",
   "formButtonLabelInNameSources_hint_cantTell_nearMatch": "Check whether the source still contains the visible label as a user would say it. RGAA excuses only punctuation and capital letters.",
   "widgetLabelInName_title": "The accessible name of a scripted component contains its visible label",
-  "widgetLabelInName_description": "Checks that an element with an ARIA widget role (tab, menu item, tree item, grid cell, option) has an accessible name that contains its visible label, as RGAA 7.1.3 requires.",
+  "widgetLabelInName_description": "Checks that an element with an ARIA widget role (tab, menu item, tree item, grid cell, option), or a button outside a form, has an accessible name that contains its visible label, as RGAA 7.1.3 requires.",
   "widgetLabelInName_summary_fail_name": "{{element}}: the accessible name of this component (from {{sources}}) does not contain its visible label \"{{visibleLabel}}\".",
   "widgetLabelInName_hint_fail_name": "Make the attribute that names the element contain the visible label, ideally at its start, or remove it so the visible text names the element.",
   "widgetLabelInName_summary_cantTell_symbol": "{{element}}: the visible label \"{{visibleLabel}}\" of this component may be a symbol, and the {{sources}} does not contain it.",
@@ -643,5 +643,11 @@
   "markupForPresentation_hint_emptyParagraph": "If the paragraph only makes space, remove it and use CSS margins instead (RGAA 8.9.1).",
   "markupForPresentation_hint_placeholder": "If the element only makes space, remove it and use CSS margins instead (RGAA 8.9.1).",
   "markupForPresentation_hint_consecutiveBr": "If the line breaks separate paragraphs, mark each paragraph with <p> and space them with CSS (RGAA 8.9.1).",
-  "markupForPresentation_hint_spacesForMargin": "Make margins and alignment with CSS, not with spaces (RGAA 8.9.1)."
+  "markupForPresentation_hint_spacesForMargin": "Make margins and alignment with CSS, not with spaces (RGAA 8.9.1).",
+  "scriptButtonNamePresent_title": "Buttons outside a form have a name",
+  "scriptButtonNamePresent_description": "Checks that each button outside a form, a component only a script can drive, has a name that RGAA 7.1.3 can judge.",
+  "scriptButtonNamePresent_summary_fail_nameMissing": "This button has no name.",
+  "scriptButtonNamePresent_hint_fail_nameMissing": "Give the button visible text that describes its action, or an aria-label, aria-labelledby or title; for an image button, an alt (RGAA 7.1.3).",
+  "scriptButtonNamePresent_summary_cantTell_imageButtonNoAlt": "This image button has no alt, aria-label, aria-labelledby or title; the browser names it with a generic \"Submit\".",
+  "scriptButtonNamePresent_hint_cantTell_imageButtonNoAlt": "Give the image button an alt that describes its action, then check that the name is relevant (RGAA 7.1.3)."
 }

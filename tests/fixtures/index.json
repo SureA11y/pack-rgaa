@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 78,
-    "withFixture": 78,
+    "total": 79,
+    "withFixture": 79,
     "withoutFixture": 0
   },
   "rows": [
@@ -1128,6 +1128,23 @@
       }
     },
     {
+      "ruleId": "rgaa-script-button-name-present",
+      "title": "Buttons outside a form have a name",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-script-button-name-present.js",
+      "testFile": "tests/rules/automatic/rgaa-script-button-name-present.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-script-button-name-present-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 1,
+        "FAIL": 1,
+        "CANTTELL": 0,
+        "OTHER": 1
+      }
+    },
+    {
       "ruleId": "rgaa-scripted-components-review",
       "title": "Scripted components are compatible with assistive technologies",
       "type": "manual",
@@ -1323,10 +1340,10 @@
       "testFile": "tests/rules/automatic/rgaa-widget-label-in-name.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-widget-label-in-name-all-scenarios.html",
-      "totalCases": 6,
+      "totalCases": 7,
       "caseCounts": {
         "PASS": 1,
-        "FAIL": 2,
+        "FAIL": 3,
         "CANTTELL": 1,
         "OTHER": 2
       }

@@ -158,7 +158,7 @@ const RGAA_RULE_TESTS = {
     },
     'button-name-present': {
       tests: [],
-      note: 'Flags button, input button/submit/reset and role=button with an empty accessible name. Not mapped to 11.9.1: that test covers only the buttons inside a form (a <form> or role="form"), and most unnamed buttons are outside one; rgaa-form-button-name-present reports the buttons in a form there. Not mapped to 7.1.1 either: it passes when an accessible alternative exists, so a failure under it is not certain.'
+      note: 'Flags button, input button/submit/reset and role=button with an empty accessible name. Not mapped to 11.9.1: that test covers only the buttons inside a form (a <form> or role="form"), and most unnamed buttons are outside one; rgaa-form-button-name-present reports the buttons in a form there. Not mapped to 7.1.1 either: it passes when an accessible alternative exists, so a failure under it is not certain. rgaa-script-button-name-present reports the buttons outside a form under 7.1.3, which offers no alternative.'
     },
     'bypass-blocks-present': {
       tests: [],
@@ -751,6 +751,10 @@ const RGAA_RULE_TESTS = {
       tests: [],
       note: 'Flags scope values other than row/col/rowgroup/colgroup. Not linked to 5.7.2: it accepts rowgroup and colgroup, which RGAA does not, and rgaa-th-scope-row-col fails every scope other than row or col. Not linked to 8.2.1: the rule trims values and skips empty ones, which the validator rejects; rgaa-html-elements-attributes-valid reports scope values under 8.2.1.'
     },
+    'rgaa-script-button-name-present': {
+      tests: ['7.1.3'],
+      note: 'Fails a button (<button>, input button/submit/reset/image, role=button) outside any form, with no form attribute naming one, that has no name from aria-labelledby, aria-label, its content, value, alt or title. A button outside a form does nothing unless a script drives it, so it is a component 7.1 covers, and 7.1.3 asks « Le composant possède un nom pertinent » with no alternative, unlike 7.1.1. Asks about an image button the browser names with a generic "Submit". The buttons of a form are left to rgaa-form-button-name-present (11.9.1).'
+    },
     'rgaa-scripted-components-review': {
       tests: ['7.1.1', '7.1.2', '7.1.3'],
       note: 'Asks on every page with script (an executable <script>, an inline event handler, a javascript: URL or a custom element) for a person to check each scripted component against 7.1.1 to 7.1.3. It always asks, because the engine cannot see behaviour attached from script files. It lists candidate elements from the markup (widget roles, tabindex, inline handlers, contenteditable, aria-expanded and similar states) as a starting point, not a complete list. A page with no script is notApplicable, since 7.1 applies to scripts.'
@@ -901,7 +905,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-widget-label-in-name': {
       tests: ['7.1.3'],
-      note: "Fails an element with an ARIA widget role other than link, button or form field (tab, menuitem, menuitemcheckbox, menuitemradio, treeitem, gridcell, option) whose accessible name, from aria-labelledby or aria-label, does not contain its visible text. That is 7.1.3 step 2: the component's name contains at least the visible label. An explicit widget role marks a component built with a script. Punctuation and capital letters are ignored (particular cases of 7.1.3). A title is not checked, since 7.1.3 judges only the accessible name."
+      note: "Fails an element with an ARIA widget role other than link, button or form field (tab, menuitem, menuitemcheckbox, menuitemradio, treeitem, gridcell, option), or a button outside a form, whose accessible name, from aria-labelledby or aria-label, does not contain its visible text. That is 7.1.3 step 2: the component's name contains at least the visible label. An explicit widget role marks a component built with a script, and a button outside a form does nothing unless a script drives it; 11.9.2 takes the buttons inside a form. Punctuation and capital letters are ignored (particular cases of 7.1.3). A title is not checked, since 7.1.3 judges only the accessible name."
     }
   }
 };

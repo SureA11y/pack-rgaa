@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**78 rules total: 61 automatic (decide deterministically; can return `fail`), 17 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**79 rules total: 62 automatic (decide deterministically; can return `fail`), 17 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -14,7 +14,7 @@ Under **What a finding reports**, a rule lists the fields its findings carry in 
 
 See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_SCHEMA.md) for what `type`/`confidence`/`severity` mean on a scan result, and [`WCAG_CONFORMANCE.md`](https://github.com/SureA11y/core/blob/main/docs/WCAG_CONFORMANCE.md) for how these roll up to an SC-level conformance claim.
 
-## Automatic rules (61), can return `fail`
+## Automatic rules (62), can return `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -69,6 +69,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-presentational-elements-absent`](#rgaa-presentational-elements-absent) | Page uses no presentational elements | — | — | high | minor |
 | [`rgaa-required-field-indication`](#rgaa-required-field-indication) | Required fields show a required indication in their label | — | — | high | serious |
 | [`rgaa-role-img-aria-name`](#rgaa-role-img-aria-name) | Elements with role="img" are named with aria-labelledby or aria-label | — | — | high | serious |
+| [`rgaa-script-button-name-present`](#rgaa-script-button-name-present) | Buttons outside a form have a name | — | — | high | serious |
 | [`rgaa-skip-link-placement`](#rgaa-skip-link-placement) | Skip links are visible and at the same place on every page | — | — | medium | moderate |
 | [`rgaa-skip-link-present`](#rgaa-skip-link-present) | Pages have a skip link to the main content | — | — | high | moderate |
 | [`rgaa-svg-decorative-aria-hidden`](#rgaa-svg-decorative-aria-hidden) | Decorative SVGs are hidden with aria-hidden="true" | — | — | high | minor |
@@ -155,7 +156,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-5.8` | Chaque tableau de mise en forme ne doit pas utiliser d’éléments propres aux tableaux de données. Cette règle est-elle respectée ? | `rgaa-layout-table-no-data-markup` |
 | `rgaa-4.1.2-6.1` | Chaque lien est-il explicite (hors cas particuliers) ? | `identical-links-same-purpose`, `link-name-quality`, `rgaa-link-context-review`, `rgaa-link-label-in-name-sources` |
 | `rgaa-4.1.2-6.2` | Dans chaque page web, chaque lien a-t-il un intitulé ? | `rgaa-link-content-label-present` |
-| `rgaa-4.1.2-7.1` | Chaque script est-il, si nécessaire, compatible avec les technologies d’assistance ? | `aria-role-name-present`, `dialog-name-present`, `menuitem-name-present`, `rgaa-scripted-components-review`, `rgaa-widget-label-in-name`, `tab-name-present`, `treeitem-name-present` |
+| `rgaa-4.1.2-7.1` | Chaque script est-il, si nécessaire, compatible avec les technologies d’assistance ? | `aria-role-name-present`, `dialog-name-present`, `menuitem-name-present`, `rgaa-script-button-name-present`, `rgaa-scripted-components-review`, `rgaa-widget-label-in-name`, `tab-name-present`, `treeitem-name-present` |
 | `rgaa-4.1.2-7.3` | Chaque script est-il contrôlable par le clavier et par tout dispositif de pointage (hors cas particuliers) ? | `mouse-only-event-handlers`, `rgaa-keyboard-only-event-handlers` |
 | `rgaa-4.1.2-8.1` | Chaque page web est-elle définie par un type de document ? | `rgaa-doctype-position`, `rgaa-doctype-present`, `rgaa-doctype-valid` |
 | `rgaa-4.1.2-8.10` | Dans chaque page web, les changements du sens de lecture sont-ils signalés ? | `rgaa-dir-attribute-valid`, `rgaa-text-direction-marked` |
@@ -1173,6 +1174,18 @@ Checks that each exposed element with role="img" (other than &lt;img&gt; and an 
 
 **Expectation.** The element has a text alternative from one of the two sources RGAA 1.1.1 step 4 lists for role="img": text referenced by aria-labelledby, or a non-empty aria-label. A name that comes only from the title attribute, or no name at all, fails: the glossary entry "Alternative textuelle (image)" lists title for &lt;img&gt;, &lt;input type="image"&gt;, &lt;object&gt; and &lt;embed&gt; only. An element in the SVG namespace (a &lt;g role="img"&gt;, for example) named only by a &lt;title&gt; child is asked about (cantTell): RGAA contradicts itself on &lt;title&gt; as an SVG alternative (1.1.5 step 5 lists only aria-labelledby and aria-label, while 1.3.6 checks the content of &lt;title&gt;).
 
+### `rgaa-script-button-name-present`
+
+**Buttons outside a form have a name**
+
+automatic · no formal WCAG SC mapping · confidence high · default severity serious
+
+Checks that each button outside a form, a component only a script can drive, has a name that RGAA 7.1.3 can judge.
+
+**Applies to.** Applies to buttons (&lt;button&gt;, &lt;input&gt; of type submit, reset, button or image, and role="button") outside any form: no &lt;form&gt; or role="form" ancestor, and no form attribute naming one. Such a button does nothing unless a script drives it, so it is a component a script controls (glossary « Composant d'interface », RGAA 7.1). Buttons in a form are left to rgaa-form-button-name-present (11.9.1). A button hidden from assistive technologies, or whose explicit role is another one, is out of scope. A page with no such button is notApplicable.
+
+**Expectation.** RGAA 7.1.3: « Le composant possède un nom pertinent ». Unlike 7.1.1, the test offers no alternative. A button with no name at all (no aria-labelledby, aria-label, content, value, alt or title) has none to be relevant and fails (nameMissing). An &lt;input type="image"&gt; with no alt, aria-label, aria-labelledby or title, which the browser names with a generic "Submit", is asked about (imageButtonNoAlt). Whether a name is relevant is left to a person.
+
 ### `rgaa-scripted-components-review`
 
 **Scripted components are compatible with assistive technologies**
@@ -1346,8 +1359,8 @@ Flags a &lt;meta name="viewport"&gt; that disables zoom or caps it below 200%, f
 
 automatic · no formal WCAG SC mapping · confidence high · default severity serious
 
-Checks that an element with an ARIA widget role (tab, menu item, tree item, grid cell, option) has an accessible name that contains its visible label, as RGAA 7.1.3 requires.
+Checks that an element with an ARIA widget role (tab, menu item, tree item, grid cell, option), or a button outside a form, has an accessible name that contains its visible label, as RGAA 7.1.3 requires.
 
-**Applies to.** Applies to elements with an explicit ARIA widget role that is neither a link, a button nor a form field (tab, menuitem, menuitemcheckbox, menuitemradio, treeitem, gridcell, option), whose visible text is their visible label, and that carry an aria-label or an aria-labelledby. Such a role marks a component built with a script (glossary "Composant d'interface"). A page with no such element is notApplicable.
+**Applies to.** Applies to elements with an explicit ARIA widget role that is neither a link, a button nor a form field (tab, menuitem, menuitemcheckbox, menuitemradio, treeitem, gridcell, option), and to buttons outside a form, whose visible text (or value) is their visible label, and that carry an aria-label or an aria-labelledby. Such a role marks a component built with a script (glossary "Composant d'interface"), and a button outside a form does nothing unless a script drives it; the buttons inside a form are 11.9.2's. A page with no such element is notApplicable.
 
 **Expectation.** RGAA 7.1.3 methodology step 2: the component's accessible name contains its visible label. Punctuation and capital letters are ignored (the particular cases of 7.1.3); accents are not folded. An accessible name that does not contain it fails. Only the accessible name is checked; a title is not.

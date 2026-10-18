@@ -114,7 +114,7 @@
   "formButtonLabelInNameSources_summary_cantTell_nearMatch": "{{element}}: Die Quelle {{sources}} dieser Schaltfläche unterscheidet sich von der sichtbaren Beschriftung „{{visibleLabel}}“ nur durch eine Abkürzung oder durch Text in Klammern.",
   "formButtonLabelInNameSources_hint_cantTell_nearMatch": "Prüfen Sie, ob die Quelle die sichtbare Beschriftung so enthält, wie ein Nutzer sie sprechen würde. RGAA lässt nur Unterschiede bei Satzzeichen und Großbuchstaben zu.",
   "widgetLabelInName_title": "Der zugängliche Name einer skriptgesteuerten Komponente enthält ihre sichtbare Beschriftung",
-  "widgetLabelInName_description": "Prüft, dass ein Element mit einer ARIA-Widget-Rolle (Tab, Menüeintrag, Baumeintrag, Gitterzelle, Option) einen zugänglichen Namen hat, der seine sichtbare Beschriftung enthält, wie RGAA 7.1.3 es verlangt.",
+  "widgetLabelInName_description": "Prüft, dass ein Element mit einer ARIA-Widget-Rolle (Tab, Menüeintrag, Baumeintrag, Gitterzelle, Option) oder eine Schaltfläche außerhalb eines Formulars einen zugänglichen Namen hat, der seine sichtbare Beschriftung enthält, wie RGAA 7.1.3 es verlangt.",
   "widgetLabelInName_summary_fail_name": "{{element}}: Der zugängliche Name dieser Komponente (aus {{sources}}) enthält die sichtbare Beschriftung „{{visibleLabel}}“ nicht.",
   "widgetLabelInName_hint_fail_name": "Lassen Sie das Attribut, das den Namen gibt, die sichtbare Beschriftung enthalten, am besten am Anfang, oder entfernen Sie es, damit der sichtbare Text den Namen gibt.",
   "widgetLabelInName_summary_cantTell_symbol": "{{element}}: Die sichtbare Beschriftung „{{visibleLabel}}“ dieser Komponente ist möglicherweise ein Symbol, und die Quelle {{sources}} enthält sie nicht.",
@@ -643,5 +643,11 @@
   "markupForPresentation_hint_emptyParagraph": "Wenn der Absatz nur Abstand schafft, entfernen Sie ihn und verwenden Sie CSS-Ränder (RGAA 8.9.1).",
   "markupForPresentation_hint_placeholder": "Wenn das Element nur Abstand schafft, entfernen Sie es und verwenden Sie CSS-Ränder (RGAA 8.9.1).",
   "markupForPresentation_hint_consecutiveBr": "Wenn die Zeilenumbrüche Absätze trennen, kennzeichnen Sie jeden Absatz mit <p> und setzen Sie den Abstand mit CSS (RGAA 8.9.1).",
-  "markupForPresentation_hint_spacesForMargin": "Erzeugen Sie Ränder und Ausrichtung mit CSS, nicht mit Leerzeichen (RGAA 8.9.1)."
+  "markupForPresentation_hint_spacesForMargin": "Erzeugen Sie Ränder und Ausrichtung mit CSS, nicht mit Leerzeichen (RGAA 8.9.1).",
+  "scriptButtonNamePresent_title": "Schaltflächen außerhalb eines Formulars haben einen Namen",
+  "scriptButtonNamePresent_description": "Prüft, dass jede Schaltfläche außerhalb eines Formulars, eine Komponente, die nur ein Skript bedienen kann, einen Namen hat, den RGAA 7.1.3 beurteilen kann.",
+  "scriptButtonNamePresent_summary_fail_nameMissing": "Diese Schaltfläche hat keinen Namen.",
+  "scriptButtonNamePresent_hint_fail_nameMissing": "Geben Sie der Schaltfläche einen sichtbaren Text, der ihre Aktion beschreibt, oder ein aria-label, aria-labelledby oder title; einer Bildschaltfläche ein alt (RGAA 7.1.3).",
+  "scriptButtonNamePresent_summary_cantTell_imageButtonNoAlt": "Diese Bildschaltfläche hat weder alt noch aria-label, aria-labelledby oder title; der Browser benennt sie mit einem allgemeinen „Senden“.",
+  "scriptButtonNamePresent_hint_cantTell_imageButtonNoAlt": "Geben Sie der Bildschaltfläche ein alt, das ihre Aktion beschreibt, und prüfen Sie dann, ob der Name zutreffend ist (RGAA 7.1.3)."
 }

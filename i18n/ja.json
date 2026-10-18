@@ -114,7 +114,7 @@
   "formButtonLabelInNameSources_summary_cantTell_nearMatch": "{{element}}：このボタンの {{sources}} と可視ラベル「{{visibleLabel}}」の違いは、略語か括弧内のテキストだけです。",
   "formButtonLabelInNameSources_hint_cantTell_nearMatch": "ソースが、利用者が口にするとおりの可視ラベルをまだ含んでいるか確認してください。RGAA が許容するのは句読点と大文字・小文字の違いだけです。",
   "widgetLabelInName_title": "スクリプトで作られたコンポーネントのアクセシブルな名前が可視ラベルを含む",
-  "widgetLabelInName_description": "ARIA ウィジェットロール（タブ、メニュー項目、ツリー項目、グリッドセル、オプション）を持つ要素のアクセシブルな名前が可視ラベルを含むことを、RGAA 7.1.3 の要件どおりに確認します。",
+  "widgetLabelInName_description": "ARIA ウィジェットロール（タブ、メニュー項目、ツリー項目、グリッドセル、オプション）を持つ要素、またはフォーム外のボタンのアクセシブルな名前が可視ラベルを含むことを、RGAA 7.1.3 の要件どおりに確認します。",
   "widgetLabelInName_summary_fail_name": "{{element}}：このコンポーネントのアクセシブルな名前（{{sources}} から）が可視ラベル「{{visibleLabel}}」を含んでいません。",
   "widgetLabelInName_hint_fail_name": "名前を与える属性に可視ラベルを含めてください（先頭が望ましい）。または属性を削除し、可視テキストが名前になるようにしてください。",
   "widgetLabelInName_summary_cantTell_symbol": "{{element}}：このコンポーネントの可視ラベル「{{visibleLabel}}」は記号の可能性があり、{{sources}} はそれを含んでいません。",
@@ -643,5 +643,11 @@
   "markupForPresentation_hint_emptyParagraph": "段落が余白を作るだけなら削除し、CSS のマージンを使ってください（RGAA 8.9.1）。",
   "markupForPresentation_hint_placeholder": "要素が余白を作るだけなら削除し、CSS のマージンを使ってください（RGAA 8.9.1）。",
   "markupForPresentation_hint_consecutiveBr": "改行が段落を区切っているなら、各段落を <p> でマークアップし、CSS で間隔を空けてください（RGAA 8.9.1）。",
-  "markupForPresentation_hint_spacesForMargin": "余白や整列は空白ではなく CSS で作ってください（RGAA 8.9.1）。"
+  "markupForPresentation_hint_spacesForMargin": "余白や整列は空白ではなく CSS で作ってください（RGAA 8.9.1）。",
+  "scriptButtonNamePresent_title": "フォーム外のボタンに名前がある",
+  "scriptButtonNamePresent_description": "スクリプトでしか動作しないコンポーネントであるフォーム外の各ボタンに、RGAA 7.1.3 が判断できる名前があることを確認します。",
+  "scriptButtonNamePresent_summary_fail_nameMissing": "このボタンには名前がありません。",
+  "scriptButtonNamePresent_hint_fail_nameMissing": "ボタンに動作を説明する表示テキスト、または aria-label、aria-labelledby、title を付けてください。画像ボタンには alt を付けてください（RGAA 7.1.3）。",
+  "scriptButtonNamePresent_summary_cantTell_imageButtonNoAlt": "この画像ボタンには alt、aria-label、aria-labelledby、title のいずれもなく、ブラウザは汎用的な「送信」という名前を付けます。",
+  "scriptButtonNamePresent_hint_cantTell_imageButtonNoAlt": "画像ボタンに動作を説明する alt を付け、名前が適切か確認してください（RGAA 7.1.3）。"
 }

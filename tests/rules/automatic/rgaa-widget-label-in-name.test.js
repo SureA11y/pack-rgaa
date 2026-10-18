@@ -60,11 +60,29 @@ test(`${RULE_ID}: a name that contains the visible text passes; punctuation and 
   }
 });
 
-test(`${RULE_ID}: a title is not checked, and links, buttons and fields are other rules' business`, () => {
+// A button outside a form does nothing unless a script drives it: 7.1.3
+// covers it, and 11.9.2 only the buttons inside a form.
+test(`${RULE_ID}: a button outside a form whose name lacks its visible label fails`, () => {
+  for (const body of [
+    '<button type="button" aria-label="Fermer">Valider</button>',
+    '<input type="button" value="Envoyer" aria-label="Valider">',
+    '<div role="button" tabindex="0" aria-label="Fermer">Valider</div>'
+  ]) {
+    const rule = assertRule(run(body), RULE_ID, 'fail', { maxOccurrences: 1 });
+    assert.deepEqual(reasons(rule), [['fail', 'NAME_LACKS_VISIBLE_LABEL']], body);
+  }
+  assertRule(
+    run('<button type="button" aria-label="Ouvrir le menu">Menu</button>'),
+    RULE_ID,
+    'pass'
+  );
+});
+
+test(`${RULE_ID}: a title is not checked, and links, buttons in a form and fields are other rules' business`, () => {
   for (const body of [
     TAB('title="Réglages"', 'Paramètres'),
     TAB('', 'Paramètres'),
-    '<button aria-label="Fermer">Valider</button>',
+    '<form><button aria-label="Fermer">Valider</button></form>',
     '<a href="/c" aria-label="Écrire">Contact</a>',
     '<div role="checkbox" aria-checked="false" tabindex="0" aria-label="Accepter">J’accepte</div>',
     '<select><option aria-label="Bleu">Rouge</option></select>'
@@ -158,7 +176,8 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-widget-label-in-name-all
   assert.deepEqual(got, [
     ['wlin_case_01', 'fail', 'NAME_LACKS_VISIBLE_LABEL'],
     ['wlin_case_02', 'fail', 'NAME_LACKS_VISIBLE_LABEL'],
-    ['wlin_case_03', 'cantTell', 'POSSIBLE_SYMBOL']
+    ['wlin_case_03', 'cantTell', 'POSSIBLE_SYMBOL'],
+    ['wlin_case_06', 'fail', 'NAME_LACKS_VISIBLE_LABEL']
   ]);
 });
 

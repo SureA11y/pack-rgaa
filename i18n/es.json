@@ -114,7 +114,7 @@
   "formButtonLabelInNameSources_summary_cantTell_nearMatch": "{{element}}: la fuente {{sources}} de este botón solo difiere de su etiqueta visible «{{visibleLabel}}» por una abreviatura o por texto entre paréntesis.",
   "formButtonLabelInNameSources_hint_cantTell_nearMatch": "Compruebe si la fuente sigue conteniendo la etiqueta visible tal como la diría un usuario. RGAA solo admite diferencias de puntuación y de mayúsculas.",
   "widgetLabelInName_title": "El nombre accesible de un componente con script contiene su etiqueta visible",
-  "widgetLabelInName_description": "Comprueba que un elemento con un rol de widget ARIA (pestaña, elemento de menú, elemento de árbol, celda de cuadrícula, opción) tiene un nombre accesible que contiene su etiqueta visible, como exige RGAA 7.1.3.",
+  "widgetLabelInName_description": "Comprueba que un elemento con un rol de widget ARIA (pestaña, elemento de menú, elemento de árbol, celda de cuadrícula, opción), o un botón fuera de un formulario, tiene un nombre accesible que contiene su etiqueta visible, como exige RGAA 7.1.3.",
   "widgetLabelInName_summary_fail_name": "{{element}}: el nombre accesible de este componente (de {{sources}}) no contiene su etiqueta visible «{{visibleLabel}}».",
   "widgetLabelInName_hint_fail_name": "Haga que el atributo que da el nombre contenga la etiqueta visible, preferiblemente al principio, o elimínelo para que el texto visible dé el nombre.",
   "widgetLabelInName_summary_cantTell_symbol": "{{element}}: la etiqueta visible «{{visibleLabel}}» de este componente puede ser un símbolo, y la fuente {{sources}} no la contiene.",
@@ -643,5 +643,11 @@
   "markupForPresentation_hint_emptyParagraph": "Si el párrafo solo crea espacio, quítelo y use márgenes CSS (RGAA 8.9.1).",
   "markupForPresentation_hint_placeholder": "Si el elemento solo crea espacio, quítelo y use márgenes CSS (RGAA 8.9.1).",
   "markupForPresentation_hint_consecutiveBr": "Si los saltos de línea separan párrafos, marque cada párrafo con <p> y sepárelos con CSS (RGAA 8.9.1).",
-  "markupForPresentation_hint_spacesForMargin": "Cree los márgenes y alineaciones con CSS, no con espacios (RGAA 8.9.1)."
+  "markupForPresentation_hint_spacesForMargin": "Cree los márgenes y alineaciones con CSS, no con espacios (RGAA 8.9.1).",
+  "scriptButtonNamePresent_title": "Los botones fuera de un formulario tienen un nombre",
+  "scriptButtonNamePresent_description": "Comprueba que cada botón fuera de un formulario, un componente que solo un script puede hacer funcionar, tiene un nombre que el RGAA 7.1.3 pueda juzgar.",
+  "scriptButtonNamePresent_summary_fail_nameMissing": "Este botón no tiene nombre.",
+  "scriptButtonNamePresent_hint_fail_nameMissing": "Dé al botón un texto visible que describa su acción, o un aria-label, aria-labelledby o title; para un botón de imagen, un alt (RGAA 7.1.3).",
+  "scriptButtonNamePresent_summary_cantTell_imageButtonNoAlt": "Este botón de imagen no tiene alt, aria-label, aria-labelledby ni title; el navegador lo nombra con un \"Enviar\" genérico.",
+  "scriptButtonNamePresent_hint_cantTell_imageButtonNoAlt": "Dé al botón de imagen un alt que describa su acción y compruebe después que el nombre es pertinente (RGAA 7.1.3)."
 }

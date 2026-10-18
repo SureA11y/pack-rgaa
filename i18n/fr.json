@@ -114,7 +114,7 @@
   "formButtonLabelInNameSources_summary_cantTell_nearMatch": "{{element}} : la source {{sources}} de ce bouton ne diffère de son intitulé visible « {{visibleLabel}} » que par une abréviation ou par du texte entre parenthèses.",
   "formButtonLabelInNameSources_hint_cantTell_nearMatch": "Vérifiez que la source contient encore l’intitulé visible tel qu’un utilisateur le prononcerait. Le RGAA n’admet que les différences de ponctuation et de majuscules.",
   "widgetLabelInName_title": "Le nom accessible d’un composant d’interface contient son intitulé visible",
-  "widgetLabelInName_description": "Vérifie qu’un élément ayant un rôle WAI-ARIA de composant (onglet, élément de menu, élément d’arbre, cellule de grille, option) a un nom accessible qui contient son intitulé visible, comme l’exige le test 7.1.3 du RGAA.",
+  "widgetLabelInName_description": "Vérifie qu’un élément ayant un rôle WAI-ARIA de composant (onglet, élément de menu, élément d’arbre, cellule de grille, option), ou un bouton hors formulaire, a un nom accessible qui contient son intitulé visible, comme l’exige le test 7.1.3 du RGAA.",
   "widgetLabelInName_summary_fail_name": "{{element}} : le nom accessible de ce composant (source : {{sources}}) ne contient pas son intitulé visible « {{visibleLabel}} ».",
   "widgetLabelInName_hint_fail_name": "Faites en sorte que l’attribut qui donne le nom contienne l’intitulé visible, de préférence au début, ou retirez-le pour que le texte visible donne le nom.",
   "widgetLabelInName_summary_cantTell_symbol": "{{element}} : l’intitulé visible « {{visibleLabel}} » de ce composant sert peut-être de symbole, et la source {{sources}} ne le contient pas.",
@@ -643,5 +643,11 @@
   "markupForPresentation_hint_emptyParagraph": "Si le paragraphe ne sert qu’à créer de l’espace, retirez-le et utilisez des marges CSS (RGAA 8.9.1).",
   "markupForPresentation_hint_placeholder": "Si l’élément ne sert qu’à créer de l’espace, retirez-le et utilisez des marges CSS (RGAA 8.9.1).",
   "markupForPresentation_hint_consecutiveBr": "Si les sauts de ligne séparent des paragraphes, balisez chaque paragraphe avec <p> et espacez-les avec CSS (RGAA 8.9.1).",
-  "markupForPresentation_hint_spacesForMargin": "Créez les marges et les alignements avec CSS, pas avec des espaces (RGAA 8.9.1)."
+  "markupForPresentation_hint_spacesForMargin": "Créez les marges et les alignements avec CSS, pas avec des espaces (RGAA 8.9.1).",
+  "scriptButtonNamePresent_title": "Les boutons hors formulaire ont un nom",
+  "scriptButtonNamePresent_description": "Vérifie que chaque bouton hors formulaire, un composant que seul un script peut faire fonctionner, a un nom que le test 7.1.3 du RGAA peut juger.",
+  "scriptButtonNamePresent_summary_fail_nameMissing": "Ce bouton n’a pas de nom.",
+  "scriptButtonNamePresent_hint_fail_nameMissing": "Donnez au bouton un texte visible qui décrit son action, ou un aria-label, aria-labelledby ou title ; pour un bouton image, un alt (RGAA 7.1.3).",
+  "scriptButtonNamePresent_summary_cantTell_imageButtonNoAlt": "Ce bouton image n’a ni alt, ni aria-label, ni aria-labelledby, ni title ; le navigateur le nomme avec un « Envoyer » générique.",
+  "scriptButtonNamePresent_hint_cantTell_imageButtonNoAlt": "Donnez au bouton image un alt qui décrit son action, puis vérifiez que le nom est pertinent (RGAA 7.1.3)."
 }

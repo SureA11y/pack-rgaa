@@ -100,7 +100,7 @@ function runInPage(ctx) {
       'input, select, textarea, output, progress, meter, [role~="textbox" i], [role~="searchbox" i], [role~="combobox" i], [role~="spinbutton" i], [role~="slider" i], [role~="listbox" i], [role~="checkbox" i], [role~="radio" i], [role~="switch" i], [role~="progressbar" i]',
     button: 'button, input, [role~="button" i]',
     widget:
-      '[role~="tab" i], [role~="menuitem" i], [role~="menuitemcheckbox" i], [role~="menuitemradio" i], [role~="treeitem" i], [role~="gridcell" i], [role~="option" i]'
+      '[role~="tab" i], [role~="menuitem" i], [role~="menuitemcheckbox" i], [role~="menuitemradio" i], [role~="treeitem" i], [role~="gridcell" i], [role~="option" i], button, input, [role~="button" i]'
   };
 
   function tagOf(el) {
@@ -302,7 +302,7 @@ function runInPage(ctx) {
   function visibleLabelOf(el) {
     const tag = tagOf(el);
     const role = explicitRole(el);
-    if (family === 'button' && tag === 'input') {
+    if (tag === 'input' && classify(el) === 'button') {
       if (inputType(el) === 'image') return { text: '', origin: '', elements: [] };
       const value = String(dom.getAttribute(el, 'value') || '')
         .replace(/\s+/g, ' ')
@@ -569,7 +569,11 @@ function runInPage(ctx) {
 
   for (const el of nodes) {
     if (!el || !dom.get(el, 'getAttribute')) continue;
-    if (classify(el) !== family) continue;
+    const kind = classify(el);
+    // A button outside a form is a component a script drives: 7.1.3 covers
+    // it, and 11.9.2 only the buttons inside a form.
+    const asComponent = family === 'widget' && kind === 'button' && !insideForm(el);
+    if (kind !== family && !asComponent) continue;
     if (family === 'button' && !insideForm(el)) continue;
     if (!isDomVisible(el)) continue;
 

@@ -1373,6 +1373,28 @@ The text alternative comes from `aria-label`.
 ```
 A `title` is not one of the sources RGAA 1.1.1 accepts for `role="img"`.
 
+## rgaa-script-button-name-present
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Failed**
+```html
+<button type="button"><svg width="16" height="16"><rect width="16" height="16"/></svg></button>
+```
+The icon button outside a form has no name, and 7.1.3 asks « Le composant possède un nom pertinent » with no alternative.
+
+**Passed**
+```html
+<button type="button" aria-label="Fermer"><svg aria-hidden="true" width="16" height="16"><rect width="16" height="16"/></svg></button>
+```
+The button has a name, whose relevance a person judges.
+
+**Not applicable**
+```html
+<form><button></button></form>
+```
+A button in a form is checked under 11.9.1 by rgaa-form-button-name-present.
+
 ## rgaa-scripted-components-review
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -1626,3 +1648,9 @@ The tab's accessible name contains its visible text.
 </div>
 ```
 The accessible name of this scripted component does not contain its visible label (RGAA 7.1.3). A single visible character, such as "B" in an editor's menu named "Mettre en gras", is asked about (cantTell): RGAA lets the name express what a symbol means.
+
+**Failed**
+```html
+<button type="button" aria-label="Fermer">Valider</button>
+```
+A button outside a form does nothing unless a script drives it, so 7.1.3 covers it: its accessible name does not contain its visible label. A button inside a form is checked under 11.9.2 instead.

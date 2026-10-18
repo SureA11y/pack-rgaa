@@ -150,11 +150,12 @@ function rollups(body) {
   };
 }
 
-test(`${RULE_ID}: WCAG fails a replaced name outside a form, RGAA 11.9 does not apply and no other RGAA test gets it`, () => {
+// A button outside a form is a component a script drives: 7.1.3 takes it.
+test(`${RULE_ID}: WCAG fails a replaced name outside a form, RGAA 11.9 does not apply and 7.1 gets it`, () => {
   const r = rollups('<button aria-label="Fermer la fenêtre">Valider</button>');
   assert.equal(r.wcag, 'fail');
   assert.equal(r.rgaa, 'notApplicable');
-  assert.deepEqual(r.others, ['notApplicable', 'notApplicable', 'notApplicable']);
+  assert.deepEqual(r.others, ['notApplicable', 'notApplicable', 'fail']);
 });
 
 test(`${RULE_ID}: a title without the label is outside WCAG 2.5.3, RGAA 11.9 asks`, () => {
