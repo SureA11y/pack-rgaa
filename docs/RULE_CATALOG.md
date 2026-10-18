@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**85 rules total: 65 automatic (decide deterministically; can return `fail`), 20 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**86 rules total: 66 automatic (decide deterministically; can return `fail`), 20 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -14,7 +14,7 @@ Under **What a finding reports**, a rule lists the fields its findings carry in 
 
 See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_SCHEMA.md) for what `type`/`confidence`/`severity` mean on a scan result, and [`WCAG_CONFORMANCE.md`](https://github.com/SureA11y/core/blob/main/docs/WCAG_CONFORMANCE.md) for how these roll up to an SC-level conformance claim.
 
-## Automatic rules (65), can return `fail`
+## Automatic rules (66), can return `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -31,6 +31,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-doctype-present`](#rgaa-doctype-present) | Page declares a doctype | — | — | high | moderate |
 | [`rgaa-doctype-valid`](#rgaa-doctype-valid) | Declared doctype is valid | — | — | high | moderate |
 | [`rgaa-embed-image-role-img`](#rgaa-embed-image-role-img) | Embedded images have role="img" and a text alternative | — | — | medium | serious |
+| [`rgaa-field-label-empty`](#rgaa-field-label-empty) | A field's label sources are not all empty | — | — | high | serious |
 | [`rgaa-field-label-in-name-sources`](#rgaa-field-label-in-name-sources) | Every label source of a form field contains its visible label | — | — | high | serious |
 | [`rgaa-field-label-listed-source`](#rgaa-field-label-listed-source) | Form fields have a label from a source RGAA lists | — | — | high | serious |
 | [`rgaa-figure-caption-structure`](#rgaa-figure-caption-structure) | Images with a caption use the figure structure RGAA describes | — | — | high | minor |
@@ -137,7 +138,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-11.1` | Chaque champ de formulaire a-t-il une étiquette ? | `form-control-programmatic-label-quality`, `option-name-present`, `rgaa-field-label-listed-source`, `rgaa-label-for-target-valid` |
 | `rgaa-4.1.2-11.10` | Dans chaque formulaire, le contrôle de saisie est-il utilisé de manière pertinente (hors cas particuliers) ? | `rgaa-invalid-field-message`, `rgaa-required-field-indication` |
 | `rgaa-4.1.2-11.13` | La finalité d’un champ de saisie peut-elle être déduite pour faciliter le remplissage automatique des champs avec les données de l’utilisateur ? | `rgaa-autocomplete-user-field` |
-| `rgaa-4.1.2-11.2` | Chaque étiquette associée à un champ de formulaire est-elle pertinente (hors cas particuliers) ? | `form-control-label-quality`, `form-control-programmatic-label-quality`, `rgaa-field-label-in-name-sources`, `rgaa-title-placeholder-identical` |
+| `rgaa-4.1.2-11.2` | Chaque étiquette associée à un champ de formulaire est-elle pertinente (hors cas particuliers) ? | `form-control-label-quality`, `form-control-programmatic-label-quality`, `rgaa-field-label-empty`, `rgaa-field-label-in-name-sources`, `rgaa-title-placeholder-identical` |
 | `rgaa-4.1.2-11.5` | Dans chaque formulaire, les champs de même nature sont-ils regroupés, si nécessaire ? | `rgaa-radio-group-present` |
 | `rgaa-4.1.2-11.6` | Dans chaque formulaire, chaque regroupement de champs de même nature a-t-il une légende ? | `rgaa-field-group-legend` |
 | `rgaa-4.1.2-11.8` | Dans chaque formulaire, les items de même nature d’une liste de choix sont-ils regroupés de manière pertinente ? | `rgaa-listbox-option-groups-absent`, `rgaa-optgroup-label-not-empty`, `rgaa-optgroup-label-present` |
@@ -510,6 +511,18 @@ Flags a &lt;fieldset&gt; without a legend, or a role="group" or role="radiogroup
 **Applies to.** Applies to &lt;fieldset&gt; elements and elements with role="group" or role="radiogroup" that contain at least one form field (input other than hidden, select, textarea, or an element with a form field role). A page with none is notApplicable. When every group has a legend (or, for an ARIA group, an aria-label or aria-labelledby), the rule passes: 11.6.1 asks that one exists, and whether it is relevant is 11.7's question.
 
 **Expectation.** RGAA 11.6.1 step 2: a &lt;fieldset&gt; has a &lt;legend&gt; child with text; an element with role="group" or role="radiogroup" has an aria-label or an aria-labelledby that resolves to text. A fieldset that itself carries role="group" or role="radiogroup" may use either. aria-label on a plain fieldset, and title on a group, do not count: step 2 names only those mechanisms. A group without one is flagged for a person to decide whether it groups fields of the same kind, which is when RGAA 11.6.1 requires a legend, and, if so, whether every field instead carries a title, aria-label, aria-labelledby or aria-describedby that names the group (step 3).
+
+### `rgaa-field-label-empty`
+
+**A field's label sources are not all empty**
+
+automatic · no formal WCAG SC mapping · confidence high · default severity serious
+
+Fails a form field whose only label sources (&lt;label&gt;, title, aria-label, aria-labelledby) are all empty.
+
+**Applies to.** Applies to visible form fields (&lt;input&gt; other than hidden and the button types, &lt;select&gt;, &lt;textarea&gt;) that carry at least one label source of RGAA 11.1.1 (a &lt;label&gt;, title, aria-label or aria-labelledby) and whose sources are all empty. A field with no source at all is 11.1.1's matter. A page with none is notApplicable.
+
+**Expectation.** RGAA 11.2.1 to 11.2.4 ask whether each &lt;label&gt;, title, aria-label and aria-labelledby passage « permet de connaître la fonction exacte du champ ». An empty one tells nothing, so when every source the field has is empty, the field fails, once for each empty source: emptyLabel (11.2.1), emptyTitle (11.2.2), emptyAriaLabel (11.2.3) and emptyLabelledby (11.2.4, an aria-labelledby whose passages hold no text). An aria-labelledby that points to no element is no passage, and is left to 11.1.1.
 
 ### `rgaa-field-label-in-name-sources`
 

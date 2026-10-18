@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 85,
-    "withFixture": 85,
+    "total": 86,
+    "withFixture": 86,
     "withoutFixture": 0
   },
   "rows": [
@@ -326,6 +326,23 @@
         "FAIL": 0,
         "CANTTELL": 0,
         "OTHER": 10
+      }
+    },
+    {
+      "ruleId": "rgaa-field-label-empty",
+      "title": "A field's label sources are not all empty",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-field-label-empty.js",
+      "testFile": "tests/rules/automatic/rgaa-field-label-empty.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-field-label-empty-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 1,
+        "FAIL": 1,
+        "CANTTELL": 0,
+        "OTHER": 0
       }
     },
     {

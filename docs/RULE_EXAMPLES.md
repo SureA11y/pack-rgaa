@@ -414,6 +414,22 @@ The address fields are grouped, but the group has no `<legend>` saying what it i
 ```
 The group has a legend.
 
+## rgaa-field-label-empty
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Failed**
+```html
+<label for="nom"></label><input id="nom">
+```
+The field's only label is empty, so it cannot « permettre de connaître la fonction exacte du champ » (RGAA 11.2.1).
+
+**Passed**
+```html
+<label for="nom">Nom</label><input id="nom">
+```
+The label says what to enter; whether it is exact is for a person.
+
 ## rgaa-field-label-in-name-sources
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*

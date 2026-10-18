@@ -300,6 +300,10 @@ const RGAA_RULE_TESTS = {
       tests: ['11.6.1'],
       note: 'Asks about a <fieldset> holding form fields with no <legend>, or a role="group" or role="radiogroup" holding form fields with no aria-label or aria-labelledby: the only legends 11.6.1 step 2 accepts (aria-label on a plain fieldset and title on a group do not count). 11.6.1 requires a legend on each grouping of fields of the same kind; whether this group is one, and whether each field instead names the group (step 3), is left to a person.'
     },
+    'rgaa-field-label-empty': {
+      tests: ['11.2.1', '11.2.2', '11.2.3', '11.2.4'],
+      note: "Fails a visible form field whose label sources (a <label>, title, aria-label, or aria-labelledby passages that exist) are all empty, once for each empty source: 11.2.1 to 11.2.4 ask whether each « permet de connaître la fonction exacte du champ », and an empty one tells nothing. A field with no source at all, or an aria-labelledby that points to no element, is left to 11.1.1. A <label>'s text leaves out the field's own content and counts the alt of an image inside it."
+    },
     'rgaa-field-label-in-name-sources': {
       tests: ['11.2.5'],
       note: 'Fails a form field (glossary "Champ de saisie de formulaire", native and ARIA) with a visible label when the source that gives its accessible name (aria-labelledby, aria-label, <label> or title, in the glossary\'s order) does not contain that label. Asks when another source present does not: 11.2.5\'s conditions name each source, but its methodology and the glossary « Étiquette de champ de formulaire » judge the étiquette alone, the conflict 11.9.2 is asked about for buttons. Punctuation and capital letters are ignored (particular cases of 11.2). Asks when the visible label may be a symbol, or when a source differs only by an abbreviation, by text in parentheses, or by the ending of a word of 4 letters or more ("Recherche" for "Rechercher"), since « contient » may be read as a string or as words. The visible label is read from the <label>, else from aria-labelledby, else from the field\'s own text for the checkbox, radio and switch roles.'

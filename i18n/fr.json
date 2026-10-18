@@ -694,5 +694,12 @@
   "focusNotRemoved_summary_fail": "Le gestionnaire {{attribute}} de cet élément (« {{code}} ») lui retire le focus dès qu’il le reçoit.",
   "focusNotRemoved_hint_fail": "Retirez l’appel à blur() : un utilisateur du clavier doit pouvoir atteindre et utiliser l’élément, et voir où se trouve le focus (RGAA 7.3.2).",
   "focusNotRemoved_summary_cantTell": "Le gestionnaire {{attribute}} de cet élément (« {{code}} ») déplace le focus vers un autre élément quand il le reçoit.",
-  "focusNotRemoved_hint_cantTell": "Vérifiez que l’élément garde le focus, ou que le focus passe volontairement à une partie du même composant, comme son élément actif (RGAA 7.3.2)."
+  "focusNotRemoved_hint_cantTell": "Vérifiez que l’élément garde le focus, ou que le focus passe volontairement à une partie du même composant, comme son élément actif (RGAA 7.3.2).",
+  "fieldLabelEmpty_title": "Les étiquettes d’un champ ne sont pas toutes vides",
+  "fieldLabelEmpty_description": "En échec pour un champ de formulaire dont les seules sources d’étiquette (<label>, title, aria-label, aria-labelledby) sont toutes vides.",
+  "fieldLabelEmpty_summary_emptyLabel": "Ce champ a une balise <label>, mais elle est vide, et le champ n’a pas d’autre étiquette.",
+  "fieldLabelEmpty_summary_emptyTitle": "Ce champ a un attribut title, mais il est vide, et le champ n’a pas d’autre étiquette.",
+  "fieldLabelEmpty_summary_emptyAriaLabel": "Ce champ a un attribut aria-label, mais il est vide, et le champ n’a pas d’autre étiquette.",
+  "fieldLabelEmpty_summary_emptyLabelledby": "Ce champ a un attribut aria-labelledby, mais il ne pointe vers aucun texte, et le champ n’a pas d’autre étiquette.",
+  "fieldLabelEmpty_hint": "Donnez au champ une étiquette qui indique ce qu’il faut saisir, dans sa balise <label> ou une autre source (RGAA {{test}})."
 }

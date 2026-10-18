@@ -4,13 +4,13 @@ This pack's rules and their scenario pages. Every rule should have a `tests/fixt
 
 ## Summary
 
-Total rules: **85**. With fixture: **85**. Without fixture: **0**.
+Total rules: **86**. With fixture: **86**. Without fixture: **0**.
 
 ## Rules WITHOUT a fixture (0)
 
 None — every rule has a fixture.
 
-## Rules WITH a fixture (85)
+## Rules WITH a fixture (86)
 
 | Rule ID | Type | Fixture | Cases | PASS | FAIL | CANTTELL | OTHER |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -33,6 +33,7 @@ None — every rule has a fixture.
 | rgaa-embedded-refresh-review | manual | `tests/fixtures/rgaa-embedded-refresh-review-all-scenarios.html` | 6 | 0 | 0 | 4 | 2 |
 | rgaa-fake-list | manual | `tests/fixtures/rgaa-fake-list-all-scenarios.html` | 7 | 0 | 0 | 0 | 7 |
 | rgaa-field-group-legend | manual | `tests/fixtures/rgaa-field-group-legend-all-scenarios.html` | 10 | 0 | 0 | 0 | 10 |
+| rgaa-field-label-empty | automatic | `tests/fixtures/rgaa-field-label-empty-all-scenarios.html` | 2 | 1 | 1 | 0 | 0 |
 | rgaa-field-label-in-name-sources | automatic | `tests/fixtures/rgaa-field-label-in-name-sources-all-scenarios.html` | 11 | 3 | 2 | 3 | 3 |
 | rgaa-field-label-listed-source | automatic | `tests/fixtures/rgaa-field-label-listed-source-all-scenarios.html` | 15 | 4 | 7 | 3 | 1 |
 | rgaa-figure-caption-structure | automatic | `tests/fixtures/rgaa-figure-caption-structure-all-scenarios.html` | 8 | 2 | 4 | 0 | 2 |

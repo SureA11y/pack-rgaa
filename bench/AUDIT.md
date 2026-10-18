@@ -134,7 +134,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T11-08 | 11.13.1 | MISS | A personal-data field with no `autocomplete`, or on/off (Q1). | done |
 | T11-09 | 11.10 | MISS | No rule: required fields, error messages (Q2). Now `rgaa-required-field-indication` (11.10.1, 11.10.2: fails a required field whose visible label shows no indication, and a « * » explained after its first use or never; asks where an icon, legend or styles may carry it) and `rgaa-invalid-field-message` (11.10.4, 11.10.7: asks about aria-invalid with no linked passage). 11.10.3, 11.10.5 and 11.10.6 need the form submitted. | done |
 | T11-10 | 11.9.1 | MISS | Rolls up as pass whenever a button has any name. | open |
-| T11-11 | 11.2.1, 11.2.2 | MISS | An empty `<label for>` or `title` as the only étiquette is not failed (M5). | open |
+| T11-11 | 11.2.1, 11.2.2 | MISS | An empty `<label for>` or `title` as the only étiquette is not failed (M5). Now failed by `rgaa-field-label-empty` (11.2.1–11.2.4, also empty aria-label and aria-labelledby passages). | done |
 | T11-12 | 11.2.3, 11.2.4 | WM | The aria-label and aria-labelledby relevance questions are filed under 11.2.2. | done |
 | T11-13 | 11.8.1 | MISS | Groups faked with disabled or dashed options. | open |
 | T11-14 | 11.5.1 | MISS | Same-name checkbox sets and `role=radio` sets (Q13). | open |

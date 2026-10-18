@@ -694,5 +694,12 @@
   "focusNotRemoved_summary_fail": "El gestor {{attribute}} de este elemento (\"{{code}}\") le quita el foco en cuanto lo recibe.",
   "focusNotRemoved_hint_fail": "Quite la llamada a blur(): quien usa el teclado debe poder llegar al elemento, usarlo y ver dónde está el foco (RGAA 7.3.2).",
   "focusNotRemoved_summary_cantTell": "El gestor {{attribute}} de este elemento (\"{{code}}\") mueve el foco a otro elemento cuando lo recibe.",
-  "focusNotRemoved_hint_cantTell": "Compruebe que el elemento conserva el foco, o que el foco pasa a propósito a una parte del mismo componente, como su elemento activo (RGAA 7.3.2)."
+  "focusNotRemoved_hint_cantTell": "Compruebe que el elemento conserva el foco, o que el foco pasa a propósito a una parte del mismo componente, como su elemento activo (RGAA 7.3.2).",
+  "fieldLabelEmpty_title": "Las etiquetas de un campo no están todas vacías",
+  "fieldLabelEmpty_description": "Falla un campo de formulario cuyas únicas fuentes de etiqueta (<label>, title, aria-label, aria-labelledby) están todas vacías.",
+  "fieldLabelEmpty_summary_emptyLabel": "Este campo tiene un <label>, pero está vacío, y el campo no tiene otra etiqueta.",
+  "fieldLabelEmpty_summary_emptyTitle": "Este campo tiene un atributo title, pero está vacío, y el campo no tiene otra etiqueta.",
+  "fieldLabelEmpty_summary_emptyAriaLabel": "Este campo tiene un aria-label, pero está vacío, y el campo no tiene otra etiqueta.",
+  "fieldLabelEmpty_summary_emptyLabelledby": "Este campo tiene un aria-labelledby, pero no apunta a ningún texto, y el campo no tiene otra etiqueta.",
+  "fieldLabelEmpty_hint": "Dé al campo una etiqueta que diga qué introducir, en su <label> u otra fuente (RGAA {{test}})."
 }

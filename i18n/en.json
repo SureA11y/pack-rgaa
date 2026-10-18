@@ -694,5 +694,12 @@
   "focusNotRemoved_summary_fail": "This element's {{attribute}} handler (\"{{code}}\") removes focus from it as soon as it receives it.",
   "focusNotRemoved_hint_fail": "Remove the blur() call: a keyboard user must be able to reach and use the element, and see where focus is (RGAA 7.3.2).",
   "focusNotRemoved_summary_cantTell": "This element's {{attribute}} handler (\"{{code}}\") moves focus to another element when it receives it.",
-  "focusNotRemoved_hint_cantTell": "Check that the element keeps focus, or that focus moves on purpose to a part of the same component, such as its active item (RGAA 7.3.2)."
+  "focusNotRemoved_hint_cantTell": "Check that the element keeps focus, or that focus moves on purpose to a part of the same component, such as its active item (RGAA 7.3.2).",
+  "fieldLabelEmpty_title": "A field's label sources are not all empty",
+  "fieldLabelEmpty_description": "Fails a form field whose only label sources (<label>, title, aria-label, aria-labelledby) are all empty.",
+  "fieldLabelEmpty_summary_emptyLabel": "This field has a <label>, but it is empty, and the field has no other label.",
+  "fieldLabelEmpty_summary_emptyTitle": "This field has a title attribute, but it is empty, and the field has no other label.",
+  "fieldLabelEmpty_summary_emptyAriaLabel": "This field has an aria-label, but it is empty, and the field has no other label.",
+  "fieldLabelEmpty_summary_emptyLabelledby": "This field has an aria-labelledby, but it points to no text, and the field has no other label.",
+  "fieldLabelEmpty_hint": "Give the field a label that says what to enter, in its <label> or another source (RGAA {{test}})."
 }
