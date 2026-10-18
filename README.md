@@ -1,8 +1,8 @@
 # @surea11y/pack-rgaa
 
-RGAA 4.1.2, the French accessibility standard, as a pack for [`@surea11y/core`](https://github.com/SureA11y/core#readme): its criteria and tests, the RGAA tests each of core's rules checks, one result per RGAA criterion, the `rgaa-4.1.2` profile, 74 rules for what RGAA requires beyond WCAG or judges differently, and their messages in English, French, German, Spanish and Japanese.
+RGAA 4.1.2, the French accessibility standard, as a pack for [`@surea11y/core`](https://github.com/SureA11y/core#readme): its criteria and tests, the RGAA tests each of core's rules checks, one result per RGAA criterion, the `rgaa-4.1.2` profile, 76 rules for what RGAA requires beyond WCAG or judges differently, and their messages in English, French, German, Spanish and Japanese.
 
-It automates what can be checked in the page, not an RGAA audit: a scan gives results for 51 of RGAA's 106 criteria, many rules ask (`cantTell`) where only a person can judge, and 16 of the pack's rules are manual, finding what a person must review without ever failing it. A conformance claim still needs an auditor to check every criterion.
+It automates what can be checked in the page, not an RGAA audit: a scan gives results for 52 of RGAA's 106 criteria, many rules ask (`cantTell`) where only a person can judge, and 17 of the pack's rules are manual, finding what a person must review without ever failing it. A conformance claim still needs an auditor to check every criterion.
 
 It needs `@surea11y/core` 1.12.0 or later, which runs packs and judges a pack's profile by the WCAG version it names (see [Packs in core's `ENGINE_OPTIONS.md`](https://github.com/SureA11y/core/blob/main/docs/ENGINE_OPTIONS.md#packs--rules-and-standards-from-outside-core)).
 
@@ -174,7 +174,7 @@ runDomRulesInPage(url, null, {
 - **The mapping:** for each of core's rules, the RGAA tests it checks, with the reason (`rule-map.js`, documented in [`docs/RGAA_MAPPING.md`](./docs/RGAA_MAPPING.md)). Results name those tests under the pack's profiles, or with `engineOptions.mappings: ['rgaa']`.
 - **One result per RGAA criterion** that a rule checks (`mappings.js`), in its own section of the HTML report, with RGAA's French wording.
 - **The `rgaa-4.1.2` profile:** RGAA alone. It runs the pack's own rules and every core rule mapped to an RGAA test, WCAG rules and best-practice ones alike (`img-alt-present` for 1.1.1, `heading-order` for 9.1), and nothing else: no rule that counts for no RGAA test, and no WCAG criterion in the results. It is judged by WCAG 2.1, the version RGAA 4.1.2 is built on, so a duplicate id fails 8.2.1.
-- **74 rules,** each id starting with `rgaa-`: for what RGAA requires and WCAG doesn't (a doctype, presentational markup, a skip link's place across pages, say), and where RGAA judges differently, among them `rgaa-contrast-minimum`, a variant of core's `contrast-minimum`. They are opt-in: they run under the profile, or with `engineOptions.optInRules: ['rgaa']`, never in a scan that targets WCAG.
+- **76 rules,** each id starting with `rgaa-`: for what RGAA requires and WCAG doesn't (a doctype, presentational markup, a skip link's place across pages, say), and where RGAA judges differently, among them `rgaa-contrast-minimum`, a variant of core's `contrast-minimum`. They are opt-in: they run under the profile, or with `engineOptions.optInRules: ['rgaa']`, never in a scan that targets WCAG.
 - **Probes:** four of its rules read evidence the host supplies in `engineOptions.probes` (other pages' titles and skip links, the page's source as sent, a validator report); `describePacks([rgaa])` lists them with what each holds.
 
 ## The data and its licence

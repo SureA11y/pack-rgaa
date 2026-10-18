@@ -731,6 +731,22 @@ The spacer has an empty `alt`, as RGAA 1.2.1 asks of a decorative image; rgaa-im
 ```
 A 1 by 1 px image carries no information, so it is decorative, and it has no `alt` attribute (RGAA 1.2.1).
 
+## rgaa-invalid-field-message
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<form><label for="m">Courriel</label><input id="m" aria-invalid="true"></form>
+```
+The field is marked invalid, and no passage is linked to it by `aria-describedby` or `aria-labelledby`: a person checks that its label holds the error message (RGAA 11.10.4).
+
+**Not applicable**
+```html
+<form><label for="m">Courriel</label><input id="m" aria-invalid="true" aria-describedby="e"><p id="e">Format : vous@domaine.fr</p></form>
+```
+The message is in a visible passage linked by `aria-describedby`.
+
 ## rgaa-keyboard-only-event-handlers
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -1272,6 +1288,40 @@ The two choices are not grouped, so "Delivery" is not announced with them.
 </fieldset>
 ```
 The choices are in a fieldset with a legend.
+
+## rgaa-required-field-indication
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Failed**
+```html
+<form><label for="n">Nom</label><input id="n" required><label for="v">Ville</label><input id="v"></form>
+```
+The field is required, but its visible label shows no required indication (RGAA 11.10.2).
+
+**Failed**
+```html
+<form><label for="n">Nom *</label><input id="n" required><label for="v">Ville</label><input id="v"><p>* champs obligatoires</p></form>
+```
+The « * » is explained only after the field that uses it; RGAA's glossary wants the explanation before its first use.
+
+**Flagged (cantTell)**
+```html
+<form><fieldset><legend>Adresse (obligatoire)</legend><label for="r">Rue</label><input id="r" required></fieldset><label for="v">Ville</label><input id="v"></form>
+```
+The indication is in the legend, not in the field's label: a person checks that it identifies the field.
+
+**Passed**
+```html
+<form><p>Les champs marqués d'un * sont obligatoires.</p><label for="n">Nom *</label><input id="n" required><label for="v">Ville</label><input id="v"></form>
+```
+The sign is in the label and explained before its first use.
+
+**Not applicable**
+```html
+<form><label for="n">Nom</label><input id="n" required><label for="v">Ville (facultatif)</label><input id="v"></form>
+```
+The form marks its optional field, which makes 11.10.1 and 11.10.2 not applicable.
 
 ## rgaa-role-img-aria-name
 

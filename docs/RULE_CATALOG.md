@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**74 rules total: 58 automatic (decide deterministically; can return `fail`), 16 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**76 rules total: 59 automatic (decide deterministically; can return `fail`), 17 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -14,7 +14,7 @@ Under **What a finding reports**, a rule lists the fields its findings carry in 
 
 See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_SCHEMA.md) for what `type`/`confidence`/`severity` mean on a scan result, and [`WCAG_CONFORMANCE.md`](https://github.com/SureA11y/core/blob/main/docs/WCAG_CONFORMANCE.md) for how these roll up to an SC-level conformance claim.
 
-## Automatic rules (58), can return `fail`
+## Automatic rules (59), can return `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -66,6 +66,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-page-zones-reachable`](#rgaa-page-zones-reachable) | Each area of the page can be reached or skipped | — | — | medium | moderate |
 | [`rgaa-presentational-attributes-absent`](#rgaa-presentational-attributes-absent) | Page uses no presentational attributes | — | — | high | minor |
 | [`rgaa-presentational-elements-absent`](#rgaa-presentational-elements-absent) | Page uses no presentational elements | — | — | high | minor |
+| [`rgaa-required-field-indication`](#rgaa-required-field-indication) | Required fields show a required indication in their label | — | — | high | serious |
 | [`rgaa-role-img-aria-name`](#rgaa-role-img-aria-name) | Elements with role="img" are named with aria-labelledby or aria-label | — | — | high | serious |
 | [`rgaa-skip-link-placement`](#rgaa-skip-link-placement) | Skip links are visible and at the same place on every page | — | — | medium | moderate |
 | [`rgaa-skip-link-present`](#rgaa-skip-link-present) | Pages have a skip link to the main content | — | — | high | moderate |
@@ -77,7 +78,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-video-captions-track-kind`](#rgaa-video-captions-track-kind) | Video caption tracks use kind="captions" | — | — | high | moderate |
 | [`rgaa-widget-label-in-name`](#rgaa-widget-label-in-name) | The accessible name of a scripted component contains its visible label | — | — | high | serious |
 
-## Manual rules (16), never `fail`
+## Manual rules (17), never `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -89,6 +90,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-field-group-legend`](#rgaa-field-group-legend) | Groups of form fields have a legend | — | — | medium | moderate |
 | [`rgaa-frame-title-relevant`](#rgaa-frame-title-relevant) | Frame titles are relevant | — | — | high | moderate |
 | [`rgaa-image-alt-long`](#rgaa-image-alt-long) | Text alternatives of images are short | — | — | medium | minor |
+| [`rgaa-invalid-field-message`](#rgaa-invalid-field-message) | Fields marked invalid have their error message in their label or a linked passage | — | — | high | moderate |
 | [`rgaa-keyboard-only-event-handlers`](#rgaa-keyboard-only-event-handlers) | Keyboard-only inline event handlers should have a pointer equivalent | — | — | low | moderate |
 | [`rgaa-letters-spaced-with-spaces`](#rgaa-letters-spaced-with-spaces) | Letters of a word are not spaced out with spaces | — | — | medium | minor |
 | [`rgaa-link-context-review`](#rgaa-link-context-review) | Generic links whose only context is outside RGAA's list are reviewed | — | — | medium | minor |
@@ -106,7 +108,7 @@ What a scan runs under each profile (`engineOptions.profile`): the rules its tag
 |---|---|---|---|---|---|---|
 | `rgaa-4.1.2` | `rgaa` | version 4.1.2 | — | — | — | 2.1 |
 
-## Rollups (51)
+## Rollups (52)
 
 Each groups rules into one result, as a WCAG rollup does; the standard's own report sections show them.
 
@@ -123,6 +125,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-10.7` | Dans chaque page web, pour chaque élément recevant le focus, la prise de focus est-elle visible ? | `css-focus-indicator-suppressed`, `css-hidden-focus`, `manual-review`, `rgaa-focus-indicator-contrast` |
 | `rgaa-4.1.2-10.8` | Pour chaque page web, les contenus cachés ont-ils vocation à être ignorés par les technologies d’assistance ? | `aria-hidden-body`, `aria-hidden-focus` |
 | `rgaa-4.1.2-11.1` | Chaque champ de formulaire a-t-il une étiquette ? | `form-control-programmatic-label-quality`, `option-name-present`, `rgaa-field-label-listed-source`, `rgaa-label-for-target-valid` |
+| `rgaa-4.1.2-11.10` | Dans chaque formulaire, le contrôle de saisie est-il utilisé de manière pertinente (hors cas particuliers) ? | `rgaa-invalid-field-message`, `rgaa-required-field-indication` |
 | `rgaa-4.1.2-11.13` | La finalité d’un champ de saisie peut-elle être déduite pour faciliter le remplissage automatique des champs avec les données de l’utilisateur ? | `rgaa-autocomplete-user-field` |
 | `rgaa-4.1.2-11.2` | Chaque étiquette associée à un champ de formulaire est-elle pertinente (hors cas particuliers) ? | `form-control-label-quality`, `form-control-programmatic-label-quality`, `rgaa-field-label-in-name-sources`, `rgaa-title-placeholder-identical` |
 | `rgaa-4.1.2-11.5` | Dans chaque formulaire, les champs de même nature sont-ils regroupés, si nécessaire ? | `rgaa-radio-group-present` |
@@ -744,6 +747,18 @@ Such an image fails one criterion, and which one depends on what it is: 1.1.1 if
 - Fails a spacer: an image 2 px wide or high, or less, as rendered or, with no layout, by its width or height attribute. A line or a pixel carries no information.
 - Asks (cantTell) about the others: if the image is decorative, it fails 1.2.1; if it carries information, 1.1.1 only. A person decides.
 
+### `rgaa-invalid-field-message`
+
+**Fields marked invalid have their error message in their label or a linked passage**
+
+manual · no formal WCAG SC mapping · confidence high · default severity moderate
+
+Flags each field of a form with aria-invalid="true" and no visible passage linked by aria-describedby or aria-labelledby, for a person to check that its label holds the error message.
+
+**Applies to.** Applies to each visible field of a form (a &lt;form&gt; or role="form") with aria-invalid="true" and no visible text in a passage linked by aria-describedby or aria-labelledby. A page with none is notApplicable.
+
+**Expectation.** RGAA 11.10.4 and 11.10.7 ask a field with aria-invalid="true" for its error message, or its format instruction, visible in its label or in a passage of text linked by aria-labelledby or aria-describedby (glossary « Passage de texte lié par aria-labelledby ou aria-describedby »); aria-errormessage is not one of those places. With no such passage, only the label is left, and whether it holds the message is for a person (cantTell).
+
 ### `rgaa-keyboard-only-event-handlers`
 
 **Keyboard-only inline event handlers should have a pointer equivalent**
@@ -1109,6 +1124,21 @@ Flags a set of radio buttons with the same name that is not inside one fieldset,
 **Applies to.** Applies to sets of two or more &lt;input type="radio"&gt; with the same name in the same form (or outside any form). A page with none is notApplicable. When every set is grouped, the rule passes; under a scoped scan it reports notApplicable instead, since a set can reach past the scanned part of the page (ENGINE_OPTIONS.md, "What a scoped result means").
 
 **Expectation.** Every radio button of the set sits in one &lt;fieldset&gt;, role="group" or role="radiogroup" element, one of the ways RGAA 11.5.1 accepts. That element need not be the closest group around each radio: an outer fieldset holding every radio of the set groups them even when inner groups split them. A set that is not is flagged: 11.5.1 applies "si nécessaire", so a person decides whether this set needs grouping.
+
+### `rgaa-required-field-indication`
+
+**Required fields show a required indication in their label**
+
+automatic · no formal WCAG SC mapping · confidence high · default severity serious
+
+Checks each required field of a form with two or more fields: fails one whose visible label and linked passages show no required indication, or whose « * » is explained only after its first use or never; asks where an icon, a legend or styles may carry it.
+
+**Applies to.** Applies to the fields of each form (a &lt;form&gt; or role="form", glossary « Formulaire ») that has at least two fields and does not mark its optional fields as such in their labels or legends (« facultatif », « optionnel »): the 11.10 particular case makes 11.10.1 and 11.10.2 not applicable then. Radio buttons of one name count as one field. Fields hidden from view are left out. A page with none is notApplicable.
+
+**Expectation.**
+
+- 11.10.2: a field with `required` or aria-required="true" shows a required indication (glossary « Indication de champ obligatoire »: text such as « obligatoire », or a sign such as « * ») visibly in its label or in a passage of text linked by aria-labelledby or aria-describedby. With a visible label, no indication in it or in those passages, none next to the field, no image, icon or generated content that could be one, and no sentence such as « tous les champs sont obligatoires », it fails (requiredNotIndicated). An indication found only next to the field, in a placeholder or a legend, an image or an icon, a global sentence, or a label hidden from view, is asked about (cantTell).
+- Glossary note: a sign such as « * » must be explained « visuellement et dans l'ordre du code source, avant la première utilisation ». When the page explains it only after the first field that uses it, that field fails (markerExplainedAfter). When the page never explains it, a field with `required` or aria-required="true" fails (markerNotExplained) and any other is asked about, since the sign may not mean "required" there.
 
 ### `rgaa-role-img-aria-name`
 

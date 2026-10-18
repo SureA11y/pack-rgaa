@@ -4,13 +4,13 @@ This pack's rules and their scenario pages. Every rule should have a `tests/fixt
 
 ## Summary
 
-Total rules: **74**. With fixture: **74**. Without fixture: **0**.
+Total rules: **76**. With fixture: **76**. Without fixture: **0**.
 
 ## Rules WITHOUT a fixture (0)
 
 None — every rule has a fixture.
 
-## Rules WITH a fixture (74)
+## Rules WITH a fixture (76)
 
 | Rule ID | Type | Fixture | Cases | PASS | FAIL | CANTTELL | OTHER |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -50,6 +50,7 @@ None — every rule has a fixture.
 | rgaa-img-alt-present | automatic | `tests/fixtures/rgaa-img-alt-present-all-scenarios.html` | 8 | 3 | 1 | 2 | 2 |
 | rgaa-img-decorative-no-alternative | automatic | `tests/fixtures/rgaa-img-decorative-no-alternative-all-scenarios.html` | 9 | 3 | 2 | 2 | 2 |
 | rgaa-img-no-alt-decorative | automatic | `tests/fixtures/rgaa-img-no-alt-decorative-all-scenarios.html` | 8 | 0 | 2 | 2 | 4 |
+| rgaa-invalid-field-message | manual | `tests/fixtures/rgaa-invalid-field-message-all-scenarios.html` | 2 | 0 | 0 | 1 | 1 |
 | rgaa-keyboard-only-event-handlers | manual | `tests/fixtures/rgaa-keyboard-only-event-handlers-all-scenarios.html` | 10 | 0 | 0 | 4 | 6 |
 | rgaa-label-for-target-valid | automatic | `tests/fixtures/rgaa-label-for-target-valid-all-scenarios.html` | 8 | 3 | 4 | 0 | 1 |
 | rgaa-layout-table-no-data-markup | automatic | `tests/fixtures/rgaa-layout-table-no-data-markup-all-scenarios.html` | 11 | 4 | 5 | 1 | 1 |
@@ -76,6 +77,7 @@ None — every rule has a fixture.
 | rgaa-presentational-attributes-absent | automatic | `tests/fixtures/rgaa-presentational-attributes-absent-all-scenarios.html` | 11 | 0 | 8 | 0 | 3 |
 | rgaa-presentational-elements-absent | automatic | `tests/fixtures/rgaa-presentational-elements-absent-all-scenarios.html` | 9 | 0 | 7 | 0 | 2 |
 | rgaa-radio-group-present | manual | `tests/fixtures/rgaa-radio-group-present-all-scenarios.html` | 6 | 0 | 0 | 0 | 6 |
+| rgaa-required-field-indication | automatic | `tests/fixtures/rgaa-required-field-indication-all-scenarios.html` | 5 | 1 | 2 | 1 | 1 |
 | rgaa-role-img-aria-name | automatic | `tests/fixtures/rgaa-role-img-aria-name-all-scenarios.html` | 9 | 2 | 3 | 1 | 3 |
 | rgaa-scripted-components-review | manual | `tests/fixtures/rgaa-scripted-components-review-all-scenarios.html` | 12 | 0 | 0 | 0 | 12 |
 | rgaa-skip-link-placement | automatic | `tests/fixtures/rgaa-skip-link-placement-all-scenarios.html` | 1 | 0 | 0 | 1 | 0 |

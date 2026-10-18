@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 74,
-    "withFixture": 74,
+    "total": 76,
+    "withFixture": 76,
     "withoutFixture": 0
   },
   "rows": [
@@ -618,6 +618,23 @@
       }
     },
     {
+      "ruleId": "rgaa-invalid-field-message",
+      "title": "Fields marked invalid have their error message in their label or a linked passage",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/invalid-field-message-manual.js",
+      "testFile": "tests/rules/manual/rgaa-invalid-field-message.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-invalid-field-message-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 1
+      }
+    },
+    {
       "ruleId": "rgaa-keyboard-only-event-handlers",
       "title": "Keyboard-only inline event handlers should have a pointer equivalent",
       "type": "manual",
@@ -1057,6 +1074,23 @@
         "FAIL": 0,
         "CANTTELL": 0,
         "OTHER": 6
+      }
+    },
+    {
+      "ruleId": "rgaa-required-field-indication",
+      "title": "Required fields show a required indication in their label",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-required-field-indication.js",
+      "testFile": "tests/rules/automatic/rgaa-required-field-indication.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-required-field-indication-all-scenarios.html",
+      "totalCases": 5,
+      "caseCounts": {
+        "PASS": 1,
+        "FAIL": 2,
+        "CANTTELL": 1,
+        "OTHER": 1
       }
     },
     {

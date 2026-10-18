@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>rgaa-invalid-field-message — scenario fixture</title>
+    <style>
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Arial,
+          sans-serif;
+        line-height: 1.4;
+        margin: 24px;
+      }
+      h1 {
+        font-size: 20px;
+        margin: 0 0 16px;
+      }
+      h2 {
+        font-size: 16px;
+        margin: 22px 0 10px;
+      }
+      .note {
+        font-size: 12px;
+        opacity: 0.85;
+        margin: 8px 0 16px;
+      }
+      .case {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 12px;
+        margin: 10px 0;
+      }
+      .case-title {
+        font-weight: 700;
+        margin: 0 0 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Scenario fixture: <code>rgaa-invalid-field-message</code> (RGAA 11.10.4, 11.10.7)</h1>
+
+    <p class="note">
+      Each target has a stable <code>id</code> of the form <code>ifm_case_NN</code>. A field marked
+      <code>aria-invalid="true"</code> needs its message in its label or a passage linked by
+      <code>aria-describedby</code> or <code>aria-labelledby</code>.
+    </p>
+
+    <div class="case" id="case_01">
+      <div class="case-title">01 — CANTTELL: no linked passage</div>
+      <form>
+        <label for="ifm_case_01">Courriel</label><input id="ifm_case_01" aria-invalid="true" />
+      </form>
+    </div>
+
+    <div class="case" id="case_02">
+      <div class="case-title">02 — NOT APPLICABLE: the message is linked by aria-describedby</div>
+      <form>
+        <label for="ifm_case_02">Téléphone</label
+        ><input id="ifm_case_02" aria-invalid="true" aria-describedby="e2" />
+        <p id="e2">Format : 01 23 45 67 89</p>
+      </form>
+    </div>
+  </body>
+</html>

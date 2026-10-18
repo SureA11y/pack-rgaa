@@ -459,6 +459,10 @@ const RGAA_RULE_TESTS = {
       tests: ['1.3.3'],
       note: "Asks a human to judge the relevance of an image button's text alternative (a non-empty alt, aria-label, aria-labelledby or title, each source listed), which is 1.3.3 step 2. An empty alt with another name is input-image-alt-decorative's question."
     },
+    'rgaa-invalid-field-message': {
+      tests: ['11.10.4', '11.10.7'],
+      note: 'Asks about each field of a form with aria-invalid="true" and no visible passage linked by aria-describedby or aria-labelledby: 11.10.4 and 11.10.7 want its error message or format instruction in its label or in such a passage, and aria-errormessage is neither. Whether the label holds the message is for a person.'
+    },
     'rgaa-keyboard-only-event-handlers': {
       tests: ['7.3.1'],
       note: 'Asks about each element that is not interactive natively and has an inline key handler (onkeydown, onkeyup, onkeypress) but no inline click or pointer handler. 7.3.1 steps 4 and 5 require the action to work with any pointing device too, or an equivalent element that does, which WCAG 2.1.1 does not ask. It only sees inline attributes, so it never fails.'
@@ -726,6 +730,10 @@ const RGAA_RULE_TESTS = {
     region: {
       tests: [],
       note: 'Flags content under <body> that is outside any landmark. RGAA does not require all content to be inside landmarks: 12.6.1 accepts alternatives to landmarks for specific zones only, and 9.2.1 covers header/nav/main/footer structure, not leftover content.'
+    },
+    'rgaa-required-field-indication': {
+      tests: ['11.10.1', '11.10.2'],
+      note: 'Checks the required fields of each form with two or more fields that does not mark its optional ones (the 11.10 particular case). Fails a field with required or aria-required="true" whose visible label and linked passages show no indication (11.10.2), with none next to it, no image, icon or generated content that could be one, and no « tous les champs sont obligatoires » sentence; asks in those cases. Fails a field whose « * » the page explains only after its first use, or never when the field has required or aria-required (glossary « Indication de champ obligatoire »: the explanation comes « avant la première utilisation »); asks when such a field has neither, since the sign may mean something else.'
     },
     'rgaa-role-img-aria-name': {
       tests: ['1.1.1'],
