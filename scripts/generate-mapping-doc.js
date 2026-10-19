@@ -48,11 +48,31 @@ function renderDoc({ rules, versions, themes, criteria, tests, ruleTests }) {
     'A rule maps to a test when its failure (or, for a manual rule, the question it raises) is direct evidence about what the test\'s methodology checks. A rule that fails is linked only when its usual failures really fail the test; where that is uncertain, the test is left off or the rule asks. A mapped rule covers the test in part at most: a `pass` never means an RGAA test is conforme, and most tests need a human. A test marked "(exception)" is linked although RGAA relates it to other WCAG criteria than the rule; the reason follows the note.'
   );
 
+  // A row's tests and those its reason codes send findings to.
+  const linkedTests = (row) => {
+    if (!row) return [];
+    if (!row.reasonCodes) return row.tests;
+    const all = new Set(row.tests);
+    for (const c of Object.values(row.reasonCodes || {})) {
+      for (const t of (c && c.tests) || []) all.add(t);
+    }
+    return [...all].sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
+  };
+  // Where each reason code's findings go, for the rule's row.
+  const codesNote = (row) =>
+    Object.entries((row && row.reasonCodes) || {})
+      .map(([code, c]) => {
+        const list = c && Array.isArray(c.tests) ? c.tests : row.tests;
+        const where = list.length ? list.join(', ') : 'no test';
+        return `\`${code}\`: ${where}${c && c.outcome === 'cantTell' ? ', asked (cantTell)' : ''}`;
+      })
+      .join('; ');
+
   for (const { version } of versions) {
     const table = ruleTests[version] || {};
-    const mapped = rules.filter((r) => (table[r.ruleId] || { tests: [] }).tests.length);
+    const mapped = rules.filter((r) => linkedTests(table[r.ruleId]).length);
     const reached = new Set(
-      mapped.flatMap((r) => table[r.ruleId].tests.map((t) => tests[version][t].criterion))
+      mapped.flatMap((r) => linkedTests(table[r.ruleId]).map((t) => tests[version][t].criterion))
     );
     const allCriteria = Object.keys(criteria[version]);
 
@@ -71,11 +91,14 @@ function renderDoc({ rules, versions, themes, criteria, tests, ruleTests }) {
     for (const r of rules) {
       const row = table[r.ruleId];
       const outside = (row && row.outsideCorrespondence) || {};
-      const testList =
-        row && row.tests.length
-          ? row.tests.map((t) => (t in outside ? `${t} (exception)` : t)).join(', ')
-          : '—';
-      const why = row ? reasonOf(row) : 'Not mapped yet.';
+      const linked = linkedTests(row);
+      const testList = linked.length
+        ? linked.map((t) => (t in outside ? `${t} (exception)` : t)).join(', ')
+        : '—';
+      const codes = codesNote(row);
+      const why = row
+        ? reasonOf(row) + (codes ? ` By reason code: ${codes}.` : '')
+        : 'Not mapped yet.';
       out.push(
         `| \`${r.ruleId}\` | ${r.type} | ${r.wcagSc.join(', ') || '—'} | ${testList} | ${cell(why)} |`
       );
@@ -93,7 +116,7 @@ function renderDoc({ rules, versions, themes, criteria, tests, ruleTests }) {
         if (c.theme !== theme.number) continue;
         const byTest = c.tests
           .map((t) => {
-            const who = mapped.filter((r) => table[r.ruleId].tests.includes(t));
+            const who = mapped.filter((r) => linkedTests(table[r.ruleId]).includes(t));
             return who.length ? `${t}: ${who.map((r) => `\`${r.ruleId}\``).join(', ')}` : null;
           })
           .filter(Boolean);

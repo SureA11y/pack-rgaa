@@ -138,7 +138,12 @@ test('RGAA rollups group exactly the rules linked to their criterion, and carry 
     assert.deepEqual(c.meta.wcagSc, [], c.id);
     const tests = RGAA_CRITERIA[version][criterion].tests;
     const expected = Object.entries(RGAA_RULE_TESTS[version])
-      .filter(([, row]) => row.tests.some((t) => tests.includes(t)))
+      .filter(([, row]) =>
+        // The row's tests, and those its reason codes send findings to.
+        row.tests
+          .concat(...Object.values(row.reasonCodes || {}).map((c) => c.tests || []))
+          .some((t) => tests.includes(t))
+      )
       .map(([id]) => id)
       .sort();
     assert.deepEqual(c.checksIds, expected, c.id);

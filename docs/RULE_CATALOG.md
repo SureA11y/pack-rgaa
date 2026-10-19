@@ -194,7 +194,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-8.10` | Dans chaque page web, les changements du sens de lecture sont-ils signalés ? | `rgaa-dir-attribute-valid`, `rgaa-text-direction-marked` |
 | `rgaa-4.1.2-8.2` | Pour chaque page web, le code source généré est-il valide selon le type de document spécifié ? | `duplicate-id`, `rgaa-aria-attribute-conformance`, `rgaa-aria-role-conformance`, `rgaa-html-elements-attributes-valid`, `rgaa-html-nesting-valid`, `rgaa-markup-validation-review` |
 | `rgaa-4.1.2-8.3` | Dans chaque page web, la langue par défaut est-elle présente ? | `rgaa-page-language-present` |
-| `rgaa-4.1.2-8.4` | Pour chaque page web ayant une langue par défaut, le code de langue est-il pertinent ? | `html-xml-lang-mismatch`, `rgaa-html-lang-code-valid` |
+| `rgaa-4.1.2-8.4` | Pour chaque page web ayant une langue par défaut, le code de langue est-il pertinent ? | `html-xml-lang-mismatch`, `rgaa-html-lang-code-valid`, `valid-lang` |
 | `rgaa-4.1.2-8.5` | Chaque page web a-t-elle un titre de page ? | `page-title-present` |
 | `rgaa-4.1.2-8.6` | Pour chaque page web ayant un titre de page, ce titre est-il pertinent ? | `page-title-patterns`, `rgaa-page-title-unique` |
 | `rgaa-4.1.2-8.8` | Dans chaque page web, le code de langue de chaque changement de langue est-il valide et pertinent ? | `valid-lang` |

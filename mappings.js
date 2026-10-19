@@ -24,9 +24,53 @@ function rowOf(version, ruleId) {
   return (RGAA_RULE_TESTS[version] || {})[ruleId] || null;
 }
 
+// A row's `reasonCodes`: { [code]: { tests, outcome } } sends the rule's
+// findings of one reason code to other tests (`tests`, default the row's;
+// [] for none), and `outcome: 'cantTell'` makes a failing one a question
+// there.
+function codesOf(row) {
+  return row && row.reasonCodes && typeof row.reasonCodes === 'object' ? row.reasonCodes : null;
+}
+
+function ownTestsOf(row) {
+  return row && Array.isArray(row.tests) ? row.tests : [];
+}
+
+// Every test a rule's findings count toward: the row's, and those its
+// reason codes send findings to.
 function testsOfRule(version, ruleId) {
   const row = rowOf(version, ruleId);
-  return row && Array.isArray(row.tests) ? row.tests : [];
+  const own = ownTestsOf(row);
+  const codes = codesOf(row);
+  if (!codes) return own;
+  const all = new Set(own);
+  for (const c of Object.values(codes)) {
+    for (const t of c && Array.isArray(c.tests) ? c.tests : []) all.add(t);
+  }
+  return [...all].sort(compareIds);
+}
+
+// What a rule's findings do in the rollup of criterion `tests` (its tests),
+// by reason code: 'count', 'cantTell' (a failing one is a question) or
+// 'ignore', and `default` for a code not listed; null for a rule without
+// reasonCodes, which is judged whole. Core reads it from the rollup's
+// meta.contributions, as for a standard built with ruleMappedStandard.
+function contributionOf(version, ruleId, tests) {
+  const row = rowOf(version, ruleId);
+  const codes = codesOf(row);
+  if (!codes) return null;
+  const own = ownTestsOf(row);
+  const touches = (list) => list.some((t) => tests.includes(t));
+  const out = { default: touches(own) ? 'count' : 'ignore', codes: {} };
+  for (const [code, c] of Object.entries(codes)) {
+    const list = c && Array.isArray(c.tests) ? c.tests : own;
+    out.codes[code] = !touches(list)
+      ? 'ignore'
+      : c && c.outcome === 'cantTell'
+        ? 'cantTell'
+        : 'count';
+  }
+  return out;
 }
 
 // Tests a rule is linked to although RGAA relates their criterion to none of
@@ -104,10 +148,17 @@ function rgaaComposites() {
             .filter((t) => row.tests.includes(t))
         )
       ].sort(compareIds);
+      // The rules judged by their findings' reason codes in this rollup.
+      const contributions = {};
+      for (const ruleId of ruleIds) {
+        const c = contributionOf(version, ruleId, row.tests);
+        if (c) contributions[ruleId] = c;
+      }
       out.push({
         id: `rgaa-${version}-${criterion}`,
         checksIds: ruleIds,
         meta: {
+          ...(Object.keys(contributions).length ? { contributions } : {}),
           title: row.title,
           description: '',
           wcagSc: [],
@@ -124,7 +175,8 @@ function rgaaComposites() {
   return out;
 }
 
-const ROW_KEYS = ['tests', 'note', 'outsideCorrespondence'];
+const ROW_KEYS = ['tests', 'note', 'outsideCorrespondence', 'reasonCodes'];
+const CODE_KEYS = ['tests', 'outcome'];
 
 /**
  * Problems with the mapping table, given the rules that exist
@@ -151,8 +203,38 @@ function validateRgaaRuleTests(rules) {
       for (const key of Object.keys(row)) {
         if (!ROW_KEYS.includes(key)) problems.push(`${version} ${ruleId}: unknown field ${key}`);
       }
+      if (row.reasonCodes !== undefined) {
+        const codes = row.reasonCodes;
+        if (!codes || typeof codes !== 'object' || Array.isArray(codes)) {
+          problems.push(`${version} ${ruleId}: reasonCodes must be an object of reason codes`);
+        } else {
+          for (const [code, c] of Object.entries(codes)) {
+            if (!/^[A-Z][A-Z0-9_]*$/.test(code)) {
+              problems.push(`${version} ${ruleId}: reasonCodes names ${code}, not a reason code`);
+            }
+            if (!c || typeof c !== 'object' || Array.isArray(c)) {
+              problems.push(`${version} ${ruleId}: reasonCodes ${code} must be { tests, outcome }`);
+              continue;
+            }
+            for (const key of Object.keys(c)) {
+              if (!CODE_KEYS.includes(key)) {
+                problems.push(`${version} ${ruleId}: reasonCodes ${code}: unknown field ${key}`);
+              }
+            }
+            if (c.tests !== undefined && !Array.isArray(c.tests)) {
+              problems.push(`${version} ${ruleId}: reasonCodes ${code}: tests must be a list`);
+            }
+            if (c.outcome !== undefined && c.outcome !== 'cantTell') {
+              problems.push(
+                `${version} ${ruleId}: reasonCodes ${code}: outcome can only be 'cantTell'`
+              );
+            }
+          }
+        }
+      }
+      const linked = testsOfRule(version, ruleId);
       for (const test of Object.keys(exceptionsOf(version, ruleId))) {
-        if (!row.tests.includes(test)) {
+        if (!linked.includes(test)) {
           problems.push(
             `${version} ${ruleId}: outsideCorrespondence names ${test}, which is not linked`
           );
@@ -161,7 +243,7 @@ function validateRgaaRuleTests(rules) {
       if (new Set(row.tests).size !== row.tests.length) {
         problems.push(`${version} ${ruleId}: lists a test twice`);
       }
-      for (const test of row.tests) {
+      for (const test of linked) {
         if (!RGAA_TESTS[version][test]) {
           problems.push(`${version} ${ruleId}: no such test ${test}`);
           continue;

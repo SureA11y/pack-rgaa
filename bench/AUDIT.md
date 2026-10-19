@@ -22,7 +22,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T1-08 | 1.9.2–1.9.5 | MISS | Captioned svg, canvas, object and embed images are not checked. Now checked by `rgaa-figure-caption-structure`, linked to 1.9.1–1.9.5. | done |
 | T1-09 | 1.1.1 | MISS | `alt=""` images in a named figure or nav are never asked about (C7). | core |
 | T1-10 | 1.4, 1.5 | MISS | CAPTCHAs: no question (Q5). | open |
-| T1-11 | 1.3.1, 1.3.6 | WM | Relevance asked about images that are a link's or button's only content, which the glossary sends to 6.1 and 11.9. | core |
+| T1-11 | 1.3.1, 1.3.6 | WM | Relevance asked about images that are a link's or button's only content, which the glossary sends to 6.1 and 11.9. Now kept out of theme 1: core's `IMAGE_ONLY_CONTROL_CONTENT` counts toward no test, by reason code; the link and button rules judge it. | done |
 | T1-12 | 1.6, 1.7 | MISS | No rule; a broken `aria-describedby` on an image should fail 1.6.9. 1.6.9 now checked by `rgaa-img-describedby-target` (fails when no id exists; asks when some are missing or empty). Still open: the rest of 1.6 and 1.7 (description needed, longdesc, adjacent link). | partial |
 | T1-13 | 1.8 | MISS | Images of text: no question. Now asked about by `rgaa-text-image-review` (image buttons, images in headings, images named like text or banners; logos left out). Still open: 1.8.3 to 1.8.6 (object, embed, canvas, svg), which nothing in the markup flags. | partial |
 | T1-14 | 1.2.2, 1.2.3, 1.2.6 | MISS | `<area>` without href, decorative object and embed: no check. 1.2.3 and 1.2.6 now checked by `rgaa-object-embed-decorative-aria-hidden`. Still open: `<area>` without href (1.2.2), rare. | partial |
@@ -83,14 +83,14 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 |---|---|---|---|---|
 | T89-01 | 9.2.1 | MISS/WO | Steps 1–3 and 6 are never checked, yet 9.2 passes; `role="banner|navigation|contentinfo"` without the element passes. | done for roles on other elements; unmarked zones and step 3 left to a person |
 | T89-02 | 9.2.1 | WO | A page with no `<main>` only asks (M3). | done (b0e64c1) |
-| T89-03 | 9.3.1, 9.3.2 | FP | An `<li role="presentation">` (pager) or `<li role="group">` (carousel) fails 9.3 (P7). | core |
-| T89-04 | 9.3.1, 9.3.2 | FP | A plain `<li>` in `<ul role="tablist|menu">` fails 9.3; the technical note sets widgets apart from lists. | core |
+| T89-03 | 9.3.1, 9.3.2 | FP | An `<li role="presentation">` (pager) or `<li role="group">` (carousel) fails 9.3 (P7). Now asked about under 9.3.1 and 9.3.2: core's `LIST_ITEM_ROLE_OVERRIDDEN`, filed by reason code in `rule-map.js`. | done |
+| T89-04 | 9.3.1, 9.3.2 | FP | A plain `<li>` in `<ul role="tablist|menu">` fails 9.3; the technical note sets widgets apart from lists. Now asked about under 9.3.1 and 9.3.2: core's `LIST_ROLE_OVERRIDDEN`, filed by reason code. | done |
 | T89-05 | 9.1.1 | MISS | A skipped level is missed after an earlier, deeper heading (M1). | core |
 | T89-06 | 8.9.1 | MISS | No rule: `<h2 role="presentation">`, empty `<p>`, `<br><br>` paragraphs, empty `<blockquote>`. Now `rgaa-markup-for-presentation`: fails a heading with role presentation/none and a paragraph of only `&nbsp;` or `<br>`; asks about an empty `<p>` or `<blockquote>`, live regions, `<br><br>` and indents of `&nbsp;`. | done |
 | T89-07 | 8.10.1 | MISS | Right-to-left text with no `dir` is not detected. Now `rgaa-text-direction-marked`: fails a text of three words or more in the other direction with no `dir`; asks about texts of one or two words (a language menu's « العربية », decision B) and `<bdi>`. | done |
 | T89-08 | 9.1.3 | MISS | A page with text but no heading is notApplicable. Now asked about by `rgaa-headings-absent-review` (30 words or more, no heading at all). | done |
-| T89-09 | 8.2.1 | FP | Markup inside shadow roots fails 8.2, though the validator RGAA names never sees it. | done (pack rules); core (`duplicate-id`) |
-| T89-10 | 8.4.1, 8.8.1 | WM | A default language on `<body>` is judged under 8.8 instead of 8.4. | open (pack); core (`valid-lang` reason) |
+| T89-09 | 8.2.1 | FP | Markup inside shadow roots fails 8.2, though the validator RGAA names never sees it. Now asked about under 8.2.1: core's `DUPLICATE_ID_IN_SHADOW_TREE`, filed by reason code. | done |
+| T89-10 | 8.4.1, 8.8.1 | WM | A default language on `<body>` is judged under 8.8 instead of 8.4. Now filed under 8.4.1, not 8.8.1: core's `DEFAULT_LANG_INVALID`, by reason code. | done |
 | T89-11 | 8.4.1 | MISS | A wrong default language passes; `und`, `mul` pass (Q7). | open |
 | T89-12 | 8.7.1 | MISS | No rule: changes of language (Q6). | open |
 | T89-13 | 9.4 | MISS | No rule: quotations (Q12). | open |

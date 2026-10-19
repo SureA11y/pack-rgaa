@@ -286,7 +286,8 @@ const RGAA_RULE_TESTS = {
     },
     'duplicate-id': {
       tests: ['8.2.1'],
-      note: 'Fails on non-empty id values that are not unique in their document or shadow tree, compared as written (id="a " and id="a" differ). That is the 8.2.1 condition \'Les valeurs d\'attribut id sont uniques dans la page\'.'
+      note: 'Fails on non-empty id values that are not unique in their document or shadow tree, compared as written (id="a " and id="a" differ). That is the 8.2.1 condition \'Les valeurs d\'attribut id sont uniques dans la page\'. Duplicates inside one shadow tree (DUPLICATE_ID_IN_SHADOW_TREE) are asked about instead: 8.2.1 checks the generated source with a validator, which never sees shadow content.',
+      reasonCodes: { DUPLICATE_ID_IN_SHADOW_TREE: { outcome: 'cantTell' } }
     },
     'duplicate-id-aria': {
       tests: [],
@@ -465,7 +466,8 @@ const RGAA_RULE_TESTS = {
     },
     'img-alt-decorative': {
       tests: ['1.1.1', '1.1.5', '1.1.8'],
-      note: 'Asks whether an <img>, <svg> or <canvas> left out of the accessibility tree (alt="", aria-hidden, role none/presentation, unlabeled svg/canvas) is really decorative. That is step 2 (does the image carry information?) of 1.1.1, 1.1.5 and 1.1.8, and a \'no\' means an informative image with no alternative. It does not check the 1.2.x conditions for correctly ignoring decorative images.'
+      note: "Asks whether an <img>, <svg> or <canvas> left out of the accessibility tree (alt=\"\", aria-hidden, role none/presentation, unlabeled svg/canvas) is really decorative. That is step 2 (does the image carry information?) of 1.1.1, 1.1.5 and 1.1.8, and a 'no' means an informative image with no alternative. It does not check the 1.2.x conditions for correctly ignoring decorative images. An image that is a link's or button's only content (IMAGE_ONLY_CONTROL_CONTENT) counts toward no test: the glossary « Image porteuse d'information », notes 1 and 2, judges its alternative as the control's label, which the link and button rules check under 6.1, 6.2, 11.9 and 7.1.",
+      reasonCodes: { IMAGE_ONLY_CONTROL_CONTENT: { tests: [] } }
     },
     'img-alt-present': {
       tests: [],
@@ -477,7 +479,8 @@ const RGAA_RULE_TESTS = {
     },
     'img-alt-quality': {
       tests: ['1.3.1'],
-      note: 'Asks a human to judge the relevance of a non-empty <img> alt, which is 1.3.1 step 2.'
+      note: "Asks a human to judge the relevance of a non-empty <img> alt, which is 1.3.1 step 2. An image that is a link's or button's only content (IMAGE_ONLY_CONTROL_CONTENT) counts toward no test: the glossary « Image porteuse d'information », notes 1 and 2, judges its alternative as the control's label, which the link and button rules check under 6.1, 6.2, 11.9 and 7.1.",
+      reasonCodes: { IMAGE_ONLY_CONTROL_CONTENT: { tests: [] } }
     },
     'rgaa-img-describedby-target': {
       tests: ['1.6.9'],
@@ -601,7 +604,8 @@ const RGAA_RULE_TESTS = {
     },
     'list-children-valid': {
       tests: ['9.3.1', '9.3.2'],
-      note: 'Fails a <ul>/<ol> (with no role other than list) with a direct child that is not an <li>/role=listitem (or script/template), so the list is not structured with ul/li (9.3.1) or ol/li (9.3.2), step 2. Not linked to 8.2.1: the rule accepts a child with role=listitem and skips hidden lists, while HTML accepts only li; rgaa-html-nesting-valid reports list nesting under 8.2.1.'
+      note: 'Fails a <ul>/<ol> (with no role other than list) with a direct child that is not an <li>/role=listitem (or script/template), so the list is not structured with ul/li (9.3.1) or ol/li (9.3.2), step 2. Not linked to 8.2.1: the rule accepts a child with role=listitem and skips hidden lists, while HTML accepts only li; rgaa-html-nesting-valid reports list nesting under 8.2.1. A list whose only stray children are <li> elements given another role (LIST_ITEM_ROLE_OVERRIDDEN: role="presentation" in pagers, role="group" in carousels) is asked about under 9.3.1 and 9.3.2 instead: the items are written as a list, and whether the role makes them something else is for a person.',
+      reasonCodes: { LIST_ITEM_ROLE_OVERRIDDEN: { outcome: 'cantTell' } }
     },
     'listbox-name-present': {
       tests: [],
@@ -617,7 +621,8 @@ const RGAA_RULE_TESTS = {
     },
     'listitem-parent-valid': {
       tests: ['9.3.1', '9.3.2'],
-      note: 'Fails an <li> whose parent is not <ul>/<ol>/<menu> or role=list/none/presentation, so items grouped as a list are not structured with a ul/ol container. That is step 2 of 9.3.1 or 9.3.2; the rule cannot tell ordered from unordered, so both apply. Not linked to 8.2.1: HTML does not accept an li in a role=list container, which this rule passes; rgaa-html-nesting-valid reports it under 8.2.1.'
+      note: 'Fails an <li> whose parent is not <ul>/<ol>/<menu> or role=list/none/presentation, so items grouped as a list are not structured with a ul/ol container. That is step 2 of 9.3.1 or 9.3.2; the rule cannot tell ordered from unordered, so both apply. Not linked to 8.2.1: HTML does not accept an li in a role=list container, which this rule passes; rgaa-html-nesting-valid reports it under 8.2.1. An <li> whose <ul> or <ol> has a widget role (LIST_ROLE_OVERRIDDEN: role="tablist", "menu"…) is asked about instead: 9.3\'s technical note says such roles are not lists, so whether the content is a list is for a person.',
+      reasonCodes: { LIST_ROLE_OVERRIDDEN: { outcome: 'cantTell' } }
     },
     'rgaa-main-element-structure': {
       tests: ['9.2.1'],
@@ -897,7 +902,8 @@ const RGAA_RULE_TESTS = {
     },
     'svg-text-alternative-quality': {
       tests: ['1.3.6'],
-      note: "Asks a human to judge the relevance of an <svg>'s existing title/ARIA name, which is 1.3.6 step 2. It also includes desc-only cases."
+      note: "Asks a human to judge the relevance of an <svg>'s existing title/ARIA name, which is 1.3.6 step 2. It also includes desc-only cases. An image that is a link's or button's only content (IMAGE_ONLY_CONTROL_CONTENT) counts toward no test: the glossary « Image porteuse d'information », notes 1 and 2, judges its alternative as the control's label, which the link and button rules check under 6.1, 6.2, 11.9 and 7.1.",
+      reasonCodes: { IMAGE_ONLY_CONTROL_CONTENT: { tests: [] } }
     },
     'tab-name-present': {
       tests: ['7.1.1'],
@@ -973,7 +979,12 @@ const RGAA_RULE_TESTS = {
     },
     'valid-lang': {
       tests: ['8.8.1'],
-      note: 'Checks that lang on elements other than <html> has a registered primary language subtag (the glossary "Code de langue" reads only the part before the hyphen). That is the \'valide\' condition of 8.8.1 for language changes; relevance is not checked.'
+      note: 'Checks that lang on elements other than <html> has a registered primary language subtag (the glossary "Code de langue" reads only the part before the hyphen). That is the \'valide\' condition of 8.8.1 for language changes; relevance is not checked. An invalid lang that sets the default language, with no lang on any ancestor (DEFAULT_LANG_INVALID, on <body> say), fails 8.4.1 instead of 8.8.1: it is not a change of language.',
+      reasonCodes: { DEFAULT_LANG_INVALID: { tests: ['8.4.1'] } },
+      outsideCorrespondence: {
+        '8.4.1':
+          'A lang with no lang on any ancestor (on <body>, say) sets the default language, which 8.4.1 judges, not a change of language (8.8.1); RGAA relates 8.4 to WCAG 3.1.1, while the rule is filed under 3.1.2.'
+      }
     },
     'video-caption': {
       tests: ['4.3.1'],
