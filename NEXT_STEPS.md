@@ -89,10 +89,7 @@ WCAG one for one, which RGAA does not).
 
 ### 3. Waiting on the owner's decision
 
-Each is marked Q or `decide` in AUDIT.md: T89-15 (whether 9.1 still asks
-about text that is only a number or one link; core now gives them their own
-codes, `HEADING_LIKE_NUMBER` and `HEADING_LIKE_LINK`, which `reasonCodes`
-with `tests: []` would drop), T1-10 (CAPTCHAs), T25-17 (embedded players
+Each is marked Q in AUDIT.md: T1-10 (CAPTCHAs), T25-17 (embedded players
 and `autoplay=1`), T89-11 (a wrong default language, `und`, `mul`), T89-12
 (changes of language), T89-13 (quotations), T10-06 (links at 3:1), T10-07
 (text colour with no background colour), T11-14 (same-name checkbox sets,

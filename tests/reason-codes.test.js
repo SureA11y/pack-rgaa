@@ -96,3 +96,25 @@ test('rollups carry the reason-code contributions of their rules', () => {
   const c88 = rgaaComposites().find((c) => c.id === 'rgaa-4.1.2-8.8');
   assert.deepEqual(c88.meta.contributions['valid-lang'].codes, { DEFAULT_LANG_INVALID: 'ignore' });
 });
+
+test('9.1 does not ask about a paragraph that is only a number, and still asks about a link-only one', () => {
+  const css = '<style>.k{font-size:32px;font-weight:700}</style>';
+  const html = (body) => page(body).replace('</head>', `${css}</head>`);
+  const figure = outcomes(
+    runa11yCoreOnHtml(
+      html('<main><h1>Bilan</h1><p class="k">12 000</p><p>habitants accompagnés.</p></main>'),
+      RGAA
+    )
+  );
+  assert.equal(figure.rule('p-as-heading'), 'cantTell');
+  assert.notEqual(figure.rollup('9.1'), 'cantTell');
+  const card = outcomes(
+    runa11yCoreOnHtml(
+      html(
+        '<main><h1>Actualités</h1><p class="k"><a href="/a">Rénovation de la médiathèque</a></p><p>Les travaux commencent.</p></main>'
+      ),
+      RGAA
+    )
+  );
+  assert.equal(card.rollup('9.1'), 'cantTell');
+});

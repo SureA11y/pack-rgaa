@@ -746,7 +746,8 @@ const RGAA_RULE_TESTS = {
     },
     'p-as-heading': {
       tests: ['9.1.3'],
-      note: 'Flags short <p> text, and short <div> text with only inline markup inside, that is entirely bold (however the bold is applied) and at least 18px, asking whether it is a visual heading without <hx>/role=heading markup. That is the 9.1.3 question: is each passage that acts as a heading structured with <hx> or role=heading plus aria-level?'
+      note: "Flags short <p> text, and short <div> text with only inline markup inside, that is entirely bold (however the bold is applied) and at least 18px, asking whether it is a visual heading without <hx>/role=heading markup. That is the 9.1.3 question: is each passage that acts as a heading structured with <hx> or role=heading plus aria-level? Text that is only a number (HEADING_LIKE_NUMBER: a key figure, a price, a counter) counts toward no test: it is nearly always emphasis, not a heading, and a year that titles a section is found when the page's headings are reviewed. Text that is one link (HEADING_LIKE_LINK) is still asked about: a card title is a common unmarked heading.",
+      reasonCodes: { HEADING_LIKE_NUMBER: { tests: [] } }
     },
     'page-has-heading-one': {
       tests: [],
