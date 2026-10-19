@@ -181,3 +181,28 @@ test('an unnamed tree or progressbar fails 7.1 and leaves 11.6 alone', () => {
   const fields = rollup(result, 'rgaa-4.1.2-11.6');
   assert.ok(!fields || fields.outcome !== 'fail', fields && fields.outcome);
 });
+
+// A criterion some of whose tests no rule checks asks, rather than being
+// notApplicable, when its rules all find nothing (core's partialCoverage).
+test('a criterion with tests no rule checks is marked partial, and asks when its rules find nothing', () => {
+  const { rgaaComposites } = require('../mappings.js');
+  const byId = new Map(rgaaComposites().map((c) => [c.meta.criterion, c]));
+  for (const c of byId.values()) {
+    const untested = RGAA_CRITERIA['4.1.2'][c.meta.criterion].tests.some(
+      (t) =>
+        !Object.values(RGAA_RULE_TESTS['4.1.2']).some((row) =>
+          row.tests
+            .concat(...Object.values(row.reasonCodes || {}).map((x) => x.tests || []))
+            .includes(t)
+        )
+    );
+    assert.equal(!!c.meta.partial, untested, c.id);
+  }
+  assert.equal(byId.get('13.1').meta.partial, true);
+  const html =
+    '<!doctype html><html lang="fr"><head><title>t</title></head><body><main><p>Texte</p></main></body></html>';
+  const result = runa11yCoreOnHtml(html, { engineOptions: { profile: 'rgaa-4.1.2' } });
+  const r131 = result.rulesResults.find((r) => r.ruleId === 'rgaa-4.1.2-13.1');
+  assert.equal(r131.outcome, 'cantTell');
+  assert.equal(r131.data.details.reasonCode, 'composite.rollup.cantTell.partialCoverage');
+});

@@ -74,7 +74,18 @@ test("a link's or button's only image is not judged under theme 1", () => {
   );
   const r = outcomes(runa11yCoreOnHtml(html, RGAA));
   assert.equal(r.rule('img-alt-quality'), 'cantTell');
-  for (const id of ['1.1', '1.2', '1.3']) assert.notEqual(r.rollup(id), 'cantTell', id);
+  // None of them is asked about for this image; a criterion some of whose
+  // tests have no rule still asks for that reason (partial coverage).
+  const result = runa11yCoreOnHtml(html, RGAA);
+  for (const id of ['1.1', '1.2', '1.3']) {
+    const roll = result.rulesResults.find((x) => x.ruleId === `rgaa-4.1.2-${id}`);
+    assert.ok(
+      !roll ||
+        roll.outcome !== 'cantTell' ||
+        roll.data.details.reasonCode === 'composite.rollup.cantTell.partialCoverage',
+      id
+    );
+  }
   // An image beside text in the link is still asked about.
   const beside = page(
     `<main><a href="/r.pdf">Rapport <img src="${IMG}" width="16" height="16" alt="PDF"></a></main>`

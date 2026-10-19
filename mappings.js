@@ -154,11 +154,17 @@ function rgaaComposites() {
         const c = contributionOf(version, ruleId, row.tests);
         if (c) contributions[ruleId] = c;
       }
+      // A criterion some of whose tests no rule checks: core rolls it up as
+      // cantTell (partialCoverage) rather than notApplicable when its rules
+      // are all notApplicable, since they only found none of the cases
+      // they look for.
+      const partial = row.tests.some((t) => !tests.includes(t));
       out.push({
         id: `rgaa-${version}-${criterion}`,
         checksIds: ruleIds,
         meta: {
           ...(Object.keys(contributions).length ? { contributions } : {}),
+          ...(partial ? { partial: true } : {}),
           title: row.title,
           description: '',
           wcagSc: [],

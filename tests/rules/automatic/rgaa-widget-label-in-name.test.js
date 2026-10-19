@@ -135,10 +135,18 @@ function rollups(body) {
     const r = result.rulesResults.find((x) => x.ruleId === ruleId);
     return r ? r.outcome : 'missing';
   };
+  // Nothing found there: notApplicable, or a criterion that asks only
+  // because some of its tests have no rule (partial coverage).
+  const found = (ruleId) => {
+    const r = result.rulesResults.find((x) => x.ruleId === ruleId);
+    return r && r.data.details.reasonCode === 'composite.rollup.cantTell.partialCoverage'
+      ? 'notApplicable'
+      : outcome(ruleId);
+  };
   return {
     rgaa: outcome('rgaa-4.1.2-7.1'),
     wcag: outcome('wcag-2.5.3-label-in-name'),
-    others: ['rgaa-4.1.2-6.1', 'rgaa-4.1.2-11.2', 'rgaa-4.1.2-11.9'].map(outcome)
+    others: ['rgaa-4.1.2-6.1', 'rgaa-4.1.2-11.2', 'rgaa-4.1.2-11.9'].map(found)
   };
 }
 

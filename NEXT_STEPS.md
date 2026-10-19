@@ -110,12 +110,10 @@ other engines do. Update the state column as each is built.
 | 13 | T11-17 | Ask under 11.3 (fields with the same autocomplete token and different labels), 11.7 (each legend, quoted) and 11.11 (a format constraint with no example); 11.12 left open. | to do |
 | 14 | T12-13, 12.1 | Ask when a page shows fewer than two of a navigation menu, a site map link and a search form. | to do |
 
-Waiting on core PR SureA11y/core#266 (open): `partial: true` on a
-requirement, for T12-08, and `findings: [{ when, requirements, outcome }]`
-on a rule-map row, to file contrast failures by `typography.isLargeText`
-and `typography.isBold` under their one 3.2 test (T25-12). Once it is
-merged, the pack uses both (its composites are its own: carry the same
-fields `ruleMappedStandard` would).
+Core PR SureA11y/core#266 is merged into core's main: the pack's rollups
+now say `partial: true` for a criterion with tests no rule checks (T12-08,
+done). Its `findings` entries don't settle T25-12: they file by requirement,
+and RGAA's rollups are per criterion; see CORE_ISSUES.md.
 
 Still for the owner: T11-17's 11.12, and the reword of `dab2b17` below.
 
