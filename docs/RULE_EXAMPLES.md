@@ -175,6 +175,22 @@ With `role="img"`, only `aria-labelledby` or `aria-label` can provide the altern
 ```
 A person checks that the adjacent link leads to an alternative content. A canvas with nothing at all is asked about too, since it may be decorative (then it fails 1.2.5), unless it certainly carries information, captioned or focusable: then it fails. An image that is the only content of a link or a button is judged as the control's label, under Links (6.1), Forms (11.9) or Scripts (7.1), as the glossary « Image porteuse d'information » (notes 1 and 2) says.
 
+## rgaa-captcha-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<img src="captcha.php" alt="Image CAPTCHA">
+```
+A person checks that the alternative says what to do, and that an audio CAPTCHA or another way in is offered (RGAA 1.4, 1.5).
+
+**Not applicable**
+```html
+<img src="mairie.jpg" alt="La mairie">
+```
+Nothing says the image is a CAPTCHA.
+
 ## rgaa-color-reference-review
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*

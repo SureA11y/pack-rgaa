@@ -784,5 +784,11 @@
   "textImageReview_summary_cantTell_imageButton": "Este botón de imagen puede mostrar su etiqueta como imagen de texto (\"{{alt}}\").",
   "textImageReview_summary_cantTell_imageInHeading": "Esta imagen forma parte de un encabezado y puede ser una imagen de texto (\"{{alt}}\").",
   "textImageReview_summary_cantTell_textImageName": "El nombre de archivo o la clase de esta imagen sugiere que muestra texto (\"{{alt}}\", {{name}}).",
-  "textImageReview_hint_cantTell": "Si la imagen muestra un texto que transmite información, sustitúyala por texto con estilo, salvo que un mecanismo permita al usuario sustituirla o que su representación exacta sea esencial (RGAA 1.8)."
+  "textImageReview_hint_cantTell": "Si la imagen muestra un texto que transmite información, sustitúyala por texto con estilo, salvo que un mecanismo permita al usuario sustituirla o que su representación exacta sea esencial (RGAA 1.8).",
+  "captchaReview_title": "Las imágenes CAPTCHA tienen una alternativa pertinente y un acceso no gráfico",
+  "captchaReview_description": "Señala las imágenes CAPTCHA y los widgets reCAPTCHA o hCaptcha, para que una persona compruebe que la alternativa dice qué es el CAPTCHA y qué pide, y que se ofrece un CAPTCHA no gráfico u otro acceso a la función.",
+  "captchaReview_summary_cantTell_imageCaptcha": "Esta imagen parece un CAPTCHA (alternativa: \"{{alt}}\").",
+  "captchaReview_summary_cantTell_captchaWidget": "Esto es un CAPTCHA de {{service}}.",
+  "captchaReview_hint_cantTell_imageCaptcha": "Compruebe que su alternativa dice qué es el CAPTCHA y qué hay que hacer (RGAA 1.4), y que se ofrece un CAPTCHA no gráfico u otro acceso a la función que protege (RGAA 1.5).",
+  "captchaReview_hint_cantTell_captchaWidget": "Compruebe que se ofrece un CAPTCHA no gráfico u otro acceso a la función que protege (RGAA 1.5)."
 }

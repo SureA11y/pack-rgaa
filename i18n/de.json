@@ -784,5 +784,11 @@
   "textImageReview_summary_cantTell_imageButton": "Diese Bildschaltfläche zeigt ihre Beschriftung möglicherweise als Textgrafik („{{alt}}“).",
   "textImageReview_summary_cantTell_imageInHeading": "Dieses Bild ist Teil einer Überschrift und möglicherweise eine Textgrafik („{{alt}}“).",
   "textImageReview_summary_cantTell_textImageName": "Dateiname oder Klasse dieses Bildes deuten darauf hin, dass es Text zeigt („{{alt}}“, {{name}}).",
-  "textImageReview_hint_cantTell": "Wenn das Bild informationstragenden Text zeigt, ersetzen Sie es durch formatierten Text, es sei denn, ein Mechanismus erlaubt dem Nutzer, es zu ersetzen, oder seine genaue Darstellung ist wesentlich (RGAA 1.8)."
+  "textImageReview_hint_cantTell": "Wenn das Bild informationstragenden Text zeigt, ersetzen Sie es durch formatierten Text, es sei denn, ein Mechanismus erlaubt dem Nutzer, es zu ersetzen, oder seine genaue Darstellung ist wesentlich (RGAA 1.8).",
+  "captchaReview_title": "CAPTCHA-Bilder haben eine passende Alternative und einen nicht grafischen Zugang",
+  "captchaReview_description": "Markiert CAPTCHA-Bilder und reCAPTCHA- oder hCaptcha-Widgets, damit eine Person prüft, dass die Alternative sagt, was das CAPTCHA ist und verlangt, und dass ein nicht grafisches CAPTCHA oder ein anderer Zugang zur Funktion angeboten wird.",
+  "captchaReview_summary_cantTell_imageCaptcha": "Dieses Bild scheint ein CAPTCHA zu sein (Alternative: „{{alt}}“).",
+  "captchaReview_summary_cantTell_captchaWidget": "Dies ist ein {{service}}-CAPTCHA.",
+  "captchaReview_hint_cantTell_imageCaptcha": "Prüfen Sie, dass seine Alternative sagt, was das CAPTCHA ist und was zu tun ist (RGAA 1.4), und dass ein nicht grafisches CAPTCHA oder ein anderer Zugang zu der geschützten Funktion angeboten wird (RGAA 1.5).",
+  "captchaReview_hint_cantTell_captchaWidget": "Prüfen Sie, dass ein nicht grafisches CAPTCHA oder ein anderer Zugang zu der geschützten Funktion angeboten wird (RGAA 1.5)."
 }

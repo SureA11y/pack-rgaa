@@ -784,5 +784,11 @@
   "textImageReview_summary_cantTell_imageButton": "This image button may show its label as an image of text (\"{{alt}}\").",
   "textImageReview_summary_cantTell_imageInHeading": "This image is part of a heading and may be an image of text (\"{{alt}}\").",
   "textImageReview_summary_cantTell_textImageName": "This image's file name or class suggests it shows text (\"{{alt}}\", {{name}}).",
-  "textImageReview_hint_cantTell": "If the image shows text that carries information, replace it with styled text, unless a mechanism lets the user replace it or its exact rendering is essential (RGAA 1.8)."
+  "textImageReview_hint_cantTell": "If the image shows text that carries information, replace it with styled text, unless a mechanism lets the user replace it or its exact rendering is essential (RGAA 1.8).",
+  "captchaReview_title": "CAPTCHA images have a relevant alternative and a non-graphic way in",
+  "captchaReview_description": "Flags CAPTCHA images and reCAPTCHA or hCaptcha widgets, for a person to check that the alternative says what the CAPTCHA is and does, and that a non-graphic CAPTCHA or another way to the function is offered.",
+  "captchaReview_summary_cantTell_imageCaptcha": "This image looks like a CAPTCHA (alternative: \"{{alt}}\").",
+  "captchaReview_summary_cantTell_captchaWidget": "This is a {{service}} CAPTCHA.",
+  "captchaReview_hint_cantTell_imageCaptcha": "Check that its alternative says what the CAPTCHA is and what to do (RGAA 1.4), and that a non-graphic CAPTCHA, or another way to the function it protects, is offered (RGAA 1.5).",
+  "captchaReview_hint_cantTell_captchaWidget": "Check that a non-graphic CAPTCHA, or another way to the function it protects, is offered (RGAA 1.5)."
 }

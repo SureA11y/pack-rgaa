@@ -192,6 +192,10 @@ const RGAA_RULE_TESTS = {
       tests: [],
       note: 'Checks that role=combobox has a name from aria-label, aria-labelledby, title or an associated label. It accepts a wrapping <label> and a placeholder on a text-like <input>, which 11.1.1 does not list, so a placeholder-only field passes here while it fails 11.1.1. Not mapped to 11.1.1: rgaa-field-label-listed-source reports 11.1.1 for every form field, from the sources 11.1.1 lists only. Not mapped to 7.1.1: it passes when an accessible alternative exists.'
     },
+    'rgaa-captcha-review': {
+      tests: ['1.4.1', '1.4.2', '1.4.3', '1.4.4', '1.4.5', '1.4.6', '1.4.7', '1.5.1', '1.5.2'],
+      note: 'Asks about visible CAPTCHAs: an image (img, area, input type=image, svg, canvas, image object or embed, role=img) whose alternative, file name, id, class or name says captcha, and a reCAPTCHA or hCaptcha widget. 1.4 asks that the alternative of an image used as a CAPTCHA « permet d’identifier la nature et la fonction de l’image », and 1.5 that « il existe une autre forme de CAPTCHA non graphique, au moins » or « une autre solution d’accès à la fonctionnalité »: both are for a person. A widget, whose images come from another site, is asked about under 1.5 only in its message; the map links every finding to both criteria. A CAPTCHA that names itself nowhere is not found.'
+    },
     'rgaa-color-reference-review': {
       tests: ['3.1.2'],
       note: 'Asks about visible text that indicates something by a colour, outside code, scripts and form controls: a colour after a verb such as indiquer, signaler, marquer, surligner or afficher (« indiqués en rouge », « shown in red »), or with a word for a part of the page (« les champs en rouge », « the green items »), in French, English, Spanish or German whatever the page’s language. 3.1.2 asks, « pour chaque indication de couleur donnée par un texte », that the information is not given by colour alone; whether it is also given another way is for a person. A colour name alone (« un t-shirt rouge ») is not an indication.'

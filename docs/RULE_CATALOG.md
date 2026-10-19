@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**100 rules total: 68 automatic (decide deterministically; can return `fail`), 32 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**101 rules total: 68 automatic (decide deterministically; can return `fail`), 33 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -87,11 +87,12 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-video-captions-track-kind`](#rgaa-video-captions-track-kind) | Video caption tracks use kind="captions" | — | — | high | moderate |
 | [`rgaa-widget-label-in-name`](#rgaa-widget-label-in-name) | The accessible name of a scripted component contains its visible label | — | — | high | serious |
 
-## Manual rules (32), never `fail`
+## Manual rules (33), never `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
 | [`rgaa-aria-hidden-text-review`](#rgaa-aria-hidden-text-review) | Visible text hidden from assistive technologies is meant to be ignored | — | — | high | moderate |
+| [`rgaa-captcha-review`](#rgaa-captcha-review) | CAPTCHA images have a relevant alternative and a non-graphic way in | — | — | high | serious |
 | [`rgaa-color-reference-review`](#rgaa-color-reference-review) | Text that refers to a colour does not give the information by colour alone | — | — | high | minor |
 | [`rgaa-complex-table-summary`](#rgaa-complex-table-summary) | Complex data tables have a summary | — | — | medium | moderate |
 | [`rgaa-complex-table-summary-quality`](#rgaa-complex-table-summary-quality) | Complex data table summaries are relevant | — | — | medium | moderate |
@@ -132,7 +133,7 @@ What a scan runs under each profile (`engineOptions.profile`): the rules its tag
 |---|---|---|---|---|---|---|
 | `rgaa-4.1.2` | `rgaa` | version 4.1.2 | — | — | — | 2.1 |
 
-## Rollups (64)
+## Rollups (66)
 
 Each groups rules into one result, as a WCAG rollup does; the standard's own report sections show them.
 
@@ -141,6 +142,8 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-1.1` | Chaque image porteuse d’information a-t-elle une alternative textuelle ? | `area-alt-present`, `img-alt-decorative`, `input-image-alt-present`, `rgaa-area-alt-source`, `rgaa-canvas-role-img`, `rgaa-embed-image-role-img`, `rgaa-img-alt-present`, `rgaa-object-image-role-img`, `rgaa-role-img-aria-name`, `rgaa-svg-role-img`, `server-side-image-map-absent`, `svg-text-alternative-present` |
 | `rgaa-4.1.2-1.2` | Chaque image de décoration est-elle correctement ignorée par les technologies d’assistance ? | `rgaa-canvas-decorative-aria-hidden`, `rgaa-img-decorative-no-alternative`, `rgaa-img-no-alt-decorative`, `rgaa-object-embed-decorative-aria-hidden`, `rgaa-svg-decorative-aria-hidden`, `rgaa-svg-hidden-no-alternative` |
 | `rgaa-4.1.2-1.3` | Pour chaque image porteuse d’information ayant une alternative textuelle, cette alternative est-elle pertinente (hors cas particuliers) ? | `area-alt-quality`, `canvas-text-alternative-quality`, `embed-text-alternative-quality`, `image-redundant-alt`, `img-alt-quality`, `input-image-alt-decorative`, `input-image-alt-quality`, `object-text-alternative-quality`, `rgaa-image-alt-long`, `svg-text-alternative-quality` |
+| `rgaa-4.1.2-1.4` | Pour chaque image utilisée comme CAPTCHA ou comme image-test, ayant une alternative textuelle, cette alternative permet-elle d’identifier la nature et la fonction de l’image ? | `rgaa-captcha-review` |
+| `rgaa-4.1.2-1.5` | Pour chaque image utilisée comme CAPTCHA, une solution d’accès alternatif au contenu ou à la fonction du CAPTCHA est-elle présente ? | `rgaa-captcha-review` |
 | `rgaa-4.1.2-1.6` | Chaque image porteuse d’information a-t-elle, si nécessaire, une description détaillée ? | `rgaa-img-describedby-target` |
 | `rgaa-4.1.2-1.8` | Chaque image texte porteuse d’information, en l’absence d’un mécanisme de remplacement, doit si possible être remplacée par du texte stylé. Cette règle est-elle respectée (hors cas particuliers) ? | `rgaa-text-image-review` |
 | `rgaa-4.1.2-1.9` | Chaque légende d’image est-elle, si nécessaire, correctement reliée à l’image correspondante ? | `rgaa-figure-caption-structure` |
@@ -350,6 +353,18 @@ Passes: role="img" with aria-labelledby or aria-label; or, without role="img", f
 - nothing at all, on a canvas that certainly carries information: a captioned canvas, or one that takes focus.
 
 Asks (cantTell) about any other canvas with nothing at all (noAlternativeMayBeDecorative): it may be decorative, and then it fails 1.2.5 instead, which asks for aria-hidden="true". Asks (cantTell): no role="img" and no fallback content, but a link or button right after the &lt;canvas&gt; (does it lead to an alternative content?).
+
+### `rgaa-captcha-review`
+
+**CAPTCHA images have a relevant alternative and a non-graphic way in**
+
+manual · no formal WCAG SC mapping · confidence high · default severity serious
+
+Flags CAPTCHA images and reCAPTCHA or hCaptcha widgets, for a person to check that the alternative says what the CAPTCHA is and does, and that a non-graphic CAPTCHA or another way to the function is offered.
+
+**Applies to.** Applies to visible CAPTCHAs (glossary « CAPTCHA »): an image (&lt;img&gt;, &lt;area&gt;, &lt;input type="image"&gt;, &lt;svg&gt;, &lt;canvas&gt;, an image &lt;object&gt; or &lt;embed&gt;, role="img") whose alternative, file name, id, class or name says captcha; and a reCAPTCHA or hCaptcha widget (its frame, or the element the service fills). A page with none is notApplicable.
+
+**Expectation.** RGAA 1.4: the alternative of an image used as a CAPTCHA « permet d’identifier la nature et la fonction de l’image ». RGAA 1.5: for each image used as a CAPTCHA, « il existe une autre forme de CAPTCHA non graphique, au moins » or « une autre solution d’accès à la fonctionnalité ». Both are for a person, so each CAPTCHA is asked about (imageCaptcha, under 1.4 and 1.5; captchaWidget, whose images come from another site, under 1.5), one occurrence per element.
 
 ### `rgaa-color-reference-review`
 

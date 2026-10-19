@@ -98,7 +98,7 @@ other engines do. Update the state column as each is built.
 | 1 | T89-15, 9.1.3 | Drop `p-as-heading`'s number-only text (`HEADING_LIKE_NUMBER`, `tests: []`); keep asking about link-only text. | done (`f7620ed`) |
 | 2 | T13-05, 13.8 | Leave core's `moving-content-pausable` unmapped; `rgaa-moving-content-review` asks once per element, moving or blinking. | done (`81c0651`) |
 | 3 | T67-03, 7.3.1 | Keep `click-handler-keyboard-operable`'s failures as failures. | done (`81c0651`) |
-| 4 | T1-10, 1.4 and 1.5 | New manual rule: ask about each detected CAPTCHA image or widget, under 1.4 (relevance of its alternative) and 1.5 (a non-graphic CAPTCHA or another way in). | to do |
+| 4 | T1-10, 1.4 and 1.5 | New manual rule: ask about each detected CAPTCHA image or widget, under 1.4 (relevance of its alternative) and 1.5 (a non-graphic CAPTCHA or another way in). | done (`rgaa-captcha-review`) |
 | 5 | T25-17, theme 4 | Ask about each visible embedded player (YouTube, Vimeo, Dailymotion, PeerTube, SoundCloud) under theme 4, and under 4.10 when it plays by itself (`autoplay=1`). | to do |
 | 6 | T89-11, 8.4.1 | Ask when the page's text, by stopwords, is not in the language `<html lang>` names, and when it is `und` or `mul`. | to do |
 | 7 | T89-12, 8.7.1 | Ask about passages of 8 words or more whose language, by stopwords, clearly differs from their `lang`. | to do |

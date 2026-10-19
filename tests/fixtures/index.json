@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 100,
-    "withFixture": 100,
+    "total": 101,
+    "withFixture": 101,
     "withoutFixture": 0
   },
   "rows": [
@@ -139,6 +139,23 @@
         "FAIL": 4,
         "CANTTELL": 1,
         "OTHER": 2
+      }
+    },
+    {
+      "ruleId": "rgaa-captcha-review",
+      "title": "CAPTCHA images have a relevant alternative and a non-graphic way in",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/captcha-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-captcha-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-captcha-review-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 2,
+        "OTHER": 1
       }
     },
     {

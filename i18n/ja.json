@@ -784,5 +784,11 @@
   "textImageReview_summary_cantTell_imageButton": "この画像ボタンは、ラベルを文字画像として表示している可能性があります（「{{alt}}」）。",
   "textImageReview_summary_cantTell_imageInHeading": "この画像は見出しの一部で、文字画像の可能性があります（「{{alt}}」）。",
   "textImageReview_summary_cantTell_textImageName": "この画像のファイル名やクラスから、文字を表示していると思われます（「{{alt}}」、{{name}}）。",
-  "textImageReview_hint_cantTell": "画像が情報を伝える文字を表示しているなら、スタイル付きテキストに置き換えてください。ただし、利用者が置き換えられる仕組みがある場合や、正確な表現が不可欠な場合は除きます（RGAA 1.8）。"
+  "textImageReview_hint_cantTell": "画像が情報を伝える文字を表示しているなら、スタイル付きテキストに置き換えてください。ただし、利用者が置き換えられる仕組みがある場合や、正確な表現が不可欠な場合は除きます（RGAA 1.8）。",
+  "captchaReview_title": "CAPTCHA 画像には適切な代替と、画像以外の手段がある",
+  "captchaReview_description": "CAPTCHA 画像と reCAPTCHA・hCaptcha ウィジェットを示し、代替が CAPTCHA の内容と求めることを伝えているか、画像以外の CAPTCHA や機能への別の手段があるかを人が確認できるようにします。",
+  "captchaReview_summary_cantTell_imageCaptcha": "この画像は CAPTCHA のようです（代替：「{{alt}}」）。",
+  "captchaReview_summary_cantTell_captchaWidget": "これは {{service}} の CAPTCHA です。",
+  "captchaReview_hint_cantTell_imageCaptcha": "代替が CAPTCHA の内容とすべきことを伝えているか（RGAA 1.4）、画像以外の CAPTCHA、または保護された機能への別の手段があるかを確認してください（RGAA 1.5）。",
+  "captchaReview_hint_cantTell_captchaWidget": "画像以外の CAPTCHA、または保護された機能への別の手段があるかを確認してください（RGAA 1.5）。"
 }

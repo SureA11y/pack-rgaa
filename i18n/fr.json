@@ -784,5 +784,11 @@
   "textImageReview_summary_cantTell_imageButton": "Ce bouton image affiche peut-être son intitulé sous forme d’image texte (« {{alt}} »).",
   "textImageReview_summary_cantTell_imageInHeading": "Cette image fait partie d’un titre et est peut-être une image texte (« {{alt}} »).",
   "textImageReview_summary_cantTell_textImageName": "Le nom de fichier ou la classe de cette image laisse penser qu’elle affiche du texte (« {{alt}} », {{name}}).",
-  "textImageReview_hint_cantTell": "Si l’image affiche un texte porteur d’information, remplacez-la par du texte stylé, sauf si un mécanisme permet à l’utilisateur de la remplacer ou si son rendu exact est essentiel (RGAA 1.8)."
+  "textImageReview_hint_cantTell": "Si l’image affiche un texte porteur d’information, remplacez-la par du texte stylé, sauf si un mécanisme permet à l’utilisateur de la remplacer ou si son rendu exact est essentiel (RGAA 1.8).",
+  "captchaReview_title": "Les images CAPTCHA ont une alternative pertinente et un accès non graphique",
+  "captchaReview_description": "Signale les images CAPTCHA et les widgets reCAPTCHA ou hCaptcha, pour qu’une personne vérifie que l’alternative dit ce qu’est le CAPTCHA et ce qu’il demande, et qu’un CAPTCHA non graphique ou un autre accès à la fonctionnalité est proposé.",
+  "captchaReview_summary_cantTell_imageCaptcha": "Cette image semble être un CAPTCHA (alternative : « {{alt}} »).",
+  "captchaReview_summary_cantTell_captchaWidget": "Ceci est un CAPTCHA {{service}}.",
+  "captchaReview_hint_cantTell_imageCaptcha": "Vérifiez que son alternative indique la nature et la fonction du CAPTCHA (RGAA 1.4), et qu’une autre forme de CAPTCHA non graphique, ou une autre solution d’accès à la fonctionnalité qu’il protège, est proposée (RGAA 1.5).",
+  "captchaReview_hint_cantTell_captchaWidget": "Vérifiez qu’une autre forme de CAPTCHA non graphique, ou une autre solution d’accès à la fonctionnalité qu’il protège, est proposée (RGAA 1.5)."
 }
