@@ -827,5 +827,13 @@
   "formatHintReview_title": "Les champs soumis à un format suggèrent le format ou un exemple",
   "formatHintReview_description": "Signale un champ avec pattern, minlength, min/max ou inputmode dont l’étiquette, la description et le placeholder ne donnent ni format ni exemple, pour qu’une personne vérifie qu’une erreur de saisie suggère le format attendu et un exemple.",
   "formatHintReview_summary_cantTell": "Ce champ a un contrôle de saisie ({{constraint}}) mais son étiquette, sa description et son placeholder ne donnent ni format ni exemple.",
-  "formatHintReview_hint_cantTell": "Vérifiez que, lorsque la valeur est refusée, le message d’erreur indique le type ou le format de données attendu et donne un exemple de valeur valide (RGAA 11.11.1, 11.11.2)."
+  "formatHintReview_hint_cantTell": "Vérifiez que, lorsque la valeur est refusée, le message d’erreur indique le type ou le format de données attendu et donne un exemple de valeur valide (RGAA 11.11.1, 11.11.2).",
+  "colorDeclarationsPaired_title": "Les couleurs de texte et de fond sont déclarées ensemble",
+  "colorDeclarationsPaired_description": "Signale comme non conforme un texte dont la couleur définie par l’auteur n’a de couleur de fond ni sur son élément ni sur un parent, et une image de fond sous du texte sans couleur de fond, et pose la question pour une couleur de fond sous un texte laissé dans la couleur par défaut (RGAA 10.5).",
+  "colorDeclarationsPaired_summary_colorWithoutBackground": "Cet élément définit la couleur du texte ({{color}}), mais ni lui ni aucun parent ne déclare de couleur de fond.",
+  "colorDeclarationsPaired_summary_imageWithoutBackground": "Cet élément a du texte sur une image de fond ({{image}}), mais ni lui ni aucun parent ne déclare de couleur de fond.",
+  "colorDeclarationsPaired_summary_backgroundWithoutColor": "Cet élément déclare une couleur de fond ({{background}}) sous un texte laissé dans le noir par défaut.",
+  "colorDeclarationsPaired_hint_colorWithoutBackground": "Déclarez une couleur de fond (background ou background-color) sur cet élément ou un parent, comme <body>, pour que le texte garde son contraste quel que soit le fond par défaut de l’utilisateur (RGAA 10.5.1).",
+  "colorDeclarationsPaired_hint_imageWithoutBackground": "Déclarez une couleur de fond (background ou background-color) proche de celle de l’image, sur cet élément ou un parent, pour que le texte reste lisible si l’image ne se charge pas (RGAA 10.5.3).",
+  "colorDeclarationsPaired_hint_backgroundWithoutColor": "Vérifiez qu’une couleur de police (color) est déclarée sur cet élément ou un parent : un noir déclaré ne se distingue pas du noir par défaut du navigateur (RGAA 10.5.2)."
 }

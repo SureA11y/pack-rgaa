@@ -827,5 +827,13 @@
   "formatHintReview_title": "Fields with a format constraint suggest the format or an example",
   "formatHintReview_description": "Flags a field with a pattern, minlength, min/max or inputmode whose label, description and placeholder give no format or example, for a person to check that an input error suggests the expected format and an example.",
   "formatHintReview_summary_cantTell": "This field has an input control ({{constraint}}) but its label, description and placeholder give no format or example.",
-  "formatHintReview_hint_cantTell": "Check that, when the value is rejected, the error message says which type or format of data is expected and gives an example of a valid value (RGAA 11.11.1, 11.11.2)."
+  "formatHintReview_hint_cantTell": "Check that, when the value is rejected, the error message says which type or format of data is expected and gives an example of a valid value (RGAA 11.11.1, 11.11.2).",
+  "colorDeclarationsPaired_title": "Text and background colours are declared together",
+  "colorDeclarationsPaired_description": "Fails text whose author colour has no background colour on its element or any parent, and a background image over text with no background colour, and asks about a background colour over text left in the default colour (RGAA 10.5).",
+  "colorDeclarationsPaired_summary_colorWithoutBackground": "This element sets the text colour ({{color}}), but neither it nor any parent declares a background colour.",
+  "colorDeclarationsPaired_summary_imageWithoutBackground": "This element has text over a background image ({{image}}), but neither it nor any parent declares a background colour.",
+  "colorDeclarationsPaired_summary_backgroundWithoutColor": "This element declares a background colour ({{background}}) over text left in the default black.",
+  "colorDeclarationsPaired_hint_colorWithoutBackground": "Declare a background colour (background or background-color) on this element or a parent, such as <body>, so the text keeps its contrast whatever the user’s default background (RGAA 10.5.1).",
+  "colorDeclarationsPaired_hint_imageWithoutBackground": "Declare a background colour (background or background-color) close to the image’s, on this element or a parent, so the text stays readable when the image does not load (RGAA 10.5.3).",
+  "colorDeclarationsPaired_hint_backgroundWithoutColor": "Check that a text colour (color) is declared on this element or a parent: a declared black cannot be told from the browser’s default (RGAA 10.5.2)."
 }

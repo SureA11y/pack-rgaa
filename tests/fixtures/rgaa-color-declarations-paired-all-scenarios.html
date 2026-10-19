@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>rgaa-color-declarations-paired — scenario fixture</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.4; margin: 24px; }
+    h1 { font-size: 20px; margin: 0 0 16px; }
+    h2 { font-size: 16px; margin: 22px 0 10px; }
+    .note { font-size: 12px; opacity: 0.85; margin: 8px 0 16px; }
+    .case { border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin: 10px 0; }
+    .case-title { font-weight: 700; margin: 0 0 8px; }
+  </style>
+</head>
+<body>
+  <h1>Scenario fixture: <code>rgaa-color-declarations-paired</code> (RGAA 10.5.1, 10.5.2, 10.5.3)</h1>
+
+  <p class="note">
+    Each target has a stable <code>id</code> of the form <code>cdp_case_NN</code>.
+    A text colour with no background colour, and a background image over text with no background colour, fail; a background colour over text in the default black is asked about.
+  </p>
+
+  <div class="case" id="case_01">
+    <div class="case-title">01 — FAIL: a grey text with no background anywhere</div>
+    <p id="cdp_case_01" style="color:#333">Horaires d’ouverture de la médiathèque</p>
+  </div>
+
+  <div class="case" id="case_02">
+    <div class="case-title">02 — FAIL: a gradient banner with no background colour</div>
+    <div id="cdp_case_02" style="background-image:linear-gradient(#ddeeff, #ffffff)">Bienvenue à la médiathèque</div>
+  </div>
+
+  <div class="case" id="case_03">
+    <div class="case-title">03 — CANTTELL: a pale box over default black text</div>
+    <p id="cdp_case_03" style="background-color:#ffffdd">Fermeture exceptionnelle lundi</p>
+  </div>
+
+  <div class="case" id="case_04">
+    <div class="case-title">04 — PASS: a grey text inside a white box</div>
+    <div style="background-color:#ffffff"><p id="cdp_case_04" style="color:#333">Programme du mois</p></div>
+  </div>
+
+  <div class="case" id="case_05">
+    <div class="case-title">05 — NOT APPLICABLE: a hidden grey text</div>
+    <p id="cdp_case_05" style="color:#333" hidden>Texte masqué</p>
+  </div>
+</body>
+</html>

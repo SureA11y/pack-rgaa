@@ -1,6 +1,24 @@
 {
   "disagreements": [
     {
+      "ruleId": "rgaa-color-declarations-paired",
+      "label": "Fails",
+      "engine": "unknown label",
+      "example": "<body><p style=\"color:#333\">Horaires d’ouverture</p></body>"
+    },
+    {
+      "ruleId": "rgaa-color-declarations-paired",
+      "label": "Fails",
+      "engine": "unknown label",
+      "example": "<div style=\"background-image:url(banner.jpg)\">Bienvenue</div>"
+    },
+    {
+      "ruleId": "rgaa-color-declarations-paired",
+      "label": "Passes",
+      "engine": "unknown label",
+      "example": "<body style=\"background:#fff\"><p style=\"color:#333\">Programme</p></body>"
+    },
+    {
       "ruleId": "rgaa-doctype-position",
       "label": "Failed (with the `page.source` probe)",
       "engine": "unknown label",

@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**108 rules total: 68 automatic (decide deterministically; can return `fail`), 40 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**109 rules total: 69 automatic (decide deterministically; can return `fail`), 40 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -14,7 +14,7 @@ Under **What a finding reports**, a rule lists the fields its findings carry in 
 
 See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_SCHEMA.md) for what `type`/`confidence`/`severity` mean on a scan result, and [`WCAG_CONFORMANCE.md`](https://github.com/SureA11y/core/blob/main/docs/WCAG_CONFORMANCE.md) for how these roll up to an SC-level conformance claim.
 
-## Automatic rules (68), can return `fail`
+## Automatic rules (69), can return `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -25,6 +25,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-autocomplete-user-field`](#rgaa-autocomplete-user-field) | Fields about the user have a valid autocomplete value | — | — | high | moderate |
 | [`rgaa-canvas-decorative-aria-hidden`](#rgaa-canvas-decorative-aria-hidden) | Decorative &lt;canvas&gt; images have aria-hidden="true" and no alternative | — | — | medium | minor |
 | [`rgaa-canvas-role-img`](#rgaa-canvas-role-img) | &lt;canvas&gt; images have role="img" with an ARIA name, or fallback content | — | — | medium | serious |
+| [`rgaa-color-declarations-paired`](#rgaa-color-declarations-paired) | Text and background colours are declared together | — | — | medium | moderate |
 | [`rgaa-contrast-minimum`](#rgaa-contrast-minimum) | Text meets RGAA minimum color contrast | — | — | high | serious |
 | [`rgaa-dir-attribute-valid`](#rgaa-dir-attribute-valid) | dir attributes are ltr or rtl | — | — | high | minor |
 | [`rgaa-doctype-position`](#rgaa-doctype-position) | The doctype comes before the &lt;html&gt; tag | — | — | high | moderate |
@@ -140,7 +141,7 @@ What a scan runs under each profile (`engineOptions.profile`): the rules its tag
 |---|---|---|---|---|---|---|
 | `rgaa-4.1.2` | `rgaa` | version 4.1.2 | — | — | — | 2.1 |
 
-## Rollups (75)
+## Rollups (76)
 
 Each groups rules into one result, as a WCAG rollup does; the standard's own report sections show them.
 
@@ -158,6 +159,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-10.12` | Dans chaque page web, les propriétés d’espacement du texte peuvent-elles être redéfinies par l’utilisateur sans perte de contenu ou de fonctionnalité (hors cas particuliers) ? | `avoid-inline-spacing`, `text-spacing-content-loss` |
 | `rgaa-4.1.2-10.13` | Dans chaque page web, les contenus additionnels apparaissant à la prise de focus ou au survol d’un composant d’interface sont-ils contrôlables par l’utilisateur (hors cas particuliers) ? | `rgaa-tooltip-review` |
 | `rgaa-4.1.2-10.4` | Dans chaque page web, le texte reste-t-il lisible lorsque la taille des caractères est augmentée jusqu’à 200 %, au moins (hors cas particuliers) ? | `rgaa-viewport-zoom-review` |
+| `rgaa-4.1.2-10.5` | Dans chaque page web, les déclarations CSS de couleurs de fond d’élément et de police sont-elles correctement utilisées ? | `rgaa-color-declarations-paired` |
 | `rgaa-4.1.2-10.6` | Dans chaque page web, chaque lien dont la nature n’est pas évidente est-il visible par rapport au texte environnant ? | `link-in-text-block`, `rgaa-link-state-colors-review` |
 | `rgaa-4.1.2-10.7` | Dans chaque page web, pour chaque élément recevant le focus, la prise de focus est-elle visible ? | `css-focus-indicator-suppressed`, `css-hidden-focus`, `manual-review`, `rgaa-focus-indicator-contrast` |
 | `rgaa-4.1.2-10.8` | Pour chaque page web, les contenus cachés ont-ils vocation à être ignorés par les technologies d’assistance ? | `aria-hidden-body`, `aria-hidden-focus`, `rgaa-aria-hidden-text-review` |
@@ -381,6 +383,26 @@ Flags CAPTCHA images and reCAPTCHA or hCaptcha widgets, for a person to check th
 **Applies to.** Applies to visible CAPTCHAs (glossary « CAPTCHA »): an image (&lt;img&gt;, &lt;area&gt;, &lt;input type="image"&gt;, &lt;svg&gt;, &lt;canvas&gt;, an image &lt;object&gt; or &lt;embed&gt;, role="img") whose alternative, file name, id, class or name says captcha; and a reCAPTCHA or hCaptcha widget (its frame, or the element the service fills). A page with none is notApplicable.
 
 **Expectation.** RGAA 1.4: the alternative of an image used as a CAPTCHA « permet d’identifier la nature et la fonction de l’image ». RGAA 1.5: for each image used as a CAPTCHA, « il existe une autre forme de CAPTCHA non graphique, au moins » or « une autre solution d’accès à la fonctionnalité ». Both are for a person, so each CAPTCHA is asked about (imageCaptcha, under 1.4 and 1.5; captchaWidget, whose images come from another site, under 1.5), one occurrence per element.
+
+### `rgaa-color-declarations-paired`
+
+**Text and background colours are declared together**
+
+automatic · no formal WCAG SC mapping · confidence medium · default severity moderate
+
+Fails text whose author colour has no background colour on its element or any parent, and a background image over text with no background colour, and asks about a background colour over text left in the default colour (RGAA 10.5).
+
+**Applies to.** Applies to visible text in the page (text nodes with something other than white space), outside form controls drawn by the browser, replaced and embedded content (svg, canvas, video, iframe…), and code that is not shown (script, style, template, noscript). Text pushed out of view (text-indent of -100px or less, font-size 0, a transparent colour, a clip or a 1px box) is left out. A page with no such text, or where the styles cannot all be computed, is notApplicable.
+
+**Expectation.**
+
+RGAA 10.5, « les déclarations CSS de couleurs de fond d'élément et de police sont-elles correctement utilisées ? ». The colours are read from the computed style, walking up the flat tree to &lt;html&gt;.
+
+- 10.5.1: « chaque déclaration CSS de couleurs de police (color), d'un élément susceptible de contenir du texte, est-elle accompagnée d'une déclaration de couleur de fond (background, background-color), au moins, héritée d'un parent ? ». Text whose colour was set by the author (it differs from its parent's, or from the default black on &lt;html&gt;), with no non-transparent background colour on its element or any ancestor up to &lt;html&gt;, fails (colorWithoutBackground). It is reported once, on the element that sets the colour: the topmost one whose colour differs from its parent's. A background image or a gradient on an ancestor does not satisfy it: the test asks for a background colour declaration.
+- 10.5.3: « chaque utilisation d'une image pour créer une couleur de fond d'un élément susceptible de contenir du texte, via CSS (background, background-image), est-elle accompagnée d'une déclaration de couleur de fond (background, background-color), au moins, héritée d'un parent ? ». An element with a background image (url or gradient) that has visible text painted over it, with no non-transparent background colour on itself or any ancestor, fails (imageWithoutBackground).
+- 10.5.2: « chaque déclaration de couleur de fond (background, background-color), d'un élément susceptible de contenir du texte, est-elle accompagnée d'une déclaration de couleur de police (color) au moins, héritée d'un parent ? ». An element with a non-transparent background colour, over text whose colour is black all the way up to &lt;html&gt;, is asked about (backgroundWithoutColor): a declared black cannot be told from the browser's default.
+
+Colours the browser sets itself are not author declarations: the link colour of an &lt;a href&gt;, and the paired colours of &lt;mark&gt;, &lt;dialog&gt; and [popover]. A page with a dark colour-scheme takes both colours from the system and is left out. A background on a positioned sibling or on a ::before or ::after is not inherited and does not count.
 
 ### `rgaa-color-reference-review`
 

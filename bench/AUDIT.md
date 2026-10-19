@@ -110,7 +110,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T10-04 | 10.7.1 | MISS | `outline-color:#fff` on the browser's `auto` ring hides it, unmeasured. | open |
 | T10-05 | 10.12.1 | FP | `<body>` taken as clipping when its overflow goes to the viewport (C2). Fixed in core main (1.14.0), checked again with the pack on it. (core's own Chromium test; this repro did not trigger it on 1.12.1 either) | done |
 | T10-06 | 10.6.1 | WO | Links at 3:1 always ask, though the hover and focus states can be read (Q14). Belongs to core's `link-in-text-block`: listed in CORE_ISSUES.md. | core |
-| T10-07 | 10.5 | MISS | No rule: text colour with no background colour (Q4). | open |
+| T10-07 | 10.5 | MISS | No rule: text colour with no background colour (Q4). Now checked by `rgaa-color-declarations-paired`: fails 10.5.1 and 10.5.3, asks about 10.5.2, as decided. | done |
 | T10-08 | 10.1.3 | MISS | Runs of `&nbsp;` used for alignment, and fake columns, are not asked about. Now asked about by `rgaa-letters-spaced-with-spaces` (spacesAsTable in a `<pre>`, spacesAsColumns elsewhere); the 8.9.1 rule keeps only margins made of spaces. | done |
 | T10-09 | 10.9, 10.10 | MISS | An active menu item shown only visually (no `aria-current`). Now asked about by `rgaa-current-item-review` (10.9.1). | done |
 | T10-10 | 10.8.1 | MISS | Visible, informative text under `aria-hidden="true"` passes. Now asked about by `rgaa-aria-hidden-text-review` (two words or more of visible text). | done |

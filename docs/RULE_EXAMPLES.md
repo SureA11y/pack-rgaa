@@ -191,6 +191,34 @@ A person checks that the alternative says what to do, and that an audio CAPTCHA 
 ```
 Nothing says the image is a CAPTCHA.
 
+## rgaa-color-declarations-paired
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Fails**
+```html
+<body><p style="color:#333">Horaires d’ouverture</p></body>
+```
+The text colour is declared with no background colour on the paragraph or any parent (RGAA 10.5.1).
+
+**Fails**
+```html
+<div style="background-image:url(banner.jpg)">Bienvenue</div>
+```
+Text over a background image with no background colour behind it (RGAA 10.5.3).
+
+**Flagged (cantTell)**
+```html
+<p style="background-color:#ffffdd">Fermeture exceptionnelle</p>
+```
+A person checks that a text colour is declared: black text cannot be told from the default (RGAA 10.5.2).
+
+**Passes**
+```html
+<body style="background:#fff"><p style="color:#333">Programme</p></body>
+```
+The background colour on <body> is inherited by the paragraph.
+
 ## rgaa-color-reference-review
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*

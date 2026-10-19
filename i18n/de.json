@@ -827,5 +827,13 @@
   "formatHintReview_title": "Felder mit einer Formatvorgabe nennen das Format oder ein Beispiel",
   "formatHintReview_description": "Markiert ein Feld mit pattern, minlength, min/max oder inputmode, dessen Beschriftung, Beschreibung und Platzhalter kein Format und kein Beispiel nennen, damit eine Person prüft, dass ein Eingabefehler das erwartete Format und ein Beispiel vorschlägt.",
   "formatHintReview_summary_cantTell": "Dieses Feld hat eine Eingabeprüfung ({{constraint}}), aber Beschriftung, Beschreibung und Platzhalter nennen kein Format und kein Beispiel.",
-  "formatHintReview_hint_cantTell": "Prüfen Sie, dass die Fehlermeldung bei einem abgelehnten Wert den erwarteten Datentyp oder das Format nennt und ein Beispiel für einen gültigen Wert gibt (RGAA 11.11.1, 11.11.2)."
+  "formatHintReview_hint_cantTell": "Prüfen Sie, dass die Fehlermeldung bei einem abgelehnten Wert den erwarteten Datentyp oder das Format nennt und ein Beispiel für einen gültigen Wert gibt (RGAA 11.11.1, 11.11.2).",
+  "colorDeclarationsPaired_title": "Text- und Hintergrundfarben werden zusammen deklariert",
+  "colorDeclarationsPaired_description": "Bewertet Text als nicht konform, dessen vom Autor gesetzte Farbe weder am eigenen Element noch an einem Elternelement eine Hintergrundfarbe hat, ebenso ein Hintergrundbild unter Text ohne Hintergrundfarbe, und fragt nach einer Hintergrundfarbe unter Text in der Standardfarbe (RGAA 10.5).",
+  "colorDeclarationsPaired_summary_colorWithoutBackground": "Dieses Element setzt die Textfarbe ({{color}}), aber weder es noch ein Elternelement deklariert eine Hintergrundfarbe.",
+  "colorDeclarationsPaired_summary_imageWithoutBackground": "Dieses Element hat Text über einem Hintergrundbild ({{image}}), aber weder es noch ein Elternelement deklariert eine Hintergrundfarbe.",
+  "colorDeclarationsPaired_summary_backgroundWithoutColor": "Dieses Element deklariert eine Hintergrundfarbe ({{background}}) unter Text im standardmäßigen Schwarz.",
+  "colorDeclarationsPaired_hint_colorWithoutBackground": "Deklarieren Sie eine Hintergrundfarbe (background oder background-color) an diesem Element oder einem Elternelement, etwa <body>, damit der Text seinen Kontrast bei jedem Standardhintergrund des Nutzers behält (RGAA 10.5.1).",
+  "colorDeclarationsPaired_hint_imageWithoutBackground": "Deklarieren Sie eine Hintergrundfarbe (background oder background-color) ähnlich der des Bildes, an diesem Element oder einem Elternelement, damit der Text lesbar bleibt, wenn das Bild nicht lädt (RGAA 10.5.3).",
+  "colorDeclarationsPaired_hint_backgroundWithoutColor": "Prüfen Sie, dass an diesem Element oder einem Elternelement eine Textfarbe (color) deklariert ist: Ein deklariertes Schwarz lässt sich vom Standard des Browsers nicht unterscheiden (RGAA 10.5.2)."
 }

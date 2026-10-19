@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 108,
-    "withFixture": 108,
+    "total": 109,
+    "withFixture": 109,
     "withoutFixture": 0
   },
   "rows": [
@@ -155,6 +155,23 @@
         "PASS": 0,
         "FAIL": 0,
         "CANTTELL": 2,
+        "OTHER": 1
+      }
+    },
+    {
+      "ruleId": "rgaa-color-declarations-paired",
+      "title": "Text and background colours are declared together",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-color-declarations-paired.js",
+      "testFile": "tests/rules/automatic/rgaa-color-declarations-paired.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-color-declarations-paired-all-scenarios.html",
+      "totalCases": 5,
+      "caseCounts": {
+        "PASS": 1,
+        "FAIL": 2,
+        "CANTTELL": 1,
         "OTHER": 1
       }
     },
