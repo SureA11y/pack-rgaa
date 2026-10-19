@@ -60,16 +60,52 @@ export const COMPARED = Object.keys(ENGINES).filter((e) => !ENGINES[e].reference
 
 // ---- @surea11y/pack-rgaa, through core's in-page runner -------------------
 
-const { runa11yCoreInPage } = require('@surea11y/core');
+const { runa11yCoreInPage, preloadStyleSheets } = require('@surea11y/core');
 const { packScript } = require('@surea11y/core/pack');
 const rgaa = require('@surea11y/pack-rgaa');
 const PACK_SCRIPT = packScript([rgaa]);
 const PACK_OPTIONS = { packs: [`${rgaa.name}@${rgaa.version}`], profile: 'rgaa-4.1.2', locale: 'fr' };
 
+// The text of the style sheets the page can't read (another origin's), for
+// engineOptions.styleSheetTexts, as the bindings give it: those the server
+// shares, fetched in the page, then the rest from outside it, where CORS
+// does not apply. Without them, 13.9 asks on every page with such a sheet.
+async function styleSheetTexts(page) {
+  const texts = await page.evaluate(preloadStyleSheets, { timeoutMs: 5000 }).catch(() => []);
+  const unread = await page
+    .evaluate(() => {
+      const out = [];
+      const walk = (sheet, depth) => {
+        if (!sheet || depth > 10) return;
+        let rules = null;
+        try {
+          rules = sheet.cssRules;
+        } catch {
+          if (sheet.href && !out.includes(sheet.href)) out.push(sheet.href);
+          return;
+        }
+        for (const r of Array.from(rules || [])) if (r.styleSheet) walk(r.styleSheet, depth + 1);
+      };
+      for (const sheet of Array.from(document.styleSheets)) walk(sheet, 0);
+      return out;
+    })
+    .catch(() => []);
+  const have = new Set(texts.map((t) => t.href));
+  for (const href of unread) {
+    if (have.has(href)) continue;
+    try {
+      const res = await page.context().request.get(href, { timeout: 5000 });
+      if (res.ok()) texts.push({ href, text: await res.text() });
+    } catch {}
+  }
+  return texts;
+}
+
 export async function runPack(page) {
   await page.evaluate(PACK_SCRIPT);
+  const options = { ...PACK_OPTIONS, styleSheetTexts: await styleSheetTexts(page) };
   const result = await page.evaluate(
-    `(${runa11yCoreInPage})(location.href, null, ${JSON.stringify(PACK_OPTIONS)}, null)`
+    `(${runa11yCoreInPage})(location.href, null, ${JSON.stringify(options)}, null)`
   );
   if ((result.skippedPacks || []).length) throw new Error('pack skipped: ' + JSON.stringify(result.skippedPacks));
   const criteria = {};

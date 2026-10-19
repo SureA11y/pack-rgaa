@@ -157,7 +157,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T12-09 | 12.6.1 | WO | Untargeted questions on blocks inside other landmarks. | open |
 | T12-10 | 12.7.2 | MISS | An `aria-hidden` skip link passes 12.7. Now asked about by `rgaa-skip-link-present` (skipLinkAriaHidden): it works with the keyboard, but screen reader users cannot find it. | done |
 | T12-11 | 12.7 | WO | A working empty `tabindex="-1"` anchor target is asked about. | core |
-| T12-12 | 13.9 | WO | Cross-origin stylesheets make it ask (C6). | core |
+| T12-12 | 13.9 | WO | Cross-origin stylesheets make it ask (C6). Fixed for the bench: it now gives core the text of other origins' sheets (`engineOptions.styleSheetTexts`, core main, 1.14.0), fetched in the page when the server shares them and from outside it otherwise. | done |
 | T13-01 | 13.3.1 | MISS | Office documents named only in the link text or `type` are not found. | done |
 | T13-02 | 12.8.1 | MISS | Focus reaching hidden elements; tabbable content outside an open modal. | done (css-hidden-focus linked, rgaa-modal-tab-order); hidden off-canvas links: core |
 | T13-03 | 13.1.3, 13.1.4 | MISS | Script redirects, countdowns, session limits. Timed script redirects now asked about by `rgaa-script-redirect-review` (13.1.3, inline scripts). Still open: countdowns and session limits (13.1.4), which the markup does not show. | partial |
