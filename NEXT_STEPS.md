@@ -31,124 +31,68 @@ as many detections as RGAA allows:
   changelog or commit messages.
 - Do not change `@surea11y/core`. An issue whose cause is in core goes in
   [`bench/CORE_ISSUES.md`](./bench/CORE_ISSUES.md) instead.
+- No reference to Claude anywhere: commit authors and committers, messages,
+  trailers, code, docs. Every commit is pushed at once.
+- RGAA 4.1.2 (the version in force; RGAA 5 is announced, not published) is
+  the source of truth; other engines only help decide where it leaves room.
 - Quote RGAA in French, as the existing rules do.
 
 ## Where the work stands
 
-Last updated at commit `6e5cbb7`: 98 rules (31 manual), a result for 63 of
-RGAA's 106 criteria, 1067 tests passing.
+Last updated at commit `67c0ff1`: 100 rules (32 manual), a result for 64 of
+RGAA's 106 criteria, 1090 tests passing.
 
 [`bench/AUDIT.md`](./bench/AUDIT.md) tracks every finding of the audit with
-its status: search it for `| open |` (28 items) and `| partial |` (7).
-Items marked `core` are in [`bench/CORE_ISSUES.md`](./bench/CORE_ISSUES.md).
-The open items fall in five groups; work them in this order.
+its status: search it for `| open |` (25 items), `| partial |`, `| decide |`
+and `| core |`. What only core can settle is in
+[`bench/CORE_ISSUES.md`](./bench/CORE_ISSUES.md).
 
-### 1. Doable now, without the owner
+### 1. Done: the items that needed no decision
 
-- **T1-13 (1.8, images of text):** no question yet. A manual rule could ask
-  about `<img>`, `input type=image`, image `<object>`/`<embed>` and
-  `<canvas>` whose alternative reads like a sentence or a slogan, outside
-  logos (1.8's particular case exempts logos, brand names, CAPTCHAs and
-  images whose exact rendering matters). Keep it a question: whether an
-  image holds text is for a person.
-- **T67-06 (6.1 note 2):** a link `title` must repeat the link's visible
-  name. Compare the `title` with the content's text (the same normalisation
-  as the label-in-name rules) and ask, or fail when the title clearly drops
-  it; check what other engines do first.
-- **T89-10 (8.4 vs 8.8):** a `lang` that sets the default language (no
-  `lang` on any ancestor, as on `<body>`) is judged under 8.8 because core's
-  `valid-lang` gives it the same reason code as a change of language. Core's
-  next release gives it its own code, `DEFAULT_LANG_INVALID`; the pack side
-  is in 2.
+T67-06 (`rgaa-link-title-content-name`, 6.1 note 2) and T1-13
+(`rgaa-text-image-review`, 1.8) are in. So is everything core's main made
+possible (its PRs #259 and #261):
 
-### 2. When core releases its fixes
+- `click-handler-keyboard-operable` mapped to 7.3.1 (T67-03).
+- `rgaa-moving-content-review` reads `helpers.animationsAtScanStart()`, so it
+  finds finite animations over 5 seconds too (T13-05). Core's
+  `moving-content-pausable` is left unmapped: it asks about the same
+  animations without telling moving (13.8.1) from blinking (13.8.2), and
+  mapping both would ask twice about each element.
+- Findings filed by reason code: `rule-map.js` rows take
+  `reasonCodes: { CODE: { tests, outcome: 'cantTell' } }`, `mappings.js`
+  gives each criterion's rollup the `contributions` core reads, and the
+  mapping page shows them. Used for T89-03, T89-04 (9.3), T89-09 (8.2),
+  T89-10 (8.4 instead of 8.8) and T1-11 (a control's only image out of
+  theme 1); tested in `tests/reason-codes.test.js`.
+- `rgaa-contrast-minimum` sets `semiBold`, `contrastSwitch` and `logoText`
+  to `'ask'` (T25-13, T25-14, T25-15).
+- The bench gives core other origins' style sheets (`styleSheetTexts`),
+  fetched in the page and from outside it (T12-12, 13.9).
 
-Two sets of core changes are waiting for a release (1.14.0); the pack runs
-on 1.12.1 until then:
+### 2. When core 1.14.0 is out
 
-- Core's main after 1.13.0 (commit `94ef114`) fixes nine issues in
-  `bench/CORE_ISSUES.md` (C1, C2, C3, C4, C7, C8, C9, C10, T12-11) and C5
-  in part.
-- Core's branch `fix-pack-findings` (PR SureA11y/core#261) answers most of
-  the rest: T1-04, T67-07, T13-08 and T13-02 are fixed outright, and the
-  others get what the pack needs to settle them on its side, listed below.
+The pack and the bench build against `github:SureA11y/core#main` for these
+(`package.json` and `bench/package.json` dev dependencies). Once 1.14.0 is
+released:
 
-Once 1.14.0 is out:
+1. Set the dev dependency of both to `^1.14.0` from npm, and the pack's
+   peer range to `>=1.14.0`: the reason codes, the contrast settings, the
+   new rules and `animationsAtScanStart` need it. Run `npm test` and the
+   bench.
+2. Say so in `README.md` ("It needs `@surea11y/core` 1.12.0 or later").
 
-1. Raise the `@surea11y/core` dev dependency and the peer range to
-   `^1.14.0`, and run `npm test`. Tests that pin core's old behaviour will
-   change (for instance `tests/core-rules.test.js`); check each change is
-   the fix, not a regression. In particular: a placeholder below its ratio
-   now fails when the page chose its colours and passes in the browser's
-   own (T25-16, 3.2), `css-hidden-focus` now asks about links in an
-   off-canvas menu or a clipped container (T13-02, 10.7.1, 12.8.1), and
-   `link-name-quality` knows the French phrases `rgaa-link-context-review`
-   copied (T67-07): keep the two lists the same.
-2. Map core's new rules: `click-handler-keyboard-operable` to 7.3.1
-   (« Chaque élément manipulable via un script est-il contrôlable au
-   clavier ? »), its failure a role="button", link, checkbox or switch
-   that cannot take focus, then close T67-03; and `moving-content-pausable`
-   (2.2.2, content an animation moves by itself for more than five seconds
-   or without end) to 13.8.1 and 13.8.2, then close T13-05. Rules that need
-   the animations themselves read `helpers.animationsAtScanStart()`.
-3. File findings by reason code. A rule-map row can now say, per reason
-   code, which tests its findings count toward (`[]` for none) and make a
-   failing one a question there:
-   `reasonCodes: { CODE: { requirements, outcome: 'cantTell' } }`, in
-   `ruleMappedStandard`'s rule map (core's `docs/PACKS.md`). The rollup of
-   each test then judges the rule by the findings that count toward it.
-   Use it for:
-   - T89-03: `list-children-valid`'s `LIST_ITEM_ROLE_OVERRIDDEN`
-     (`<li role="presentation">` in pagers and carousels): ask under 9.3.1
-     and 9.3.2.
-   - T89-04: `listitem-parent-valid`'s `LIST_ROLE_OVERRIDDEN` (a plain `<li>`
-     in `<ul role="tablist">` or `role="menu"`, the role in `parentRole`):
-     ask under 9.3.1 and 9.3.2, as 9.3's technical note says such roles are
-     not lists.
-   - T89-09: `duplicate-id`'s `DUPLICATE_ID_IN_SHADOW_TREE`: ask under
-     8.2.1, which the validator never sees.
-   - T89-10: `valid-lang`'s `DEFAULT_LANG_INVALID`: keep it out of 8.8 and
-     file it under 8.4.
-   - T1-11: `IMAGE_ONLY_CONTROL_CONTENT` (an image that is a link's or
-     button's only content, the control's role in `controlContent`), from
-     `img-alt-quality`, `svg-text-alternative-quality` and
-     `img-alt-decorative`: keep it out of 1.1, 1.2 and 1.3 and judge it
-     under 6.1 or 11 with the control, per the glossary's « Image porteuse
-     d'information », notes 1 and 2.
-   - C5: `p-as-heading`'s `HEADING_LIKE_NUMBER` and `HEADING_LIKE_LINK`
-     (text that is only a number, or one link): decide whether 9.1 still
-     asks about them, and drop them with `requirements: []` if not.
-4. Contrast (T25-12 to T25-15): the `rgaa-contrast-minimum` variant can now
-   set `logoText` (`'ask'` or `'exempt'`, for 3.2's logo particular case),
-   `contrastSwitch` (`'ask'`, for each test's contrast-mechanism condition)
-   and `semiBold` (`'ask'`, for weights 600 to 699 where RGAA does not say
-   what bold is); core's `docs/RULE_SETTINGS.md` lists them. To name the
-   one test each failure falls under (3.2.1 to 3.2.4), read the stable
-   `typography.isBold`, `typography.isLargeText` and
-   `typography.fontSizePx` of the finding: they share one reason code, so
-   the rule map can't split them, and the pack's own code has to.
-5. Style sheets from another origin (C6, 13.9): core now reads their text
-   from `engineOptions.styleSheetTexts`, and the bindings fetch them before
-   each scan. Have the bench do the same (in the page, core's
-   `runa11yCoreInPageAsync`; from Node, fetch what it can't and pass it
-   in), so 13.9 stops asking on pages whose only unread sheet is a fonts
-   service's.
-6. Rollups (T12-08): core's WCAG rollups are now `cantTell`
-   (`composite.rollup.cantTell.partialCoverage`) instead of
-   `notApplicable` where their rules don't cover every case. The pack's
-   composites are its own: give `rgaaComposites()` the same rule for the
-   tests no rule covers.
-7. Mark the fixed items `done` in AUDIT.md and remove them from
-   CORE_ISSUES.md, or set their status to what is left.
-
-To recheck an issue against an unreleased core: check core's main out in
-a scratch folder, replace `node_modules/@surea11y/core` with a symlink to
-it (core has no dependencies), run the repro with
-`node --preserve-symlinks`, then put the original folder back.
+Still open in core (CORE_ISSUES.md): naming the one 3.2 test of a contrast
+failure (T25-12), and RGAA rollups that ask when some of a criterion's
+tests have no rule (T12-08: core only does it for a standard that restates
+WCAG one for one, which RGAA does not).
 
 ### 3. Waiting on the owner's decision
 
-Each is marked Q in AUDIT.md: T1-10 (CAPTCHAs), T25-17 (embedded players
+Each is marked Q or `decide` in AUDIT.md: T89-15 (whether 9.1 still asks
+about text that is only a number or one link; core now gives them their own
+codes, `HEADING_LIKE_NUMBER` and `HEADING_LIKE_LINK`, which `reasonCodes`
+with `tests: []` would drop), T1-10 (CAPTCHAs), T25-17 (embedded players
 and `autoplay=1`), T89-11 (a wrong default language, `und`, `mul`), T89-12
 (changes of language), T89-13 (quotations), T10-06 (links at 3:1), T10-07
 (text colour with no background colour), T11-14 (same-name checkbox sets,
@@ -174,7 +118,7 @@ a name), T12-09 (12.6.1 questions inside other landmarks), T67-04 (text
 under `aria-hidden` left out of the visible label). These change how
 results roll up; discuss with the owner.
 
-The partial items (T1-12, T1-14, T25-21, T67-07, T89-14, T13-03, T13-06)
+The partial items (T1-12, T1-13, T1-14, T25-21, T67-06, T89-14, T13-03, T13-06)
 say in AUDIT.md what is left; the rest is either for a person or in core.
 
 Still to do, approved by the owner:
@@ -234,9 +178,9 @@ For each new or changed rule:
   by its `family` constant and messages. Change all four together.
 - Atomic rules report in `checksResults`, not `rulesResults`, of a scan.
 - Core moves finite CSS animations to their end while it scans, so
-  `document.getAnimations()` no longer lists them (CORE_ISSUES T13-05).
-  From core 1.14.0, `helpers.animationsAtScanStart()` gives a rule the
-  animations as they were when the scan started.
+  `document.getAnimations()` no longer lists them; read
+  `helpers.animationsAtScanStart()`, which gives them as they were when
+  the scan started.
 - jsdom has no layout: pseudo-elements, computed backgrounds and animations
   are read only in Chromium. A rule that cannot read styles asks instead of
   failing.
