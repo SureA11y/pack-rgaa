@@ -4,13 +4,13 @@ This pack's rules and their scenario pages. Every rule should have a `tests/fixt
 
 ## Summary
 
-Total rules: **101**. With fixture: **101**. Without fixture: **0**.
+Total rules: **102**. With fixture: **102**. Without fixture: **0**.
 
 ## Rules WITHOUT a fixture (0)
 
 None — every rule has a fixture.
 
-## Rules WITH a fixture (101)
+## Rules WITH a fixture (102)
 
 | Rule ID | Type | Fixture | Cases | PASS | FAIL | CANTTELL | OTHER |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -36,6 +36,7 @@ None — every rule has a fixture.
 | rgaa-doctype-present | automatic | `tests/fixtures/rgaa-doctype-present-all-scenarios.html` | 1 | 0 | 1 | 0 | 0 |
 | rgaa-doctype-valid | automatic | `tests/fixtures/rgaa-doctype-valid-all-scenarios.html` | 1 | 0 | 1 | 0 | 0 |
 | rgaa-embed-image-role-img | automatic | `tests/fixtures/rgaa-embed-image-role-img-all-scenarios.html` | 8 | 1 | 2 | 2 | 3 |
+| rgaa-embedded-player-review | manual | `tests/fixtures/rgaa-embedded-player-review-all-scenarios.html` | 3 | 0 | 0 | 2 | 1 |
 | rgaa-embedded-refresh-review | manual | `tests/fixtures/rgaa-embedded-refresh-review-all-scenarios.html` | 6 | 0 | 0 | 4 | 2 |
 | rgaa-fake-list | manual | `tests/fixtures/rgaa-fake-list-all-scenarios.html` | 7 | 0 | 0 | 0 | 7 |
 | rgaa-field-group-legend | manual | `tests/fixtures/rgaa-field-group-legend-all-scenarios.html` | 10 | 0 | 0 | 0 | 10 |

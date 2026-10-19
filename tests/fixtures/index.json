@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 101,
-    "withFixture": 101,
+    "total": 102,
+    "withFixture": 102,
     "withoutFixture": 0
   },
   "rows": [
@@ -377,6 +377,23 @@
         "FAIL": 2,
         "CANTTELL": 2,
         "OTHER": 3
+      }
+    },
+    {
+      "ruleId": "rgaa-embedded-player-review",
+      "title": "Media in embedded players has its alternatives and controls",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/embedded-player-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-embedded-player-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-embedded-player-review-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 2,
+        "OTHER": 1
       }
     },
     {

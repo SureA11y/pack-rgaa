@@ -790,5 +790,11 @@
   "captchaReview_summary_cantTell_imageCaptcha": "This image looks like a CAPTCHA (alternative: \"{{alt}}\").",
   "captchaReview_summary_cantTell_captchaWidget": "This is a {{service}} CAPTCHA.",
   "captchaReview_hint_cantTell_imageCaptcha": "Check that its alternative says what the CAPTCHA is and what to do (RGAA 1.4), and that a non-graphic CAPTCHA, or another way to the function it protects, is offered (RGAA 1.5).",
-  "captchaReview_hint_cantTell_captchaWidget": "Check that a non-graphic CAPTCHA, or another way to the function it protects, is offered (RGAA 1.5)."
+  "captchaReview_hint_cantTell_captchaWidget": "Check that a non-graphic CAPTCHA, or another way to the function it protects, is offered (RGAA 1.5).",
+  "embeddedPlayerReview_title": "Media in embedded players has its alternatives and controls",
+  "embeddedPlayerReview_description": "Flags YouTube, Vimeo, Dailymotion, PeerTube and SoundCloud players, for a person to check the transcript, captions, audio description, identification and controls theme 4 asks for, and the sound of a player that starts by itself.",
+  "embeddedPlayerReview_summary_cantTell_embeddedPlayer": "This {{service}} player shows a media.",
+  "embeddedPlayerReview_summary_cantTell_embeddedPlayerAutoplay": "This {{service}} player starts playing by itself.",
+  "embeddedPlayerReview_hint_cantTell_embeddedPlayer": "Check that the media has the transcript, captions and audio description it needs, is identified by the text next to it, and can be controlled by keyboard (RGAA 4.1, 4.3, 4.5, 4.7, 4.11, 4.13).",
+  "embeddedPlayerReview_hint_cantTell_embeddedPlayerAutoplay": "Check that its sound stops within 3 seconds or can be stopped or turned down (RGAA 4.10), and that the media has the transcript, captions and audio description it needs, is identified by the text next to it, and can be controlled by keyboard (RGAA 4.1, 4.3, 4.5, 4.7, 4.11, 4.13)."
 }

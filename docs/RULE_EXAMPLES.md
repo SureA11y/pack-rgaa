@@ -453,6 +453,22 @@ The image has a caption, so it carries information, and it has no text alternati
 ```
 A text alternative without `role="img"`: the test wording asks for both, the methodology for the alternative only.
 
+## rgaa-embedded-player-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<iframe src="https://www.youtube-nocookie.com/embed/abc" title="Présentation de la médiathèque"></iframe>
+```
+A person checks the video's transcript, captions, audio description and controls (RGAA theme 4).
+
+**Not applicable**
+```html
+<iframe src="https://www.openstreetmap.org/export/embed.html" title="Plan d'accès"></iframe>
+```
+A map is not a media player.
+
 ## rgaa-embedded-refresh-review
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*

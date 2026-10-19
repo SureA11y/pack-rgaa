@@ -790,5 +790,11 @@
   "captchaReview_summary_cantTell_imageCaptcha": "Dieses Bild scheint ein CAPTCHA zu sein (Alternative: „{{alt}}“).",
   "captchaReview_summary_cantTell_captchaWidget": "Dies ist ein {{service}}-CAPTCHA.",
   "captchaReview_hint_cantTell_imageCaptcha": "Prüfen Sie, dass seine Alternative sagt, was das CAPTCHA ist und was zu tun ist (RGAA 1.4), und dass ein nicht grafisches CAPTCHA oder ein anderer Zugang zu der geschützten Funktion angeboten wird (RGAA 1.5).",
-  "captchaReview_hint_cantTell_captchaWidget": "Prüfen Sie, dass ein nicht grafisches CAPTCHA oder ein anderer Zugang zu der geschützten Funktion angeboten wird (RGAA 1.5)."
+  "captchaReview_hint_cantTell_captchaWidget": "Prüfen Sie, dass ein nicht grafisches CAPTCHA oder ein anderer Zugang zu der geschützten Funktion angeboten wird (RGAA 1.5).",
+  "embeddedPlayerReview_title": "Medien in eingebetteten Playern haben ihre Alternativen und Steuerelemente",
+  "embeddedPlayerReview_description": "Markiert YouTube-, Vimeo-, Dailymotion-, PeerTube- und SoundCloud-Player, damit eine Person Transkript, Untertitel, Audiodeskription, Kennzeichnung und Steuerung prüft, die Thema 4 verlangt, und den Ton eines Players, der von selbst startet.",
+  "embeddedPlayerReview_summary_cantTell_embeddedPlayer": "Dieser {{service}}-Player zeigt ein Medium.",
+  "embeddedPlayerReview_summary_cantTell_embeddedPlayerAutoplay": "Dieser {{service}}-Player startet die Wiedergabe von selbst.",
+  "embeddedPlayerReview_hint_cantTell_embeddedPlayer": "Prüfen Sie, dass das Medium das nötige Transkript, Untertitel und Audiodeskription hat, durch den Text daneben gekennzeichnet ist und sich per Tastatur steuern lässt (RGAA 4.1, 4.3, 4.5, 4.7, 4.11, 4.13).",
+  "embeddedPlayerReview_hint_cantTell_embeddedPlayerAutoplay": "Prüfen Sie, dass sein Ton nach höchstens 3 Sekunden endet oder angehalten oder leiser gestellt werden kann (RGAA 4.10), und dass das Medium das nötige Transkript, Untertitel und Audiodeskription hat, durch den Text daneben gekennzeichnet ist und sich per Tastatur steuern lässt (RGAA 4.1, 4.3, 4.5, 4.7, 4.11, 4.13)."
 }

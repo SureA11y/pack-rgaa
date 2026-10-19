@@ -790,5 +790,11 @@
   "captchaReview_summary_cantTell_imageCaptcha": "Cette image semble être un CAPTCHA (alternative : « {{alt}} »).",
   "captchaReview_summary_cantTell_captchaWidget": "Ceci est un CAPTCHA {{service}}.",
   "captchaReview_hint_cantTell_imageCaptcha": "Vérifiez que son alternative indique la nature et la fonction du CAPTCHA (RGAA 1.4), et qu’une autre forme de CAPTCHA non graphique, ou une autre solution d’accès à la fonctionnalité qu’il protège, est proposée (RGAA 1.5).",
-  "captchaReview_hint_cantTell_captchaWidget": "Vérifiez qu’une autre forme de CAPTCHA non graphique, ou une autre solution d’accès à la fonctionnalité qu’il protège, est proposée (RGAA 1.5)."
+  "captchaReview_hint_cantTell_captchaWidget": "Vérifiez qu’une autre forme de CAPTCHA non graphique, ou une autre solution d’accès à la fonctionnalité qu’il protège, est proposée (RGAA 1.5).",
+  "embeddedPlayerReview_title": "Les médias des lecteurs intégrés ont leurs alternatives et leurs contrôles",
+  "embeddedPlayerReview_description": "Signale les lecteurs YouTube, Vimeo, Dailymotion, PeerTube et SoundCloud, pour qu’une personne vérifie la transcription, les sous-titres, l’audiodescription, l’identification et les contrôles que demande le thème 4, et le son d’un lecteur qui démarre seul.",
+  "embeddedPlayerReview_summary_cantTell_embeddedPlayer": "Ce lecteur {{service}} affiche un média.",
+  "embeddedPlayerReview_summary_cantTell_embeddedPlayerAutoplay": "Ce lecteur {{service}} démarre la lecture automatiquement.",
+  "embeddedPlayerReview_hint_cantTell_embeddedPlayer": "Vérifiez que le média a, si nécessaire, une transcription, des sous-titres et une audiodescription, que le texte adjacent permet de l’identifier et qu’il est contrôlable au clavier (RGAA 4.1, 4.3, 4.5, 4.7, 4.11, 4.13).",
+  "embeddedPlayerReview_hint_cantTell_embeddedPlayerAutoplay": "Vérifiez que son son s’arrête en 3 secondes au plus ou peut être arrêté ou baissé (RGAA 4.10), et que le média a, si nécessaire, une transcription, des sous-titres et une audiodescription, que le texte adjacent permet de l’identifier et qu’il est contrôlable au clavier (RGAA 4.1, 4.3, 4.5, 4.7, 4.11, 4.13)."
 }

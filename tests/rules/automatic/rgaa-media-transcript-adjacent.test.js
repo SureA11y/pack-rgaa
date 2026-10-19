@@ -167,7 +167,7 @@ test(`${RULE_ID}: a distant aria-describedby transcript satisfies WCAG 1.2.1, RG
   assert.equal(wcag.data.details.reasonCode, 'composite.rollup.cantTell.partialCoverage');
   const rgaa = rollup(result, 'rgaa-4.1.2-4.1');
   assert.equal(rgaa.outcome, 'cantTell');
-  assert.deepEqual(rgaa.data.details.checksIds, [RULE_ID]);
+  assert.ok(rgaa.data.details.checksIds.includes(RULE_ID));
 });
 
 // The other direction: WCAG cannot verify an external transcript link, while

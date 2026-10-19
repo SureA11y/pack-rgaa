@@ -790,5 +790,11 @@
   "captchaReview_summary_cantTell_imageCaptcha": "この画像は CAPTCHA のようです（代替：「{{alt}}」）。",
   "captchaReview_summary_cantTell_captchaWidget": "これは {{service}} の CAPTCHA です。",
   "captchaReview_hint_cantTell_imageCaptcha": "代替が CAPTCHA の内容とすべきことを伝えているか（RGAA 1.4）、画像以外の CAPTCHA、または保護された機能への別の手段があるかを確認してください（RGAA 1.5）。",
-  "captchaReview_hint_cantTell_captchaWidget": "画像以外の CAPTCHA、または保護された機能への別の手段があるかを確認してください（RGAA 1.5）。"
+  "captchaReview_hint_cantTell_captchaWidget": "画像以外の CAPTCHA、または保護された機能への別の手段があるかを確認してください（RGAA 1.5）。",
+  "embeddedPlayerReview_title": "埋め込みプレーヤーのメディアには代替と操作手段がある",
+  "embeddedPlayerReview_description": "YouTube、Vimeo、Dailymotion、PeerTube、SoundCloud のプレーヤーを示し、テーマ 4 が求める書き起こし、字幕、音声解説、識別、操作手段と、自動再生するプレーヤーの音声を人が確認できるようにします。",
+  "embeddedPlayerReview_summary_cantTell_embeddedPlayer": "この {{service}} プレーヤーはメディアを表示しています。",
+  "embeddedPlayerReview_summary_cantTell_embeddedPlayerAutoplay": "この {{service}} プレーヤーは自動的に再生を始めます。",
+  "embeddedPlayerReview_hint_cantTell_embeddedPlayer": "メディアに必要な書き起こし、字幕、音声解説があるか、隣接するテキストで識別できるか、キーボードで操作できるかを確認してください（RGAA 4.1、4.3、4.5、4.7、4.11、4.13）。",
+  "embeddedPlayerReview_hint_cantTell_embeddedPlayerAutoplay": "音声が 3 秒以内に止まるか、停止や音量調整ができるか（RGAA 4.10）、またメディアに必要な書き起こし、字幕、音声解説があるか、隣接するテキストで識別できるか、キーボードで操作できるかを確認してください（RGAA 4.1、4.3、4.5、4.7、4.11、4.13）。"
 }

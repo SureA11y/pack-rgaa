@@ -790,5 +790,11 @@
   "captchaReview_summary_cantTell_imageCaptcha": "Esta imagen parece un CAPTCHA (alternativa: \"{{alt}}\").",
   "captchaReview_summary_cantTell_captchaWidget": "Esto es un CAPTCHA de {{service}}.",
   "captchaReview_hint_cantTell_imageCaptcha": "Compruebe que su alternativa dice qué es el CAPTCHA y qué hay que hacer (RGAA 1.4), y que se ofrece un CAPTCHA no gráfico u otro acceso a la función que protege (RGAA 1.5).",
-  "captchaReview_hint_cantTell_captchaWidget": "Compruebe que se ofrece un CAPTCHA no gráfico u otro acceso a la función que protege (RGAA 1.5)."
+  "captchaReview_hint_cantTell_captchaWidget": "Compruebe que se ofrece un CAPTCHA no gráfico u otro acceso a la función que protege (RGAA 1.5).",
+  "embeddedPlayerReview_title": "Los medios de los reproductores integrados tienen sus alternativas y controles",
+  "embeddedPlayerReview_description": "Señala los reproductores de YouTube, Vimeo, Dailymotion, PeerTube y SoundCloud, para que una persona compruebe la transcripción, los subtítulos, la audiodescripción, la identificación y los controles que pide el tema 4, y el sonido de un reproductor que empieza solo.",
+  "embeddedPlayerReview_summary_cantTell_embeddedPlayer": "Este reproductor de {{service}} muestra un medio.",
+  "embeddedPlayerReview_summary_cantTell_embeddedPlayerAutoplay": "Este reproductor de {{service}} empieza a reproducir solo.",
+  "embeddedPlayerReview_hint_cantTell_embeddedPlayer": "Compruebe que el medio tiene la transcripción, los subtítulos y la audiodescripción que necesita, que el texto contiguo lo identifica y que se puede controlar con el teclado (RGAA 4.1, 4.3, 4.5, 4.7, 4.11, 4.13).",
+  "embeddedPlayerReview_hint_cantTell_embeddedPlayerAutoplay": "Compruebe que su sonido se detiene en 3 segundos como máximo o se puede detener o bajar (RGAA 4.10), y que el medio tiene la transcripción, los subtítulos y la audiodescripción que necesita, que el texto contiguo lo identifica y que se puede controlar con el teclado (RGAA 4.1, 4.3, 4.5, 4.7, 4.11, 4.13)."
 }

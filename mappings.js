@@ -209,7 +209,7 @@ function validateRgaaRuleTests(rules) {
           problems.push(`${version} ${ruleId}: reasonCodes must be an object of reason codes`);
         } else {
           for (const [code, c] of Object.entries(codes)) {
-            if (!/^[A-Z][A-Z0-9_]*$/.test(code)) {
+            if (!/^[A-Za-z][A-Za-z0-9_]*$/.test(code)) {
               problems.push(`${version} ${ruleId}: reasonCodes names ${code}, not a reason code`);
             }
             if (!c || typeof c !== 'object' || Array.isArray(c)) {

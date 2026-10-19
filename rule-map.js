@@ -309,6 +309,40 @@ const RGAA_RULE_TESTS = {
       tests: ['1.3.5'],
       note: 'Asks a human to judge the relevance of an <embed>\'s existing name, which is 1.3.5 step 2. Scope mismatch: 1.3.5 only covers image embeds (type="image/..."), and the rule reviews all embeds.'
     },
+    'rgaa-embedded-player-review': {
+      tests: [
+        '4.1.1',
+        '4.1.2',
+        '4.1.3',
+        '4.3.1',
+        '4.5.1',
+        '4.5.2',
+        '4.7.1',
+        '4.11.1',
+        '4.11.2',
+        '4.11.3',
+        '4.13.1'
+      ],
+      note: 'Asks about visible frames of known media players (YouTube, Vimeo, Dailymotion, PeerTube, SoundCloud): each shows « un média temporel », which theme 4 asks to have, if needed, a transcript (4.1), synchronised captions (4.3), an audio description (4.5), adjacent text that identifies it (4.7), keyboard and pointer control (4.11) and compatibility with assistive technologies (4.13). What the media holds and what the player offers is for a person. A player that starts by itself (autoplay=1, auto_play=true) also counts toward 4.10.1, whose « code JavaScript » covers it (reason code embeddedPlayerAutoplay). Other players are not found.',
+      reasonCodes: {
+        embeddedPlayerAutoplay: {
+          tests: [
+            '4.1.1',
+            '4.1.2',
+            '4.1.3',
+            '4.3.1',
+            '4.5.1',
+            '4.5.2',
+            '4.7.1',
+            '4.10.1',
+            '4.11.1',
+            '4.11.2',
+            '4.11.3',
+            '4.13.1'
+          ]
+        }
+      }
+    },
     'rgaa-embedded-refresh-review': {
       tests: ['13.1.1'],
       note: 'Asks about every <object>, <embed> and <canvas>, and every <svg> that holds a <script>: 13.1.1 step 1 lists them as refresh methods along with <meta>. An <object> or <embed> that shows a still image is left out, and so is an <svg> with no script, which cannot reload anything. Whether the element refreshes, and whether the user can control it (step 2), needs a person.'

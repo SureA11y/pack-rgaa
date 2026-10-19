@@ -50,7 +50,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T25-14 | 3.2 | FP | Logo and brand text fail, which the particular cases exempt. Now asked about: `logoText: 'ask'` (LOGO_TEXT_BELOW_THRESHOLD); core's logo detection is a heuristic, so the particular case is not applied blind. | done |
 | T25-15 | 3.2 | WO | Weights 600–699 count as not bold. Now asked about: `semiBold: 'ask'` (SEMIBOLD_BELOW_THRESHOLD), since RGAA says « effet de graisse » without a weight. | done |
 | T25-16 | 3.2.1 | WO | An author placeholder colour below the ratio is only asked about. Fixed in core main (1.14.0): a placeholder below its ratio fails when the page chose its colours, and meets it in the browser's own. | done |
-| T25-17 | 4.x | MISS | Embedded players (YouTube, Vimeo…) and `autoplay=1` are invisible to theme 4 (Q3). | open |
+| T25-17 | 4.x | MISS | Embedded players (YouTube, Vimeo…) and `autoplay=1` are invisible to theme 4 (Q3). Now asked about by `rgaa-embedded-player-review` (4.1, 4.3, 4.5, 4.7, 4.11, 4.13; 4.10 too when it starts by itself), as decided. | done |
 | T25-18 | 5.1.1 | FN | A complex table whose `aria-describedby` resolves to nothing passes. Now asked about: aria-describedby counts only when it points to text. | done |
 | T25-19 | 5.6.1, 5.6.2 | MISS | Row or column headers marked up as bold `td` are not asked about. Now asked about by `rgaa-data-table-headers-review` (BOLD_CELLS_MAY_BE_HEADERS) in tables with headers and no spans. | done |
 | T25-20 | 2.1.1, 2.2.1 | FN | `title="&nbsp;"` passes 2.1 and escapes 2.2. | done |

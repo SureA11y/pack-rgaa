@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**101 rules total: 68 automatic (decide deterministically; can return `fail`), 33 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**102 rules total: 68 automatic (decide deterministically; can return `fail`), 34 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -87,7 +87,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-video-captions-track-kind`](#rgaa-video-captions-track-kind) | Video caption tracks use kind="captions" | — | — | high | moderate |
 | [`rgaa-widget-label-in-name`](#rgaa-widget-label-in-name) | The accessible name of a scripted component contains its visible label | — | — | high | serious |
 
-## Manual rules (33), never `fail`
+## Manual rules (34), never `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -100,6 +100,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-cryptic-content-review`](#rgaa-cryptic-content-review) | Cryptic content has a title or is defined by its context | — | — | high | minor |
 | [`rgaa-current-item-review`](#rgaa-current-item-review) | The active item of a menu is not shown by its look alone | — | — | high | moderate |
 | [`rgaa-data-table-headers-review`](#rgaa-data-table-headers-review) | Tables with no header cells are checked for unmarked headers | — | — | medium | moderate |
+| [`rgaa-embedded-player-review`](#rgaa-embedded-player-review) | Media in embedded players has its alternatives and controls | — | — | high | serious |
 | [`rgaa-embedded-refresh-review`](#rgaa-embedded-refresh-review) | Embedded content that may refresh itself lets the user control the refresh | — | — | low | moderate |
 | [`rgaa-fake-list`](#rgaa-fake-list) | Text laid out as a list uses list markup | — | — | low | moderate |
 | [`rgaa-field-group-legend`](#rgaa-field-group-legend) | Groups of form fields have a legend | — | — | medium | moderate |
@@ -133,7 +134,7 @@ What a scan runs under each profile (`engineOptions.profile`): the rules its tag
 |---|---|---|---|---|---|---|
 | `rgaa-4.1.2` | `rgaa` | version 4.1.2 | — | — | — | 2.1 |
 
-## Rollups (66)
+## Rollups (70)
 
 Each groups rules into one result, as a WCAG rollup does; the standard's own report sections show them.
 
@@ -176,9 +177,13 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-2.2` | Pour chaque cadre ayant un titre de cadre, ce titre de cadre est-il pertinent ? | `rgaa-frame-title-relevant` |
 | `rgaa-4.1.2-3.1` | Dans chaque page web, l’information ne doit pas être donnée uniquement par la couleur. Cette règle est-elle respectée ? | `rgaa-color-reference-review` |
 | `rgaa-4.1.2-3.2` | Dans chaque page web, le contraste entre la couleur du texte et la couleur de son arrière-plan est-il suffisamment élevé (hors cas particuliers) ? | `contrast-computable`, `rgaa-contrast-minimum` |
-| `rgaa-4.1.2-4.1` | Chaque média temporel pré-enregistré a-t-il, si nécessaire, une transcription textuelle ou une audiodescription (hors cas particuliers) ? | `rgaa-media-transcript-adjacent` |
-| `rgaa-4.1.2-4.10` | Chaque son déclenché automatiquement est-il contrôlable par l’utilisateur ? | `no-autoplay-audio` |
-| `rgaa-4.1.2-4.3` | Chaque média temporel synchronisé pré-enregistré a-t-il, si nécessaire, des sous-titres synchronisés (hors cas particuliers) ? | `rgaa-video-captions-track-kind`, `video-caption` |
+| `rgaa-4.1.2-4.1` | Chaque média temporel pré-enregistré a-t-il, si nécessaire, une transcription textuelle ou une audiodescription (hors cas particuliers) ? | `rgaa-embedded-player-review`, `rgaa-media-transcript-adjacent` |
+| `rgaa-4.1.2-4.10` | Chaque son déclenché automatiquement est-il contrôlable par l’utilisateur ? | `no-autoplay-audio`, `rgaa-embedded-player-review` |
+| `rgaa-4.1.2-4.11` | La consultation de chaque média temporel est-elle, si nécessaire, contrôlable par le clavier et tout dispositif de pointage ? | `rgaa-embedded-player-review` |
+| `rgaa-4.1.2-4.13` | Chaque média temporel et non temporel est-il compatible avec les technologies d’assistance (hors cas particuliers) ? | `rgaa-embedded-player-review` |
+| `rgaa-4.1.2-4.3` | Chaque média temporel synchronisé pré-enregistré a-t-il, si nécessaire, des sous-titres synchronisés (hors cas particuliers) ? | `rgaa-embedded-player-review`, `rgaa-video-captions-track-kind`, `video-caption` |
+| `rgaa-4.1.2-4.5` | Chaque média temporel pré-enregistré a-t-il, si nécessaire, une audiodescription synchronisée (hors cas particuliers) ? | `rgaa-embedded-player-review` |
+| `rgaa-4.1.2-4.7` | Chaque média temporel est-il clairement identifiable (hors cas particuliers) ? | `rgaa-embedded-player-review` |
 | `rgaa-4.1.2-5.1` | Chaque tableau de données complexe a-t-il un résumé ? | `rgaa-complex-table-summary` |
 | `rgaa-4.1.2-5.2` | Pour chaque tableau de données complexe ayant un résumé, celui-ci est-il pertinent ? | `rgaa-complex-table-summary-quality` |
 | `rgaa-4.1.2-5.3` | Pour chaque tableau de mise en forme, le contenu linéarisé reste-t-il compréhensible ? | `rgaa-data-table-headers-review` |
@@ -564,6 +569,18 @@ Passes: role="img" and a text alternative. Fails: no text alternative and no lin
 
 - a text alternative without role="img". The test wording requires both, but the methodology validates on the alternative alone (steps 2 to 4), so RGAA does not say which reading wins;
 - no text alternative, but a link or button right after the &lt;embed&gt; (does it lead to an alternative content?).
+
+### `rgaa-embedded-player-review`
+
+**Media in embedded players has its alternatives and controls**
+
+manual · no formal WCAG SC mapping · confidence high · default severity serious
+
+Flags YouTube, Vimeo, Dailymotion, PeerTube and SoundCloud players, for a person to check the transcript, captions, audio description, identification and controls theme 4 asks for, and the sound of a player that starts by itself.
+
+**Applies to.** Applies to visible frames of known media players (YouTube, Vimeo, Dailymotion, PeerTube, SoundCloud), found by their src or a lazy loader's data-src. A page with none is notApplicable.
+
+**Expectation.** A player shows « un média temporel », which theme 4 asks to have, if needed, a transcript (4.1), synchronised captions (4.3) and an audio description (4.5), to be identified by the text next to it (4.7), to be controllable by keyboard and any pointing device (4.11) and compatible with assistive technologies (4.13). What the media holds and what the player offers can't be read from the page, so each player is asked about (embeddedPlayer). One that starts by itself (autoplay=1 in its URL, auto_play=true for SoundCloud) is asked about under 4.10 too (embeddedPlayerAutoplay): sound that starts on its own must stop within 3 seconds or be controllable.
 
 ### `rgaa-embedded-refresh-review`
 
