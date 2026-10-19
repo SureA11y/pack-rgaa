@@ -1856,6 +1856,22 @@ One word reads right to left inside a French sentence: a person checks whether i
 ```
 The change of direction is marked with `dir="rtl"`.
 
+## rgaa-text-image-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<h2><img src="engagements.png" alt="Nos engagements"></h2>
+```
+The heading is an image: if it shows the text « Nos engagements », styled text should replace it (RGAA 1.8.1).
+
+**Not applicable**
+```html
+<a href="/"><img class="site-logo" src="logo.png" alt="Mairie de Lyon"></a>
+```
+A logo is a particular case of 1.8.
+
 ## rgaa-th-association-present
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*

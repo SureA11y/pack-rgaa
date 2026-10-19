@@ -4,13 +4,13 @@ This pack's rules and their scenario pages. Every rule should have a `tests/fixt
 
 ## Summary
 
-Total rules: **99**. With fixture: **99**. Without fixture: **0**.
+Total rules: **100**. With fixture: **100**. Without fixture: **0**.
 
 ## Rules WITHOUT a fixture (0)
 
 None — every rule has a fixture.
 
-## Rules WITH a fixture (99)
+## Rules WITH a fixture (100)
 
 | Rule ID | Type | Fixture | Cases | PASS | FAIL | CANTTELL | OTHER |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -106,6 +106,7 @@ None — every rule has a fixture.
 | rgaa-svg-role-img | automatic | `tests/fixtures/rgaa-svg-role-img-all-scenarios.html` | 10 | 2 | 1 | 4 | 3 |
 | rgaa-table-title-adjacent | manual | `tests/fixtures/rgaa-table-title-adjacent-all-scenarios.html` | 2 | 0 | 0 | 1 | 1 |
 | rgaa-text-direction-marked | automatic | `tests/fixtures/rgaa-text-direction-marked-all-scenarios.html` | 3 | 0 | 1 | 1 | 1 |
+| rgaa-text-image-review | manual | `tests/fixtures/rgaa-text-image-review-all-scenarios.html` | 3 | 0 | 0 | 2 | 1 |
 | rgaa-th-association-present | automatic | `tests/fixtures/rgaa-th-association-present-all-scenarios.html` | 3 | 1 | 1 | 1 | 0 |
 | rgaa-th-scope-row-col | automatic | `tests/fixtures/rgaa-th-scope-row-col-all-scenarios.html` | 7 | 1 | 4 | 0 | 2 |
 | rgaa-title-placeholder-identical | automatic | `tests/fixtures/rgaa-title-placeholder-identical-all-scenarios.html` | 7 | 2 | 0 | 3 | 2 |

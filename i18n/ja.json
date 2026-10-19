@@ -778,5 +778,11 @@
   "linkTitleContentName_summary_symbolAlternative": "この画像リンクの title（「{{title}}」）は、画像の 1 文字の代替（「{{name}}」）を含んでいません。これは記号かもしれません。",
   "linkTitleContentName_hint_imageLinkTitle": "title に少なくとも画像の代替テキストを含めるか、title を削除してください。支援技術は内容の代わりに title を読むよう設定できます（RGAA 6.1、用語集「Intitulé de lien」注 2）。",
   "linkTitleContentName_hint_compositeLinkTitle": "title が画像の代替テキストも含むべきか確認してください。含むべきなら追加するか、title を削除してください（RGAA 6.1、用語集「Intitulé de lien」注 2）。",
-  "linkTitleContentName_hint_symbolAlternative": "title が記号の意味を伝えているか確認してください。そうでなければ、画像の代替テキストを含めてください（RGAA 6.1、用語集「Intitulé de lien」注 2）。"
+  "linkTitleContentName_hint_symbolAlternative": "title が記号の意味を伝えているか確認してください。そうでなければ、画像の代替テキストを含めてください（RGAA 6.1、用語集「Intitulé de lien」注 2）。",
+  "textImageReview_title": "情報を伝える文字画像は、可能ならスタイル付きテキストに置き換える",
+  "textImageReview_description": "画像ボタン、見出し内の画像、テキストやバナーのような名前の画像（ロゴを除く）を示し、スタイル付きテキストで置き換えられる文字を表示していないか人が確認できるようにします。",
+  "textImageReview_summary_cantTell_imageButton": "この画像ボタンは、ラベルを文字画像として表示している可能性があります（「{{alt}}」）。",
+  "textImageReview_summary_cantTell_imageInHeading": "この画像は見出しの一部で、文字画像の可能性があります（「{{alt}}」）。",
+  "textImageReview_summary_cantTell_textImageName": "この画像のファイル名やクラスから、文字を表示していると思われます（「{{alt}}」、{{name}}）。",
+  "textImageReview_hint_cantTell": "画像が情報を伝える文字を表示しているなら、スタイル付きテキストに置き換えてください。ただし、利用者が置き換えられる仕組みがある場合や、正確な表現が不可欠な場合は除きます（RGAA 1.8）。"
 }

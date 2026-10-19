@@ -778,5 +778,11 @@
   "linkTitleContentName_summary_symbolAlternative": "Le title de ce lien image (« {{title}} ») ne contient pas l’alternative d’un caractère de son image (« {{name}} »), qui est peut-être un symbole.",
   "linkTitleContentName_hint_imageLinkTitle": "Faites reprendre au title au moins l’alternative textuelle de l’image, ou supprimez le title : les aides techniques peuvent être réglées pour lire le title à la place du contenu (RGAA 6.1, glossaire « Intitulé de lien », note 2).",
   "linkTitleContentName_hint_compositeLinkTitle": "Vérifiez si le title doit aussi reprendre l’alternative textuelle de l’image ; si oui, ajoutez-la, ou supprimez le title (RGAA 6.1, glossaire « Intitulé de lien », note 2).",
-  "linkTitleContentName_hint_symbolAlternative": "Vérifiez que le title dit ce que signifie le symbole ; sinon, faites-lui reprendre l’alternative textuelle de l’image (RGAA 6.1, glossaire « Intitulé de lien », note 2)."
+  "linkTitleContentName_hint_symbolAlternative": "Vérifiez que le title dit ce que signifie le symbole ; sinon, faites-lui reprendre l’alternative textuelle de l’image (RGAA 6.1, glossaire « Intitulé de lien », note 2).",
+  "textImageReview_title": "Les images texte porteuses d’information sont remplacées par du texte stylé si possible",
+  "textImageReview_description": "Signale les boutons images, les images dans des titres et les images nommées comme du texte ou un bandeau, hors logos, pour qu’une personne vérifie s’ils affichent du texte que du texte stylé pourrait remplacer.",
+  "textImageReview_summary_cantTell_imageButton": "Ce bouton image affiche peut-être son intitulé sous forme d’image texte (« {{alt}} »).",
+  "textImageReview_summary_cantTell_imageInHeading": "Cette image fait partie d’un titre et est peut-être une image texte (« {{alt}} »).",
+  "textImageReview_summary_cantTell_textImageName": "Le nom de fichier ou la classe de cette image laisse penser qu’elle affiche du texte (« {{alt}} », {{name}}).",
+  "textImageReview_hint_cantTell": "Si l’image affiche un texte porteur d’information, remplacez-la par du texte stylé, sauf si un mécanisme permet à l’utilisateur de la remplacer ou si son rendu exact est essentiel (RGAA 1.8)."
 }

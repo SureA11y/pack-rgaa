@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 99,
-    "withFixture": 99,
+    "total": 100,
+    "withFixture": 100,
     "withoutFixture": 0
   },
   "rows": [
@@ -1566,6 +1566,23 @@
         "PASS": 0,
         "FAIL": 1,
         "CANTTELL": 1,
+        "OTHER": 1
+      }
+    },
+    {
+      "ruleId": "rgaa-text-image-review",
+      "title": "Images of text that carry information are replaced by styled text where possible",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/text-image-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-text-image-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-text-image-review-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 2,
         "OTHER": 1
       }
     },

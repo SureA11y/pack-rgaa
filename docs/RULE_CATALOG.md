@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**99 rules total: 68 automatic (decide deterministically; can return `fail`), 31 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**100 rules total: 68 automatic (decide deterministically; can return `fail`), 32 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -87,7 +87,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-video-captions-track-kind`](#rgaa-video-captions-track-kind) | Video caption tracks use kind="captions" | — | — | high | moderate |
 | [`rgaa-widget-label-in-name`](#rgaa-widget-label-in-name) | The accessible name of a scripted component contains its visible label | — | — | high | serious |
 
-## Manual rules (31), never `fail`
+## Manual rules (32), never `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -120,6 +120,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-select-fake-groups-review`](#rgaa-select-fake-groups-review) | Options are grouped with &lt;optgroup&gt;, not with fake heading options | — | — | high | moderate |
 | [`rgaa-status-message-review`](#rgaa-status-message-review) | Status messages use role="status", "alert", "log" or "progressbar" | — | — | high | moderate |
 | [`rgaa-table-title-adjacent`](#rgaa-table-title-adjacent) | A heading just before a data table is tied to it if it is its title | — | — | high | moderate |
+| [`rgaa-text-image-review`](#rgaa-text-image-review) | Images of text that carry information are replaced by styled text where possible | — | — | high | minor |
 | [`rgaa-tooltip-review`](#rgaa-tooltip-review) | Content shown on hover or focus can be dismissed, hovered and stays visible | — | — | high | minor |
 | [`rgaa-viewport-zoom-review`](#rgaa-viewport-zoom-review) | Text can reach 200% zoom despite a viewport meta tag that limits zoom | — | — | medium | serious |
 
@@ -131,7 +132,7 @@ What a scan runs under each profile (`engineOptions.profile`): the rules its tag
 |---|---|---|---|---|---|---|
 | `rgaa-4.1.2` | `rgaa` | version 4.1.2 | — | — | — | 2.1 |
 
-## Rollups (63)
+## Rollups (64)
 
 Each groups rules into one result, as a WCAG rollup does; the standard's own report sections show them.
 
@@ -141,6 +142,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-1.2` | Chaque image de décoration est-elle correctement ignorée par les technologies d’assistance ? | `rgaa-canvas-decorative-aria-hidden`, `rgaa-img-decorative-no-alternative`, `rgaa-img-no-alt-decorative`, `rgaa-object-embed-decorative-aria-hidden`, `rgaa-svg-decorative-aria-hidden`, `rgaa-svg-hidden-no-alternative` |
 | `rgaa-4.1.2-1.3` | Pour chaque image porteuse d’information ayant une alternative textuelle, cette alternative est-elle pertinente (hors cas particuliers) ? | `area-alt-quality`, `canvas-text-alternative-quality`, `embed-text-alternative-quality`, `image-redundant-alt`, `img-alt-quality`, `input-image-alt-decorative`, `input-image-alt-quality`, `object-text-alternative-quality`, `rgaa-image-alt-long`, `svg-text-alternative-quality` |
 | `rgaa-4.1.2-1.6` | Chaque image porteuse d’information a-t-elle, si nécessaire, une description détaillée ? | `rgaa-img-describedby-target` |
+| `rgaa-4.1.2-1.8` | Chaque image texte porteuse d’information, en l’absence d’un mécanisme de remplacement, doit si possible être remplacée par du texte stylé. Cette règle est-elle respectée (hors cas particuliers) ? | `rgaa-text-image-review` |
 | `rgaa-4.1.2-1.9` | Chaque légende d’image est-elle, si nécessaire, correctement reliée à l’image correspondante ? | `rgaa-figure-caption-structure` |
 | `rgaa-4.1.2-10.1` | Dans le site web, des feuilles de styles sont-elles utilisées pour contrôler la présentation de l’information ? | `rgaa-letters-spaced-with-spaces`, `rgaa-presentational-attributes-absent`, `rgaa-presentational-elements-absent` |
 | `rgaa-4.1.2-10.12` | Dans chaque page web, les propriétés d’espacement du texte peuvent-elles être redéfinies par l’utilisateur sans perte de contenu ou de fonctionnalité (hors cas particuliers) ? | `avoid-inline-spacing`, `text-spacing-content-loss` |
@@ -1572,6 +1574,18 @@ RGAA 8.10.1: « chaque texte dont le sens de lecture est différent du sens de l
 
 - It fails (directionNotMarked) when a text of three words or more reads in the other direction, as a whole element or a run inside other text, with no dir between it and its context.
 - A text of one or two words is asked about (cantTell): a whole element (shortText), such as « العربية » in a language menu, or a run inside other text (shortRun), such as a word quoted in a sentence. The letter of 8.10.1 covers it, but a browser shows one or two words the same with or without dir, so whether it needs one is for a person. So is text in a &lt;bdi&gt; with no dir (bdiWithoutDir), which browsers isolate but RGAA does not name.
+
+### `rgaa-text-image-review`
+
+**Images of text that carry information are replaced by styled text where possible**
+
+manual · no formal WCAG SC mapping · confidence high · default severity minor
+
+Flags image buttons, images in headings and images named like text or banners, outside logos, for a person to check whether they show text that styled text could replace.
+
+**Applies to.** Applies to visible images that likely show text (glossary « Image texte »), with a text alternative, so informative: an image button (&lt;input type="image"&gt;), an image inside a heading, and an &lt;img&gt; or role="img" whose file name, class or id names text, a title, a banner or a button (texte, text, titre, title, bandeau, banner, slogan, bouton, button, btn). Logos and brand names are left out (1.8's particular case): an image whose alternative, file name, class or id, or that of an ancestor, says logo, marque or brand. A page with none is notApplicable.
+
+**Expectation.** RGAA 1.8.1 and 1.8.2: each informative image of text, « en l’absence d’un mécanisme de remplacement, doit si possible être remplacée par du texte stylé ». Whether the image holds text, whether a replacement mechanism exists, and whether its rendering is essential are for a person, so each such image is asked about (imageButton, imageInHeading, textImageName), one occurrence per element.
 
 ### `rgaa-th-association-present`
 

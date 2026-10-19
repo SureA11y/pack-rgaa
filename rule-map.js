@@ -939,6 +939,10 @@ const RGAA_RULE_TESTS = {
       tests: [],
       note: 'Checks that role=textbox has a name from aria-label, aria-labelledby, title or an associated label. It accepts a wrapping <label> and a placeholder on a text-like <input>, which 11.1.1 does not list, so a placeholder-only field passes here while it fails 11.1.1. Not mapped to 11.1.1: rgaa-field-label-listed-source reports 11.1.1 for every form field, from the sources 11.1.1 lists only. Not mapped to 7.1.1: it passes when an accessible alternative exists.'
     },
+    'rgaa-text-image-review': {
+      tests: ['1.8.1', '1.8.2'],
+      note: 'Asks about visible informative images likely to show text (glossary « Image texte »): an image button (input type=image, 1.8.2), an image inside a heading, and an <img> or role="img" whose file name, class or id names text, a title, a banner or a button (1.8.1). 1.8.1 and 1.8.2 ask that each informative image of text, « en l’absence d’un mécanisme de remplacement, doit si possible être remplacée par du texte stylé »; whether the image holds text, a replacement mechanism exists or its rendering is essential is for a person. Logos and brand names, which 1.8\'s particular case exempts, are left out: an image whose alternative, file name, class or id, or an ancestor\'s, says logo, marque or brand. Images of <object>, <embed>, <canvas> and <svg> (1.8.3 to 1.8.6) are not looked at.'
+    },
     'rgaa-th-association-present': {
       tests: ['5.7.1'],
       note: 'Fails a <th> with text and no unique id, scope or role="rowheader"/"columnheader" in a table with headers on both axes (a first row of <th>, and rows starting with a <th> followed by <td>) and no rowspan or colspan: 5.7.1 asks one of the three of each <th> « s\'appliquant à la totalité de la ligne ou de la colonne », and that shape leaves no doubt the header covers a whole row or column. Asks once about any other table whose headers lack all three: with headers on one axis browsers tie them to their cells and an auditor may accept it, and with spans a header may cover part of a row (5.7.3).'

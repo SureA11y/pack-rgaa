@@ -778,5 +778,11 @@
   "linkTitleContentName_summary_symbolAlternative": "Der title dieses Bildlinks („{{title}}“) enthält die einstellige Alternative seines Bildes („{{name}}“) nicht, die ein Symbol sein kann.",
   "linkTitleContentName_hint_imageLinkTitle": "Lassen Sie den title mindestens den Alternativtext des Bildes wiederholen, oder entfernen Sie den title: Assistive Technologien lassen sich so einstellen, dass sie den title statt des Inhalts vorlesen (RGAA 6.1, Glossar « Intitulé de lien », Anmerkung 2).",
   "linkTitleContentName_hint_compositeLinkTitle": "Prüfen Sie, ob der title auch den Alternativtext des Bildes wiederholen muss; wenn ja, ergänzen Sie ihn, oder entfernen Sie den title (RGAA 6.1, Glossar « Intitulé de lien », Anmerkung 2).",
-  "linkTitleContentName_hint_symbolAlternative": "Prüfen Sie, dass der title sagt, was das Symbol bedeutet; sonst lassen Sie ihn den Alternativtext des Bildes wiederholen (RGAA 6.1, Glossar « Intitulé de lien », Anmerkung 2)."
+  "linkTitleContentName_hint_symbolAlternative": "Prüfen Sie, dass der title sagt, was das Symbol bedeutet; sonst lassen Sie ihn den Alternativtext des Bildes wiederholen (RGAA 6.1, Glossar « Intitulé de lien », Anmerkung 2).",
+  "textImageReview_title": "Informationstragende Textgrafiken werden nach Möglichkeit durch formatierten Text ersetzt",
+  "textImageReview_description": "Markiert Bildschaltflächen, Bilder in Überschriften und Bilder, die wie Text oder ein Banner benannt sind, außer Logos, damit eine Person prüft, ob sie Text zeigen, den formatierter Text ersetzen könnte.",
+  "textImageReview_summary_cantTell_imageButton": "Diese Bildschaltfläche zeigt ihre Beschriftung möglicherweise als Textgrafik („{{alt}}“).",
+  "textImageReview_summary_cantTell_imageInHeading": "Dieses Bild ist Teil einer Überschrift und möglicherweise eine Textgrafik („{{alt}}“).",
+  "textImageReview_summary_cantTell_textImageName": "Dateiname oder Klasse dieses Bildes deuten darauf hin, dass es Text zeigt („{{alt}}“, {{name}}).",
+  "textImageReview_hint_cantTell": "Wenn das Bild informationstragenden Text zeigt, ersetzen Sie es durch formatierten Text, es sei denn, ein Mechanismus erlaubt dem Nutzer, es zu ersetzen, oder seine genaue Darstellung ist wesentlich (RGAA 1.8)."
 }

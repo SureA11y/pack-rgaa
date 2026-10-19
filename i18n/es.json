@@ -778,5 +778,11 @@
   "linkTitleContentName_summary_symbolAlternative": "El title de este enlace de imagen (\"{{title}}\") no contiene la alternativa de un carácter de su imagen (\"{{name}}\"), que puede ser un símbolo.",
   "linkTitleContentName_hint_imageLinkTitle": "Haga que el title repita al menos la alternativa textual de la imagen, o quite el title: los productos de apoyo pueden configurarse para leer el title en lugar del contenido (RGAA 6.1, glosario « Intitulé de lien », nota 2).",
   "linkTitleContentName_hint_compositeLinkTitle": "Compruebe si el title debe repetir también la alternativa textual de la imagen; si es así, añádala, o quite el title (RGAA 6.1, glosario « Intitulé de lien », nota 2).",
-  "linkTitleContentName_hint_symbolAlternative": "Compruebe que el title dice lo que significa el símbolo; si no, haga que repita la alternativa textual de la imagen (RGAA 6.1, glosario « Intitulé de lien », nota 2)."
+  "linkTitleContentName_hint_symbolAlternative": "Compruebe que el title dice lo que significa el símbolo; si no, haga que repita la alternativa textual de la imagen (RGAA 6.1, glosario « Intitulé de lien », nota 2).",
+  "textImageReview_title": "Las imágenes de texto que transmiten información se sustituyen por texto con estilo cuando es posible",
+  "textImageReview_description": "Señala los botones de imagen, las imágenes dentro de encabezados y las imágenes con nombre de texto o banner, fuera de los logotipos, para que una persona compruebe si muestran texto que un texto con estilo podría sustituir.",
+  "textImageReview_summary_cantTell_imageButton": "Este botón de imagen puede mostrar su etiqueta como imagen de texto (\"{{alt}}\").",
+  "textImageReview_summary_cantTell_imageInHeading": "Esta imagen forma parte de un encabezado y puede ser una imagen de texto (\"{{alt}}\").",
+  "textImageReview_summary_cantTell_textImageName": "El nombre de archivo o la clase de esta imagen sugiere que muestra texto (\"{{alt}}\", {{name}}).",
+  "textImageReview_hint_cantTell": "Si la imagen muestra un texto que transmite información, sustitúyala por texto con estilo, salvo que un mecanismo permita al usuario sustituirla o que su representación exacta sea esencial (RGAA 1.8)."
 }
