@@ -51,7 +51,7 @@
   "pageZonesReachable_summary_cantTell_mainNotFound": "ページにメインのランドマーク（<main> または role=\"main\"）がないため、メインコンテンツへの到達方法を確認できませんでした。",
   "pageZonesReachable_hint_cantTell": "内容を表す見出し、スキップリンクやクイックアクセスリンク、または領域を隠すボタンでたどり着ける領域は、そのままで RGAA 12.6.1 を満たします。そうでなければ、対応するランドマークを付けてください：<header>、<nav>、<main>、<footer>、または検索フォームに role=\"search\"。",
   "contrastMinimumRgaa_title": "テキストが RGAA の最低限の色のコントラストを満たしている",
-  "contrastMinimumRgaa_description": "CSS からコントラストを計算できる場合に、表示されるテキストのコントラスト比が 4.5:1 以上 (24px 以上のテキストと 18.5px 以上の太字テキストは 3:1 以上) であるかを確認します (RGAA 3.2)。",
+  "contrastMinimumRgaa_description": "CSS からコントラストを計算できる場合に、表示されるテキストのコントラスト比が 4.5:1 以上 (24px 以上のテキストと 18.5px 以上の太字テキストは 3:1 以上) であるかを確認します (RGAA 3.2)。セミボールドのテキスト、コントラスト切り替えのあるページのテキスト、ロゴのテキストについては確認を求めます。",
   "contrastMinimumRgaa_fail_belowThreshold": "要素の色のコントラスト比が {{ratio}}:1 で不十分です (前景: {{foregroundHex}}、背景: {{backgroundHex}}、フォントサイズ: {{fontSizePx}}px、フォントの太さ: {{fontWeightLabel}})。必要なコントラスト比は {{threshold}}:1 です ({{#isLargeText}}24px 以上のテキスト、または 18.5px 以上の太字テキスト{{/isLargeText}}{{^isLargeText}}24px 未満のテキスト、または 18.5px 未満の太字テキスト{{/isLargeText}})。",
   "contrastMinimumRgaa_hint_fail": "コントラスト比が {{threshold}}:1 以上になるよう、テキストの色、背景色、またはその両方を変更してください。",
   "contrastMinimumRgaa_pass_allAboveThreshold": "計算できたすべてのテキストが、RGAA 3.2 のコントラストの基準値を満たしています。対象のテキストノード: {{eligibleTextCount}}。計算できたもの: {{computableTextCount}}。",

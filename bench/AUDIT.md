@@ -45,10 +45,10 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T25-09 | 5.7.2 | FN | 5.7 passes when `scope` points the wrong way. | done |
 | T25-10 | 4.1 | FN | Media next to text that only mentions a transcript, or says there is none, passes. Now asked about (transcriptMentionOnly): a block passes only when it holds a link or button to the transcript, or 30 words or more. | done |
 | T25-11 | 4.3.2 | MISS | `<track kind="caption">` (an invalid kind, never displayed) is not failed. | done |
-| T25-12 | 3.2.x | WM | Every 3.2 failure names all four tests instead of the one its size and weight fall under. | core |
-| T25-13 | 3.2 | WO | Fails though the page offers a contrast mechanism (each test's second condition). | core |
-| T25-14 | 3.2 | FP | Logo and brand text fail, which the particular cases exempt. | core |
-| T25-15 | 3.2 | WO | Weights 600–699 count as not bold. | core |
+| T25-12 | 3.2.x | WM | Every 3.2 failure names all four tests instead of the one its size and weight fall under. Still open: the failures share one reason code, and a variant has no code of its own to read the finding's `typography` fields, so the test cannot be named per finding from the pack. | core |
+| T25-13 | 3.2 | WO | Fails though the page offers a contrast mechanism (each test's second condition). Now asked about: `rgaa-contrast-minimum` sets core's `contrastSwitch: 'ask'` (CONTRAST_SWITCH_OFFERED). | done |
+| T25-14 | 3.2 | FP | Logo and brand text fail, which the particular cases exempt. Now asked about: `logoText: 'ask'` (LOGO_TEXT_BELOW_THRESHOLD); core's logo detection is a heuristic, so the particular case is not applied blind. | done |
+| T25-15 | 3.2 | WO | Weights 600–699 count as not bold. Now asked about: `semiBold: 'ask'` (SEMIBOLD_BELOW_THRESHOLD), since RGAA says « effet de graisse » without a weight. | done |
 | T25-16 | 3.2.1 | WO | An author placeholder colour below the ratio is only asked about. | core |
 | T25-17 | 4.x | MISS | Embedded players (YouTube, Vimeo…) and `autoplay=1` are invisible to theme 4 (Q3). | open |
 | T25-18 | 5.1.1 | FN | A complex table whose `aria-describedby` resolves to nothing passes. Now asked about: aria-describedby counts only when it points to text. | done |

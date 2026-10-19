@@ -189,3 +189,41 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
   // The same page under WCAG: case 04 (18.5px bold at 3.54:1) fails too.
   assert.deepEqual(ids(WCAG_RULE), ['cmr_case_01', 'cmr_case_02', 'cmr_case_03', 'cmr_case_04']);
 });
+
+// RGAA 3.2 says « effet de graisse » without a weight, accepts a mechanism
+// that shows the text with enough contrast, and makes logo text not
+// applicable: each is asked about, not failed.
+test(`${RULE_ID}: semi-bold text that is large only if bold is asked about`, () => {
+  const rule = assertRule(
+    runa11yCoreOnHtml(page(`font-size:20px;font-weight:600;${GREY}`), RUN),
+    RULE_ID,
+    'cantTell',
+    { minOccurrences: 1, maxOccurrences: 1 }
+  );
+  assert.equal(rule.occurrences[0].data.details.reasonCode, 'SEMIBOLD_BELOW_THRESHOLD');
+  // Below 3:1, it fails whatever its weight counts as.
+  assertRule(
+    runa11yCoreOnHtml(page(`font-size:20px;font-weight:600;${LIGHT}`), RUN),
+    RULE_ID,
+    'fail'
+  );
+});
+
+test(`${RULE_ID}: text below its ratio on a page with a contrast switch is asked about`, () => {
+  const html = page(`font-size:16px;${LIGHT}`).replace(
+    '<main>',
+    '<main><button type="button">Contraste renforcé</button>'
+  );
+  const rule = assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'cantTell', { minOccurrences: 1 });
+  assert.ok(rule.occurrences.some((o) => o.data.details.reasonCode === 'CONTRAST_SWITCH_OFFERED'));
+});
+
+test(`${RULE_ID}: logo text below its ratio is asked about`, () => {
+  const html =
+    '<!doctype html><html lang="fr"><head><title>t</title><style>html,body{background:#fff;color:#000}</style></head><body><header><a href="/" class="logo" style="color:#aaaaaa;background:#ffffff">MaMarque</a></header><main><p>Bonjour</p></main></body></html>';
+  const rule = assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'cantTell', {
+    minOccurrences: 1,
+    maxOccurrences: 1
+  });
+  assert.equal(rule.occurrences[0].data.details.reasonCode, 'LOGO_TEXT_BELOW_THRESHOLD');
+});

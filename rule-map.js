@@ -222,7 +222,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-contrast-minimum': {
       tests: ['3.2.1', '3.2.2', '3.2.3', '3.2.4'],
-      note: "Fails computable text below 4.5:1, or below 3:1 for text of 24px or more and bold text of 18.5px or more, which is step 2 of 3.2.1 to 3.2.4 with RGAA's own sizes. Same code as contrast-minimum apart from the bold threshold. Caveats: it does not look for a mechanism that shows the text with enough contrast (the second condition of each test), nor for logos or decorative text (particular cases)."
+      note: "Fails computable text below 4.5:1, or below 3:1 for text of 24px or more and bold text of 18.5px or more, which is step 2 of 3.2.1 to 3.2.4 with RGAA's own sizes. Same code as contrast-minimum apart from the bold threshold, and three cases it asks about instead of failing: weights 600 to 699 that are large only if bold, since RGAA says « effet de graisse » without a weight; a page with a control that switches to higher contrast, which may be the mechanism of each test's second condition; and text that looks like part of a logo, which the particular case for logos and brand names makes not applicable. Decorative text is not told apart. Every failure names the four tests, though it falls under one: the tests share a reason code, so the map cannot split them."
     },
     'css-focus-indicator-suppressed': {
       tests: ['10.7.1'],
