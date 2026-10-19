@@ -39,11 +39,12 @@ as many detections as RGAA allows:
 
 ## Where the work stands
 
-Last updated at commit `67c0ff1`: 100 rules (32 manual), a result for 64 of
-RGAA's 106 criteria, 1090 tests passing.
+Last updated at commit `1740883`: 112 rules (43 manual), a result for 78 of
+RGAA's 106 criteria, 1181 tests passing. Every decision in section 3 is
+built.
 
 [`bench/AUDIT.md`](./bench/AUDIT.md) tracks every finding of the audit with
-its status: search it for `| open |` (25 items), `| partial |`, `| decide |`
+its status: search it for `| open |` (14 items), `| partial |`, `| decide |`
 and `| core |`. What only core can settle is in
 [`bench/CORE_ISSUES.md`](./bench/CORE_ISSUES.md).
 
