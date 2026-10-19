@@ -542,6 +542,24 @@ The label is visually hidden: a person checks that a title, or visible text next
 ```
 The label is visible.
 
+## rgaa-field-label-consistency-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<label for="a">Adresse électronique</label><input id="a" type="email" autocomplete="email">
+<label for="b">Courriel</label><input id="b" type="email" autocomplete="email">
+```
+A person checks that both labels clearly ask for the same email address (RGAA 11.3.1).
+
+**Not applicable**
+```html
+<label for="a">Téléphone :</label><input id="a" type="tel" autocomplete="tel">
+<label for="b">Téléphone *</label><input id="b" type="tel" autocomplete="tel">
+```
+The labels are the same once punctuation is ignored.
+
 ## rgaa-field-label-empty
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -691,6 +709,24 @@ The button inside the form has a label, its content.
 </form>
 ```
 The button inside the form has no label, so RGAA 11.9.1 has nothing to judge. The same empty button outside any form is not applicable: 11.9.1 covers only the buttons in a `<form>` or `role="form"` element.
+
+## rgaa-format-hint-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<label for="client">Numéro de client</label>
+<input id="client" pattern="[A-Z]{2}[0-9]{6}">
+```
+A person checks that an input error says the expected format and gives an example (RGAA 11.11.1, 11.11.2).
+
+**Not applicable**
+```html
+<label for="cp">Code postal (ex. : 75001)</label>
+<input id="cp" pattern="[0-9]{5}">
+```
+The label gives an example.
 
 ## rgaa-frame-title-attribute-present
 
@@ -998,6 +1034,25 @@ The layout table has only plain cells.
 </table>
 ```
 The layout table has a header cell.
+
+## rgaa-legend-relevance-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<fieldset><legend>Adresse de livraison</legend>
+<label for="rue">Rue</label><input id="rue">
+<label for="ville">Ville</label><input id="ville">
+</fieldset>
+```
+A person checks that « Adresse de livraison » says what the fields have in common (RGAA 11.7.1).
+
+**Not applicable**
+```html
+<div role="group" aria-label="Mise en forme"><button>Gras</button><button>Italique</button></div>
+```
+The group holds no form field.
 
 ## rgaa-letters-spaced-with-spaces
 
@@ -1679,6 +1734,29 @@ The text alternative comes from `aria-label`.
 <div role="img" title="Note : 3 sur 5">★★★</div>
 ```
 A `title` is not one of the sources RGAA 1.1.1 accepts for `role="img"`.
+
+## rgaa-same-name-checkboxes-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<p>Centres d’intérêt</p>
+<label><input type="checkbox" name="interets"> Sport</label>
+<label><input type="checkbox" name="interets"> Musique</label>
+<label><input type="checkbox" name="interets"> Lecture</label>
+```
+A person decides whether the three checkboxes need a fieldset and legend (RGAA 11.5.1).
+
+**Not applicable**
+```html
+<fieldset><legend>Langues</legend>
+<label><input type="checkbox" name="langues"> Français</label>
+<label><input type="checkbox" name="langues"> Anglais</label>
+<label><input type="checkbox" name="langues"> Espagnol</label>
+</fieldset>
+```
+The checkboxes are grouped in a fieldset.
 
 ## rgaa-script-button-name-present
 

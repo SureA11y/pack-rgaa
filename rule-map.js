@@ -367,6 +367,10 @@ const RGAA_RULE_TESTS = {
       tests: ['11.1.3'],
       note: "Asks about a visible form field whose <label> elements hold text but are all visually hidden, with no aria-labelledby to visible text: 11.1.3 covers a field « ayant une étiquette dont le contenu n'est pas visible », and asks for a title, or a passage next to the field that is or becomes visible, that makes the expected input understandable, which only a person can judge. Fields named only by aria-label, title or a placeholder are asked about by form-control-programmatic-label-quality."
     },
+    'rgaa-field-label-consistency-review': {
+      tests: ['11.3.1'],
+      note: 'Asks about visible fields of a page that share an autocomplete value naming a field (email, tel, postal-code…, section and shipping/billing/home/work tokens included; not on or off) but whose visible labels (<label>, else aria-labelledby passages) differ once case, accents, punctuation, text in parentheses and words for required or optional are ignored. 11.3.1 asks that each « étiquette associée à un champ de formulaire ayant la même fonction et répétée plusieurs fois dans une même page » be « cohérente », which the glossary « Étiquettes cohérentes » defines as « formulées sans ambiguïté pour que l’utilisateur sache que l’information qu’il doit communiquer est la même »: different wordings can meet that, so a person decides. Fields with no autocomplete value are not compared. 11.3.2 (a set of pages) is not covered.'
+    },
     'rgaa-field-label-empty': {
       tests: ['11.2.1', '11.2.2', '11.2.3', '11.2.4'],
       note: "Fails a visible form field whose label sources (a <label>, title, aria-label, or aria-labelledby passages that exist) are all empty, once for each empty source: 11.2.1 to 11.2.4 ask whether each « permet de connaître la fonction exacte du champ », and an empty one tells nothing. A field with no source at all, or an aria-labelledby that points to no element, is left to 11.1.1. A <label>'s text leaves out the field's own content and counts the alt of an image inside it."
@@ -418,6 +422,10 @@ const RGAA_RULE_TESTS = {
     'form-control-single-label': {
       tests: [],
       note: "Fails when two or more non-empty <label> elements compete for one control. No RGAA test forbids multiple labels. 11.1.1 (a label exists) and 11.1.2 (for/id match) are met in that case, and 11.2.1 judges each label's wording, not how many labels there are; multiple labels are also valid HTML, so 8.2.1 does not apply."
+    },
+    'rgaa-format-hint-review': {
+      tests: ['11.11.1', '11.11.2'],
+      note: 'Asks about a visible, enabled, editable text-like field with an input control (glossary « Contrôle de saisie »: a pattern, a minlength, a min or max on a number, date or time field, or an inputmode of numeric, decimal, tel, email or url) whose label, title, aria-labelledby or aria-describedby passages and placeholder show no digit and no word such as « ex. », « format » or « jj/mm/aaaa ». 11.11.1 and 11.11.2 ask that « pour chaque erreur de saisie », « les types et les formats de données » and « des exemples de valeurs attendues » be suggested « si nécessaire »; the error message shows only once a value is rejected, so a person checks it. A pattern with a title is left out: the technical note of 11.11 says this « valide également le critère ». maxlength alone is left out, since the browser stops the typing at the limit and no input error arises.'
     },
     'rgaa-frame-title-attribute-present': {
       tests: ['2.1.1'],
@@ -607,6 +615,10 @@ const RGAA_RULE_TESTS = {
     'rgaa-layout-table-no-data-markup': {
       tests: ['5.8.1'],
       note: 'Fails a table with role="presentation" or role="none" that has a non-empty summary, a <caption>, <th>, <thead>, <tfoot>, a rowheader or columnheader role, or cells with scope, headers or axis. Those are the two conditions of 5.8.1, applied to tables marked as layout; <colgroup> is not in their list, and passes. Such a table that looks like a data table (a full header row or column over data) is asked about instead, since role="presentation" on a data table is not a 5.8.1 matter. A layout table with no role is not found; deciding which tables are layout tables is 5.3.'
+    },
+    'rgaa-legend-relevance-review': {
+      tests: ['11.7.1'],
+      note: 'Asks about each visible <fieldset> with a <legend> holding text, and each visible role="group" or role="radiogroup" named by aria-labelledby or aria-label, that holds a form field: the legends the glossary « Légende » names. 11.7.1 asks « Chaque légende associée à un regroupement de champs de même nature est-elle pertinente ? », which only a person can judge, so each legend is quoted. Groups with no legend are rgaa-field-group-legend’s (11.6.1).'
     },
     'rgaa-letters-spaced-with-spaces': {
       tests: ['10.1.3'],
@@ -845,7 +857,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-radio-group-present': {
       tests: ['11.5.1'],
-      note: 'Asks about two or more radio buttons with the same name, in the same form, that are not all inside one <fieldset>, role="group" or role="radiogroup" (an outer one holding the whole set counts), the three ways 11.5.1 accepts. 11.5.1 applies "si nécessaire", so a person decides. Custom role="radio" widgets are not checked.'
+      note: 'Asks about two or more radio buttons with the same name, in the same form, that are not all inside one <fieldset>, role="group" or role="radiogroup" (an outer one holding the whole set counts), the three ways 11.5.1 accepts. 11.5.1 applies "si nécessaire", so a person decides. Custom role="radio" widgets, and same-name checkboxes, are asked about by rgaa-same-name-checkboxes-review.'
     },
     region: {
       tests: [],
@@ -866,6 +878,10 @@ const RGAA_RULE_TESTS = {
     'scope-attr-valid': {
       tests: [],
       note: 'Flags scope values other than row/col/rowgroup/colgroup. Not linked to 5.7.2: it accepts rowgroup and colgroup, which RGAA does not, and rgaa-th-scope-row-col fails every scope other than row or col. Not linked to 8.2.1: the rule trims values and skips empty ones, which the validator rejects; rgaa-html-elements-attributes-valid reports scope values under 8.2.1.'
+    },
+    'rgaa-same-name-checkboxes-review': {
+      tests: ['11.5.1'],
+      note: 'Asks about three or more visible checkboxes with the same name in the same form, and two or more visible role="radio" elements (native radio buttons left out) in one parent, that are not all inside one <fieldset> or role="group" (or, for radios, role="radiogroup"), the ways 11.5.1 accepts. The glossary « Champs de même nature » names « un ensemble de boutons radio ou de cases à cocher qui se rapportent à une question », to be grouped « lorsque les intitulés de label ne sont pas suffisants », so a person decides (« si nécessaire »). Two checkboxes sharing a name are not asked about. Native radio buttons are rgaa-radio-group-present’s.'
     },
     'rgaa-script-button-name-present': {
       tests: ['7.1.3'],

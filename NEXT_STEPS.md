@@ -105,9 +105,9 @@ other engines do. Update the state column as each is built.
 | 8 | T89-13, 9.4 | Ask about paragraphs wholly in quotation marks outside `<q>` and `<blockquote>`. | done (`rgaa-quotation-review`) |
 | 9 | T10-06, 10.6.1 | Core's `link-in-text-block` should read hover and focus styles: listed in CORE_ISSUES.md; nothing in the pack. | done (listed) |
 | 10 | T10-07, 10.5 | Fail 10.5.1 (an author text colour with no background colour on it or any ancestor) and 10.5.3 (a background image with none); ask about 10.5.2. No other engine fails these (one asks about 10.5.3), but the tests' text is literal. | to do |
-| 11 | T11-14, 11.5.1 | Ask about three or more checkboxes sharing a name, and role="radio" sets, outside a fieldset or group. | to do |
+| 11 | T11-14, 11.5.1 | Ask about three or more checkboxes sharing a name, and role="radio" sets, outside a fieldset or group. | done (`rgaa-same-name-checkboxes-review`) |
 | 12 | T11-15, 11.4 | Ask, in a browser, when a label is not right above or left of its field (below or right for a checkbox or radio). | to do |
-| 13 | T11-17 | Ask under 11.3 (fields with the same autocomplete token and different labels), 11.7 (each legend, quoted) and 11.11 (a format constraint with no example); 11.12 left open. | to do |
+| 13 | T11-17 | Ask under 11.3 (fields with the same autocomplete token and different labels), 11.7 (each legend, quoted) and 11.11 (a format constraint with no example); 11.12 left open. | done (`rgaa-field-label-consistency-review`, `rgaa-legend-relevance-review`, `rgaa-format-hint-review`); 11.12 open |
 | 14 | T12-13, 12.1 | Ask when a page shows fewer than two of a navigation menu, a site map link and a search form. | done (`rgaa-navigation-systems-review`) |
 
 Core PR SureA11y/core#266 is merged into core's main: the pack's rollups

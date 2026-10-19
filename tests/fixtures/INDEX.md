@@ -4,13 +4,13 @@ This pack's rules and their scenario pages. Every rule should have a `tests/fixt
 
 ## Summary
 
-Total rules: **104**. With fixture: **104**. Without fixture: **0**.
+Total rules: **108**. With fixture: **108**. Without fixture: **0**.
 
 ## Rules WITHOUT a fixture (0)
 
 None — every rule has a fixture.
 
-## Rules WITH a fixture (104)
+## Rules WITH a fixture (108)
 
 | Rule ID | Type | Fixture | Cases | PASS | FAIL | CANTTELL | OTHER |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -41,6 +41,7 @@ None — every rule has a fixture.
 | rgaa-fake-list | manual | `tests/fixtures/rgaa-fake-list-all-scenarios.html` | 7 | 0 | 0 | 0 | 7 |
 | rgaa-field-group-legend | manual | `tests/fixtures/rgaa-field-group-legend-all-scenarios.html` | 10 | 0 | 0 | 0 | 10 |
 | rgaa-field-hidden-label-review | manual | `tests/fixtures/rgaa-field-hidden-label-review-all-scenarios.html` | 2 | 0 | 0 | 1 | 1 |
+| rgaa-field-label-consistency-review | manual | `tests/fixtures/rgaa-field-label-consistency-review-all-scenarios.html` | 3 | 0 | 0 | 1 | 2 |
 | rgaa-field-label-empty | automatic | `tests/fixtures/rgaa-field-label-empty-all-scenarios.html` | 2 | 1 | 1 | 0 | 0 |
 | rgaa-field-label-in-name-sources | automatic | `tests/fixtures/rgaa-field-label-in-name-sources-all-scenarios.html` | 11 | 3 | 2 | 3 | 3 |
 | rgaa-field-label-listed-source | automatic | `tests/fixtures/rgaa-field-label-listed-source-all-scenarios.html` | 15 | 4 | 7 | 3 | 1 |
@@ -49,6 +50,7 @@ None — every rule has a fixture.
 | rgaa-focus-not-removed | automatic | `tests/fixtures/rgaa-focus-not-removed-all-scenarios.html` | 2 | 0 | 1 | 0 | 1 |
 | rgaa-form-button-label-in-name-sources | automatic | `tests/fixtures/rgaa-form-button-label-in-name-sources-all-scenarios.html` | 9 | 2 | 3 | 2 | 2 |
 | rgaa-form-button-name-present | automatic | `tests/fixtures/rgaa-form-button-name-present-all-scenarios.html` | 9 | 3 | 3 | 2 | 1 |
+| rgaa-format-hint-review | manual | `tests/fixtures/rgaa-format-hint-review-all-scenarios.html` | 5 | 0 | 0 | 2 | 3 |
 | rgaa-frame-title-attribute-present | automatic | `tests/fixtures/rgaa-frame-title-attribute-present-all-scenarios.html` | 10 | 1 | 6 | 0 | 3 |
 | rgaa-frame-title-relevant | manual | `tests/fixtures/rgaa-frame-title-relevant-all-scenarios.html` | 5 | 0 | 0 | 2 | 3 |
 | rgaa-heading-content-present | automatic | `tests/fixtures/rgaa-heading-content-present-all-scenarios.html` | 11 | 3 | 3 | 4 | 1 |
@@ -66,6 +68,7 @@ None — every rule has a fixture.
 | rgaa-keyboard-only-event-handlers | manual | `tests/fixtures/rgaa-keyboard-only-event-handlers-all-scenarios.html` | 10 | 0 | 0 | 4 | 6 |
 | rgaa-label-for-target-valid | automatic | `tests/fixtures/rgaa-label-for-target-valid-all-scenarios.html` | 8 | 3 | 4 | 0 | 1 |
 | rgaa-layout-table-no-data-markup | automatic | `tests/fixtures/rgaa-layout-table-no-data-markup-all-scenarios.html` | 11 | 4 | 5 | 1 | 1 |
+| rgaa-legend-relevance-review | manual | `tests/fixtures/rgaa-legend-relevance-review-all-scenarios.html` | 4 | 0 | 0 | 2 | 2 |
 | rgaa-letters-spaced-with-spaces | manual | `tests/fixtures/rgaa-letters-spaced-with-spaces-all-scenarios.html` | 8 | 0 | 0 | 0 | 8 |
 | rgaa-link-content-label-present | automatic | `tests/fixtures/rgaa-link-content-label-present-all-scenarios.html` | 9 | 3 | 4 | 1 | 1 |
 | rgaa-link-context-review | manual | `tests/fixtures/rgaa-link-context-review-all-scenarios.html` | 6 | 0 | 0 | 3 | 3 |
@@ -98,6 +101,7 @@ None — every rule has a fixture.
 | rgaa-radio-group-present | manual | `tests/fixtures/rgaa-radio-group-present-all-scenarios.html` | 6 | 0 | 0 | 0 | 6 |
 | rgaa-required-field-indication | automatic | `tests/fixtures/rgaa-required-field-indication-all-scenarios.html` | 5 | 1 | 2 | 1 | 1 |
 | rgaa-role-img-aria-name | automatic | `tests/fixtures/rgaa-role-img-aria-name-all-scenarios.html` | 9 | 2 | 3 | 1 | 3 |
+| rgaa-same-name-checkboxes-review | manual | `tests/fixtures/rgaa-same-name-checkboxes-review-all-scenarios.html` | 5 | 0 | 0 | 2 | 3 |
 | rgaa-script-button-name-present | automatic | `tests/fixtures/rgaa-script-button-name-present-all-scenarios.html` | 3 | 1 | 1 | 0 | 1 |
 | rgaa-script-redirect-review | manual | `tests/fixtures/rgaa-script-redirect-review-all-scenarios.html` | 1 | 0 | 0 | 1 | 0 |
 | rgaa-scripted-components-review | manual | `tests/fixtures/rgaa-scripted-components-review-all-scenarios.html` | 12 | 0 | 0 | 0 | 12 |

@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 104,
-    "withFixture": 104,
+    "total": 108,
+    "withFixture": 108,
     "withoutFixture": 0
   },
   "rows": [
@@ -465,6 +465,23 @@
       }
     },
     {
+      "ruleId": "rgaa-field-label-consistency-review",
+      "title": "Fields asking for the same information have coherent labels",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/field-label-consistency-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-field-label-consistency-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-field-label-consistency-review-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 2
+      }
+    },
+    {
       "ruleId": "rgaa-field-label-empty",
       "title": "A field's label sources are not all empty",
       "type": "automatic",
@@ -598,6 +615,23 @@
         "FAIL": 3,
         "CANTTELL": 2,
         "OTHER": 1
+      }
+    },
+    {
+      "ruleId": "rgaa-format-hint-review",
+      "title": "Fields with a format constraint suggest the format or an example",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/format-hint-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-format-hint-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-format-hint-review-all-scenarios.html",
+      "totalCases": 5,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 2,
+        "OTHER": 3
       }
     },
     {
@@ -887,6 +921,23 @@
         "FAIL": 5,
         "CANTTELL": 1,
         "OTHER": 1
+      }
+    },
+    {
+      "ruleId": "rgaa-legend-relevance-review",
+      "title": "Legends of groups of form fields are relevant",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/legend-relevance-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-legend-relevance-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-legend-relevance-review-all-scenarios.html",
+      "totalCases": 4,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 2,
+        "OTHER": 2
       }
     },
     {
@@ -1430,6 +1481,23 @@
         "PASS": 2,
         "FAIL": 3,
         "CANTTELL": 1,
+        "OTHER": 3
+      }
+    },
+    {
+      "ruleId": "rgaa-same-name-checkboxes-review",
+      "title": "Sets of checkboxes and custom radio buttons are grouped if needed",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/same-name-checkboxes-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-same-name-checkboxes-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-same-name-checkboxes-review-all-scenarios.html",
+      "totalCases": 5,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 2,
         "OTHER": 3
       }
     },

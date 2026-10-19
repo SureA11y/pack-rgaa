@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**104 rules total: 68 automatic (decide deterministically; can return `fail`), 36 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**108 rules total: 68 automatic (decide deterministically; can return `fail`), 40 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -87,7 +87,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-video-captions-track-kind`](#rgaa-video-captions-track-kind) | Video caption tracks use kind="captions" | — | — | high | moderate |
 | [`rgaa-widget-label-in-name`](#rgaa-widget-label-in-name) | The accessible name of a scripted component contains its visible label | — | — | high | serious |
 
-## Manual rules (36), never `fail`
+## Manual rules (40), never `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -105,11 +105,14 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-fake-list`](#rgaa-fake-list) | Text laid out as a list uses list markup | — | — | low | moderate |
 | [`rgaa-field-group-legend`](#rgaa-field-group-legend) | Groups of form fields have a legend | — | — | medium | moderate |
 | [`rgaa-field-hidden-label-review`](#rgaa-field-hidden-label-review) | A field with a visually hidden label is understandable from the screen | — | — | high | moderate |
+| [`rgaa-field-label-consistency-review`](#rgaa-field-label-consistency-review) | Fields asking for the same information have coherent labels | — | — | medium | minor |
+| [`rgaa-format-hint-review`](#rgaa-format-hint-review) | Fields with a format constraint suggest the format or an example | — | — | medium | moderate |
 | [`rgaa-frame-title-relevant`](#rgaa-frame-title-relevant) | Frame titles are relevant | — | — | high | moderate |
 | [`rgaa-headings-absent-review`](#rgaa-headings-absent-review) | A page with text but no heading is reviewed | — | — | high | moderate |
 | [`rgaa-image-alt-long`](#rgaa-image-alt-long) | Text alternatives of images are short | — | — | medium | minor |
 | [`rgaa-invalid-field-message`](#rgaa-invalid-field-message) | Fields marked invalid have their error message in their label or a linked passage | — | — | high | moderate |
 | [`rgaa-keyboard-only-event-handlers`](#rgaa-keyboard-only-event-handlers) | Keyboard-only inline event handlers should have a pointer equivalent | — | — | low | moderate |
+| [`rgaa-legend-relevance-review`](#rgaa-legend-relevance-review) | Legends of groups of form fields are relevant | — | — | medium | moderate |
 | [`rgaa-letters-spaced-with-spaces`](#rgaa-letters-spaced-with-spaces) | Letters of a word are not spaced out with spaces | — | — | medium | minor |
 | [`rgaa-link-context-review`](#rgaa-link-context-review) | Generic links whose only context is outside RGAA's list are reviewed | — | — | medium | minor |
 | [`rgaa-modal-tab-order`](#rgaa-modal-tab-order) | Focus stays inside an open modal dialog | — | — | high | moderate |
@@ -119,6 +122,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-office-document-link`](#rgaa-office-document-link) | Downloadable office documents are accessible or have an accessible version | — | — | high | moderate |
 | [`rgaa-quotation-review`](#rgaa-quotation-review) | Quotations use &lt;q&gt; or &lt;blockquote&gt; | — | — | high | minor |
 | [`rgaa-radio-group-present`](#rgaa-radio-group-present) | Radio buttons sharing a name are grouped | — | — | medium | moderate |
+| [`rgaa-same-name-checkboxes-review`](#rgaa-same-name-checkboxes-review) | Sets of checkboxes and custom radio buttons are grouped if needed | — | — | medium | moderate |
 | [`rgaa-script-redirect-review`](#rgaa-script-redirect-review) | A timed redirection done by a script can be controlled | — | — | high | moderate |
 | [`rgaa-scripted-components-review`](#rgaa-scripted-components-review) | Scripted components are compatible with assistive technologies | — | — | medium | moderate |
 | [`rgaa-select-fake-groups-review`](#rgaa-select-fake-groups-review) | Options are grouped with &lt;optgroup&gt;, not with fake heading options | — | — | high | moderate |
@@ -136,7 +140,7 @@ What a scan runs under each profile (`engineOptions.profile`): the rules its tag
 |---|---|---|---|---|---|---|
 | `rgaa-4.1.2` | `rgaa` | version 4.1.2 | — | — | — | 2.1 |
 
-## Rollups (72)
+## Rollups (75)
 
 Each groups rules into one result, as a WCAG rollup does; the standard's own report sections show them.
 
@@ -160,10 +164,13 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-10.9` | Dans chaque page web, l’information ne doit pas être donnée uniquement par la forme, taille ou position. Cette règle est-elle respectée ? | `rgaa-current-item-review` |
 | `rgaa-4.1.2-11.1` | Chaque champ de formulaire a-t-il une étiquette ? | `form-control-programmatic-label-quality`, `option-name-present`, `rgaa-field-hidden-label-review`, `rgaa-field-label-listed-source`, `rgaa-label-for-target-valid` |
 | `rgaa-4.1.2-11.10` | Dans chaque formulaire, le contrôle de saisie est-il utilisé de manière pertinente (hors cas particuliers) ? | `rgaa-invalid-field-message`, `rgaa-required-field-indication` |
+| `rgaa-4.1.2-11.11` | Dans chaque formulaire, le contrôle de saisie est-il accompagné, si nécessaire, de suggestions facilitant la correction des erreurs de saisie ? | `rgaa-format-hint-review` |
 | `rgaa-4.1.2-11.13` | La finalité d’un champ de saisie peut-elle être déduite pour faciliter le remplissage automatique des champs avec les données de l’utilisateur ? | `rgaa-autocomplete-user-field` |
 | `rgaa-4.1.2-11.2` | Chaque étiquette associée à un champ de formulaire est-elle pertinente (hors cas particuliers) ? | `form-control-label-quality`, `form-control-programmatic-label-quality`, `rgaa-field-label-empty`, `rgaa-field-label-in-name-sources`, `rgaa-title-placeholder-identical` |
-| `rgaa-4.1.2-11.5` | Dans chaque formulaire, les champs de même nature sont-ils regroupés, si nécessaire ? | `rgaa-radio-group-present` |
+| `rgaa-4.1.2-11.3` | Dans chaque formulaire, chaque étiquette associée à un champ de formulaire ayant la même fonction et répétée plusieurs fois dans une même page ou dans un ensemble de pages est-elle cohérente ? | `rgaa-field-label-consistency-review` |
+| `rgaa-4.1.2-11.5` | Dans chaque formulaire, les champs de même nature sont-ils regroupés, si nécessaire ? | `rgaa-radio-group-present`, `rgaa-same-name-checkboxes-review` |
 | `rgaa-4.1.2-11.6` | Dans chaque formulaire, chaque regroupement de champs de même nature a-t-il une légende ? | `rgaa-field-group-legend` |
+| `rgaa-4.1.2-11.7` | Dans chaque formulaire, chaque légende associée à un regroupement de champs de même nature est-elle pertinente ? | `rgaa-legend-relevance-review` |
 | `rgaa-4.1.2-11.8` | Dans chaque formulaire, les items de même nature d’une liste de choix sont-ils regroupés de manière pertinente ? | `rgaa-listbox-option-groups-absent`, `rgaa-optgroup-label-not-empty`, `rgaa-optgroup-label-present`, `rgaa-select-fake-groups-review` |
 | `rgaa-4.1.2-11.9` | Dans chaque formulaire, l’intitulé de chaque bouton est-il pertinent (hors cas particuliers) ? | `rgaa-form-button-label-in-name-sources`, `rgaa-form-button-name-present` |
 | `rgaa-4.1.2-12.1` | Chaque ensemble de pages dispose-t-il de deux systèmes de navigation différents, au moins (hors cas particuliers) ? | `rgaa-navigation-systems-review` |
@@ -642,6 +649,18 @@ Flags each form field whose &lt;label&gt; is visually hidden, for a person to ch
 
 **Expectation.** RGAA 11.1.3 covers a field « ayant une étiquette dont le contenu n'est pas visible » and asks for one of: a title that makes the expected input understandable, a passage next to the field that becomes visible on focus, or a visible passage next to it. Whether the text on screen (a button beside a search field, a placeholder, an icon) does that is for a person: the field is asked about (hiddenLabel), naming whether it has a title.
 
+### `rgaa-field-label-consistency-review`
+
+**Fields asking for the same information have coherent labels**
+
+manual · no formal WCAG SC mapping · confidence medium · default severity minor
+
+Flags fields of a page with the same autocomplete value but different visible labels, for a person to check that the labels say without ambiguity that the same information is asked for.
+
+**Applies to.** Applies to visible form fields (input other than hidden, the button types, checkbox and radio; select; textarea) that have a visible label (a &lt;label&gt;, or an aria-labelledby passage) and an autocomplete value naming a field (email, tel, postal-code…; not on or off). Fields with the same autocomplete value, section and shipping/billing/home/work tokens included, ask for the same information. A page where no two such fields have different labels is notApplicable.
+
+**Expectation.** RGAA 11.3.1: « Chaque étiquette associée à un champ de formulaire ayant la même fonction et répétée plusieurs fois dans une même page est-elle cohérente ? ». The glossary « Étiquettes cohérentes » asks that labels « réclamant la saisie d’une même information » be « formulées sans ambiguïté pour que l’utilisateur sache que l’information qu’il doit communiquer est la même ». Two different wordings can still be unambiguous, so a set whose labels differ once case, accents, punctuation, text in parentheses and the words for required or optional are ignored is asked about (inconsistentLabels), once, on its first field.
+
 ### `rgaa-field-label-empty`
 
 **A field's label sources are not all empty**
@@ -744,6 +763,18 @@ Checks that each button inside a form (a &lt;form&gt; or role="form") has a labe
 **Applies to.** Applies to the buttons of RGAA's glossary entry "Bouton (formulaire)" (&lt;button&gt;, &lt;input&gt; of type submit, reset, button or image, and role="button") that sit inside a form: a &lt;form&gt; element or an element with role="form" (glossary "Formulaire"). RGAA 11.9.1 step 1 covers « les boutons présents au sein d'un formulaire », so a button outside any form is out of scope. A button hidden from assistive technologies, or whose explicit role is another one (role="tab", role="none"), is out of scope too. A page with no such button is notApplicable.
 
 **Expectation.** The button has a label: an aria-labelledby passage, an aria-label, the alt of an image button, the value of an &lt;input&gt; button, the content of a &lt;button&gt; or role="button" element (an image's alt, an &lt;svg&gt;'s &lt;title&gt; and the like count), or a title. A button with none of them has no label to be relevant, and fails 11.9.1 step 2. A submit or reset &lt;input&gt; with no value shows the browser's own label ("Submit", "Reset") and passes; whether the label is relevant is left to a person, as the rest of 11.9.1 is.
+
+### `rgaa-format-hint-review`
+
+**Fields with a format constraint suggest the format or an example**
+
+manual · no formal WCAG SC mapping · confidence medium · default severity moderate
+
+Flags a field with a pattern, minlength, min/max or inputmode whose label, description and placeholder give no format or example, for a person to check that an input error suggests the expected format and an example.
+
+**Applies to.** Applies to visible, enabled, editable text-like fields (&lt;textarea&gt;, and &lt;input&gt; of type text, search, tel, url, email, password, number, date, time, datetime-local, month or week) that carry an input control (glossary « Contrôle de saisie »): a pattern, a minlength, a min or max on a number, date or time field, or an inputmode of numeric, decimal, tel, email or url. Fields whose label, title, aria-labelledby or aria-describedby passages or placeholder show a digit or a word such as « ex. », « format » or « jj/mm/aaaa » are left out, as are fields with a pattern and a title (technical note of 11.11). A page with none left is notApplicable.
+
+**Expectation.** RGAA 11.11.1: « Pour chaque erreur de saisie, les types et les formats de données sont-ils suggérés, si nécessaire ? »; 11.11.2: « des exemples de valeurs attendues sont-ils suggérés, si nécessaire ? ». The error message itself only shows once a value is rejected, and it may be the one the browser writes, so a field whose constraint is stated nowhere around it is asked about (formatWithoutHint).
 
 ### `rgaa-frame-title-attribute-present`
 
@@ -999,6 +1030,18 @@ Checks that a table marked as layout (role="presentation" or "none") has no capt
 **Applies to.** Applies to &lt;table&gt; elements whose role is presentation or none, the only way markup says a table is for layout. A page with none is notApplicable.
 
 **Expectation.** The table has no non-empty summary attribute and contains no &lt;caption&gt;, &lt;th&gt;, &lt;thead&gt;, &lt;tfoot&gt; or element with role="rowheader" or role="columnheader", and none of its &lt;td&gt; cells carries scope, headers or axis (RGAA 5.8.1). Only the table's own cells count, not those of a table nested inside it. &lt;colgroup&gt; and &lt;col&gt; are not in 5.8.1's list: they set column widths, which a layout table may do. A table that has such markup and also looks like a data table is reported as cantTell instead of fail: 5.8.1 applies to layout tables, and role="presentation" on a real data table is a different defect (its headers are no longer exposed). It looks like a data table when it has at least two rows and two columns, a data cell, and a full header row (every cell of the first row a header) or a full header column (the first cell of every row a header), headers being &lt;th&gt;, role="columnheader" or role="rowheader".
+
+### `rgaa-legend-relevance-review`
+
+**Legends of groups of form fields are relevant**
+
+manual · no formal WCAG SC mapping · confidence medium · default severity moderate
+
+Flags each &lt;legend&gt; of a fieldset, and each aria-label or aria-labelledby of a role="group" or role="radiogroup", holding form fields, for a person to check that it says what the fields have in common.
+
+**Applies to.** Applies to visible &lt;fieldset&gt; elements with a &lt;legend&gt; child holding text, and to visible elements with role="group" or role="radiogroup" named by aria-label or by aria-labelledby passages holding text, that contain at least one form field (input other than hidden, select, textarea, or an element with a form field role). A page with none is notApplicable.
+
+**Expectation.** RGAA 11.7.1: « Chaque légende associée à un regroupement de champs de même nature est-elle pertinente ? ». The glossary « Légende » names the &lt;legend&gt; of a &lt;fieldset&gt;, and the passage linked by aria-labelledby or the aria-label of a role="group". Relevance is for a person, so each legend is asked about (legendRelevance), quoted.
 
 ### `rgaa-letters-spaced-with-spaces`
 
@@ -1467,6 +1510,18 @@ Checks that each exposed element with role="img" (other than &lt;img&gt; and an 
 **Applies to.** Applies to elements whose role attribute starts with the token img, except &lt;img&gt; (RGAA lists its own sources for it) and an outer &lt;svg&gt; (RGAA test 1.1.5, see rgaa-svg-role-img and svg-text-alternative-present). An element with aria-hidden="true", on itself or an ancestor, is left out: the glossary entry "Image de décoration" says an element with role="img" is decorative only with aria-hidden="true". Content hidden with CSS or the hidden attribute is left out too, and so is an element that is the only content of a link or a button: its alternative is the control's name, which the glossary « Image porteuse d'information » (notes 1 and 2) sends to Links (6.1), Forms (11.9) or Scripts (7.1). A page with none is notApplicable.
 
 **Expectation.** The element has a text alternative from one of the two sources RGAA 1.1.1 step 4 lists for role="img": text referenced by aria-labelledby, or a non-empty aria-label. A name that comes only from the title attribute, or no name at all, fails: the glossary entry "Alternative textuelle (image)" lists title for &lt;img&gt;, &lt;input type="image"&gt;, &lt;object&gt; and &lt;embed&gt; only. An element in the SVG namespace (a &lt;g role="img"&gt;, for example) named only by a &lt;title&gt; child is asked about (cantTell): RGAA contradicts itself on &lt;title&gt; as an SVG alternative (1.1.5 step 5 lists only aria-labelledby and aria-label, while 1.3.6 checks the content of &lt;title&gt;).
+
+### `rgaa-same-name-checkboxes-review`
+
+**Sets of checkboxes and custom radio buttons are grouped if needed**
+
+manual · no formal WCAG SC mapping · confidence medium · default severity moderate
+
+Flags three or more checkboxes sharing a name, or two or more role="radio" elements in one parent, that are not inside a fieldset or a role="group" (or, for radios, role="radiogroup"), for a person to decide whether they need grouping.
+
+**Applies to.** Applies to sets of three or more visible &lt;input type="checkbox"&gt; with the same name in the same form (or outside any form), and to sets of two or more visible elements with role="radio" (native radio buttons left out) that share a parent element. A page where every such set is grouped, or with none, is notApplicable.
+
+**Expectation.** RGAA 11.5.1: « Les champs de même nature sont regroupés dans une balise &lt;fieldset&gt; », « dans une balise possédant un attribut WAI-ARIA role="group" », and, for radios (role="radio" included), « dans une balise possédant un attribut WAI-ARIA role="radiogroup" ou role="group" », « si nécessaire ». The glossary « Champs de même nature » names « un ensemble de boutons radio ou de cases à cocher qui se rapportent à une question » and adds that they « doivent être regroupés lorsque les intitulés de label ne sont pas suffisants ». A set with no common group is asked about (ungroupedCheckboxes, ungroupedRadios), since only a person can tell whether its labels are enough.
 
 ### `rgaa-script-button-name-present`
 
