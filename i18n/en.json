@@ -835,5 +835,13 @@
   "colorDeclarationsPaired_summary_backgroundWithoutColor": "This element declares a background colour ({{background}}) over text left in the default black.",
   "colorDeclarationsPaired_hint_colorWithoutBackground": "Declare a background colour (background or background-color) on this element or a parent, such as <body>, so the text keeps its contrast whatever the user’s default background (RGAA 10.5.1).",
   "colorDeclarationsPaired_hint_imageWithoutBackground": "Declare a background colour (background or background-color) close to the image’s, on this element or a parent, so the text stays readable when the image does not load (RGAA 10.5.3).",
-  "colorDeclarationsPaired_hint_backgroundWithoutColor": "Check that a text colour (color) is declared on this element or a parent: a declared black cannot be told from the browser’s default (RGAA 10.5.2)."
+  "colorDeclarationsPaired_hint_backgroundWithoutColor": "Check that a text colour (color) is declared on this element or a parent: a declared black cannot be told from the browser’s default (RGAA 10.5.2).",
+  "labelPlacementReview_title": "Each field's label sits right next to it, on the expected side",
+  "labelPlacementReview_description": "In a browser, flags form fields whose visible label is far from them, or is not above or before them (below or after them for a check box, radio button or switch), for a person to check that label and field are next to each other as RGAA asks.",
+  "labelPlacementReview_summary_cantTell_labelFarFromField": "The label \"{{label}}\" is {{distance}} px away from this field.",
+  "labelPlacementReview_summary_cantTell_labelNotAboveOrLeft": "The label \"{{label}}\" is neither just above this field nor just before it on the same line.",
+  "labelPlacementReview_summary_cantTell_labelNotBelowOrRight": "The label \"{{label}}\" is neither just below this check box, radio button or switch nor just after it on the same line.",
+  "labelPlacementReview_hint_cantTell_labelFarFromField": "Check that the label and its field are close enough for their relation to be clear (RGAA 11.4.1).",
+  "labelPlacementReview_hint_cantTell_labelNotAboveOrLeft": "Check that the label sits immediately above the field or on its left (on its right for a right-to-left language), unless a particular case applies (RGAA 11.4.2).",
+  "labelPlacementReview_hint_cantTell_labelNotBelowOrRight": "Check that the label sits immediately below the field or on its right (on its left for a right-to-left language), unless a particular case applies, such as a field not shown as a check box or radio button (RGAA 11.4.3)."
 }

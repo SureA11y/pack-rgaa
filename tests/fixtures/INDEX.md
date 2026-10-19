@@ -4,13 +4,13 @@ This pack's rules and their scenario pages. Every rule should have a `tests/fixt
 
 ## Summary
 
-Total rules: **109**. With fixture: **109**. Without fixture: **0**.
+Total rules: **110**. With fixture: **110**. Without fixture: **0**.
 
 ## Rules WITHOUT a fixture (0)
 
 None — every rule has a fixture.
 
-## Rules WITH a fixture (109)
+## Rules WITH a fixture (110)
 
 | Rule ID | Type | Fixture | Cases | PASS | FAIL | CANTTELL | OTHER |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -68,6 +68,7 @@ None — every rule has a fixture.
 | rgaa-invalid-field-message | manual | `tests/fixtures/rgaa-invalid-field-message-all-scenarios.html` | 2 | 0 | 0 | 1 | 1 |
 | rgaa-keyboard-only-event-handlers | manual | `tests/fixtures/rgaa-keyboard-only-event-handlers-all-scenarios.html` | 10 | 0 | 0 | 4 | 6 |
 | rgaa-label-for-target-valid | automatic | `tests/fixtures/rgaa-label-for-target-valid-all-scenarios.html` | 8 | 3 | 4 | 0 | 1 |
+| rgaa-label-placement-review | manual | `tests/fixtures/rgaa-label-placement-review-all-scenarios.html` | 5 | 0 | 0 | 3 | 2 |
 | rgaa-layout-table-no-data-markup | automatic | `tests/fixtures/rgaa-layout-table-no-data-markup-all-scenarios.html` | 11 | 4 | 5 | 1 | 1 |
 | rgaa-legend-relevance-review | manual | `tests/fixtures/rgaa-legend-relevance-review-all-scenarios.html` | 4 | 0 | 0 | 2 | 2 |
 | rgaa-letters-spaced-with-spaces | manual | `tests/fixtures/rgaa-letters-spaced-with-spaces-all-scenarios.html` | 8 | 0 | 0 | 0 | 8 |

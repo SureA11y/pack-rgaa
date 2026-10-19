@@ -835,5 +835,13 @@
   "colorDeclarationsPaired_summary_backgroundWithoutColor": "Este elemento declara un color de fondo ({{background}}) bajo un texto que conserva el negro por defecto.",
   "colorDeclarationsPaired_hint_colorWithoutBackground": "Declare un color de fondo (background o background-color) en este elemento o en un padre, como <body>, para que el texto conserve su contraste sea cual sea el fondo por defecto del usuario (RGAA 10.5.1).",
   "colorDeclarationsPaired_hint_imageWithoutBackground": "Declare un color de fondo (background o background-color) parecido al de la imagen, en este elemento o en un padre, para que el texto siga siendo legible si la imagen no se carga (RGAA 10.5.3).",
-  "colorDeclarationsPaired_hint_backgroundWithoutColor": "Compruebe que se declara un color de texto (color) en este elemento o en un padre: un negro declarado no se distingue del negro por defecto del navegador (RGAA 10.5.2)."
+  "colorDeclarationsPaired_hint_backgroundWithoutColor": "Compruebe que se declara un color de texto (color) en este elemento o en un padre: un negro declarado no se distingue del negro por defecto del navegador (RGAA 10.5.2).",
+  "labelPlacementReview_title": "La etiqueta de cada campo está junto a él, en el lado esperado",
+  "labelPlacementReview_description": "En un navegador, señala los campos de formulario cuya etiqueta visible está lejos de ellos, o no está encima ni antes de ellos (debajo ni después para una casilla de verificación, un botón de opción o un interruptor), para que una persona compruebe que etiqueta y campo están juntos como pide el RGAA.",
+  "labelPlacementReview_summary_cantTell_labelFarFromField": "La etiqueta \"{{label}}\" está a {{distance}} px de este campo.",
+  "labelPlacementReview_summary_cantTell_labelNotAboveOrLeft": "La etiqueta \"{{label}}\" no está justo encima de este campo ni justo antes en la misma línea.",
+  "labelPlacementReview_summary_cantTell_labelNotBelowOrRight": "La etiqueta \"{{label}}\" no está justo debajo de esta casilla de verificación, botón de opción o interruptor ni justo después en la misma línea.",
+  "labelPlacementReview_hint_cantTell_labelFarFromField": "Compruebe que la etiqueta y su campo están lo bastante cerca para que su relación no se preste a confusión (RGAA 11.4.1).",
+  "labelPlacementReview_hint_cantTell_labelNotAboveOrLeft": "Compruebe que la etiqueta está inmediatamente encima o a la izquierda del campo (a la derecha para un idioma que se lee de derecha a izquierda), salvo casos particulares (RGAA 11.4.2).",
+  "labelPlacementReview_hint_cantTell_labelNotBelowOrRight": "Compruebe que la etiqueta está inmediatamente debajo o a la derecha del campo (a la izquierda para un idioma que se lee de derecha a izquierda), salvo casos particulares, como un campo que no se presenta como casilla de verificación o botón de opción (RGAA 11.4.3)."
 }

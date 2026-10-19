@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**109 rules total: 69 automatic (decide deterministically; can return `fail`), 40 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**110 rules total: 69 automatic (decide deterministically; can return `fail`), 41 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -88,7 +88,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-video-captions-track-kind`](#rgaa-video-captions-track-kind) | Video caption tracks use kind="captions" | — | — | high | moderate |
 | [`rgaa-widget-label-in-name`](#rgaa-widget-label-in-name) | The accessible name of a scripted component contains its visible label | — | — | high | serious |
 
-## Manual rules (40), never `fail`
+## Manual rules (41), never `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -113,6 +113,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-image-alt-long`](#rgaa-image-alt-long) | Text alternatives of images are short | — | — | medium | minor |
 | [`rgaa-invalid-field-message`](#rgaa-invalid-field-message) | Fields marked invalid have their error message in their label or a linked passage | — | — | high | moderate |
 | [`rgaa-keyboard-only-event-handlers`](#rgaa-keyboard-only-event-handlers) | Keyboard-only inline event handlers should have a pointer equivalent | — | — | low | moderate |
+| [`rgaa-label-placement-review`](#rgaa-label-placement-review) | Each field's label sits right next to it, on the expected side | — | — | medium | moderate |
 | [`rgaa-legend-relevance-review`](#rgaa-legend-relevance-review) | Legends of groups of form fields are relevant | — | — | medium | moderate |
 | [`rgaa-letters-spaced-with-spaces`](#rgaa-letters-spaced-with-spaces) | Letters of a word are not spaced out with spaces | — | — | medium | minor |
 | [`rgaa-link-context-review`](#rgaa-link-context-review) | Generic links whose only context is outside RGAA's list are reviewed | — | — | medium | minor |
@@ -141,7 +142,7 @@ What a scan runs under each profile (`engineOptions.profile`): the rules its tag
 |---|---|---|---|---|---|---|
 | `rgaa-4.1.2` | `rgaa` | version 4.1.2 | — | — | — | 2.1 |
 
-## Rollups (76)
+## Rollups (77)
 
 Each groups rules into one result, as a WCAG rollup does; the standard's own report sections show them.
 
@@ -170,6 +171,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-11.13` | La finalité d’un champ de saisie peut-elle être déduite pour faciliter le remplissage automatique des champs avec les données de l’utilisateur ? | `rgaa-autocomplete-user-field` |
 | `rgaa-4.1.2-11.2` | Chaque étiquette associée à un champ de formulaire est-elle pertinente (hors cas particuliers) ? | `form-control-label-quality`, `form-control-programmatic-label-quality`, `rgaa-field-label-empty`, `rgaa-field-label-in-name-sources`, `rgaa-title-placeholder-identical` |
 | `rgaa-4.1.2-11.3` | Dans chaque formulaire, chaque étiquette associée à un champ de formulaire ayant la même fonction et répétée plusieurs fois dans une même page ou dans un ensemble de pages est-elle cohérente ? | `rgaa-field-label-consistency-review` |
+| `rgaa-4.1.2-11.4` | Dans chaque formulaire, chaque étiquette de champ et son champ associé sont-ils accolés (hors cas particuliers) ? | `rgaa-label-placement-review` |
 | `rgaa-4.1.2-11.5` | Dans chaque formulaire, les champs de même nature sont-ils regroupés, si nécessaire ? | `rgaa-radio-group-present`, `rgaa-same-name-checkboxes-review` |
 | `rgaa-4.1.2-11.6` | Dans chaque formulaire, chaque regroupement de champs de même nature a-t-il une légende ? | `rgaa-field-group-legend` |
 | `rgaa-4.1.2-11.7` | Dans chaque formulaire, chaque légende associée à un regroupement de champs de même nature est-elle pertinente ? | `rgaa-legend-relevance-review` |
@@ -1040,6 +1042,18 @@ Checks that the for attribute of each &lt;label&gt; matches the id of a form fie
 **Applies to.** Applies to &lt;label&gt; elements carrying a for attribute. A page with none is notApplicable.
 
 **Expectation.** The first element in the label's own tree whose id equals the for value exists and is labelable: &lt;button&gt;, &lt;input&gt; other than type="hidden", &lt;meter&gt;, &lt;output&gt;, &lt;progress&gt;, &lt;select&gt;, &lt;textarea&gt;, or a form-associated custom element (RGAA 11.1.2). A for attribute that matches nothing means the label labels nothing, not even a field nested inside it, since the HTML association falls back to the label's content only when for is absent. A target that is not labelable but has a form-field ARIA role (textbox, combobox, listbox, searchbox, spinbutton, slider, progressbar, checkbox, radio, switch, option: the roles the RGAA glossary "Champ de saisie de formulaire" counts as fields) passes: 11.1.2 asks only that the field has an id equal to the for value. HTML does not let such a label name the field, and that missing name belongs to 11.1.1, not here.
+
+### `rgaa-label-placement-review`
+
+**Each field's label sits right next to it, on the expected side**
+
+manual · no formal WCAG SC mapping · confidence medium · default severity moderate
+
+In a browser, flags form fields whose visible label is far from them, or is not above or before them (below or after them for a check box, radio button or switch), for a person to check that label and field are next to each other as RGAA asks.
+
+**Applies to.** Applies, where the page has a layout (in a browser), to visible form fields (&lt;input&gt; other than hidden and the button types, &lt;select&gt;, &lt;textarea&gt;, and role checkbox, radio, switch, textbox, searchbox, combobox, spinbutton, listbox or slider) with a visible label: a &lt;label&gt; (for or wrapping) or an aria-labelledby passage holding visible text. A name from aria-label, title or a placeholder alone is not a visible label. Native check boxes and radio buttons that are themselves invisible (opacity 0, clipped, tiny: drawn by CSS elsewhere) are left out. Without a layout (jsdom), notApplicable.
+
+**Expectation.** RGAA 11.4.1: « Chaque étiquette de champ et son champ associé sont-ils accolés ? », accolés being « visuellement proches de manière à ce que la relation entre les deux ne puisse pas prêter à confusion ». A label more than 100 px (or 3 of its lines, if more) from its field is asked about (labelFarFromField). A wrapping label is taken as next to the field it holds. RGAA 11.4.2: a label of a field other than a check box, radio button or switch is « visuellement accolée immédiatement au-dessus ou à gauche du champ » (« à droite » for a right-to-left language). One that is neither is asked about (labelNotAboveOrLeft). RGAA 11.4.3: for a check box, a radio button or role checkbox, radio or switch, the label is « immédiatement au-dessous ou à droite du champ » (« à gauche » for a right-to-left language). One that is neither is asked about (labelNotBelowOrRight). The particular cases make 11.4.2 and 11.4.3 not applicable when the label « mélange une portion de texte qui se lit de droite à gauche avec une portion de texte qui se lit de gauche à droite », or when a form « contient des labels de plusieurs langues qui se liraient de droite à gauche et inversement »: those labels are only checked for distance. Fields « utilisés dans un contexte où il pourrait être légitime […] de placer les étiquettes de manière différente » are for a person, which is why the rule only asks.
 
 ### `rgaa-layout-table-no-data-markup`
 

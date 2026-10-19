@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 109,
-    "withFixture": 109,
+    "total": 110,
+    "withFixture": 110,
     "withoutFixture": 0
   },
   "rows": [
@@ -921,6 +921,23 @@
         "FAIL": 4,
         "CANTTELL": 0,
         "OTHER": 1
+      }
+    },
+    {
+      "ruleId": "rgaa-label-placement-review",
+      "title": "Each field's label sits right next to it, on the expected side",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/label-placement-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-label-placement-review-chromium.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-label-placement-review-all-scenarios.html",
+      "totalCases": 5,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 3,
+        "OTHER": 2
       }
     },
     {

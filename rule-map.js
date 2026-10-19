@@ -577,6 +577,15 @@ const RGAA_RULE_TESTS = {
       tests: [],
       note: 'Checks WCAG 2.5.3: for controls with aria-label or aria-labelledby and a visible label, the accessible name contains the visible text. Not mapped to RGAA: 6.1.5 and 11.2.5 check every name source present, the title included, not only the accessible name, and each finding belongs to one test by element type, while this rule would put all four tests on every finding. rgaa-link-label-in-name-sources (6.1.5), rgaa-field-label-in-name-sources (11.2.5), rgaa-form-button-label-in-name-sources (11.9.2, buttons inside a form only) and rgaa-widget-label-in-name (7.1.3) report them instead.'
     },
+    'rgaa-label-placement-review': {
+      tests: ['11.4.1', '11.4.2', '11.4.3'],
+      note: 'Needs a layout, so it only asks in a browser. RGAA 11.4.1 asks whether « chaque étiquette de champ et son champ associé sont-ils accolés », accolés meaning « visuellement proches de manière à ce que la relation entre les deux ne puisse pas prêter à confusion »: a visible label (a <label> or an aria-labelledby passage, not aria-label, title or placeholder) more than 100 px, or 3 lines, from its field is asked about (reason code labelFarFromField). 11.4.2 wants the label « immédiatement au-dessus ou à gauche du champ » (à droite in a right-to-left language) and 11.4.3, for a check box, radio button or role checkbox, radio or switch, « immédiatement au-dessous ou à droite » (à gauche in a right-to-left language): a label on another side is asked about (labelNotAboveOrLeft under 11.4.2, labelNotBelowOrRight under 11.4.3). Following the particular cases, labels mixing both directions, and forms with labels in both directions, are left out of 11.4.2 and 11.4.3. Whether a different placement is « légitime, du point de vue de l’expérience utilisateur » is for a person, so the rule never fails.',
+      reasonCodes: {
+        labelFarFromField: { tests: ['11.4.1'], outcome: 'cantTell' },
+        labelNotAboveOrLeft: { tests: ['11.4.2'], outcome: 'cantTell' },
+        labelNotBelowOrRight: { tests: ['11.4.3'], outcome: 'cantTell' }
+      }
+    },
     'label-title-only': {
       tests: [],
       note: 'Deprecated in 1.10.0 and reports notApplicable on every page: every field it flagged, a control labelled only by its title, form-control-programmatic-label-quality also reports, and that rule carries the tests this one was linked to (11.1.3, 11.2.2).'

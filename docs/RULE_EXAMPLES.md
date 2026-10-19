@@ -1043,6 +1043,28 @@ The `for` value is the id of the field.
 ```
 No element has the id `e-mail`, so the label labels nothing.
 
+## rgaa-label-placement-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<input id="nom" type="text"> <label for="nom">Nom</label>
+```
+In a browser: the label is on the right of a text field, not above it or on its left (RGAA 11.4.2).
+
+**Flagged (cantTell)**
+```html
+<label for="cgu">J’accepte les conditions</label> <input id="cgu" type="checkbox">
+```
+In a browser: the label is on the left of a check box, not below it or on its right (RGAA 11.4.3).
+
+**Not applicable**
+```html
+<label for="mail" style="display:block">Courriel</label><input id="mail" type="email">
+```
+The label sits just above its field. Without a layout (jsdom) the rule is not applicable.
+
 ## rgaa-layout-table-no-data-markup
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*

@@ -835,5 +835,13 @@
   "colorDeclarationsPaired_summary_backgroundWithoutColor": "この要素は既定の黒のままのテキストの下に背景色（{{background}}）を宣言しています。",
   "colorDeclarationsPaired_hint_colorWithoutBackground": "利用者の既定の背景がどうであってもテキストのコントラストが保たれるよう、この要素または <body> などの親に背景色（background または background-color）を宣言してください（RGAA 10.5.1）。",
   "colorDeclarationsPaired_hint_imageWithoutBackground": "画像が読み込まれなくてもテキストが読めるよう、画像に近い背景色（background または background-color）をこの要素または親に宣言してください（RGAA 10.5.3）。",
-  "colorDeclarationsPaired_hint_backgroundWithoutColor": "この要素または親に文字色（color）が宣言されているか確認してください。宣言された黒はブラウザの既定の黒と区別できません（RGAA 10.5.2）。"
+  "colorDeclarationsPaired_hint_backgroundWithoutColor": "この要素または親に文字色（color）が宣言されているか確認してください。宣言された黒はブラウザの既定の黒と区別できません（RGAA 10.5.2）。",
+  "labelPlacementReview_title": "各フィールドのラベルは期待される側にすぐ隣接している",
+  "labelPlacementReview_description": "ブラウザーで、表示されるラベルが離れている、または上にも前にもない（チェックボックス、ラジオボタン、スイッチでは下にも後ろにもない）フォームフィールドを示し、RGAA が求めるとおりラベルとフィールドが隣接しているかを人が確認できるようにします。",
+  "labelPlacementReview_summary_cantTell_labelFarFromField": "ラベル「{{label}}」はこのフィールドから {{distance}} px 離れています。",
+  "labelPlacementReview_summary_cantTell_labelNotAboveOrLeft": "ラベル「{{label}}」はこのフィールドのすぐ上にも、同じ行のすぐ前にもありません。",
+  "labelPlacementReview_summary_cantTell_labelNotBelowOrRight": "ラベル「{{label}}」はこのチェックボックス、ラジオボタン、スイッチのすぐ下にも、同じ行のすぐ後ろにもありません。",
+  "labelPlacementReview_hint_cantTell_labelFarFromField": "ラベルとフィールドが、関係を取り違えないほど近くにあるかを確認してください（RGAA 11.4.1）。",
+  "labelPlacementReview_hint_cantTell_labelNotAboveOrLeft": "特別なケースを除き、ラベルがフィールドのすぐ上または左（右から左に読む言語では右）にあるかを確認してください（RGAA 11.4.2）。",
+  "labelPlacementReview_hint_cantTell_labelNotBelowOrRight": "チェックボックスやラジオボタンとして表示されていないフィールドなどの特別なケースを除き、ラベルがフィールドのすぐ下または右（右から左に読む言語では左）にあるかを確認してください（RGAA 11.4.3）。"
 }
