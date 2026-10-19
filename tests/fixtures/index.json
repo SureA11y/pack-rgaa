@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 110,
-    "withFixture": 110,
+    "total": 112,
+    "withFixture": 112,
     "withoutFixture": 0
   },
   "rows": [
@@ -309,6 +309,23 @@
         "FAIL": 0,
         "CANTTELL": 3,
         "OTHER": 4
+      }
+    },
+    {
+      "ruleId": "rgaa-default-language-review",
+      "title": "The page's default language code names its main language",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/default-language-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-default-language-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-default-language-review-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 2
       }
     },
     {
@@ -938,6 +955,23 @@
         "FAIL": 0,
         "CANTTELL": 3,
         "OTHER": 2
+      }
+    },
+    {
+      "ruleId": "rgaa-language-change-review",
+      "title": "A passage in another language has its language given",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/language-change-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-language-change-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-language-change-review-all-scenarios.html",
+      "totalCases": 5,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 2,
+        "OTHER": 3
       }
     },
     {

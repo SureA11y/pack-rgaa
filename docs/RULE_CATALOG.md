@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**110 rules total: 69 automatic (decide deterministically; can return `fail`), 41 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**112 rules total: 69 automatic (decide deterministically; can return `fail`), 43 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -88,7 +88,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-video-captions-track-kind`](#rgaa-video-captions-track-kind) | Video caption tracks use kind="captions" | — | — | high | moderate |
 | [`rgaa-widget-label-in-name`](#rgaa-widget-label-in-name) | The accessible name of a scripted component contains its visible label | — | — | high | serious |
 
-## Manual rules (41), never `fail`
+## Manual rules (43), never `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -101,6 +101,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-cryptic-content-review`](#rgaa-cryptic-content-review) | Cryptic content has a title or is defined by its context | — | — | high | minor |
 | [`rgaa-current-item-review`](#rgaa-current-item-review) | The active item of a menu is not shown by its look alone | — | — | high | moderate |
 | [`rgaa-data-table-headers-review`](#rgaa-data-table-headers-review) | Tables with no header cells are checked for unmarked headers | — | — | medium | moderate |
+| [`rgaa-default-language-review`](#rgaa-default-language-review) | The page's default language code names its main language | — | — | high | serious |
 | [`rgaa-embedded-player-review`](#rgaa-embedded-player-review) | Media in embedded players has its alternatives and controls | — | — | high | serious |
 | [`rgaa-embedded-refresh-review`](#rgaa-embedded-refresh-review) | Embedded content that may refresh itself lets the user control the refresh | — | — | low | moderate |
 | [`rgaa-fake-list`](#rgaa-fake-list) | Text laid out as a list uses list markup | — | — | low | moderate |
@@ -114,6 +115,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-invalid-field-message`](#rgaa-invalid-field-message) | Fields marked invalid have their error message in their label or a linked passage | — | — | high | moderate |
 | [`rgaa-keyboard-only-event-handlers`](#rgaa-keyboard-only-event-handlers) | Keyboard-only inline event handlers should have a pointer equivalent | — | — | low | moderate |
 | [`rgaa-label-placement-review`](#rgaa-label-placement-review) | Each field's label sits right next to it, on the expected side | — | — | medium | moderate |
+| [`rgaa-language-change-review`](#rgaa-language-change-review) | A passage in another language has its language given | — | — | high | moderate |
 | [`rgaa-legend-relevance-review`](#rgaa-legend-relevance-review) | Legends of groups of form fields are relevant | — | — | medium | moderate |
 | [`rgaa-letters-spaced-with-spaces`](#rgaa-letters-spaced-with-spaces) | Letters of a word are not spaced out with spaces | — | — | medium | minor |
 | [`rgaa-link-context-review`](#rgaa-link-context-review) | Generic links whose only context is outside RGAA's list are reviewed | — | — | medium | minor |
@@ -142,7 +144,7 @@ What a scan runs under each profile (`engineOptions.profile`): the rules its tag
 |---|---|---|---|---|---|---|
 | `rgaa-4.1.2` | `rgaa` | version 4.1.2 | — | — | — | 2.1 |
 
-## Rollups (77)
+## Rollups (78)
 
 Each groups rules into one result, as a WCAG rollup does; the standard's own report sections show them.
 
@@ -216,9 +218,10 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-8.10` | Dans chaque page web, les changements du sens de lecture sont-ils signalés ? | `rgaa-dir-attribute-valid`, `rgaa-text-direction-marked` |
 | `rgaa-4.1.2-8.2` | Pour chaque page web, le code source généré est-il valide selon le type de document spécifié ? | `duplicate-id`, `rgaa-aria-attribute-conformance`, `rgaa-aria-role-conformance`, `rgaa-html-elements-attributes-valid`, `rgaa-html-nesting-valid`, `rgaa-markup-validation-review` |
 | `rgaa-4.1.2-8.3` | Dans chaque page web, la langue par défaut est-elle présente ? | `rgaa-page-language-present` |
-| `rgaa-4.1.2-8.4` | Pour chaque page web ayant une langue par défaut, le code de langue est-il pertinent ? | `html-xml-lang-mismatch`, `rgaa-html-lang-code-valid`, `valid-lang` |
+| `rgaa-4.1.2-8.4` | Pour chaque page web ayant une langue par défaut, le code de langue est-il pertinent ? | `html-xml-lang-mismatch`, `rgaa-default-language-review`, `rgaa-html-lang-code-valid`, `valid-lang` |
 | `rgaa-4.1.2-8.5` | Chaque page web a-t-elle un titre de page ? | `page-title-present` |
 | `rgaa-4.1.2-8.6` | Pour chaque page web ayant un titre de page, ce titre est-il pertinent ? | `page-title-patterns`, `rgaa-page-title-unique` |
+| `rgaa-4.1.2-8.7` | Dans chaque page web, chaque changement de langue est-il indiqué dans le code source (hors cas particuliers) ? | `rgaa-language-change-review` |
 | `rgaa-4.1.2-8.8` | Dans chaque page web, le code de langue de chaque changement de langue est-il valide et pertinent ? | `valid-lang` |
 | `rgaa-4.1.2-8.9` | Dans chaque page web, les balises ne doivent pas être utilisées uniquement à des fins de présentation. Cette règle est-elle respectée ? | `rgaa-markup-for-presentation` |
 | `rgaa-4.1.2-9.1` | Dans chaque page web, l’information est-elle structurée par l’utilisation appropriée de titres ? | `heading-order`, `heading-quality`, `p-as-heading`, `rgaa-heading-content-present`, `rgaa-heading-role-level-present`, `rgaa-headings-absent-review` |
@@ -527,6 +530,23 @@ Flags a table of at least two rows and two columns with no &lt;th&gt; and no col
 **Applies to.** Applies to a &lt;table&gt;, or an element with role="table", that has at least two rows and two columns and no header cell at all: no &lt;th&gt; (without another role) and no cell with role="columnheader" or role="rowheader". Tables with role="presentation" or "none" are left out, and so is a table with no text in its cells. A table that has headers, no spans, and a first row or first column (of two cells or more) whose cells are all bold data cells applies too.
 
 **Expectation.** Each such table is asked about (cantTell). RGAA 5.6.1 and 5.6.2 want each header that applies to a whole column or row marked with &lt;th&gt; or a columnheader or rowheader role. A data table usually has headers in its first row or column, but only a person can tell whether this one does, or whether it is a layout table, which 5.3 and 5.8 cover. In a table with headers, a first row or column of bold data cells (&lt;strong&gt;, &lt;b&gt;, or a font weight of 600 or more) is asked about (BOLD_CELLS_MAY_BE_HEADERS): headers marked up as &lt;td&gt; fail 5.6.1 or 5.6.2.
+
+### `rgaa-default-language-review`
+
+**The page's default language code names its main language**
+
+manual · no formal WCAG SC mapping · confidence high · default severity serious
+
+Flags a page whose lang on &lt;html&gt; is und or mul, or whose text, guessed from its frequent words, is clearly in another language than lang says, for a person to check that the code gives the page's main language.
+
+**Applies to.** Applies to a run over a whole document whose &lt;html&gt; element has a lang (or, failing that, xml:lang) whose language code is und or mul, or is one of the languages the rule can recognise (fr, en, es, pt, it, de, nl). A page with no default language, or an invalid one, is notApplicable here: rgaa-page-language-present (8.3.1) and rgaa-html-lang-code-valid (8.4.1, « valide ») judge it. So is a page in another language, and a run narrowed by contextSelector or engineOptions.fragment.
+
+**Expectation.**
+
+RGAA 8.4.1: « Pour chaque page web ayant une langue par défaut, le code de langue vérifie-t-il ces conditions ? Le code de langue est valide ; Le code de langue est pertinent », and the methodology reads pertinent as « qui indique la langue principale du document ». Two cases are asked about, on &lt;html&gt;:
+
+- undeterminedLang: the code is und (undetermined) or mul (multiple languages). Both are valid ISO 639-2 codes, but neither names the page's main language, which may still be known.
+- langMismatch: the page's own visible text (outside elements that carry their own lang, code, scripts and form controls) holds 50 words or more, and, by the share of frequent function words of each language, is clearly written in another language than the code says (lang="en" on a page of French text). A guess from words is not proof, so a person confirms.
 
 ### `rgaa-dir-attribute-valid`
 
@@ -1054,6 +1074,18 @@ In a browser, flags form fields whose visible label is far from them, or is not 
 **Applies to.** Applies, where the page has a layout (in a browser), to visible form fields (&lt;input&gt; other than hidden and the button types, &lt;select&gt;, &lt;textarea&gt;, and role checkbox, radio, switch, textbox, searchbox, combobox, spinbutton, listbox or slider) with a visible label: a &lt;label&gt; (for or wrapping) or an aria-labelledby passage holding visible text. A name from aria-label, title or a placeholder alone is not a visible label. Native check boxes and radio buttons that are themselves invisible (opacity 0, clipped, tiny: drawn by CSS elsewhere) are left out. Without a layout (jsdom), notApplicable.
 
 **Expectation.** RGAA 11.4.1: « Chaque étiquette de champ et son champ associé sont-ils accolés ? », accolés being « visuellement proches de manière à ce que la relation entre les deux ne puisse pas prêter à confusion ». A label more than 100 px (or 3 of its lines, if more) from its field is asked about (labelFarFromField). A wrapping label is taken as next to the field it holds. RGAA 11.4.2: a label of a field other than a check box, radio button or switch is « visuellement accolée immédiatement au-dessus ou à gauche du champ » (« à droite » for a right-to-left language). One that is neither is asked about (labelNotAboveOrLeft). RGAA 11.4.3: for a check box, a radio button or role checkbox, radio or switch, the label is « immédiatement au-dessous ou à droite du champ » (« à gauche » for a right-to-left language). One that is neither is asked about (labelNotBelowOrRight). The particular cases make 11.4.2 and 11.4.3 not applicable when the label « mélange une portion de texte qui se lit de droite à gauche avec une portion de texte qui se lit de gauche à droite », or when a form « contient des labels de plusieurs langues qui se liraient de droite à gauche et inversement »: those labels are only checked for distance. Fields « utilisés dans un contexte où il pourrait être légitime […] de placer les étiquettes de manière différente » are for a person, which is why the rule only asks.
+
+### `rgaa-language-change-review`
+
+**A passage in another language has its language given**
+
+manual · no formal WCAG SC mapping · confidence high · default severity moderate
+
+Flags a block of 8 words or more whose text, guessed from its frequent words, is clearly in another language than the lang in effect, for a person to check that the change of language is given with lang.
+
+**Applies to.** Applies to visible blocks of text (a paragraph, list item, cell, heading, quotation, label, caption, div…) whose own text, without the blocks inside them and the elements inside them that carry their own lang, holds 8 words or more, and whose language in effect (the nearest lang or xml:lang on the block or a parent) is one the rule can recognise: fr, en, es, pt, it, de, nl. Code, preformatted text, scripts, styles, form controls, buttons and aria-hidden content are left out. A page with no such passage is notApplicable.
+
+**Expectation.** RGAA 8.7.1: « Dans chaque page web, chaque texte écrit dans une langue différente de la langue par défaut vérifie-t-il une de ces conditions (hors cas particuliers) ? L’indication de langue est donnée sur l’élément contenant le texte (attribut lang et/ou xml:lang) ; […] sur un des éléments parents ». A block whose text is clearly in another language, by the share of frequent function words of each language, is asked about (undeclaredLanguageChange), one occurrence per element. The particular cases make proper nouns and foreign common nouns of the dictionary not applicable: words of that kind do not count in the guess, passages under 8 words are not looked at, and a passage whose words other than function words all start with a capital (a name, the title of a work) is skipped. A guess is not proof, so a person confirms.
 
 ### `rgaa-layout-table-no-data-markup`
 

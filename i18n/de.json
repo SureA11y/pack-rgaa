@@ -843,5 +843,15 @@
   "labelPlacementReview_summary_cantTell_labelNotBelowOrRight": "Die Beschriftung „{{label}}“ steht weder direkt unter diesem Kontrollkästchen, Optionsfeld oder Schalter noch direkt dahinter in derselben Zeile.",
   "labelPlacementReview_hint_cantTell_labelFarFromField": "Prüfen Sie, dass Beschriftung und Feld nah genug beieinander sind, damit ihre Beziehung eindeutig ist (RGAA 11.4.1).",
   "labelPlacementReview_hint_cantTell_labelNotAboveOrLeft": "Prüfen Sie, dass die Beschriftung unmittelbar über dem Feld oder links davon steht (rechts bei einer Sprache, die von rechts nach links gelesen wird), außer in Sonderfällen (RGAA 11.4.2).",
-  "labelPlacementReview_hint_cantTell_labelNotBelowOrRight": "Prüfen Sie, dass die Beschriftung unmittelbar unter dem Feld oder rechts davon steht (links bei einer Sprache, die von rechts nach links gelesen wird), außer in Sonderfällen, etwa bei einem Feld, das nicht als Kontrollkästchen oder Optionsfeld dargestellt ist (RGAA 11.4.3)."
+  "labelPlacementReview_hint_cantTell_labelNotBelowOrRight": "Prüfen Sie, dass die Beschriftung unmittelbar unter dem Feld oder rechts davon steht (links bei einer Sprache, die von rechts nach links gelesen wird), außer in Sonderfällen, etwa bei einem Feld, das nicht als Kontrollkästchen oder Optionsfeld dargestellt ist (RGAA 11.4.3).",
+  "defaultLanguageReview_title": "Der Code der Standardsprache nennt die Hauptsprache der Seite",
+  "defaultLanguageReview_description": "Markiert eine Seite, deren lang auf <html> und oder mul ist oder deren Text, nach seinen häufigsten Wörtern, deutlich in einer anderen Sprache als der angegebenen geschrieben ist, damit eine Person prüft, dass der Code die Hauptsprache der Seite angibt.",
+  "defaultLanguageReview_summary_cantTell_undeterminedLang": "Die Standardsprache der Seite ist mit {{attribute}}=\"{{lang}}\" angegeben, das keine Sprache nennt.",
+  "defaultLanguageReview_hint_cantTell_undeterminedLang": "„und“ bedeutet unbestimmt und „mul“ mehrere Sprachen: Geben Sie stattdessen den Code der Hauptsprache der Seite an, zum Beispiel „fr“ (RGAA 8.4.1).",
+  "defaultLanguageReview_summary_cantTell_langMismatch": "Die Standardsprache der Seite ist mit {{attribute}}=\"{{lang}}\" angegeben, aber ihr Text scheint in „{{guessed}}“ geschrieben zu sein.",
+  "defaultLanguageReview_hint_cantTell_langMismatch": "Prüfen Sie, in welcher Sprache die Seite hauptsächlich geschrieben ist, und geben Sie deren Code in lang auf <html> an (RGAA 8.4.1).",
+  "languageChangeReview_title": "Ein Abschnitt in einer anderen Sprache hat eine Sprachangabe",
+  "languageChangeReview_description": "Markiert einen Block von 8 Wörtern oder mehr, dessen Text, nach seinen häufigsten Wörtern, deutlich in einer anderen Sprache als dem geltenden lang geschrieben ist, damit eine Person prüft, dass der Sprachwechsel mit lang angegeben ist.",
+  "languageChangeReview_summary_cantTell": "Dieser Text scheint in „{{guessed}}“ geschrieben zu sein, während hier die Sprache „{{declared}}“ gilt.",
+  "languageChangeReview_hint_cantTell": "Wenn er in einer anderen Sprache ist und kein Eigenname oder Wort aus dem Wörterbuch der Seitensprache ist, geben Sie seine Sprache mit lang auf dem Element oder einem Elternelement an, zum Beispiel lang=\"{{guessed}}\" (RGAA 8.7.1)."
 }

@@ -19,6 +19,12 @@
       "example": "<body style=\"background:#fff\"><p style=\"color:#333\">Programme</p></body>"
     },
     {
+      "ruleId": "rgaa-default-language-review",
+      "label": "Flagged (cantTell)",
+      "engine": "notApplicable",
+      "example": "<html lang=\"en\"> … <p>La médiathèque municipale ouvre ses portes du mardi au samedi…</p>"
+    },
+    {
       "ruleId": "rgaa-doctype-position",
       "label": "Failed (with the `page.source` probe)",
       "engine": "unknown label",

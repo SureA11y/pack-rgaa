@@ -4,13 +4,13 @@ This pack's rules and their scenario pages. Every rule should have a `tests/fixt
 
 ## Summary
 
-Total rules: **110**. With fixture: **110**. Without fixture: **0**.
+Total rules: **112**. With fixture: **112**. Without fixture: **0**.
 
 ## Rules WITHOUT a fixture (0)
 
 None — every rule has a fixture.
 
-## Rules WITH a fixture (110)
+## Rules WITH a fixture (112)
 
 | Rule ID | Type | Fixture | Cases | PASS | FAIL | CANTTELL | OTHER |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -32,6 +32,7 @@ None — every rule has a fixture.
 | rgaa-cryptic-content-review | manual | `tests/fixtures/rgaa-cryptic-content-review-all-scenarios.html` | 2 | 0 | 0 | 1 | 1 |
 | rgaa-current-item-review | manual | `tests/fixtures/rgaa-current-item-review-all-scenarios.html` | 2 | 0 | 0 | 1 | 1 |
 | rgaa-data-table-headers-review | manual | `tests/fixtures/rgaa-data-table-headers-review-all-scenarios.html` | 7 | 0 | 0 | 3 | 4 |
+| rgaa-default-language-review | manual | `tests/fixtures/rgaa-default-language-review-all-scenarios.html` | 3 | 0 | 0 | 1 | 2 |
 | rgaa-dir-attribute-valid | automatic | `tests/fixtures/rgaa-dir-attribute-valid-all-scenarios.html` | 8 | 2 | 4 | 0 | 2 |
 | rgaa-doctype-position | automatic | `tests/fixtures/rgaa-doctype-position-all-scenarios.html` | 1 | 0 | 0 | 1 | 0 |
 | rgaa-doctype-present | automatic | `tests/fixtures/rgaa-doctype-present-all-scenarios.html` | 1 | 0 | 1 | 0 | 0 |
@@ -69,6 +70,7 @@ None — every rule has a fixture.
 | rgaa-keyboard-only-event-handlers | manual | `tests/fixtures/rgaa-keyboard-only-event-handlers-all-scenarios.html` | 10 | 0 | 0 | 4 | 6 |
 | rgaa-label-for-target-valid | automatic | `tests/fixtures/rgaa-label-for-target-valid-all-scenarios.html` | 8 | 3 | 4 | 0 | 1 |
 | rgaa-label-placement-review | manual | `tests/fixtures/rgaa-label-placement-review-all-scenarios.html` | 5 | 0 | 0 | 3 | 2 |
+| rgaa-language-change-review | manual | `tests/fixtures/rgaa-language-change-review-all-scenarios.html` | 5 | 0 | 0 | 2 | 3 |
 | rgaa-layout-table-no-data-markup | automatic | `tests/fixtures/rgaa-layout-table-no-data-markup-all-scenarios.html` | 11 | 4 | 5 | 1 | 1 |
 | rgaa-legend-relevance-review | manual | `tests/fixtures/rgaa-legend-relevance-review-all-scenarios.html` | 4 | 0 | 0 | 2 | 2 |
 | rgaa-letters-spaced-with-spaces | manual | `tests/fixtures/rgaa-letters-spaced-with-spaces-all-scenarios.html` | 8 | 0 | 0 | 0 | 8 |

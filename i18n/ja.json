@@ -843,5 +843,15 @@
   "labelPlacementReview_summary_cantTell_labelNotBelowOrRight": "ラベル「{{label}}」はこのチェックボックス、ラジオボタン、スイッチのすぐ下にも、同じ行のすぐ後ろにもありません。",
   "labelPlacementReview_hint_cantTell_labelFarFromField": "ラベルとフィールドが、関係を取り違えないほど近くにあるかを確認してください（RGAA 11.4.1）。",
   "labelPlacementReview_hint_cantTell_labelNotAboveOrLeft": "特別なケースを除き、ラベルがフィールドのすぐ上または左（右から左に読む言語では右）にあるかを確認してください（RGAA 11.4.2）。",
-  "labelPlacementReview_hint_cantTell_labelNotBelowOrRight": "チェックボックスやラジオボタンとして表示されていないフィールドなどの特別なケースを除き、ラベルがフィールドのすぐ下または右（右から左に読む言語では左）にあるかを確認してください（RGAA 11.4.3）。"
+  "labelPlacementReview_hint_cantTell_labelNotBelowOrRight": "チェックボックスやラジオボタンとして表示されていないフィールドなどの特別なケースを除き、ラベルがフィールドのすぐ下または右（右から左に読む言語では左）にあるかを確認してください（RGAA 11.4.3）。",
+  "defaultLanguageReview_title": "既定の言語コードがページの主な言語を示している",
+  "defaultLanguageReview_description": "<html> の lang が und または mul のページ、または頻出語から見て本文が lang と明らかに別の言語で書かれているページを示し、コードがページの主な言語を示しているかを人が確認できるようにします。",
+  "defaultLanguageReview_summary_cantTell_undeterminedLang": "ページの既定の言語は {{attribute}}=\"{{lang}}\" で指定されていますが、これはどの言語も示していません。",
+  "defaultLanguageReview_hint_cantTell_undeterminedLang": "「und」は未確定、「mul」は複数の言語を意味します。代わりにページの主な言語のコード（例：「fr」）を指定してください（RGAA 8.4.1）。",
+  "defaultLanguageReview_summary_cantTell_langMismatch": "ページの既定の言語は {{attribute}}=\"{{lang}}\" で指定されていますが、本文は「{{guessed}}」で書かれているようです。",
+  "defaultLanguageReview_hint_cantTell_langMismatch": "ページが主にどの言語で書かれているかを確認し、そのコードを <html> の lang に指定してください（RGAA 8.4.1）。",
+  "languageChangeReview_title": "別の言語の文章に言語が指定されている",
+  "languageChangeReview_description": "頻出語から見て、適用中の lang と明らかに別の言語で書かれた 8 語以上のブロックを示し、言語の変更が lang で指定されているかを人が確認できるようにします。",
+  "languageChangeReview_summary_cantTell": "このテキストは「{{guessed}}」で書かれているようですが、ここで適用されている言語は「{{declared}}」です。",
+  "languageChangeReview_hint_cantTell": "別の言語であり、固有名詞やページの言語の辞書にある語でない場合は、要素またはその親に lang で言語を指定してください（例：lang=\"{{guessed}}\"）（RGAA 8.7.1）。"
 }

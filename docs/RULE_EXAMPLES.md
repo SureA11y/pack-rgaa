@@ -370,6 +370,28 @@ No cell is a header. If this is a data table, "Name" and "Age" are column header
 ```
 The table has header cells, so the question does not come up. A table with `role="presentation"` is not asked about either.
 
+## rgaa-default-language-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<html lang="und">
+```
+und (undetermined) and mul (several languages) are valid codes but name no language: a person checks which language the page is mainly in (RGAA 8.4.1).
+
+**Flagged (cantTell)**
+```html
+<html lang="en"> … <p>La médiathèque municipale ouvre ses portes du mardi au samedi…</p>
+```
+The page's text is clearly French, by its frequent words, while lang says English.
+
+**Not applicable**
+```html
+<html lang="fr"> … <p>La médiathèque municipale ouvre ses portes du mardi au samedi…</p>
+```
+The text is in the declared language.
+
 ## rgaa-dir-attribute-valid
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -1064,6 +1086,28 @@ In a browser: the label is on the left of a check box, not below it or on its ri
 <label for="mail" style="display:block">Courriel</label><input id="mail" type="email">
 ```
 The label sits just above its field. Without a layout (jsdom) the rule is not applicable.
+
+## rgaa-language-change-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<html lang="fr"> … <p>This website uses cookies to improve your experience and measure the audience.</p>
+```
+The paragraph is clearly English by its frequent words, with no lang: a person checks it and adds lang="en" (RGAA 8.7.1).
+
+**Not applicable**
+```html
+<html lang="fr"> … <p lang="en">This website uses cookies to improve your experience and measure the audience.</p>
+```
+The change of language is given.
+
+**Not applicable**
+```html
+<html lang="fr"> … <p>Abonnez-vous à notre newsletter pour suivre les actualités de la start-up.</p>
+```
+Foreign words in French text, not a passage in another language.
 
 ## rgaa-layout-table-no-data-markup
 

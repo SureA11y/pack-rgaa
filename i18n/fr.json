@@ -843,5 +843,15 @@
   "labelPlacementReview_summary_cantTell_labelNotBelowOrRight": "L’étiquette « {{label}} » n’est ni juste au-dessous de cette case à cocher, de ce bouton radio ou de cet interrupteur ni juste après sur la même ligne.",
   "labelPlacementReview_hint_cantTell_labelFarFromField": "Vérifiez que l’étiquette et son champ sont assez proches pour que leur relation ne prête pas à confusion (RGAA 11.4.1).",
   "labelPlacementReview_hint_cantTell_labelNotAboveOrLeft": "Vérifiez que l’étiquette est accolée immédiatement au-dessus ou à gauche du champ (à droite pour une langue qui se lit de droite à gauche), hors cas particuliers (RGAA 11.4.2).",
-  "labelPlacementReview_hint_cantTell_labelNotBelowOrRight": "Vérifiez que l’étiquette est accolée immédiatement au-dessous ou à droite du champ (à gauche pour une langue qui se lit de droite à gauche), hors cas particuliers, comme un champ qui n’est pas présenté sous forme de case à cocher ou de bouton radio (RGAA 11.4.3)."
+  "labelPlacementReview_hint_cantTell_labelNotBelowOrRight": "Vérifiez que l’étiquette est accolée immédiatement au-dessous ou à droite du champ (à gauche pour une langue qui se lit de droite à gauche), hors cas particuliers, comme un champ qui n’est pas présenté sous forme de case à cocher ou de bouton radio (RGAA 11.4.3).",
+  "defaultLanguageReview_title": "Le code de la langue par défaut indique la langue principale de la page",
+  "defaultLanguageReview_description": "Signale une page dont l’attribut lang de <html> vaut und ou mul, ou dont le texte, d’après ses mots les plus fréquents, est clairement dans une autre langue que celle indiquée, pour qu’une personne vérifie que le code donne la langue principale de la page.",
+  "defaultLanguageReview_summary_cantTell_undeterminedLang": "La langue par défaut de la page est indiquée par {{attribute}}=\"{{lang}}\", qui ne désigne aucune langue.",
+  "defaultLanguageReview_hint_cantTell_undeterminedLang": "« und » signifie indéterminée et « mul » plusieurs langues : indiquez plutôt le code de la langue principale de la page, par exemple « fr » (RGAA 8.4.1).",
+  "defaultLanguageReview_summary_cantTell_langMismatch": "La langue par défaut de la page est indiquée par {{attribute}}=\"{{lang}}\", mais son texte semble écrit en « {{guessed}} ».",
+  "defaultLanguageReview_hint_cantTell_langMismatch": "Vérifiez dans quelle langue la page est principalement écrite, et indiquez son code dans l’attribut lang de <html> (RGAA 8.4.1).",
+  "languageChangeReview_title": "Un passage dans une autre langue a son indication de langue",
+  "languageChangeReview_description": "Signale un bloc de 8 mots ou plus dont le texte, d’après ses mots les plus fréquents, est clairement dans une autre langue que celle en vigueur, pour qu’une personne vérifie que le changement de langue est indiqué avec lang.",
+  "languageChangeReview_summary_cantTell": "Ce texte semble écrit en « {{guessed}} », alors que la langue en vigueur ici est « {{declared}} ».",
+  "languageChangeReview_hint_cantTell": "S’il est dans une autre langue, et n’est pas un nom propre ni un mot présent dans le dictionnaire de la langue de la page, indiquez sa langue avec l’attribut lang sur l’élément ou un parent, par exemple lang=\"{{guessed}}\" (RGAA 8.7.1)."
 }

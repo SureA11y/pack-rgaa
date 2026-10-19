@@ -843,5 +843,15 @@
   "labelPlacementReview_summary_cantTell_labelNotBelowOrRight": "La etiqueta \"{{label}}\" no está justo debajo de esta casilla de verificación, botón de opción o interruptor ni justo después en la misma línea.",
   "labelPlacementReview_hint_cantTell_labelFarFromField": "Compruebe que la etiqueta y su campo están lo bastante cerca para que su relación no se preste a confusión (RGAA 11.4.1).",
   "labelPlacementReview_hint_cantTell_labelNotAboveOrLeft": "Compruebe que la etiqueta está inmediatamente encima o a la izquierda del campo (a la derecha para un idioma que se lee de derecha a izquierda), salvo casos particulares (RGAA 11.4.2).",
-  "labelPlacementReview_hint_cantTell_labelNotBelowOrRight": "Compruebe que la etiqueta está inmediatamente debajo o a la derecha del campo (a la izquierda para un idioma que se lee de derecha a izquierda), salvo casos particulares, como un campo que no se presenta como casilla de verificación o botón de opción (RGAA 11.4.3)."
+  "labelPlacementReview_hint_cantTell_labelNotBelowOrRight": "Compruebe que la etiqueta está inmediatamente debajo o a la derecha del campo (a la izquierda para un idioma que se lee de derecha a izquierda), salvo casos particulares, como un campo que no se presenta como casilla de verificación o botón de opción (RGAA 11.4.3).",
+  "defaultLanguageReview_title": "El código del idioma predeterminado indica el idioma principal de la página",
+  "defaultLanguageReview_description": "Señala una página cuyo lang en <html> es und o mul, o cuyo texto, según sus palabras más frecuentes, está claramente en otro idioma que el indicado por lang, para que una persona compruebe que el código da el idioma principal de la página.",
+  "defaultLanguageReview_summary_cantTell_undeterminedLang": "El idioma predeterminado de la página se indica con {{attribute}}=\"{{lang}}\", que no designa ningún idioma.",
+  "defaultLanguageReview_hint_cantTell_undeterminedLang": "\"und\" significa indeterminado y \"mul\" varios idiomas: indique en su lugar el código del idioma principal de la página, por ejemplo \"fr\" (RGAA 8.4.1).",
+  "defaultLanguageReview_summary_cantTell_langMismatch": "El idioma predeterminado de la página se indica con {{attribute}}=\"{{lang}}\", pero su texto parece escrito en \"{{guessed}}\".",
+  "defaultLanguageReview_hint_cantTell_langMismatch": "Compruebe en qué idioma está escrita principalmente la página e indique su código en el lang de <html> (RGAA 8.4.1).",
+  "languageChangeReview_title": "Un pasaje en otro idioma tiene indicado su idioma",
+  "languageChangeReview_description": "Señala un bloque de 8 palabras o más cuyo texto, según sus palabras más frecuentes, está claramente en otro idioma que el lang vigente, para que una persona compruebe que el cambio de idioma se indica con lang.",
+  "languageChangeReview_summary_cantTell": "Este texto parece escrito en \"{{guessed}}\", mientras que el idioma vigente aquí es \"{{declared}}\".",
+  "languageChangeReview_hint_cantTell": "Si está en otro idioma, y no es un nombre propio ni una palabra del diccionario del idioma de la página, indique su idioma con lang en el elemento o en un elemento padre, por ejemplo lang=\"{{guessed}}\" (RGAA 8.7.1)."
 }

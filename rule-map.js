@@ -277,6 +277,10 @@ const RGAA_RULE_TESTS = {
       tests: ['10.9.1'],
       note: 'Asks about each link inside <nav>, role="navigation" or role="menubar" marked as the current one by a class (active, current, selected, is-active…, on the link or its list item) with no aria-current and no text that says so: 10.9.1 forbids information given « uniquement par la forme, taille ou position », and the glossary « Indication donnée par la forme, la taille ou la position » gives the visual marker of the active page in a navigation menu as its first example. The class may change nothing on screen, so a person checks.'
     },
+    'rgaa-default-language-review': {
+      tests: ['8.4.1'],
+      note: 'Asks, on <html>, about a default language whose code is und or mul (undeterminedLang), valid ISO 639-2 codes that name no language, and about a page whose own visible text (50 words or more, outside elements with their own lang, code and form controls) is, by the share of frequent function words of French, English, Spanish, Portuguese, Italian, German and Dutch, clearly in another language than the code says (langMismatch). 8.4.1 asks that the code be « pertinent », which the methodology reads as « qui indique la langue principale du document »; a guess from words is for a person to confirm. A missing or invalid default language is notApplicable here: rgaa-page-language-present and rgaa-html-lang-code-valid judge it.'
+    },
     'rgaa-dir-attribute-valid': {
       tests: ['8.10.2'],
       note: 'Fails a dir attribute whose value is not rtl or ltr, which is the first condition of 8.10.2 ("La valeur de l’attribut dir est conforme (rtl ou ltr)"). dir="auto", valid HTML, fails too on text that reads in the reverse direction of its context, since RGAA names only the two values; on other text it is not applicable, as 8.10.2 step 1 covers only the passages of 8.10.1. A value with surrounding spaces fails: browsers ignore it. The second condition, relevance, fails a dir that changes the direction on text whose letters all read in the old one (dir="rtl" on French text): such a value cannot be « pertinente ». Other questions of relevance need a human.'
@@ -629,6 +633,10 @@ const RGAA_RULE_TESTS = {
     'landmark-unique': {
       tests: [],
       note: "Checks that landmarks sharing a role have distinct accessible names. No RGAA test requires landmarks to have names or unique names; 12.6.1 only requires a landmark role matching the zone's nature."
+    },
+    'rgaa-language-change-review': {
+      tests: ['8.7.1'],
+      note: 'Asks about each visible block of text (paragraph, list item, cell, heading, quotation, label, div…) whose own text, without inner blocks and elements with their own lang, holds 8 words or more and is, by the share of frequent function words of French, English, Spanish, Portuguese, Italian, German and Dutch, clearly in another language than the nearest lang or xml:lang on it or a parent. 8.7.1 asks that « chaque texte écrit dans une langue différente de la langue par défaut » carry lang on it or a parent, « hors cas particuliers »: proper nouns and foreign words in the dictionary are not applicable, so names and nouns do not count in the guess, passages under 8 words are not looked at, and a passage whose other words all start with a capital (a name, a title) is skipped. Code, preformatted text and form controls are left out. A page whose whole text is in another language than <html lang> is left to rgaa-default-language-review (8.4.1).'
     },
     'rgaa-layout-table-no-data-markup': {
       tests: ['5.8.1'],

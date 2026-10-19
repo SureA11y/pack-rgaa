@@ -843,5 +843,15 @@
   "labelPlacementReview_summary_cantTell_labelNotBelowOrRight": "The label \"{{label}}\" is neither just below this check box, radio button or switch nor just after it on the same line.",
   "labelPlacementReview_hint_cantTell_labelFarFromField": "Check that the label and its field are close enough for their relation to be clear (RGAA 11.4.1).",
   "labelPlacementReview_hint_cantTell_labelNotAboveOrLeft": "Check that the label sits immediately above the field or on its left (on its right for a right-to-left language), unless a particular case applies (RGAA 11.4.2).",
-  "labelPlacementReview_hint_cantTell_labelNotBelowOrRight": "Check that the label sits immediately below the field or on its right (on its left for a right-to-left language), unless a particular case applies, such as a field not shown as a check box or radio button (RGAA 11.4.3)."
+  "labelPlacementReview_hint_cantTell_labelNotBelowOrRight": "Check that the label sits immediately below the field or on its right (on its left for a right-to-left language), unless a particular case applies, such as a field not shown as a check box or radio button (RGAA 11.4.3).",
+  "defaultLanguageReview_title": "The page's default language code names its main language",
+  "defaultLanguageReview_description": "Flags a page whose lang on <html> is und or mul, or whose text, guessed from its frequent words, is clearly in another language than lang says, for a person to check that the code gives the page's main language.",
+  "defaultLanguageReview_summary_cantTell_undeterminedLang": "The page's default language is given as {{attribute}}=\"{{lang}}\", which names no language.",
+  "defaultLanguageReview_hint_cantTell_undeterminedLang": "\"und\" means undetermined and \"mul\" several languages: give the code of the page's main language instead, for example \"fr\" (RGAA 8.4.1).",
+  "defaultLanguageReview_summary_cantTell_langMismatch": "The page's default language is given as {{attribute}}=\"{{lang}}\", but its text looks written in \"{{guessed}}\".",
+  "defaultLanguageReview_hint_cantTell_langMismatch": "Check which language the page is mainly written in, and give its code in lang on <html> (RGAA 8.4.1).",
+  "languageChangeReview_title": "A passage in another language has its language given",
+  "languageChangeReview_description": "Flags a block of 8 words or more whose text, guessed from its frequent words, is clearly in another language than the lang in effect, for a person to check that the change of language is given with lang.",
+  "languageChangeReview_summary_cantTell": "This text looks written in \"{{guessed}}\", while the language in effect here is \"{{declared}}\".",
+  "languageChangeReview_hint_cantTell": "If it is in another language, and is not a proper noun or a word the dictionary of the page's language has, give its language with lang on the element or a parent, for example lang=\"{{guessed}}\" (RGAA 8.7.1)."
 }
