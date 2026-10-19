@@ -651,7 +651,7 @@
   "scriptButtonNamePresent_summary_cantTell_imageButtonNoAlt": "Diese Bildschaltfläche hat weder alt noch aria-label, aria-labelledby oder title; der Browser benennt sie mit einem allgemeinen „Senden“.",
   "scriptButtonNamePresent_hint_cantTell_imageButtonNoAlt": "Geben Sie der Bildschaltfläche ein alt, das ihre Aktion beschreibt, und prüfen Sie dann, ob der Name zutreffend ist (RGAA 7.1.3).",
   "movingContentReview_title": "Bewegte oder blinkende Inhalte lassen sich steuern",
-  "movingContentReview_description": "Markiert Inhalte, die sich von selbst länger als 5 Sekunden bewegen oder blinken (marquee, automatisch startendes Video ohne Steuerelemente, endlose SVG- oder CSS-Animationen), damit eine Person prüft, dass man sie anhalten, ausblenden oder ohne Bewegung lesen kann.",
+  "movingContentReview_description": "Markiert Inhalte, die sich von selbst länger als 5 Sekunden bewegen oder blinken (marquee, automatisch startendes Video ohne Steuerelemente, endlose SVG-Animationen, CSS- und Skript-Animationen), damit eine Person prüft, dass man sie anhalten, ausblenden oder ohne Bewegung lesen kann.",
   "movingContentReview_hint_cantTell": "Prüfen Sie, dass Nutzende die Bewegung anhalten und wieder starten, den Inhalt ausblenden oder alle seine Informationen ohne Bewegung sehen können, sofern sie nicht höchstens 5 Sekunden dauert (RGAA 13.8).",
   "movingContentReview_summary_marquee": "Dieses <marquee> lässt seinen Inhalt von selbst laufen.",
   "movingContentReview_summary_autoplayVideo": "Dieses Video startet von selbst und hat kein controls-Attribut.",

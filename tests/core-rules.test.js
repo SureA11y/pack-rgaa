@@ -84,6 +84,13 @@ const CASES = [
     'hidden audio that plays on its own is still sound'
   ],
   [
+    'click-handler-keyboard-operable',
+    page('<main><span role="button" onclick="ouvrir()">Gérer mes cookies</span></main>'),
+    'fail',
+    ['7.3.1'],
+    'RGAA 7.3.1 asks that an element with a script handler be reachable by keyboard'
+  ],
+  [
     'canvas-text-alternative-quality',
     page('<canvas id="canvas1">Sales 2024: 10k</canvas>'),
     'cantTell',

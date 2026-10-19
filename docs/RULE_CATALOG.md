@@ -187,7 +187,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-6.2` | Dans chaque page web, chaque lien a-t-il un intitulé ? | `rgaa-link-content-label-present` |
 | `rgaa-4.1.2-7.1` | Chaque script est-il, si nécessaire, compatible avec les technologies d’assistance ? | `aria-role-name-present`, `dialog-name-present`, `menuitem-name-present`, `rgaa-script-button-name-present`, `rgaa-scripted-components-review`, `rgaa-widget-label-in-name`, `tab-name-present`, `treeitem-name-present` |
 | `rgaa-4.1.2-7.2` | Pour chaque script ayant une alternative, cette alternative est-elle pertinente ? | `rgaa-noscript-alternative-review` |
-| `rgaa-4.1.2-7.3` | Chaque script est-il contrôlable par le clavier et par tout dispositif de pointage (hors cas particuliers) ? | `mouse-only-event-handlers`, `rgaa-focus-not-removed`, `rgaa-keyboard-only-event-handlers` |
+| `rgaa-4.1.2-7.3` | Chaque script est-il contrôlable par le clavier et par tout dispositif de pointage (hors cas particuliers) ? | `click-handler-keyboard-operable`, `mouse-only-event-handlers`, `rgaa-focus-not-removed`, `rgaa-keyboard-only-event-handlers` |
 | `rgaa-4.1.2-7.4` | Pour chaque script qui initie un changement de contexte, l’utilisateur est-il averti ou en a-t-il le contrôle ? | `rgaa-context-change-review` |
 | `rgaa-4.1.2-7.5` | Dans chaque page web, les messages de statut sont-ils correctement restitués par les technologies d’assistance ? | `rgaa-status-message-review` |
 | `rgaa-4.1.2-8.1` | Chaque page web est-elle définie par un type de document ? | `rgaa-doctype-position`, `rgaa-doctype-present`, `rgaa-doctype-valid` |
@@ -1167,9 +1167,9 @@ Flags each open dialog marked aria-modal="true" while elements outside it can st
 
 manual · no formal WCAG SC mapping · confidence high · default severity moderate
 
-Flags content that moves or blinks by itself for more than 5 seconds (marquee, autoplaying video without controls, endless SVG or CSS animations), for a person to check that it can be stopped, hidden or read without the movement.
+Flags content that moves or blinks by itself for more than 5 seconds (marquee, autoplaying video without controls, endless SVG animations, CSS and script animations), for a person to check that it can be stopped, hidden or read without the movement.
 
-**Applies to.** Applies to content that moves or blinks by itself for more than 5 seconds, as the page shows it: a &lt;marquee&gt;; a &lt;video&gt; that plays by itself (autoplay) with no controls attribute; an SVG animation (&lt;animate&gt;, &lt;animateTransform&gt;, &lt;animateMotion&gt;, &lt;set&gt;) repeated indefinitely; and, where the page has a layout, a running CSS animation on visible content that repeats indefinitely or lasts more than 5 seconds. A page with none is notApplicable.
+**Applies to.** Applies to content that moves or blinks by itself for more than 5 seconds, as the page shows it: a &lt;marquee&gt;; a &lt;video&gt; that plays by itself (autoplay) with no controls attribute; an SVG animation (&lt;animate&gt;, &lt;animateTransform&gt;, &lt;animateMotion&gt;, &lt;set&gt;) repeated indefinitely; and, where the page has a layout, an animation running on visible content when the scan starts (CSS animation, CSS transition or one a script started) that repeats indefinitely or lasts more than 5 seconds. A page with none is notApplicable.
 
 **Expectation.** RGAA 13.8.1 (moving content) and 13.8.2 (blinking content): content triggered automatically lasts 5 seconds or less, or the user can stop and restart it, show and hide it, or see all of its information without the movement. Each case is asked about (cantTell): a script or a button elsewhere in the page may give that control, which only a person can try. A CSS animation of opacity, visibility or colour only is reported as blinking (blinkingAnimation), any other as moving (movingAnimation).
 

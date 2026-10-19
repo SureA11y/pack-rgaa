@@ -68,6 +68,16 @@ test(`${RULE_ID} in Chromium: CSS animations`, { skip }, async (t) => {
     await outcome(BLINK + '.b{animation:blink 1s infinite}', '<p class="b">Nouveau</p>'),
     ['cantTell', ['blinkingAnimation']]
   );
+  // A finite animation over 5 seconds is read as it was when the scan
+  // started, though the engine settles it while rules run.
+  assert.deepEqual(await outcome(SLIDE + '.b{animation:slide 4s 3}', '<p class="b">Promo</p>'), [
+    'cantTell',
+    ['movingAnimation']
+  ]);
+  assert.deepEqual(await outcome(BLINK + '.b{animation:blink 1s 8}', '<p class="b">Nouveau</p>'), [
+    'cantTell',
+    ['blinkingAnimation']
+  ]);
   // 5 seconds or less is allowed by 13.8.
   assert.deepEqual(await outcome(SLIDE + '.b{animation:slide 1s 3}', '<p class="b">Promo</p>'), [
     'notApplicable',

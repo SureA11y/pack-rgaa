@@ -184,6 +184,10 @@ const RGAA_RULE_TESTS = {
       tests: ['1.3.7', '1.3.8'],
       note: "Asks a human to judge a canvas's existing name or fallback content. That is 1.3.7 step 2 (the alternative is relevant) and, for fallback content between <canvas> and </canvas>, 1.3.8 step 2 (that content is correctly rendered by assistive technologies), which only a test with them can tell."
     },
+    'click-handler-keyboard-operable': {
+      tests: ['7.3.1'],
+      note: 'Fails an element with an inline onclick, not a native control, given role="button", "link", "checkbox" or "switch", that neither it nor anything inside it can bring keyboard focus to, and asks when it can take focus but has no key handler, takes focus only with tabindex="-1", or cannot take focus but may get keys from a script. 7.3.1 asks that each element with a script event handler be « accessible par le clavier et tout dispositif de pointage », and a control nobody can focus is not. Its second condition, another element in the page that is and gives the same action, is not seen by the rule: such a duplicate is rare, and a person checks for it when reviewing the failure.'
+    },
     'combobox-name-present': {
       tests: [],
       note: 'Checks that role=combobox has a name from aria-label, aria-labelledby, title or an associated label. It accepts a wrapping <label> and a placeholder on a text-like <input>, which 11.1.1 does not list, so a placeholder-only field passes here while it fails 11.1.1. Not mapped to 11.1.1: rgaa-field-label-listed-source reports 11.1.1 for every form field, from the sources 11.1.1 lists only. Not mapped to 7.1.1: it passes when an accessible alternative exists.'
@@ -675,6 +679,10 @@ const RGAA_RULE_TESTS = {
       tests: ['7.3.1'],
       note: 'Flags elements with inline pointer-only handlers (onmouseover, onmousedown, ondblclick, and so on) and no keyboard or focus handler that can run, and asks whether they work by keyboard. A focus handler counts only on an element that can take focus, and a key handler only when the element or a descendant can. That is 7.3.1 steps 2-3 (an element with a JS event handler must be keyboard-accessible, or have an equivalent). It only sees inline attributes.'
     },
+    'moving-content-pausable': {
+      tests: [],
+      note: 'Asks about content an animation moves by itself for more than five seconds or without end (WCAG 2.2.2). Not mapped to 13.8.1 and 13.8.2: rgaa-moving-content-review asks about the same animations, read the same way (helpers.animationsAtScanStart), and tells moving content (13.8.1) from blinking content (13.8.2) by the properties it animates, which this rule does not; mapping both would ask twice about each element.'
+    },
     'nested-interactive-controls-absent': {
       tests: [],
       note: 'Flags interactive controls that contain another operable control (for example a button inside a[href]). Not linked to 8.2.1: the rule fails nesting that uses only ARIA roles, which the W3C validator only warns about (since Nu 26.8.6), and it misses disabled or tabindex descendants the validator rejects; rgaa-html-nesting-valid reports the HTML nesting errors under 8.2.1. Not mapped to 7.1.1: native nested controls are not scripted components.'
@@ -709,7 +717,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-moving-content-review': {
       tests: ['13.8.1', '13.8.2'],
-      note: 'Asks about content that moves or blinks by itself for more than 5 seconds: a <marquee>, a <video> with autoplay and no controls, an SVG animation repeated indefinitely, and, where the page has a layout, an endless CSS animation (blinking when it animates only opacity, visibility or colours). 13.8.1 and 13.8.2 accept it when the user can stop and restart it, hide it, or see all its information without the movement, which a script may give and only a person can try. Finite CSS animations longer than 5 seconds are not found (see CORE_ISSUES T13-05), nor animated images.'
+      note: 'Asks about content that moves or blinks by itself for more than 5 seconds: a <marquee>, a <video> with autoplay and no controls, an SVG animation repeated indefinitely, and, where the page has a layout, an animation running when the scan starts (CSS animation, CSS transition or one a script started) that never ends or lasts more than 5 seconds, read from helpers.animationsAtScanStart since the engine settles finite animations while rules run (blinking when it animates only opacity, visibility or colours). 13.8.1 and 13.8.2 accept it when the user can stop and restart it, hide it, or see all its information without the movement, which a script may give and only a person can try. Animated images are not found.'
     },
     'rgaa-office-document-link': {
       tests: ['13.3.1'],

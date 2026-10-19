@@ -651,7 +651,7 @@
   "scriptButtonNamePresent_summary_cantTell_imageButtonNoAlt": "Este botón de imagen no tiene alt, aria-label, aria-labelledby ni title; el navegador lo nombra con un \"Enviar\" genérico.",
   "scriptButtonNamePresent_hint_cantTell_imageButtonNoAlt": "Dé al botón de imagen un alt que describa su acción y compruebe después que el nombre es pertinente (RGAA 7.1.3).",
   "movingContentReview_title": "El contenido en movimiento o parpadeante se puede controlar",
-  "movingContentReview_description": "Señala el contenido que se mueve o parpadea por sí solo durante más de 5 segundos (marquee, vídeo de reproducción automática sin controles, animaciones SVG o CSS sin fin), para que una persona compruebe que se puede detener, ocultar o leer sin el movimiento.",
+  "movingContentReview_description": "Señala el contenido que se mueve o parpadea por sí solo durante más de 5 segundos (marquee, vídeo de reproducción automática sin controles, animaciones SVG sin fin, animaciones CSS y de script), para que una persona compruebe que se puede detener, ocultar o leer sin el movimiento.",
   "movingContentReview_hint_cantTell": "Compruebe que el usuario puede detener y reanudar el movimiento, ocultar el contenido o ver toda su información sin el movimiento, salvo que dure 5 segundos o menos (RGAA 13.8).",
   "movingContentReview_summary_marquee": "Este <marquee> desplaza su contenido por sí solo.",
   "movingContentReview_summary_autoplayVideo": "Este vídeo se reproduce por sí solo y no tiene atributo controls.",

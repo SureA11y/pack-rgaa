@@ -12,8 +12,9 @@
  *   seconds, as the page shows it: a <marquee>; a <video> that plays by
  *   itself (autoplay) with no controls attribute; an SVG animation
  *   (<animate>, <animateTransform>, <animateMotion>, <set>) repeated
- *   indefinitely; and, where the page has a layout, a running CSS animation
- *   on visible content that repeats indefinitely or lasts more than 5
+ *   indefinitely; and, where the page has a layout, an animation running
+ *   on visible content when the scan starts (CSS animation, CSS transition
+ *   or one a script started) that repeats indefinitely or lasts more than 5
  *   seconds. A page with none is notApplicable.
  * @expectation
  *   RGAA 13.8.1 (moving content) and 13.8.2 (blinking content): content
@@ -29,9 +30,13 @@
  * - A <video> with the controls attribute can be paused, and is left out.
  * - Animated images (GIF, APNG, WebP) and carousels driven by a script
  *   are not found: the markup does not show that they move.
- * - A finite CSS animation longer than 5 seconds is not found: the engine
- *   moves finite animations to their end while it scans, and the page no
- *   longer lists them. Endless ones are found.
+ * - The engine moves finite animations to their end while it scans, so
+ *   they are read as they were when the scan started
+ *   (helpers.animationsAtScanStart, core 1.14.0). With an older core, only
+ *   endless ones are found.
+ * - A CSS animation's keyframes are read from its live animation or from
+ *   the page's @keyframes rule; a script's animation, whose keyframes are
+ *   not known, is reported as moving.
  * - One occurrence per element.
  * - Opt-in (tag `rgaa`).
  */
@@ -41,7 +46,7 @@ const id = 'rgaa-moving-content-review';
 const meta = {
   title: 'Moving or blinking content can be controlled',
   description:
-    'Flags content that moves or blinks by itself for more than 5 seconds (marquee, autoplaying video without controls, endless SVG or CSS animations), for a person to check that it can be stopped, hidden or read without the movement.',
+    'Flags content that moves or blinks by itself for more than 5 seconds (marquee, autoplaying video without controls, endless SVG animations, CSS and script animations), for a person to check that it can be stopped, hidden or read without the movement.',
   i18n: {
     titleKey: 'movingContentReview_title',
     descriptionKey: 'movingContentReview_description'
@@ -137,15 +142,10 @@ function runInPage(ctx) {
     report(svg, 'svgAnimation');
   }
 
-  // CSS animations, where the page has a layout to run them.
-  let animations = [];
-  try {
-    if (typeof dom.get(document, 'getAnimations') === 'function') {
-      animations = dom.getAnimations(document) || [];
-    }
-  } catch {
-    animations = [];
-  }
+  // Animations, where the page has a layout to run them. The engine moves
+  // finite ones to their end while rules run, so they are read as they
+  // were when the scan started (helpers.animationsAtScanStart); without that
+  // helper, only those still listed by getAnimations() are seen.
   const BLINK_PROPS = new Set([
     'opacity',
     'visibility',
@@ -157,26 +157,92 @@ function runInPage(ctx) {
     'fill',
     'stroke'
   ]);
-  for (const a of animations) {
+  const META_KEYS = ['offset', 'easing', 'composite', 'computedOffset'];
+  const propsOfFrames = (frames) => {
+    const props = new Set();
+    for (const f of frames || []) {
+      for (const k of Object.keys(f)) if (!META_KEYS.includes(k)) props.add(k);
+    }
+    return props;
+  };
+  // The properties a named CSS animation changes: from its live animation
+  // when one is still listed, else from the page's @keyframes rule.
+  function keyframeProps(target, name) {
     try {
-      if (a.playState !== 'running' || !a.effect) continue;
-      const timing = a.effect.getComputedTiming ? a.effect.getComputedTiming() : {};
-      const iterations = timing.iterations;
-      const total = iterations === Infinity ? Infinity : Number(timing.activeDuration || 0) || 0;
-      if (total <= 5000) continue;
-      const target = a.effect.target;
-      if (!target || dom.nodeType(target) !== 1 || !visible(target)) continue;
-      const frames = a.effect.getKeyframes ? a.effect.getKeyframes() : [];
-      const props = new Set();
-      for (const f of frames) {
-        for (const k of Object.keys(f)) {
-          if (!['offset', 'easing', 'composite', 'computedOffset'].includes(k)) props.add(k);
+      for (const a of dom.get(target, 'getAnimations') ? dom.getAnimations(target) || [] : []) {
+        if (a.animationName === name && a.effect && a.effect.getKeyframes) {
+          return propsOfFrames(a.effect.getKeyframes());
         }
       }
-      if (!props.size) continue;
-      const blinking = Array.from(props).every((p) => BLINK_PROPS.has(p));
-      report(target, blinking ? 'blinkingAnimation' : 'movingAnimation');
     } catch {}
+    const props = new Set();
+    const walk = (rules) => {
+      for (const r of Array.from(rules || [])) {
+        if (r.type === 7 && r.name === name) {
+          for (const f of Array.from(r.cssRules || [])) {
+            for (let i = 0; i < f.style.length; i += 1) props.add(f.style[i]);
+          }
+        } else if (r.cssRules) walk(r.cssRules);
+      }
+    };
+    try {
+      for (const sheet of Array.from(dom.get(document, 'styleSheets') || [])) {
+        walk(helpers.cssRulesOf ? helpers.cssRulesOf(sheet) : sheet.cssRules);
+      }
+    } catch {}
+    return props;
+  }
+  const isBlinking = (props) =>
+    props.size > 0 && Array.from(props).every((p) => BLINK_PROPS.has(p));
+
+  let started = null;
+  try {
+    if (typeof helpers.animationsAtScanStart === 'function') {
+      started = helpers.animationsAtScanStart();
+    }
+  } catch {
+    started = null;
+  }
+  if (Array.isArray(started)) {
+    for (const a of started) {
+      try {
+        // endTime: from the animation's start, its delay and every
+        // iteration; null when it never ends.
+        if (a.endTime != null && a.endTime <= 5000) continue;
+        const target = a.target;
+        if (!target || dom.nodeType(target) !== 1 || !visible(target)) continue;
+        const props =
+          a.kind === 'css-transition'
+            ? new Set([String(a.name || '')].filter(Boolean))
+            : a.kind === 'css-animation'
+              ? keyframeProps(target, a.name)
+              : new Set();
+        report(target, isBlinking(props) ? 'blinkingAnimation' : 'movingAnimation');
+      } catch {}
+    }
+  } else {
+    let animations = [];
+    try {
+      if (typeof dom.get(document, 'getAnimations') === 'function') {
+        animations = dom.getAnimations(document) || [];
+      }
+    } catch {
+      animations = [];
+    }
+    for (const a of animations) {
+      try {
+        if (a.playState !== 'running' || !a.effect) continue;
+        const timing = a.effect.getComputedTiming ? a.effect.getComputedTiming() : {};
+        const iterations = timing.iterations;
+        const total = iterations === Infinity ? Infinity : Number(timing.activeDuration || 0) || 0;
+        if (total <= 5000) continue;
+        const target = a.effect.target;
+        if (!target || dom.nodeType(target) !== 1 || !visible(target)) continue;
+        const props = propsOfFrames(a.effect.getKeyframes ? a.effect.getKeyframes() : []);
+        if (!props.size) continue;
+        report(target, isBlinking(props) ? 'blinkingAnimation' : 'movingAnimation');
+      } catch {}
+    }
   }
 
   if (!occurrences.length) {
