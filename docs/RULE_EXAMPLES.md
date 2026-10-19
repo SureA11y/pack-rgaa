@@ -1563,6 +1563,34 @@ The centring is left to CSS.
 ```
 `<center>` is on RGAA 10.1.1's list of presentational elements.
 
+## rgaa-quotation-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<p>« La culture ne s’hérite pas, elle se conquiert, et chaque génération doit la reconquérir. »</p>
+```
+A person checks whether the paragraph is a quotation, to be marked up with <blockquote> (RGAA 9.4.2).
+
+**Flagged (cantTell)**
+```html
+<p>Le maire a rappelé que « la médiathèque restera ouverte tout l’été, y compris le samedi matin » lors du conseil.</p>
+```
+A person checks whether the passage is a quotation, to be marked up with <q> (RGAA 9.4.1).
+
+**Not applicable**
+```html
+<p>Exposition « Les couleurs du port » jusqu’au 30 juin.</p>
+```
+A title of a few words in quotation marks is not asked about.
+
+**Not applicable**
+```html
+<blockquote><p>« La culture ne s’hérite pas, elle se conquiert. »</p></blockquote>
+```
+The quotation is already marked up.
+
 ## rgaa-radio-group-present
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*

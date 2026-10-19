@@ -4,13 +4,13 @@ This pack's rules and their scenario pages. Every rule should have a `tests/fixt
 
 ## Summary
 
-Total rules: **102**. With fixture: **102**. Without fixture: **0**.
+Total rules: **103**. With fixture: **103**. Without fixture: **0**.
 
 ## Rules WITHOUT a fixture (0)
 
 None — every rule has a fixture.
 
-## Rules WITH a fixture (102)
+## Rules WITH a fixture (103)
 
 | Rule ID | Type | Fixture | Cases | PASS | FAIL | CANTTELL | OTHER |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -93,6 +93,7 @@ None — every rule has a fixture.
 | rgaa-page-zones-reachable | automatic | `tests/fixtures/rgaa-page-zones-reachable-all-scenarios.html` | 6 | 2 | 0 | 4 | 0 |
 | rgaa-presentational-attributes-absent | automatic | `tests/fixtures/rgaa-presentational-attributes-absent-all-scenarios.html` | 11 | 0 | 8 | 0 | 3 |
 | rgaa-presentational-elements-absent | automatic | `tests/fixtures/rgaa-presentational-elements-absent-all-scenarios.html` | 9 | 0 | 7 | 0 | 2 |
+| rgaa-quotation-review | manual | `tests/fixtures/rgaa-quotation-review-all-scenarios.html` | 4 | 0 | 0 | 2 | 2 |
 | rgaa-radio-group-present | manual | `tests/fixtures/rgaa-radio-group-present-all-scenarios.html` | 6 | 0 | 0 | 0 | 6 |
 | rgaa-required-field-indication | automatic | `tests/fixtures/rgaa-required-field-indication-all-scenarios.html` | 5 | 1 | 2 | 1 | 1 |
 | rgaa-role-img-aria-name | automatic | `tests/fixtures/rgaa-role-img-aria-name-all-scenarios.html` | 9 | 2 | 3 | 1 | 3 |

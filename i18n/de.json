@@ -796,5 +796,11 @@
   "embeddedPlayerReview_summary_cantTell_embeddedPlayer": "Dieser {{service}}-Player zeigt ein Medium.",
   "embeddedPlayerReview_summary_cantTell_embeddedPlayerAutoplay": "Dieser {{service}}-Player startet die Wiedergabe von selbst.",
   "embeddedPlayerReview_hint_cantTell_embeddedPlayer": "Prüfen Sie, dass das Medium das nötige Transkript, Untertitel und Audiodeskription hat, durch den Text daneben gekennzeichnet ist und sich per Tastatur steuern lässt (RGAA 4.1, 4.3, 4.5, 4.7, 4.11, 4.13).",
-  "embeddedPlayerReview_hint_cantTell_embeddedPlayerAutoplay": "Prüfen Sie, dass sein Ton nach höchstens 3 Sekunden endet oder angehalten oder leiser gestellt werden kann (RGAA 4.10), und dass das Medium das nötige Transkript, Untertitel und Audiodeskription hat, durch den Text daneben gekennzeichnet ist und sich per Tastatur steuern lässt (RGAA 4.1, 4.3, 4.5, 4.7, 4.11, 4.13)."
+  "embeddedPlayerReview_hint_cantTell_embeddedPlayerAutoplay": "Prüfen Sie, dass sein Ton nach höchstens 3 Sekunden endet oder angehalten oder leiser gestellt werden kann (RGAA 4.10), und dass das Medium das nötige Transkript, Untertitel und Audiodeskription hat, durch den Text daneben gekennzeichnet ist und sich per Tastatur steuern lässt (RGAA 4.1, 4.3, 4.5, 4.7, 4.11, 4.13).",
+  "quotationReview_title": "Zitate verwenden <q> oder <blockquote>",
+  "quotationReview_description": "Markiert Absätze und Passagen von 8 Wörtern oder mehr in Anführungszeichen außerhalb von <q> und <blockquote>, damit eine Person prüft, ob es Zitate sind, und sie in diesem Fall mit <q> oder <blockquote> auszeichnet.",
+  "quotationReview_summary_cantTell_quotedBlock": "Dieser Block steht in Anführungszeichen („{{sample}}“); prüfen Sie, ob es ein Zitat ist.",
+  "quotationReview_summary_cantTell_quotedPassage": "Dieser Text enthält eine Passage in Anführungszeichen („{{sample}}“); prüfen Sie, ob es ein Zitat ist.",
+  "quotationReview_hint_cantTell_quotedBlock": "Wenn er eine Person oder einen Text zitiert, zeichnen Sie ihn mit einem <blockquote>-Element aus (RGAA 9.4.2).",
+  "quotationReview_hint_cantTell_quotedPassage": "Wenn sie eine Person oder einen Text zitiert, zeichnen Sie sie mit einem <q>-Element aus (RGAA 9.4.1)."
 }

@@ -796,5 +796,11 @@
   "embeddedPlayerReview_summary_cantTell_embeddedPlayer": "この {{service}} プレーヤーはメディアを表示しています。",
   "embeddedPlayerReview_summary_cantTell_embeddedPlayerAutoplay": "この {{service}} プレーヤーは自動的に再生を始めます。",
   "embeddedPlayerReview_hint_cantTell_embeddedPlayer": "メディアに必要な書き起こし、字幕、音声解説があるか、隣接するテキストで識別できるか、キーボードで操作できるかを確認してください（RGAA 4.1、4.3、4.5、4.7、4.11、4.13）。",
-  "embeddedPlayerReview_hint_cantTell_embeddedPlayerAutoplay": "音声が 3 秒以内に止まるか、停止や音量調整ができるか（RGAA 4.10）、またメディアに必要な書き起こし、字幕、音声解説があるか、隣接するテキストで識別できるか、キーボードで操作できるかを確認してください（RGAA 4.1、4.3、4.5、4.7、4.11、4.13）。"
+  "embeddedPlayerReview_hint_cantTell_embeddedPlayerAutoplay": "音声が 3 秒以内に止まるか、停止や音量調整ができるか（RGAA 4.10）、またメディアに必要な書き起こし、字幕、音声解説があるか、隣接するテキストで識別できるか、キーボードで操作できるかを確認してください（RGAA 4.1、4.3、4.5、4.7、4.11、4.13）。",
+  "quotationReview_title": "引用には <q> または <blockquote> を使用している",
+  "quotationReview_description": "<q> と <blockquote> の外にある、引用符で囲まれた 8 語以上の段落や一節を示し、それが引用かどうかを人が確認し、引用であれば <q> または <blockquote> でマークアップできるようにします。",
+  "quotationReview_summary_cantTell_quotedBlock": "このブロックは引用符で囲まれています（「{{sample}}」）。引用かどうかを確認してください。",
+  "quotationReview_summary_cantTell_quotedPassage": "このテキストには引用符で囲まれた一節があります（「{{sample}}」）。引用かどうかを確認してください。",
+  "quotationReview_hint_cantTell_quotedBlock": "人物や文章を引用している場合は、<blockquote> 要素でマークアップしてください（RGAA 9.4.2）。",
+  "quotationReview_hint_cantTell_quotedPassage": "人物や文章を引用している場合は、<q> 要素でマークアップしてください（RGAA 9.4.1）。"
 }

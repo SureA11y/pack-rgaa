@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 102,
-    "withFixture": 102,
+    "total": 103,
+    "withFixture": 103,
     "withoutFixture": 0
   },
   "rows": [
@@ -1345,6 +1345,23 @@
         "PASS": 0,
         "FAIL": 7,
         "CANTTELL": 0,
+        "OTHER": 2
+      }
+    },
+    {
+      "ruleId": "rgaa-quotation-review",
+      "title": "Quotations use <q> or <blockquote>",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/quotation-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-quotation-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-quotation-review-all-scenarios.html",
+      "totalCases": 4,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 2,
         "OTHER": 2
       }
     },

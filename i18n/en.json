@@ -796,5 +796,11 @@
   "embeddedPlayerReview_summary_cantTell_embeddedPlayer": "This {{service}} player shows a media.",
   "embeddedPlayerReview_summary_cantTell_embeddedPlayerAutoplay": "This {{service}} player starts playing by itself.",
   "embeddedPlayerReview_hint_cantTell_embeddedPlayer": "Check that the media has the transcript, captions and audio description it needs, is identified by the text next to it, and can be controlled by keyboard (RGAA 4.1, 4.3, 4.5, 4.7, 4.11, 4.13).",
-  "embeddedPlayerReview_hint_cantTell_embeddedPlayerAutoplay": "Check that its sound stops within 3 seconds or can be stopped or turned down (RGAA 4.10), and that the media has the transcript, captions and audio description it needs, is identified by the text next to it, and can be controlled by keyboard (RGAA 4.1, 4.3, 4.5, 4.7, 4.11, 4.13)."
+  "embeddedPlayerReview_hint_cantTell_embeddedPlayerAutoplay": "Check that its sound stops within 3 seconds or can be stopped or turned down (RGAA 4.10), and that the media has the transcript, captions and audio description it needs, is identified by the text next to it, and can be controlled by keyboard (RGAA 4.1, 4.3, 4.5, 4.7, 4.11, 4.13).",
+  "quotationReview_title": "Quotations use <q> or <blockquote>",
+  "quotationReview_description": "Flags paragraphs and passages of 8 words or more in quotation marks outside <q> and <blockquote>, for a person to check whether they are quotations and, if so, mark them up with <q> or <blockquote>.",
+  "quotationReview_summary_cantTell_quotedBlock": "This block is in quotation marks (\"{{sample}}\"); check whether it is a quotation.",
+  "quotationReview_summary_cantTell_quotedPassage": "This text has a passage in quotation marks (\"{{sample}}\"); check whether it is a quotation.",
+  "quotationReview_hint_cantTell_quotedBlock": "If it quotes someone or a text, mark it up with a <blockquote> element (RGAA 9.4.2).",
+  "quotationReview_hint_cantTell_quotedPassage": "If it quotes someone or a text, mark it up with a <q> element (RGAA 9.4.1)."
 }

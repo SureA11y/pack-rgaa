@@ -835,6 +835,10 @@ const RGAA_RULE_TESTS = {
       tests: [],
       note: 'Fails an element with explicit role="progressbar" that has no author-supplied name and, on a labelable <progress> or <meter>, no associated label. It accepts a wrapping <label>, which 11.1.1 does not list. Not mapped to 11.1.1: rgaa-field-label-listed-source reports 11.1.1 for every form field, from the sources 11.1.1 lists only. Not mapped to 7.1.1: it passes when an accessible alternative exists, and a progressbar is not necessarily script-driven.'
     },
+    'rgaa-quotation-review': {
+      tests: ['9.4.1', '9.4.2'],
+      note: 'Asks about visible text that looks like an unmarked quotation, outside <q>, <blockquote>, <cite>, links, headings, code and form controls: a paragraph or other block whose whole text is in quotation marks (« … », “…”, "…", „…“), as a possible « bloc de citation » that 9.4.2 asks to use « une balise <blockquote> » (reason code quotedBlock), and a passage of running text in « … » or “…”, as a possible « citation courte » that 9.4.1 asks to use « une balise <q> » (reason code quotedPassage), each of 8 words or more. Whether the text quotes someone is for a person; the map links every finding to both tests and the message names the one it concerns. French uses « » for titles, terms and names too, so shorter passages are not asked about, and a quotation without quotation marks is not found.'
+    },
     'rgaa-radio-group-present': {
       tests: ['11.5.1'],
       note: 'Asks about two or more radio buttons with the same name, in the same form, that are not all inside one <fieldset>, role="group" or role="radiogroup" (an outer one holding the whole set counts), the three ways 11.5.1 accepts. 11.5.1 applies "si nécessaire", so a person decides. Custom role="radio" widgets are not checked.'

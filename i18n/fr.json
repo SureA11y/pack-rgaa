@@ -796,5 +796,11 @@
   "embeddedPlayerReview_summary_cantTell_embeddedPlayer": "Ce lecteur {{service}} affiche un média.",
   "embeddedPlayerReview_summary_cantTell_embeddedPlayerAutoplay": "Ce lecteur {{service}} démarre la lecture automatiquement.",
   "embeddedPlayerReview_hint_cantTell_embeddedPlayer": "Vérifiez que le média a, si nécessaire, une transcription, des sous-titres et une audiodescription, que le texte adjacent permet de l’identifier et qu’il est contrôlable au clavier (RGAA 4.1, 4.3, 4.5, 4.7, 4.11, 4.13).",
-  "embeddedPlayerReview_hint_cantTell_embeddedPlayerAutoplay": "Vérifiez que son son s’arrête en 3 secondes au plus ou peut être arrêté ou baissé (RGAA 4.10), et que le média a, si nécessaire, une transcription, des sous-titres et une audiodescription, que le texte adjacent permet de l’identifier et qu’il est contrôlable au clavier (RGAA 4.1, 4.3, 4.5, 4.7, 4.11, 4.13)."
+  "embeddedPlayerReview_hint_cantTell_embeddedPlayerAutoplay": "Vérifiez que son son s’arrête en 3 secondes au plus ou peut être arrêté ou baissé (RGAA 4.10), et que le média a, si nécessaire, une transcription, des sous-titres et une audiodescription, que le texte adjacent permet de l’identifier et qu’il est contrôlable au clavier (RGAA 4.1, 4.3, 4.5, 4.7, 4.11, 4.13).",
+  "quotationReview_title": "Les citations utilisent <q> ou <blockquote>",
+  "quotationReview_description": "Signale les paragraphes et passages de 8 mots ou plus entre guillemets hors de <q> et <blockquote>, pour qu’une personne vérifie s’il s’agit de citations et, si oui, les structure avec <q> ou <blockquote>.",
+  "quotationReview_summary_cantTell_quotedBlock": "Ce bloc est entre guillemets (« {{sample}} ») ; vérifiez s’il s’agit d’une citation.",
+  "quotationReview_summary_cantTell_quotedPassage": "Ce texte contient un passage entre guillemets (« {{sample}} ») ; vérifiez s’il s’agit d’une citation.",
+  "quotationReview_hint_cantTell_quotedBlock": "S’il cite une personne ou un texte, structurez-le avec un élément <blockquote> (RGAA 9.4.2).",
+  "quotationReview_hint_cantTell_quotedPassage": "S’il cite une personne ou un texte, structurez-le avec un élément <q> (RGAA 9.4.1)."
 }

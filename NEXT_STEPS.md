@@ -102,7 +102,7 @@ other engines do. Update the state column as each is built.
 | 5 | T25-17, theme 4 | Ask about each visible embedded player (YouTube, Vimeo, Dailymotion, PeerTube, SoundCloud) under theme 4, and under 4.10 when it plays by itself (`autoplay=1`). | done (`rgaa-embedded-player-review`) |
 | 6 | T89-11, 8.4.1 | Ask when the page's text, by stopwords, is not in the language `<html lang>` names, and when it is `und` or `mul`. | to do |
 | 7 | T89-12, 8.7.1 | Ask about passages of 8 words or more whose language, by stopwords, clearly differs from their `lang`. | to do |
-| 8 | T89-13, 9.4 | Ask about paragraphs wholly in quotation marks outside `<q>` and `<blockquote>`. | to do |
+| 8 | T89-13, 9.4 | Ask about paragraphs wholly in quotation marks outside `<q>` and `<blockquote>`. | done (`rgaa-quotation-review`) |
 | 9 | T10-06, 10.6.1 | Core's `link-in-text-block` should read hover and focus styles: listed in CORE_ISSUES.md; nothing in the pack. | done (listed) |
 | 10 | T10-07, 10.5 | Fail 10.5.1 (an author text colour with no background colour on it or any ancestor) and 10.5.3 (a background image with none); ask about 10.5.2. No other engine fails these (one asks about 10.5.3), but the tests' text is literal. | to do |
 | 11 | T11-14, 11.5.1 | Ask about three or more checkboxes sharing a name, and role="radio" sets, outside a fieldset or group. | to do |

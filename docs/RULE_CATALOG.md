@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**102 rules total: 68 automatic (decide deterministically; can return `fail`), 34 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**103 rules total: 68 automatic (decide deterministically; can return `fail`), 35 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -87,7 +87,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-video-captions-track-kind`](#rgaa-video-captions-track-kind) | Video caption tracks use kind="captions" | — | — | high | moderate |
 | [`rgaa-widget-label-in-name`](#rgaa-widget-label-in-name) | The accessible name of a scripted component contains its visible label | — | — | high | serious |
 
-## Manual rules (34), never `fail`
+## Manual rules (35), never `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -116,6 +116,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-moving-content-review`](#rgaa-moving-content-review) | Moving or blinking content can be controlled | — | — | high | moderate |
 | [`rgaa-noscript-alternative-review`](#rgaa-noscript-alternative-review) | A &lt;noscript&gt; alternative gives similar content and features | — | — | high | moderate |
 | [`rgaa-office-document-link`](#rgaa-office-document-link) | Downloadable office documents are accessible or have an accessible version | — | — | high | moderate |
+| [`rgaa-quotation-review`](#rgaa-quotation-review) | Quotations use &lt;q&gt; or &lt;blockquote&gt; | — | — | high | minor |
 | [`rgaa-radio-group-present`](#rgaa-radio-group-present) | Radio buttons sharing a name are grouped | — | — | medium | moderate |
 | [`rgaa-script-redirect-review`](#rgaa-script-redirect-review) | A timed redirection done by a script can be controlled | — | — | high | moderate |
 | [`rgaa-scripted-components-review`](#rgaa-scripted-components-review) | Scripted components are compatible with assistive technologies | — | — | medium | moderate |
@@ -134,7 +135,7 @@ What a scan runs under each profile (`engineOptions.profile`): the rules its tag
 |---|---|---|---|---|---|---|
 | `rgaa-4.1.2` | `rgaa` | version 4.1.2 | — | — | — | 2.1 |
 
-## Rollups (70)
+## Rollups (71)
 
 Each groups rules into one result, as a WCAG rollup does; the standard's own report sections show them.
 
@@ -210,6 +211,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-9.1` | Dans chaque page web, l’information est-elle structurée par l’utilisation appropriée de titres ? | `heading-order`, `heading-quality`, `p-as-heading`, `rgaa-heading-content-present`, `rgaa-heading-role-level-present`, `rgaa-headings-absent-review` |
 | `rgaa-4.1.2-9.2` | Dans chaque page web, la structure du document est-elle cohérente (hors cas particuliers) ? | `rgaa-main-element-structure` |
 | `rgaa-4.1.2-9.3` | Dans chaque page web, chaque liste est-elle correctement structurée ? | `definition-list-children-valid`, `dlitem-parent-valid`, `list-children-valid`, `listitem-parent-valid`, `rgaa-aria-list-item-roles`, `rgaa-fake-list` |
+| `rgaa-4.1.2-9.4` | Dans chaque page web, chaque citation est-elle correctement indiquée ? | `rgaa-quotation-review` |
 
 ## Rule reference
 
@@ -1392,6 +1394,18 @@ Checks that the page contains none of the presentational elements RGAA lists, su
 **Applies to.** Applies to any scan scope; whether it contains one of the elements RGAA 10.1.1 lists is always an answerable question.
 
 **Expectation.** None of &lt;basefont&gt;, &lt;big&gt;, &lt;blink&gt;, &lt;center&gt;, &lt;font&gt;, &lt;marquee&gt;, &lt;s&gt;, &lt;strike&gt; or &lt;tt&gt; is present, and &lt;u&gt; is not present either unless the document has the HTML5 doctype, which gave &lt;u&gt; a meaning of its own. That is RGAA 10.1.1's list as written: it includes &lt;s&gt;, which HTML5 keeps.
+
+### `rgaa-quotation-review`
+
+**Quotations use &lt;q&gt; or &lt;blockquote&gt;**
+
+manual · no formal WCAG SC mapping · confidence high · default severity minor
+
+Flags paragraphs and passages of 8 words or more in quotation marks outside &lt;q&gt; and &lt;blockquote&gt;, for a person to check whether they are quotations and, if so, mark them up with &lt;q&gt; or &lt;blockquote&gt;.
+
+**Applies to.** Applies to visible text that looks like a quotation not marked up as one: a paragraph or other block whose whole text is in quotation marks (« … », “…”, "…", „…“), or a passage of running text in « … » or “…”, of 8 words or more and outside &lt;q&gt;, &lt;blockquote&gt; and &lt;cite&gt;. French uses « » for titles, terms and names too, so shorter passages are left out, as are link text, headings, code, scripts, styles and form controls. A page with none is notApplicable.
+
+**Expectation.** RGAA 9.4: « Dans chaque page web, chaque citation est-elle correctement indiquée ? ». 9.4.1: « chaque citation courte utilise-t-elle une balise &lt;q&gt; ? »; 9.4.2: « chaque bloc de citation utilise-t-il une balise &lt;blockquote&gt; ? ». A block in quotation marks is asked about as a possible block quotation (quotedBlock, 9.4.2), a passage in running text as a possible short quotation (quotedPassage, 9.4.1), one occurrence per element: whether the text quotes someone is for a person.
 
 ### `rgaa-radio-group-present`
 

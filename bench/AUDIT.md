@@ -93,7 +93,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T89-10 | 8.4.1, 8.8.1 | WM | A default language on `<body>` is judged under 8.8 instead of 8.4. Now filed under 8.4.1, not 8.8.1: core's `DEFAULT_LANG_INVALID`, by reason code. | done |
 | T89-11 | 8.4.1 | MISS | A wrong default language passes; `und`, `mul` pass (Q7). | open |
 | T89-12 | 8.7.1 | MISS | No rule: changes of language (Q6). | open |
-| T89-13 | 9.4 | MISS | No rule: quotations (Q12). | open |
+| T89-13 | 9.4 | MISS | No rule: quotations (Q12). Now asked about by `rgaa-quotation-review` (paragraphs and passages of 8 words or more in quotation marks outside <q> and <blockquote>), as decided. | done |
 | T89-14 | 8.2.1 | MISS | Frequent validator errors (`<button><div>`, `type=bouton`, roles outside their container…) only ask. Now failed: flow content in a phrasing-only element (`rgaa-html-nesting-valid`, flowInPhrasing) and an unknown type value (`rgaa-html-elements-attributes-valid`, typeValue). Still asked: ARIA roles outside their container, which is not a validator error in every case. | partial |
 | T89-15 | 9.1.3 | WO | `p-as-heading` asks about numbers and link-only paragraphs (C5). Core main (1.14.0) skips screen-reader-only text and a control's own label; the owner chose to drop text that is only a number from 9.1 (`HEADING_LIKE_NUMBER`, `reasonCodes` with `tests: []`) and keep asking about link-only text (`HEADING_LIKE_LINK`), a common unmarked card title. | done |
 | T89-16 | 8.4, 8.8, 8.10, 9.1 | WO | Criteria with a « pertinent » condition pass on validity alone. | open |
