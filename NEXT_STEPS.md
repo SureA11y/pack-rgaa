@@ -87,15 +87,37 @@ failure (T25-12), and RGAA rollups that ask when some of a criterion's
 tests have no rule (T12-08: core only does it for a standard that restates
 WCAG one for one, which RGAA does not).
 
-### 3. Waiting on the owner's decision
+### 3. The owner's decisions, and their state
 
-Each is marked Q in AUDIT.md: T1-10 (CAPTCHAs), T25-17 (embedded players
-and `autoplay=1`), T89-11 (a wrong default language, `und`, `mul`), T89-12
-(changes of language), T89-13 (quotations), T10-06 (links at 3:1), T10-07
-(text colour with no background colour), T11-14 (same-name checkbox sets,
-`role=radio` sets), T11-15 (label placement), T11-17 (smaller form
-questions), T12-13 (two ways to navigate). Ask the owner, with what RGAA
-says and what other engines do, before building any of them.
+Decided on 2026-10-19. The owner answered 1 to 4 and delegated 5 to 14: follow
+the recommendation where RGAA supports it and it holds up against what
+other engines do. Update the state column as each is built.
+
+| # | Item | Decision | State |
+|---|---|---|---|
+| 1 | T89-15, 9.1.3 | Drop `p-as-heading`'s number-only text (`HEADING_LIKE_NUMBER`, `tests: []`); keep asking about link-only text. | done (`f7620ed`) |
+| 2 | T13-05, 13.8 | Leave core's `moving-content-pausable` unmapped; `rgaa-moving-content-review` asks once per element, moving or blinking. | done (`81c0651`) |
+| 3 | T67-03, 7.3.1 | Keep `click-handler-keyboard-operable`'s failures as failures. | done (`81c0651`) |
+| 4 | T1-10, 1.4 and 1.5 | New manual rule: ask about each detected CAPTCHA image or widget, under 1.4 (relevance of its alternative) and 1.5 (a non-graphic CAPTCHA or another way in). | to do |
+| 5 | T25-17, theme 4 | Ask about each visible embedded player (YouTube, Vimeo, Dailymotion, PeerTube, SoundCloud) under theme 4, and under 4.10 when it plays by itself (`autoplay=1`). | to do |
+| 6 | T89-11, 8.4.1 | Ask when the page's text, by stopwords, is not in the language `<html lang>` names, and when it is `und` or `mul`. | to do |
+| 7 | T89-12, 8.7.1 | Ask about passages of 8 words or more whose language, by stopwords, clearly differs from their `lang`. | to do |
+| 8 | T89-13, 9.4 | Ask about paragraphs wholly in quotation marks outside `<q>` and `<blockquote>`. | to do |
+| 9 | T10-06, 10.6.1 | Core's `link-in-text-block` should read hover and focus styles: listed in CORE_ISSUES.md; nothing in the pack. | done (listed) |
+| 10 | T10-07, 10.5 | Fail 10.5.1 (an author text colour with no background colour on it or any ancestor) and 10.5.3 (a background image with none); ask about 10.5.2. No other engine fails these (one asks about 10.5.3), but the tests' text is literal. | to do |
+| 11 | T11-14, 11.5.1 | Ask about three or more checkboxes sharing a name, and role="radio" sets, outside a fieldset or group. | to do |
+| 12 | T11-15, 11.4 | Ask, in a browser, when a label is not right above or left of its field (below or right for a checkbox or radio). | to do |
+| 13 | T11-17 | Ask under 11.3 (fields with the same autocomplete token and different labels), 11.7 (each legend, quoted) and 11.11 (a format constraint with no example); 11.12 left open. | to do |
+| 14 | T12-13, 12.1 | Ask when a page shows fewer than two of a navigation menu, a site map link and a search form. | to do |
+
+Waiting on core PR SureA11y/core#266 (open): `partial: true` on a
+requirement, for T12-08, and `findings: [{ when, requirements, outcome }]`
+on a rule-map row, to file contrast failures by `typography.isLargeText`
+and `typography.isBold` under their one 3.2 test (T25-12). Once it is
+merged, the pack uses both (its composites are its own: carry the same
+fields `ruleMappedStandard` would).
+
+Still for the owner: T11-17's 11.12, and the reword of `dab2b17` below.
 
 ### 4. Needs browser measurement or crawler work
 
