@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**98 rules total: 67 automatic (decide deterministically; can return `fail`), 31 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**99 rules total: 68 automatic (decide deterministically; can return `fail`), 31 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -14,7 +14,7 @@ Under **What a finding reports**, a rule lists the fields its findings carry in 
 
 See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_SCHEMA.md) for what `type`/`confidence`/`severity` mean on a scan result, and [`WCAG_CONFORMANCE.md`](https://github.com/SureA11y/core/blob/main/docs/WCAG_CONFORMANCE.md) for how these roll up to an SC-level conformance claim.
 
-## Automatic rules (67), can return `fail`
+## Automatic rules (68), can return `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -54,6 +54,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-link-content-label-present`](#rgaa-link-content-label-present) | Links have a label in their content | — | — | high | serious |
 | [`rgaa-link-label-in-name-sources`](#rgaa-link-label-in-name-sources) | Every name source of a link contains its visible label | — | — | high | serious |
 | [`rgaa-link-state-colors-review`](#rgaa-link-state-colors-review) | Link states shown by color alone contrast 3:1 with the surrounding text | — | — | medium | moderate |
+| [`rgaa-link-title-content-name`](#rgaa-link-title-content-name) | A link's title contains the name its content gives it | — | — | high | serious |
 | [`rgaa-listbox-option-groups-absent`](#rgaa-listbox-option-groups-absent) | ARIA listboxes do not group options | — | — | high | moderate |
 | [`rgaa-main-element-structure`](#rgaa-main-element-structure) | Main content uses one visible &lt;main&gt; element | — | — | high | moderate |
 | [`rgaa-markup-for-presentation`](#rgaa-markup-for-presentation) | Elements are not used only for presentation | — | — | high | moderate |
@@ -180,7 +181,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-5.6` | Pour chaque tableau de données, chaque en-tête de colonne et chaque en-tête de ligne sont-ils correctement déclarés ? | `rgaa-data-table-headers-review` |
 | `rgaa-4.1.2-5.7` | Pour chaque tableau de données, la technique appropriée permettant d’associer chaque cellule avec ses en-têtes est-elle utilisée (hors cas particuliers) ? | `rgaa-th-association-present`, `rgaa-th-scope-row-col`, `table-headers-attr-valid` |
 | `rgaa-4.1.2-5.8` | Chaque tableau de mise en forme ne doit pas utiliser d’éléments propres aux tableaux de données. Cette règle est-elle respectée ? | `rgaa-layout-table-no-data-markup` |
-| `rgaa-4.1.2-6.1` | Chaque lien est-il explicite (hors cas particuliers) ? | `identical-links-same-purpose`, `link-name-quality`, `rgaa-link-context-review`, `rgaa-link-label-in-name-sources` |
+| `rgaa-4.1.2-6.1` | Chaque lien est-il explicite (hors cas particuliers) ? | `identical-links-same-purpose`, `link-name-quality`, `rgaa-link-context-review`, `rgaa-link-label-in-name-sources`, `rgaa-link-title-content-name` |
 | `rgaa-4.1.2-6.2` | Dans chaque page web, chaque lien a-t-il un intitulé ? | `rgaa-link-content-label-present` |
 | `rgaa-4.1.2-7.1` | Chaque script est-il, si nécessaire, compatible avec les technologies d’assistance ? | `aria-role-name-present`, `dialog-name-present`, `menuitem-name-present`, `rgaa-script-button-name-present`, `rgaa-scripted-components-review`, `rgaa-widget-label-in-name`, `tab-name-present`, `treeitem-name-present` |
 | `rgaa-4.1.2-7.2` | Pour chaque script ayant une alternative, cette alternative est-elle pertinente ? | `rgaa-noscript-alternative-review` |
@@ -1022,6 +1023,24 @@ Checks that a link in a run of text, shown only by color, keeps a contrast of 3:
 **Expectation.** RGAA 10.6.1 step 3: the 3:1 contrast between the link color and the surrounding text must be checked « pour les différents états du lien s'ils sont présentés au moyen d'une couleur différente : l'état non visité, l'état visité, l'état activé, l'état au survol et l'état à la prise de focus ». Where the page has a layout (a browser), each state is put on the link and its colors are read. A state whose color differs from the resting one and that adds no other mark fails below 3:1 against the surrounding text (STATE_CONTRAST_LOW). The link passes when every such state reaches 3:1. It is asked about when the browser's own visited color applies (BROWSER_STATE_COLORS) or a style sheet cannot be read (STYLESHEET_UNREADABLE). Without a layout (jsdom), the states cannot be put on the link, so it is asked about when an author rule for :visited, :active, :hover, :focus or :focus-visible changes only its color (STATE_COLOR_CHANGE), when the browser's visited color applies, or when a style sheet cannot be read. A link whose states raise no question is left out there. A page with no link in scope is notApplicable. Margin (`contrast-ratio`): of the link states shown by another color that reach 3:1 with the surrounding text, the one closest to it, unrounded; `context.state` names it (hover, focus, visited, active). `measuredCount` counts the links whose states were read in a browser.
 
 **Margin.** `contrast-ratio`, in a ratio: the value must reach the threshold, and the result's `margin` names the element that came closest while meeting it.
+
+### `rgaa-link-title-content-name`
+
+**A link's title contains the name its content gives it**
+
+automatic · no formal WCAG SC mapping · confidence high · default severity serious
+
+Fails an image link whose title does not repeat the text alternative of its image, and asks about a composite link whose title drops it, as the RGAA glossary « Intitulé de lien », note 2, requires.
+
+**Applies to.** Applies to image links and composite links (glossary « Lien image », « Lien composite »: links whose content holds an image with a text alternative, with or without text) that have a non-empty title attribute and are included in the accessibility tree. Text links are left out: rgaa-link-label-in-name-sources already checks their title against their visible label (6.1.5). A link whose content holds hidden, CSS-generated or embedded content is left out too, since its name from content can't be read for certain. A page with none is notApplicable.
+
+**Expectation.**
+
+Glossary « Intitulé (ou nom accessible) de lien », note 2: « Un intitulé de lien sera considéré comme non-explicite dans le cas où le lien possède un attribut title dont la valeur ne reprendrait pas au moins le "nom accessible" issu du contenu du lien », since assistive technologies can be set to read the title instead of the content. Punctuation and capital letters are ignored, as 6.1.5's particular cases allow; accents are not folded.
+
+- Fails an image link (6.1.2) whose title does not contain the text alternative of its images (imageLinkTitle).
+- Asks about a composite link (6.1.3) whose title contains its text but not the text alternative of its images (compositeLinkTitle): the image is often an icon (a file type, an external-link sign) whose alternative an auditor may judge the title need not repeat. A title that drops the text fails 6.1.5 already.
+- Asks, rather than failing, when the alternative is a single character, which may be a symbol the title names by its function.
 
 ### `rgaa-listbox-option-groups-absent`
 

@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 98,
-    "withFixture": 98,
+    "total": 99,
+    "withFixture": 99,
     "withoutFixture": 0
   },
   "rows": [
@@ -938,6 +938,23 @@
         "FAIL": 0,
         "CANTTELL": 3,
         "OTHER": 4
+      }
+    },
+    {
+      "ruleId": "rgaa-link-title-content-name",
+      "title": "A link's title contains the name its content gives it",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-link-title-content-name.js",
+      "testFile": "tests/rules/automatic/rgaa-link-title-content-name.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-link-title-content-name-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 1,
+        "FAIL": 1,
+        "CANTTELL": 1,
+        "OTHER": 0
       }
     },
     {

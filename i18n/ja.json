@@ -770,5 +770,13 @@
   "tooltipReview_description": "作成者によるツールチップやポップオーバー（role=\"tooltip\"、またはツールチップライブラリの属性）を示し、表示内容が Escape で閉じられ、ポインターを乗せても消えず、ポインターやフォーカスが離れるまで表示され続けるかを人が確認できるようにします。",
   "tooltipReview_summary_cantTell_tooltipRole": "この要素はホバーやフォーカスでツールチップ（role=\"tooltip\"）を表示します。",
   "tooltipReview_summary_cantTell_tooltipAttribute": "この要素はホバーやフォーカスでツールチップまたはポップオーバー（{{attribute}}）を表示します。",
-  "tooltipReview_hint_cantTell": "表示された内容が、ポインターやフォーカスを動かさずに（Escape などで）閉じられること、ポインターを乗せても消えないこと、ポインターやフォーカスが離れるまで表示され続けることを確認してください（RGAA 10.13）。"
+  "tooltipReview_hint_cantTell": "表示された内容が、ポインターやフォーカスを動かさずに（Escape などで）閉じられること、ポインターを乗せても消えないこと、ポインターやフォーカスが離れるまで表示され続けることを確認してください（RGAA 10.13）。",
+  "linkTitleContentName_title": "リンクの title は、その内容が与える名前を含む",
+  "linkTitleContentName_description": "title 属性が画像の代替テキストを含まない画像リンクを不合格とし、title がそれを省く複合リンクについて確認を求めます。RGAA 用語集「Intitulé de lien」の注 2 が求めるとおりです。",
+  "linkTitleContentName_summary_imageLinkTitle": "この画像リンクの title（「{{title}}」）は、画像の代替テキスト（「{{name}}」）を含んでいません。",
+  "linkTitleContentName_summary_compositeLinkTitle": "このリンクの title（「{{title}}」）はテキストを含みますが、画像の代替テキスト（「{{name}}」）を含んでいません。",
+  "linkTitleContentName_summary_symbolAlternative": "この画像リンクの title（「{{title}}」）は、画像の 1 文字の代替（「{{name}}」）を含んでいません。これは記号かもしれません。",
+  "linkTitleContentName_hint_imageLinkTitle": "title に少なくとも画像の代替テキストを含めるか、title を削除してください。支援技術は内容の代わりに title を読むよう設定できます（RGAA 6.1、用語集「Intitulé de lien」注 2）。",
+  "linkTitleContentName_hint_compositeLinkTitle": "title が画像の代替テキストも含むべきか確認してください。含むべきなら追加するか、title を削除してください（RGAA 6.1、用語集「Intitulé de lien」注 2）。",
+  "linkTitleContentName_hint_symbolAlternative": "title が記号の意味を伝えているか確認してください。そうでなければ、画像の代替テキストを含めてください（RGAA 6.1、用語集「Intitulé de lien」注 2）。"
 }

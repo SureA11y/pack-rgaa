@@ -603,6 +603,10 @@ const RGAA_RULE_TESTS = {
       tests: [],
       note: 'Checks that role=listbox has a name from aria-label, aria-labelledby, title or an associated label. It accepts a wrapping <label>, which 11.1.1 does not list. It also fails a <label for> pointing at a role=listbox element that a label cannot name, which meets 11.1.1 condition 3 to the letter. Not mapped to 11.1.1: rgaa-field-label-listed-source reports 11.1.1 for every form field, from the sources 11.1.1 lists only. Not mapped to 7.1.1: it passes when an accessible alternative exists.'
     },
+    'rgaa-link-title-content-name': {
+      tests: ['6.1.2', '6.1.3'],
+      note: 'Fails an image link (6.1.2) whose title does not contain the text alternative of its images, and asks about a composite link (6.1.3) whose title contains its text but not its images\' alternative, or an image link whose one-character alternative may be a symbol. Glossary « Intitulé (ou nom accessible) de lien », note 2: a link is « non-explicite » when it « possède un attribut title dont la valeur ne reprendrait pas au moins le "nom accessible" issu du contenu du lien », since assistive technologies can be set to read the title. Punctuation and capital letters are ignored, as 6.1.5\'s particular cases allow. Text links are left to rgaa-link-label-in-name-sources (6.1.5), and links whose content holds hidden, generated or embedded content are left out.'
+    },
     'rgaa-listbox-option-groups-absent': {
       tests: ['11.8.1'],
       note: 'Fails an element with role="listbox" (not <select>) that contains role="group". The 11.8 technical note says options cannot be grouped with ARIA, and a list that needs grouping built with role="listbox" does not conform to 11.8; a role="group" shows the options were grouped. The note names the criterion, not a test: 11.8.1 is the test on grouping options.'

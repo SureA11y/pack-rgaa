@@ -1081,6 +1081,28 @@ The hover and focus colors both contrast more than 3:1 with the surrounding text
 ```
 The underline marks the link without color, so 10.6.1 does not apply to it.
 
+## rgaa-link-title-content-name
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Fails**
+```html
+<a href="/" title="Accueil"><img src="home.png" alt="Retour à la page d'accueil"></a>
+```
+The title does not repeat the image's alternative: a screen reader set to read titles says only « Accueil » (glossary « Intitulé de lien », note 2).
+
+**Flagged (cantTell)**
+```html
+<a href="/rapport.pdf" title="Rapport annuel">Rapport annuel <img src="pdf.png" alt="PDF"></a>
+```
+The title keeps the text but drops the icon's alternative; a person checks whether it should repeat it.
+
+**Passes**
+```html
+<a href="/" title="Retour à la page d'accueil du site"><img src="home.png" alt="Retour à la page d'accueil"></a>
+```
+The title contains the image's alternative.
+
 ## rgaa-listbox-option-groups-absent
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*

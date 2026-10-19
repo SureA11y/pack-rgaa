@@ -770,5 +770,13 @@
   "tooltipReview_description": "Flags author tooltips and popovers (role=\"tooltip\", or a tooltip library attribute), for a person to check that what they show can be dismissed with Escape, hovered, and stays until the pointer or focus leaves.",
   "tooltipReview_summary_cantTell_tooltipRole": "This element shows a tooltip (role=\"tooltip\") on hover or focus.",
   "tooltipReview_summary_cantTell_tooltipAttribute": "This element shows a tooltip or popover ({{attribute}}) on hover or focus.",
-  "tooltipReview_hint_cantTell": "Check that what appears can be hidden without moving the pointer or the focus (with Escape, say), can be hovered without disappearing, and stays visible until the pointer or focus leaves it (RGAA 10.13)."
+  "tooltipReview_hint_cantTell": "Check that what appears can be hidden without moving the pointer or the focus (with Escape, say), can be hovered without disappearing, and stays visible until the pointer or focus leaves it (RGAA 10.13).",
+  "linkTitleContentName_title": "A link's title contains the name its content gives it",
+  "linkTitleContentName_description": "Fails an image link whose title does not repeat the text alternative of its image, and asks about a composite link whose title drops it, as the RGAA glossary « Intitulé de lien », note 2, requires.",
+  "linkTitleContentName_summary_imageLinkTitle": "The title of this image link (\"{{title}}\") does not contain the text alternative of its image (\"{{name}}\").",
+  "linkTitleContentName_summary_compositeLinkTitle": "The title of this link (\"{{title}}\") contains its text but not the text alternative of its image (\"{{name}}\").",
+  "linkTitleContentName_summary_symbolAlternative": "The title of this image link (\"{{title}}\") does not contain its image's one-character alternative (\"{{name}}\"), which may be a symbol.",
+  "linkTitleContentName_hint_imageLinkTitle": "Make the title repeat at least the image's text alternative, or remove the title: assistive technologies can be set to read the title instead of the content (RGAA 6.1, glossary « Intitulé de lien », note 2).",
+  "linkTitleContentName_hint_compositeLinkTitle": "Check whether the title should also repeat the image's text alternative; if it should, add it, or remove the title (RGAA 6.1, glossary « Intitulé de lien », note 2).",
+  "linkTitleContentName_hint_symbolAlternative": "Check that the title says what the symbol means; otherwise make it repeat the image's text alternative (RGAA 6.1, glossary « Intitulé de lien », note 2)."
 }

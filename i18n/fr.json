@@ -770,5 +770,13 @@
   "tooltipReview_description": "Signale les infobulles et popovers de l’auteur (role=\"tooltip\", ou un attribut de bibliothèque d’infobulles), pour qu’une personne vérifie que ce qu’ils affichent peut être masqué avec Échap, survolé, et reste visible jusqu’à ce que le pointeur ou le focus s’en aille.",
   "tooltipReview_summary_cantTell_tooltipRole": "Cet élément affiche une infobulle (role=\"tooltip\") au survol ou à la prise de focus.",
   "tooltipReview_summary_cantTell_tooltipAttribute": "Cet élément affiche une infobulle ou un popover ({{attribute}}) au survol ou à la prise de focus.",
-  "tooltipReview_hint_cantTell": "Vérifiez que ce qui apparaît peut être masqué sans déplacer le pointeur ni le focus (avec Échap, par exemple), peut être survolé sans disparaître, et reste visible jusqu’à ce que le pointeur ou le focus le quitte (RGAA 10.13)."
+  "tooltipReview_hint_cantTell": "Vérifiez que ce qui apparaît peut être masqué sans déplacer le pointeur ni le focus (avec Échap, par exemple), peut être survolé sans disparaître, et reste visible jusqu’à ce que le pointeur ou le focus le quitte (RGAA 10.13).",
+  "linkTitleContentName_title": "Le titre d’un lien reprend le nom que lui donne son contenu",
+  "linkTitleContentName_description": "Signale en échec un lien image dont l’attribut title ne reprend pas l’alternative textuelle de son image, et pose la question pour un lien composite dont le title l’omet, comme l’exige la note 2 du glossaire « Intitulé de lien » du RGAA.",
+  "linkTitleContentName_summary_imageLinkTitle": "Le title de ce lien image (« {{title}} ») ne contient pas l’alternative textuelle de son image (« {{name}} »).",
+  "linkTitleContentName_summary_compositeLinkTitle": "Le title de ce lien (« {{title}} ») contient son texte mais pas l’alternative textuelle de son image (« {{name}} »).",
+  "linkTitleContentName_summary_symbolAlternative": "Le title de ce lien image (« {{title}} ») ne contient pas l’alternative d’un caractère de son image (« {{name}} »), qui est peut-être un symbole.",
+  "linkTitleContentName_hint_imageLinkTitle": "Faites reprendre au title au moins l’alternative textuelle de l’image, ou supprimez le title : les aides techniques peuvent être réglées pour lire le title à la place du contenu (RGAA 6.1, glossaire « Intitulé de lien », note 2).",
+  "linkTitleContentName_hint_compositeLinkTitle": "Vérifiez si le title doit aussi reprendre l’alternative textuelle de l’image ; si oui, ajoutez-la, ou supprimez le title (RGAA 6.1, glossaire « Intitulé de lien », note 2).",
+  "linkTitleContentName_hint_symbolAlternative": "Vérifiez que le title dit ce que signifie le symbole ; sinon, faites-lui reprendre l’alternative textuelle de l’image (RGAA 6.1, glossaire « Intitulé de lien », note 2)."
 }

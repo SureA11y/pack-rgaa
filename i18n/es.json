@@ -770,5 +770,13 @@
   "tooltipReview_description": "Señala las descripciones emergentes y popovers del autor (role=\"tooltip\", o un atributo de una biblioteca de descripciones emergentes), para que una persona compruebe que lo que muestran se puede ocultar con Escape, sobrevolar, y permanece hasta que el puntero o el foco se van.",
   "tooltipReview_summary_cantTell_tooltipRole": "Este elemento muestra una descripción emergente (role=\"tooltip\") al pasar el puntero o al recibir el foco.",
   "tooltipReview_summary_cantTell_tooltipAttribute": "Este elemento muestra una descripción emergente o un popover ({{attribute}}) al pasar el puntero o al recibir el foco.",
-  "tooltipReview_hint_cantTell": "Compruebe que lo que aparece se puede ocultar sin mover el puntero ni el foco (con Escape, por ejemplo), se puede sobrevolar sin que desaparezca y permanece visible hasta que el puntero o el foco lo dejan (RGAA 10.13)."
+  "tooltipReview_hint_cantTell": "Compruebe que lo que aparece se puede ocultar sin mover el puntero ni el foco (con Escape, por ejemplo), se puede sobrevolar sin que desaparezca y permanece visible hasta que el puntero o el foco lo dejan (RGAA 10.13).",
+  "linkTitleContentName_title": "El title de un enlace contiene el nombre que le da su contenido",
+  "linkTitleContentName_description": "Marca como fallo un enlace de imagen cuyo atributo title no repite la alternativa textual de su imagen, y pregunta por un enlace compuesto cuyo title la omite, como exige la nota 2 del glosario « Intitulé de lien » del RGAA.",
+  "linkTitleContentName_summary_imageLinkTitle": "El title de este enlace de imagen (\"{{title}}\") no contiene la alternativa textual de su imagen (\"{{name}}\").",
+  "linkTitleContentName_summary_compositeLinkTitle": "El title de este enlace (\"{{title}}\") contiene su texto pero no la alternativa textual de su imagen (\"{{name}}\").",
+  "linkTitleContentName_summary_symbolAlternative": "El title de este enlace de imagen (\"{{title}}\") no contiene la alternativa de un carácter de su imagen (\"{{name}}\"), que puede ser un símbolo.",
+  "linkTitleContentName_hint_imageLinkTitle": "Haga que el title repita al menos la alternativa textual de la imagen, o quite el title: los productos de apoyo pueden configurarse para leer el title en lugar del contenido (RGAA 6.1, glosario « Intitulé de lien », nota 2).",
+  "linkTitleContentName_hint_compositeLinkTitle": "Compruebe si el title debe repetir también la alternativa textual de la imagen; si es así, añádala, o quite el title (RGAA 6.1, glosario « Intitulé de lien », nota 2).",
+  "linkTitleContentName_hint_symbolAlternative": "Compruebe que el title dice lo que significa el símbolo; si no, haga que repita la alternativa textual de la imagen (RGAA 6.1, glosario « Intitulé de lien », nota 2)."
 }

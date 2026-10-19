@@ -4,13 +4,13 @@ This pack's rules and their scenario pages. Every rule should have a `tests/fixt
 
 ## Summary
 
-Total rules: **98**. With fixture: **98**. Without fixture: **0**.
+Total rules: **99**. With fixture: **99**. Without fixture: **0**.
 
 ## Rules WITHOUT a fixture (0)
 
 None — every rule has a fixture.
 
-## Rules WITH a fixture (98)
+## Rules WITH a fixture (99)
 
 | Rule ID | Type | Fixture | Cases | PASS | FAIL | CANTTELL | OTHER |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -69,6 +69,7 @@ None — every rule has a fixture.
 | rgaa-link-context-review | manual | `tests/fixtures/rgaa-link-context-review-all-scenarios.html` | 6 | 0 | 0 | 3 | 3 |
 | rgaa-link-label-in-name-sources | automatic | `tests/fixtures/rgaa-link-label-in-name-sources-all-scenarios.html` | 13 | 3 | 4 | 3 | 3 |
 | rgaa-link-state-colors-review | automatic | `tests/fixtures/rgaa-link-state-colors-review-all-scenarios.html` | 7 | 0 | 0 | 3 | 4 |
+| rgaa-link-title-content-name | automatic | `tests/fixtures/rgaa-link-title-content-name-all-scenarios.html` | 3 | 1 | 1 | 1 | 0 |
 | rgaa-listbox-option-groups-absent | automatic | `tests/fixtures/rgaa-listbox-option-groups-absent-all-scenarios.html` | 4 | 1 | 2 | 0 | 1 |
 | rgaa-main-element-structure | automatic | `tests/fixtures/rgaa-main-element-structure-all-scenarios.html` | 1 | 0 | 1 | 0 | 0 |
 | rgaa-markup-for-presentation | automatic | `tests/fixtures/rgaa-markup-for-presentation-all-scenarios.html` | 4 | 0 | 2 | 1 | 1 |

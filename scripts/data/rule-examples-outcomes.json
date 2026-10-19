@@ -37,6 +37,18 @@
       "example": "<style> p { color: #000; } p a { color: #f60; text-decoration: none; } a:hover, a:focus { color: #09…"
     },
     {
+      "ruleId": "rgaa-link-title-content-name",
+      "label": "Fails",
+      "engine": "unknown label",
+      "example": "<a href=\"/\" title=\"Accueil\"><img src=\"home.png\" alt=\"Retour à la page d'accueil\"></a>"
+    },
+    {
+      "ruleId": "rgaa-link-title-content-name",
+      "label": "Passes",
+      "engine": "unknown label",
+      "example": "<a href=\"/\" title=\"Retour à la page d'accueil du site\"><img src=\"home.png\" alt=\"Retour à la page d'a…"
+    },
+    {
       "ruleId": "rgaa-markup-validation-review",
       "label": "Failed (with the `validator.report` probe)",
       "engine": "unknown label",

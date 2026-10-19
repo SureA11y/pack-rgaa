@@ -770,5 +770,13 @@
   "tooltipReview_description": "Markiert Tooltips und Popovers des Autors (role=\"tooltip\" oder ein Attribut einer Tooltip-Bibliothek), damit eine Person prüft, dass das Angezeigte mit Escape ausgeblendet, mit dem Zeiger überfahren werden kann und bleibt, bis Zeiger oder Fokus es verlassen.",
   "tooltipReview_summary_cantTell_tooltipRole": "Dieses Element zeigt bei Hover oder Fokus einen Tooltip (role=\"tooltip\").",
   "tooltipReview_summary_cantTell_tooltipAttribute": "Dieses Element zeigt bei Hover oder Fokus einen Tooltip oder ein Popover ({{attribute}}).",
-  "tooltipReview_hint_cantTell": "Prüfen Sie, dass das Angezeigte ausgeblendet werden kann, ohne Zeiger oder Fokus zu bewegen (etwa mit Escape), mit dem Zeiger überfahren werden kann, ohne zu verschwinden, und sichtbar bleibt, bis Zeiger oder Fokus es verlassen (RGAA 10.13)."
+  "tooltipReview_hint_cantTell": "Prüfen Sie, dass das Angezeigte ausgeblendet werden kann, ohne Zeiger oder Fokus zu bewegen (etwa mit Escape), mit dem Zeiger überfahren werden kann, ohne zu verschwinden, und sichtbar bleibt, bis Zeiger oder Fokus es verlassen (RGAA 10.13).",
+  "linkTitleContentName_title": "Der title eines Links enthält den Namen, den ihm sein Inhalt gibt",
+  "linkTitleContentName_description": "Lässt einen Bildlink durchfallen, dessen title-Attribut den Alternativtext seines Bildes nicht wiederholt, und fragt bei einem zusammengesetzten Link nach, dessen title ihn auslässt, wie es Anmerkung 2 des RGAA-Glossars « Intitulé de lien » verlangt.",
+  "linkTitleContentName_summary_imageLinkTitle": "Der title dieses Bildlinks („{{title}}“) enthält den Alternativtext seines Bildes („{{name}}“) nicht.",
+  "linkTitleContentName_summary_compositeLinkTitle": "Der title dieses Links („{{title}}“) enthält seinen Text, aber nicht den Alternativtext seines Bildes („{{name}}“).",
+  "linkTitleContentName_summary_symbolAlternative": "Der title dieses Bildlinks („{{title}}“) enthält die einstellige Alternative seines Bildes („{{name}}“) nicht, die ein Symbol sein kann.",
+  "linkTitleContentName_hint_imageLinkTitle": "Lassen Sie den title mindestens den Alternativtext des Bildes wiederholen, oder entfernen Sie den title: Assistive Technologien lassen sich so einstellen, dass sie den title statt des Inhalts vorlesen (RGAA 6.1, Glossar « Intitulé de lien », Anmerkung 2).",
+  "linkTitleContentName_hint_compositeLinkTitle": "Prüfen Sie, ob der title auch den Alternativtext des Bildes wiederholen muss; wenn ja, ergänzen Sie ihn, oder entfernen Sie den title (RGAA 6.1, Glossar « Intitulé de lien », Anmerkung 2).",
+  "linkTitleContentName_hint_symbolAlternative": "Prüfen Sie, dass der title sagt, was das Symbol bedeutet; sonst lassen Sie ihn den Alternativtext des Bildes wiederholen (RGAA 6.1, Glossar « Intitulé de lien », Anmerkung 2)."
 }
