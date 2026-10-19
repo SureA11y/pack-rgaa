@@ -166,5 +166,5 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T13-06 | 13.4.1, 13.5, 13.6 | MISS | Accessible versions of documents; emoji and ASCII art. 13.5.1 now asked about by `rgaa-cryptic-content-review` (emoticons, emoji, ASCII art without title). Still open: 13.4.1 (accessible versions of documents) and 13.6.1. | partial |
 | T13-07 | 12.10, 13.2, 13.10–13.12 | MISS | Script-attached behaviour: needs a listener probe in the crawler. | open |
 | T13-08 | 12.8.2, 12.9.1 | MISS | The page-level reminders say nothing of what to test. The reminder is core's `manual-review`; listed in CORE_ISSUES.md. Fixed in core main (1.14.0): the hint names leaving each element again (12.9.1) and the order after a script adds content (12.8.2). | done |
-| T12-13 | 12.1 | MISS | Fewer than two ways to navigate (Q15). | open |
+| T12-13 | 12.1 | MISS | Fewer than two ways to navigate (Q15). Now asked about by `rgaa-navigation-systems-review` (a page that shows fewer than two of a navigation menu, a site map link and a search engine), as decided. | done |
 | T12-14 | 12.1–12.5, 12.7.2 | design | « Ensemble de pages »: never pass, fail or mark notApplicable from one page; compare pages only within one ensemble. | open |

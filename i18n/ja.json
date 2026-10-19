@@ -802,5 +802,12 @@
   "quotationReview_summary_cantTell_quotedBlock": "このブロックは引用符で囲まれています（「{{sample}}」）。引用かどうかを確認してください。",
   "quotationReview_summary_cantTell_quotedPassage": "このテキストには引用符で囲まれた一節があります（「{{sample}}」）。引用かどうかを確認してください。",
   "quotationReview_hint_cantTell_quotedBlock": "人物や文章を引用している場合は、<blockquote> 要素でマークアップしてください（RGAA 9.4.2）。",
-  "quotationReview_hint_cantTell_quotedPassage": "人物や文章を引用している場合は、<q> 要素でマークアップしてください（RGAA 9.4.1）。"
+  "quotationReview_hint_cantTell_quotedPassage": "人物や文章を引用している場合は、<q> 要素でマークアップしてください（RGAA 9.4.1）。",
+  "navigationSystemsReview_title": "ナビゲーションシステムが 2 つ未満のページを確認する",
+  "navigationSystemsReview_description": "ナビゲーションメニュー、サイトマップへのリンク、サイト内検索のうち 2 つ未満しか示していないページを示し、そのページ群が 2 つを提供しているかを人が確認できるようにします。サイトのページ数が非常に少ない場合や、ページが手続きの一段階である場合は除きます。",
+  "navigationSystemsReview_summary_cantTell_none": "このページにはナビゲーションメニューも、サイトマップへのリンクも、サイト内検索もありません。",
+  "navigationSystemsReview_summary_cantTell_menu": "このページにはナビゲーションメニューがありますが、サイトマップへのリンクもサイト内検索もありません。",
+  "navigationSystemsReview_summary_cantTell_siteMap": "このページにはサイトマップへのリンクがありますが、ナビゲーションメニューもサイト内検索もありません。",
+  "navigationSystemsReview_summary_cantTell_search": "このページにはサイト内検索がありますが、ナビゲーションメニューもサイトマップへのリンクもありません。",
+  "navigationSystemsReview_hint_cantTell": "このページが属するページ群が、ナビゲーションメニュー、サイトマップ、サイト内検索のうち 2 つを提供しているか確認してください（RGAA 12.1）。すべてのページがトップページから到達できる非常に少ないページ数のサイトや、支払いなどの手続きの一段階には、この基準は適用されません。"
 }

@@ -802,5 +802,12 @@
   "quotationReview_summary_cantTell_quotedBlock": "This block is in quotation marks (\"{{sample}}\"); check whether it is a quotation.",
   "quotationReview_summary_cantTell_quotedPassage": "This text has a passage in quotation marks (\"{{sample}}\"); check whether it is a quotation.",
   "quotationReview_hint_cantTell_quotedBlock": "If it quotes someone or a text, mark it up with a <blockquote> element (RGAA 9.4.2).",
-  "quotationReview_hint_cantTell_quotedPassage": "If it quotes someone or a text, mark it up with a <q> element (RGAA 9.4.1)."
+  "quotationReview_hint_cantTell_quotedPassage": "If it quotes someone or a text, mark it up with a <q> element (RGAA 9.4.1).",
+  "navigationSystemsReview_title": "A page that shows fewer than two navigation systems is reviewed",
+  "navigationSystemsReview_description": "Flags a page that shows fewer than two of a navigation menu, a site map link and a search engine, for a person to check that its set of pages offers two of them, unless the site has very few pages or the page is a step of a process.",
+  "navigationSystemsReview_summary_cantTell_none": "This page shows no navigation menu, site map link or search engine.",
+  "navigationSystemsReview_summary_cantTell_menu": "This page shows a navigation menu, but no site map link or search engine.",
+  "navigationSystemsReview_summary_cantTell_siteMap": "This page shows a site map link, but no navigation menu or search engine.",
+  "navigationSystemsReview_summary_cantTell_search": "This page shows a search engine, but no navigation menu or site map link.",
+  "navigationSystemsReview_hint_cantTell": "Check that the set of pages this page belongs to offers two of a navigation menu, a site map and a search engine (RGAA 12.1). The criterion does not apply to a site of very few pages, all reachable from the home page, nor to a step of a process such as a payment."
 }

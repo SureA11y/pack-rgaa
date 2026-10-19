@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**103 rules total: 68 automatic (decide deterministically; can return `fail`), 35 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**104 rules total: 68 automatic (decide deterministically; can return `fail`), 36 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -87,7 +87,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-video-captions-track-kind`](#rgaa-video-captions-track-kind) | Video caption tracks use kind="captions" | — | — | high | moderate |
 | [`rgaa-widget-label-in-name`](#rgaa-widget-label-in-name) | The accessible name of a scripted component contains its visible label | — | — | high | serious |
 
-## Manual rules (35), never `fail`
+## Manual rules (36), never `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -114,6 +114,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-link-context-review`](#rgaa-link-context-review) | Generic links whose only context is outside RGAA's list are reviewed | — | — | medium | minor |
 | [`rgaa-modal-tab-order`](#rgaa-modal-tab-order) | Focus stays inside an open modal dialog | — | — | high | moderate |
 | [`rgaa-moving-content-review`](#rgaa-moving-content-review) | Moving or blinking content can be controlled | — | — | high | moderate |
+| [`rgaa-navigation-systems-review`](#rgaa-navigation-systems-review) | A page that shows fewer than two navigation systems is reviewed | — | — | high | moderate |
 | [`rgaa-noscript-alternative-review`](#rgaa-noscript-alternative-review) | A &lt;noscript&gt; alternative gives similar content and features | — | — | high | moderate |
 | [`rgaa-office-document-link`](#rgaa-office-document-link) | Downloadable office documents are accessible or have an accessible version | — | — | high | moderate |
 | [`rgaa-quotation-review`](#rgaa-quotation-review) | Quotations use &lt;q&gt; or &lt;blockquote&gt; | — | — | high | minor |
@@ -135,7 +136,7 @@ What a scan runs under each profile (`engineOptions.profile`): the rules its tag
 |---|---|---|---|---|---|---|
 | `rgaa-4.1.2` | `rgaa` | version 4.1.2 | — | — | — | 2.1 |
 
-## Rollups (71)
+## Rollups (72)
 
 Each groups rules into one result, as a WCAG rollup does; the standard's own report sections show them.
 
@@ -165,6 +166,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-11.6` | Dans chaque formulaire, chaque regroupement de champs de même nature a-t-il une légende ? | `rgaa-field-group-legend` |
 | `rgaa-4.1.2-11.8` | Dans chaque formulaire, les items de même nature d’une liste de choix sont-ils regroupés de manière pertinente ? | `rgaa-listbox-option-groups-absent`, `rgaa-optgroup-label-not-empty`, `rgaa-optgroup-label-present`, `rgaa-select-fake-groups-review` |
 | `rgaa-4.1.2-11.9` | Dans chaque formulaire, l’intitulé de chaque bouton est-il pertinent (hors cas particuliers) ? | `rgaa-form-button-label-in-name-sources`, `rgaa-form-button-name-present` |
+| `rgaa-4.1.2-12.1` | Chaque ensemble de pages dispose-t-il de deux systèmes de navigation différents, au moins (hors cas particuliers) ? | `rgaa-navigation-systems-review` |
 | `rgaa-4.1.2-12.6` | Les zones de regroupement de contenus présentes dans plusieurs pages web (zones d’en-tête, de navigation principale, de contenu principal, de pied de page et de moteur de recherche) peuvent-elles être atteintes ou évitées ? | `rgaa-page-zones-reachable` |
 | `rgaa-4.1.2-12.7` | Dans chaque page web, un lien d’évitement ou d’accès rapide à la zone de contenu principal est-il présent (hors cas particuliers) ? | `rgaa-skip-link-placement`, `rgaa-skip-link-present`, `skip-link` |
 | `rgaa-4.1.2-12.8` | Dans chaque page web, l’ordre de tabulation est-il cohérent ? | `css-hidden-focus`, `manual-review`, `rgaa-modal-tab-order`, `tabindex` |
@@ -1206,6 +1208,26 @@ Flags content that moves or blinks by itself for more than 5 seconds (marquee, a
 **Applies to.** Applies to content that moves or blinks by itself for more than 5 seconds, as the page shows it: a &lt;marquee&gt;; a &lt;video&gt; that plays by itself (autoplay) with no controls attribute; an SVG animation (&lt;animate&gt;, &lt;animateTransform&gt;, &lt;animateMotion&gt;, &lt;set&gt;) repeated indefinitely; and, where the page has a layout, an animation running on visible content when the scan starts (CSS animation, CSS transition or one a script started) that repeats indefinitely or lasts more than 5 seconds. A page with none is notApplicable.
 
 **Expectation.** RGAA 13.8.1 (moving content) and 13.8.2 (blinking content): content triggered automatically lasts 5 seconds or less, or the user can stop and restart it, show and hide it, or see all of its information without the movement. Each case is asked about (cantTell): a script or a button elsewhere in the page may give that control, which only a person can try. A CSS animation of opacity, visibility or colour only is reported as blinking (blinkingAnimation), any other as moving (movingAnimation).
+
+### `rgaa-navigation-systems-review`
+
+**A page that shows fewer than two navigation systems is reviewed**
+
+manual · no formal WCAG SC mapping · confidence high · default severity moderate
+
+Flags a page that shows fewer than two of a navigation menu, a site map link and a search engine, for a person to check that its set of pages offers two of them, unless the site has very few pages or the page is a step of a process.
+
+**Applies to.**
+
+Looks on the page for three of the « systèmes de navigation » of RGAA 12.1.1:
+
+- a navigation menu (glossary « Menu et barre de navigation »: « liste de liens permettant une navigation spécifique dans le site »): a &lt;nav&gt; or role="navigation" holding 3 links or more, or a list of 3 links or more in the page header. A breadcrumb or a pagination (named so by aria-label, aria-labelledby, class or id), links that all point inside the page (skip links) and a menu in the page footer (« les liens de pied de page […] ne sont pas considérés comme un menu de navigation principal ») do not count;
+- a site map (glossary « Page plan du site »): a link whose text, label or address says « plan du site », « sitemap » or « site map »;
+- a search engine (glossary « Moteur de recherche (interne à un site web) »: « zone donnant accès directement (formulaire) ou indirectement (élément d’interface donnant accès au formulaire) »): a form or role="search" with a search field, or a link or button « Rechercher » / to a search page.
+
+Elements count whether or not they are shown, since a menu or search form is often hidden at one screen width and opened by a button. A page that is a step of a process (a form with payment card fields, or a title that says « étape ») is notApplicable (particular case: « le critère est également non applicable pour les pages […] qui sont le résultat ou une partie d’un processus »). A page with two or more of these is notApplicable too: one page cannot pass 12.1, which is about a whole « ensemble de pages ».
+
+**Expectation.** RGAA 12.1.1: « chaque ensemble de pages vérifie-t-il une de ces conditions » : a menu and a site map, a menu and a search engine, or a search engine and a site map. A page that shows fewer than two may still belong to a set that offers them, or to a site of « un nombre très limité de pages », where the criterion does not apply: it is asked about once (fewerThanTwoSystems, with what was found).
 
 ### `rgaa-noscript-alternative-review`
 

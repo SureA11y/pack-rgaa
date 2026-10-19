@@ -802,5 +802,12 @@
   "quotationReview_summary_cantTell_quotedBlock": "Ce bloc est entre guillemets (« {{sample}} ») ; vérifiez s’il s’agit d’une citation.",
   "quotationReview_summary_cantTell_quotedPassage": "Ce texte contient un passage entre guillemets (« {{sample}} ») ; vérifiez s’il s’agit d’une citation.",
   "quotationReview_hint_cantTell_quotedBlock": "S’il cite une personne ou un texte, structurez-le avec un élément <blockquote> (RGAA 9.4.2).",
-  "quotationReview_hint_cantTell_quotedPassage": "S’il cite une personne ou un texte, structurez-le avec un élément <q> (RGAA 9.4.1)."
+  "quotationReview_hint_cantTell_quotedPassage": "S’il cite une personne ou un texte, structurez-le avec un élément <q> (RGAA 9.4.1).",
+  "navigationSystemsReview_title": "Une page qui présente moins de deux systèmes de navigation est à vérifier",
+  "navigationSystemsReview_description": "Signale une page qui présente moins de deux éléments parmi un menu de navigation, un lien vers le plan du site et un moteur de recherche, pour qu’une personne vérifie que son ensemble de pages en propose deux, sauf si le site compte très peu de pages ou si la page est une étape d’un processus.",
+  "navigationSystemsReview_summary_cantTell_none": "Cette page ne présente ni menu de navigation, ni lien vers le plan du site, ni moteur de recherche.",
+  "navigationSystemsReview_summary_cantTell_menu": "Cette page présente un menu de navigation, mais ni lien vers le plan du site ni moteur de recherche.",
+  "navigationSystemsReview_summary_cantTell_siteMap": "Cette page présente un lien vers le plan du site, mais ni menu de navigation ni moteur de recherche.",
+  "navigationSystemsReview_summary_cantTell_search": "Cette page présente un moteur de recherche, mais ni menu de navigation ni lien vers le plan du site.",
+  "navigationSystemsReview_hint_cantTell": "Vérifiez que l’ensemble de pages auquel appartient cette page propose deux systèmes parmi un menu de navigation, un plan du site et un moteur de recherche (RGAA 12.1). Le critère est non applicable à un site d’un nombre très limité de pages, toutes atteignables depuis la page d’accueil, et à une étape d’un processus comme un paiement."
 }

@@ -1284,6 +1284,23 @@ The page reloads every 20 hours, the limit RGAA 13.1.1 accepts. WCAG 2.2.1 exemp
 ```
 The page reloads itself every 30 seconds. A redirect to another address is `rgaa-meta-redirect-immediate`'s matter.
 
+## rgaa-navigation-systems-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<nav aria-label="Menu principal"><a href="/actualites">Actualités</a> <a href="/demarches">Démarches</a> <a href="/contact">Contact</a></nav>
+```
+The page shows a menu but no site map link or search engine: a person checks that its set of pages offers a second navigation system.
+
+**Not applicable**
+```html
+<nav aria-label="Menu principal"><a href="/actualites">Actualités</a> <a href="/demarches">Démarches</a> <a href="/contact">Contact</a></nav>
+<form role="search" action="/recherche"><label for="q">Rechercher</label> <input type="search" id="q" name="q"></form>
+```
+The page shows a menu and a search engine; one page cannot pass 12.1 for its set of pages, so nothing is asked.
+
 ## rgaa-noscript-alternative-review
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*

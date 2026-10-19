@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 103,
-    "withFixture": 103,
+    "total": 104,
+    "withFixture": 104,
     "withoutFixture": 0
   },
   "rows": [
@@ -1142,6 +1142,23 @@
         "FAIL": 0,
         "CANTTELL": 2,
         "OTHER": 1
+      }
+    },
+    {
+      "ruleId": "rgaa-navigation-systems-review",
+      "title": "A page that shows fewer than two navigation systems is reviewed",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/navigation-systems-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-navigation-systems-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-navigation-systems-review-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 2
       }
     },
     {

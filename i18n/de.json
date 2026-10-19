@@ -802,5 +802,12 @@
   "quotationReview_summary_cantTell_quotedBlock": "Dieser Block steht in Anführungszeichen („{{sample}}“); prüfen Sie, ob es ein Zitat ist.",
   "quotationReview_summary_cantTell_quotedPassage": "Dieser Text enthält eine Passage in Anführungszeichen („{{sample}}“); prüfen Sie, ob es ein Zitat ist.",
   "quotationReview_hint_cantTell_quotedBlock": "Wenn er eine Person oder einen Text zitiert, zeichnen Sie ihn mit einem <blockquote>-Element aus (RGAA 9.4.2).",
-  "quotationReview_hint_cantTell_quotedPassage": "Wenn sie eine Person oder einen Text zitiert, zeichnen Sie sie mit einem <q>-Element aus (RGAA 9.4.1)."
+  "quotationReview_hint_cantTell_quotedPassage": "Wenn sie eine Person oder einen Text zitiert, zeichnen Sie sie mit einem <q>-Element aus (RGAA 9.4.1).",
+  "navigationSystemsReview_title": "Eine Seite mit weniger als zwei Navigationssystemen wird geprüft",
+  "navigationSystemsReview_description": "Markiert eine Seite, die weniger als zwei von Navigationsmenü, Link zur Sitemap und Suchfunktion zeigt, damit eine Person prüft, dass ihre Seitengruppe zwei davon anbietet, außer die Website hat sehr wenige Seiten oder die Seite ist ein Schritt eines Prozesses.",
+  "navigationSystemsReview_summary_cantTell_none": "Diese Seite zeigt weder Navigationsmenü noch Link zur Sitemap noch Suchfunktion.",
+  "navigationSystemsReview_summary_cantTell_menu": "Diese Seite zeigt ein Navigationsmenü, aber weder Link zur Sitemap noch Suchfunktion.",
+  "navigationSystemsReview_summary_cantTell_siteMap": "Diese Seite zeigt einen Link zur Sitemap, aber weder Navigationsmenü noch Suchfunktion.",
+  "navigationSystemsReview_summary_cantTell_search": "Diese Seite zeigt eine Suchfunktion, aber weder Navigationsmenü noch Link zur Sitemap.",
+  "navigationSystemsReview_hint_cantTell": "Prüfen Sie, dass die Seitengruppe, zu der diese Seite gehört, zwei von Navigationsmenü, Sitemap und Suchfunktion anbietet (RGAA 12.1). Das Kriterium gilt nicht für eine Website mit sehr wenigen Seiten, die alle von der Startseite aus erreichbar sind, und nicht für einen Schritt eines Prozesses wie einer Zahlung."
 }

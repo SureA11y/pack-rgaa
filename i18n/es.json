@@ -802,5 +802,12 @@
   "quotationReview_summary_cantTell_quotedBlock": "Este bloque está entre comillas («{{sample}}»); compruebe si es una cita.",
   "quotationReview_summary_cantTell_quotedPassage": "Este texto tiene un pasaje entre comillas («{{sample}}»); compruebe si es una cita.",
   "quotationReview_hint_cantTell_quotedBlock": "Si cita a una persona o un texto, márquelo con un elemento <blockquote> (RGAA 9.4.2).",
-  "quotationReview_hint_cantTell_quotedPassage": "Si cita a una persona o un texto, márquelo con un elemento <q> (RGAA 9.4.1)."
+  "quotationReview_hint_cantTell_quotedPassage": "Si cita a una persona o un texto, márquelo con un elemento <q> (RGAA 9.4.1).",
+  "navigationSystemsReview_title": "Se revisa una página que muestra menos de dos sistemas de navegación",
+  "navigationSystemsReview_description": "Señala una página que muestra menos de dos de estos elementos: un menú de navegación, un enlace al mapa del sitio y un buscador, para que una persona compruebe que su conjunto de páginas ofrece dos de ellos, salvo que el sitio tenga muy pocas páginas o la página sea un paso de un proceso.",
+  "navigationSystemsReview_summary_cantTell_none": "Esta página no muestra menú de navegación, enlace al mapa del sitio ni buscador.",
+  "navigationSystemsReview_summary_cantTell_menu": "Esta página muestra un menú de navegación, pero ni enlace al mapa del sitio ni buscador.",
+  "navigationSystemsReview_summary_cantTell_siteMap": "Esta página muestra un enlace al mapa del sitio, pero ni menú de navegación ni buscador.",
+  "navigationSystemsReview_summary_cantTell_search": "Esta página muestra un buscador, pero ni menú de navegación ni enlace al mapa del sitio.",
+  "navigationSystemsReview_hint_cantTell": "Compruebe que el conjunto de páginas al que pertenece esta página ofrece dos de estos sistemas: un menú de navegación, un mapa del sitio y un buscador (RGAA 12.1). El criterio no se aplica a un sitio de muy pocas páginas, todas accesibles desde la página de inicio, ni a un paso de un proceso como un pago."
 }
