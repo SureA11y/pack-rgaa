@@ -160,7 +160,11 @@ test(`${RULE_ID}: a distant aria-describedby transcript satisfies WCAG 1.2.1, RG
   );
   const result = runa11yCoreOnHtml(html, RGAA);
   assert.equal(check(result, WCAG_RULE).outcome, 'notApplicable');
-  assert.equal(rollup(result, WCAG_ROLLUP).outcome, 'notApplicable');
+  // Its rules do not find every case 1.2.1 applies to, so core rolls it up
+  // as a question rather than notApplicable.
+  const wcag = rollup(result, WCAG_ROLLUP);
+  assert.equal(wcag.outcome, 'cantTell');
+  assert.equal(wcag.data.details.reasonCode, 'composite.rollup.cantTell.partialCoverage');
   const rgaa = rollup(result, 'rgaa-4.1.2-4.1');
   assert.equal(rgaa.outcome, 'cantTell');
   assert.deepEqual(rgaa.data.details.checksIds, [RULE_ID]);

@@ -144,7 +144,9 @@ function verdicts(body) {
 test(`${RULE_ID}: RGAA profile, a PDF object with no alternative: neither WCAG nor RGAA 1.1 fails`, () => {
   const v = verdicts('<object type="application/pdf" data="d.pdf"></object>');
   assert.equal(v.wcagRule, 'notApplicable');
-  assert.equal(v.wcag, 'notApplicable');
+  // WCAG 1.1.1's rules do not find every case it applies to, so core rolls
+  // it up as a question rather than notApplicable.
+  assert.equal(v.wcag, 'cantTell');
   assert.equal(v.rule, 'notApplicable');
   assert.notEqual(v.rgaa, 'fail');
 });
