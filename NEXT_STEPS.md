@@ -39,8 +39,8 @@ as many detections as RGAA allows:
 
 ## Where the work stands
 
-Last updated at commit `1740883`: 112 rules (43 manual), a result for 78 of
-RGAA's 106 criteria, 1181 tests passing. Every decision in section 3 is
+Last updated on 2026-10-20: 113 rules (44 manual), a result for 79 of
+RGAA's 106 criteria, 1187 tests passing. Every decision in section 3 is
 built.
 
 [`bench/AUDIT.md`](./bench/AUDIT.md) tracks every finding of the audit with
@@ -96,9 +96,9 @@ other engines do. Update the state column as each is built.
 
 | # | Item | Decision | State |
 |---|---|---|---|
-| 1 | T89-15, 9.1.3 | Drop `p-as-heading`'s number-only text (`HEADING_LIKE_NUMBER`, `tests: []`); keep asking about link-only text. | done (`f7620ed`) |
-| 2 | T13-05, 13.8 | Leave core's `moving-content-pausable` unmapped; `rgaa-moving-content-review` asks once per element, moving or blinking. | done (`81c0651`) |
-| 3 | T67-03, 7.3.1 | Keep `click-handler-keyboard-operable`'s failures as failures. | done (`81c0651`) |
+| 1 | T89-15, 9.1.3 | Drop `p-as-heading`'s number-only text (`HEADING_LIKE_NUMBER`, `tests: []`); keep asking about link-only text. | done |
+| 2 | T13-05, 13.8 | Leave core's `moving-content-pausable` unmapped; `rgaa-moving-content-review` asks once per element, moving or blinking. | done |
+| 3 | T67-03, 7.3.1 | Keep `click-handler-keyboard-operable`'s failures as failures. | done |
 | 4 | T1-10, 1.4 and 1.5 | New manual rule: ask about each detected CAPTCHA image or widget, under 1.4 (relevance of its alternative) and 1.5 (a non-graphic CAPTCHA or another way in). | done (`rgaa-captcha-review`) |
 | 5 | T25-17, theme 4 | Ask about each visible embedded player (YouTube, Vimeo, Dailymotion, PeerTube, SoundCloud) under theme 4, and under 4.10 when it plays by itself (`autoplay=1`). | done (`rgaa-embedded-player-review`) |
 | 6 | T89-11, 8.4.1 | Ask when the page's text, by stopwords, is not in the language `<html lang>` names, and when it is `und` or `mul`. | done (`rgaa-default-language-review`) |
@@ -117,7 +117,6 @@ now say `partial: true` for a criterion with tests no rule checks (T12-08,
 done). Its `findings` entries don't settle T25-12: they file by requirement,
 and RGAA's rollups are per criterion; see CORE_ISSUES.md.
 
-Still for the owner: the reword of `dab2b17` below.
 
 ### 4. Needs browser measurement or crawler work
 
@@ -139,17 +138,6 @@ results roll up; discuss with the owner.
 
 The partial items (T1-12, T1-13, T1-14, T25-21, T67-06, T89-14, T13-03, T13-06)
 say in AUDIT.md what is left; the rest is either for a person or in core.
-
-Still to do, approved by the owner:
-
-- The owner approved rewording commit `dab2b17` ("Ask where RGAA leaves
-  the call to a person…"), whose last bullet says the map notes "no longer
-  compare the links with other tools". It should read "The map notes and
-  the mapping page are reworded; the README and the package header count 73
-  rules." This rewrites the commits after it, so it needs a force-push of
-  `fix-false-positives`, which the session's permissions blocked. Do it once
-  pushing with force is allowed, for instance with `git filter-branch
-  --msg-filter` over `dab2b17^..HEAD`, then `git push --force-with-lease`.
 
 ## How a rule change is made
 
