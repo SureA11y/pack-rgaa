@@ -140,7 +140,7 @@ What the pack aims for: no false positive, and as many of RGAA's failures found 
 | T11-14 | 11.5.1 | MISS | Same-name checkbox sets and `role=radio` sets (Q13). Now asked about by `rgaa-same-name-checkboxes-review`, as decided. | done |
 | T11-15 | 11.4 | MISS | Label placement (Q15). Now asked about in a browser by `rgaa-label-placement-review` (a label not above or left of its field, or right or below for a checkbox or radio, or far from it), as decided. | done |
 | T11-16 | 11.13.1 | MISS | An `autocomplete` value that contradicts the field. Now asked about by `rgaa-autocomplete-user-field` when the value names a field the input type cannot hold (contradictsType). A value that contradicts the label is not looked for. | done |
-| T11-17 | 11.7, 11.11, 11.3, 11.12 | MISS | Smaller targeted questions (Q15). Now asked about by `rgaa-field-label-consistency-review` (11.3.1), `rgaa-legend-relevance-review` (11.7.1) and `rgaa-format-hint-review` (11.11), as decided. Still open: 11.12. | partial |
+| T11-17 | 11.7, 11.11, 11.3, 11.12 | MISS | Smaller targeted questions (Q15). Now asked about by `rgaa-field-label-consistency-review` (11.3.1), `rgaa-legend-relevance-review` (11.7.1) and `rgaa-format-hint-review` (11.11), as decided; 11.12 by `rgaa-consequential-form-review` (payment, account deletion, cancellation, signature, password change and test forms, found by card fields or by French and English submit labels only), as the owner decided on 2026-10-20. | done |
 
 ## Themes 12–13, Navigation, Consultation
 

@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**112 rules total: 69 automatic (decide deterministically; can return `fail`), 43 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**113 rules total: 69 automatic (decide deterministically; can return `fail`), 44 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -88,7 +88,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-video-captions-track-kind`](#rgaa-video-captions-track-kind) | Video caption tracks use kind="captions" | — | — | high | moderate |
 | [`rgaa-widget-label-in-name`](#rgaa-widget-label-in-name) | The accessible name of a scripted component contains its visible label | — | — | high | serious |
 
-## Manual rules (43), never `fail`
+## Manual rules (44), never `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -97,6 +97,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-color-reference-review`](#rgaa-color-reference-review) | Text that refers to a colour does not give the information by colour alone | — | — | high | minor |
 | [`rgaa-complex-table-summary`](#rgaa-complex-table-summary) | Complex data tables have a summary | — | — | medium | moderate |
 | [`rgaa-complex-table-summary-quality`](#rgaa-complex-table-summary-quality) | Complex data table summaries are relevant | — | — | medium | moderate |
+| [`rgaa-consequential-form-review`](#rgaa-consequential-form-review) | Forms with financial, legal or data consequences can be checked, confirmed or undone | — | — | high | serious |
 | [`rgaa-context-change-review`](#rgaa-context-change-review) | A change of context from a field is announced first | — | — | high | moderate |
 | [`rgaa-cryptic-content-review`](#rgaa-cryptic-content-review) | Cryptic content has a title or is defined by its context | — | — | high | minor |
 | [`rgaa-current-item-review`](#rgaa-current-item-review) | The active item of a menu is not shown by its look alone | — | — | high | moderate |
@@ -144,7 +145,7 @@ What a scan runs under each profile (`engineOptions.profile`): the rules its tag
 |---|---|---|---|---|---|---|
 | `rgaa-4.1.2` | `rgaa` | version 4.1.2 | — | — | — | 2.1 |
 
-## Rollups (78)
+## Rollups (79)
 
 Each groups rules into one result, as a WCAG rollup does; the standard's own report sections show them.
 
@@ -170,6 +171,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-11.1` | Chaque champ de formulaire a-t-il une étiquette ? | `form-control-programmatic-label-quality`, `option-name-present`, `rgaa-field-hidden-label-review`, `rgaa-field-label-listed-source`, `rgaa-label-for-target-valid` |
 | `rgaa-4.1.2-11.10` | Dans chaque formulaire, le contrôle de saisie est-il utilisé de manière pertinente (hors cas particuliers) ? | `rgaa-invalid-field-message`, `rgaa-required-field-indication` |
 | `rgaa-4.1.2-11.11` | Dans chaque formulaire, le contrôle de saisie est-il accompagné, si nécessaire, de suggestions facilitant la correction des erreurs de saisie ? | `rgaa-format-hint-review` |
+| `rgaa-4.1.2-11.12` | Pour chaque formulaire qui modifie ou supprime des données, ou qui transmet des réponses à un test ou à un examen, ou dont la validation a des conséquences financières ou juridiques, les données saisies peuvent-elles être modifiées, mises à jour ou récupérées par l’utilisateur ? | `rgaa-consequential-form-review` |
 | `rgaa-4.1.2-11.13` | La finalité d’un champ de saisie peut-elle être déduite pour faciliter le remplissage automatique des champs avec les données de l’utilisateur ? | `rgaa-autocomplete-user-field` |
 | `rgaa-4.1.2-11.2` | Chaque étiquette associée à un champ de formulaire est-elle pertinente (hors cas particuliers) ? | `form-control-label-quality`, `form-control-programmatic-label-quality`, `rgaa-field-label-empty`, `rgaa-field-label-in-name-sources`, `rgaa-title-placeholder-identical` |
 | `rgaa-4.1.2-11.3` | Dans chaque formulaire, chaque étiquette associée à un champ de formulaire ayant la même fonction et répétée plusieurs fois dans une même page ou dans un ensemble de pages est-elle cohérente ? | `rgaa-field-label-consistency-review` |
@@ -468,6 +470,26 @@ Tables with role="presentation" or "none" are left out. The summary is what 5.1.
 A page with no such table is notApplicable, including a simple table and an HTML5 table whose only summary is the summary attribute.
 
 **Expectation.** Each complex table with a summary is asked about (cantTell): RGAA 5.2.1 asks whether the summary is relevant, that is whether it explains the nature and structure of the table. Only a person can tell, and a caption may hold only the table's title.
+
+### `rgaa-consequential-form-review`
+
+**Forms with financial, legal or data consequences can be checked, confirmed or undone**
+
+manual · no formal WCAG SC mapping · confidence high · default severity serious
+
+Flags payment, account deletion, cancellation, signature, password change and test forms, found by card fields or by their submit button, for a person to check that the data can be reviewed, confirmed or recovered.
+
+**Applies to.**
+
+Applies to visible forms that certainly have the consequences 11.12 names, found by narrow signals only:
+
+- card fields (autocomplete cc-number, cc-csc, cc-exp…), a payment;
+- a current-password and a new-password field together, a password change (a sign-up form has only the new one);
+- a submit button whose whole label, amounts and arrows aside, is one of the French or English phrases apps use for paying or ordering, deleting or closing an account, cancelling a subscription, an order or a booking, signing, changing a password, or sending the answers of a test (« Payer », « Valider ma commande », « Supprimer mon compte », « Résilier mon abonnement », « Signer », « Place order », « Delete account »…).
+
+Generic labels (« Valider », « Envoyer », « Confirmer », « Continuer », « Enregistrer », « Supprimer », « Annuler », Submit, Save, OK) and search forms are left out: they say nothing of the consequences. A page with none is notApplicable.
+
+**Expectation.** RGAA 11.12.1: a form « qui modifie ou supprime des données, ou qui transmet des réponses à un test ou un examen, ou dont la validation a des conséquences financières ou juridiques » lets the user change or cancel the data afterwards, check and correct them before a multi-step form is submitted, or confirm explicitly (a checkbox or an extra step). 11.12.2: a form that changes or deletes financial, legal or personal data offers a way to get them back or an explicit confirmation. What happens after submitting is not in the page, so each such form is asked about once (payment, accountDeletion, cancellation, signature, passwordChange, testAnswers).
 
 ### `rgaa-context-change-review`
 

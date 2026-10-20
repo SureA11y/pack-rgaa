@@ -853,5 +853,16 @@
   "languageChangeReview_title": "Ein Abschnitt in einer anderen Sprache hat eine Sprachangabe",
   "languageChangeReview_description": "Markiert einen Block von 8 Wörtern oder mehr, dessen Text, nach seinen häufigsten Wörtern, deutlich in einer anderen Sprache als dem geltenden lang geschrieben ist, damit eine Person prüft, dass der Sprachwechsel mit lang angegeben ist.",
   "languageChangeReview_summary_cantTell": "Dieser Text scheint in „{{guessed}}“ geschrieben zu sein, während hier die Sprache „{{declared}}“ gilt.",
-  "languageChangeReview_hint_cantTell": "Wenn er in einer anderen Sprache ist und kein Eigenname oder Wort aus dem Wörterbuch der Seitensprache ist, geben Sie seine Sprache mit lang auf dem Element oder einem Elternelement an, zum Beispiel lang=\"{{guessed}}\" (RGAA 8.7.1)."
+  "languageChangeReview_hint_cantTell": "Wenn er in einer anderen Sprache ist und kein Eigenname oder Wort aus dem Wörterbuch der Seitensprache ist, geben Sie seine Sprache mit lang auf dem Element oder einem Elternelement an, zum Beispiel lang=\"{{guessed}}\" (RGAA 8.7.1).",
+  "consequentialFormReview_title": "Formulare mit finanziellen, rechtlichen oder datenbezogenen Folgen lassen sich prüfen, bestätigen oder rückgängig machen",
+  "consequentialFormReview_description": "Markiert Formulare für Zahlung, Kontolöschung, Kündigung, Unterschrift, Passwortänderung und Prüfungen, erkannt an Kartenfeldern oder ihrer Absendeschaltfläche, damit eine Person prüft, dass die Daten überprüft, bestätigt oder wiederhergestellt werden können.",
+  "consequentialFormReview_summary_cantTell_payment": "Dieses Formular bezahlt oder bestellt („{{label}}“).",
+  "consequentialFormReview_summary_cantTell_payment_noLabel": "Dieses Formular fragt nach Kartendaten.",
+  "consequentialFormReview_summary_cantTell_accountDeletion": "Dieses Formular löscht oder schließt ein Konto („{{label}}“).",
+  "consequentialFormReview_summary_cantTell_cancellation": "Dieses Formular kündigt ein Abonnement oder storniert eine Bestellung oder Buchung („{{label}}“).",
+  "consequentialFormReview_summary_cantTell_signature": "Dieses Formular unterschreibt ein Dokument oder eine Erklärung („{{label}}“).",
+  "consequentialFormReview_summary_cantTell_passwordChange": "Dieses Formular ändert ein Passwort („{{label}}“).",
+  "consequentialFormReview_summary_cantTell_passwordChange_noLabel": "Dieses Formular ändert ein Passwort: Es fragt nach dem aktuellen und einem neuen.",
+  "consequentialFormReview_summary_cantTell_testAnswers": "Dieses Formular sendet die Antworten eines Tests oder einer Prüfung („{{label}}“).",
+  "consequentialFormReview_hint_cantTell": "Prüfen Sie, dass der Nutzer die Daten vor dem Absenden überprüfen und korrigieren, ausdrücklich bestätigen (ein Kontrollkästchen oder ein zusätzlicher Schritt) oder danach ändern, widerrufen oder wiederherstellen kann (RGAA 11.12)."
 }

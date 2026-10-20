@@ -853,5 +853,16 @@
   "languageChangeReview_title": "別の言語の文章に言語が指定されている",
   "languageChangeReview_description": "頻出語から見て、適用中の lang と明らかに別の言語で書かれた 8 語以上のブロックを示し、言語の変更が lang で指定されているかを人が確認できるようにします。",
   "languageChangeReview_summary_cantTell": "このテキストは「{{guessed}}」で書かれているようですが、ここで適用されている言語は「{{declared}}」です。",
-  "languageChangeReview_hint_cantTell": "別の言語であり、固有名詞やページの言語の辞書にある語でない場合は、要素またはその親に lang で言語を指定してください（例：lang=\"{{guessed}}\"）（RGAA 8.7.1）。"
+  "languageChangeReview_hint_cantTell": "別の言語であり、固有名詞やページの言語の辞書にある語でない場合は、要素またはその親に lang で言語を指定してください（例：lang=\"{{guessed}}\"）（RGAA 8.7.1）。",
+  "consequentialFormReview_title": "金銭的・法的な影響やデータへの影響がある送信フォームは、確認・訂正・取り消しができる",
+  "consequentialFormReview_description": "カード欄や送信ボタンから見つけた支払い、アカウント削除、解約、署名、パスワード変更、試験のフォームを示し、データを見直し、確認し、取り戻せるかを人が確認できるようにします。",
+  "consequentialFormReview_summary_cantTell_payment": "このフォームは支払いまたは注文を行います（「{{label}}」）。",
+  "consequentialFormReview_summary_cantTell_payment_noLabel": "このフォームはカード情報を求めています。",
+  "consequentialFormReview_summary_cantTell_accountDeletion": "このフォームはアカウントを削除または閉鎖します（「{{label}}」）。",
+  "consequentialFormReview_summary_cantTell_cancellation": "このフォームは定期購読、注文、予約を取り消します（「{{label}}」）。",
+  "consequentialFormReview_summary_cantTell_signature": "このフォームは文書や申告に署名します（「{{label}}」）。",
+  "consequentialFormReview_summary_cantTell_passwordChange": "このフォームはパスワードを変更します（「{{label}}」）。",
+  "consequentialFormReview_summary_cantTell_passwordChange_noLabel": "このフォームはパスワードを変更します。現在のパスワードと新しいパスワードを求めています。",
+  "consequentialFormReview_summary_cantTell_testAnswers": "このフォームは試験やテストの回答を送信します（「{{label}}」）。",
+  "consequentialFormReview_hint_cantTell": "送信前にデータを見直して訂正できるか、明示的に確認できるか（チェックボックスや追加の手順）、送信後に変更・取り消し・復元できるかを確認してください（RGAA 11.12）。"
 }

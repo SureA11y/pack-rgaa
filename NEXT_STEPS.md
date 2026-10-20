@@ -108,7 +108,8 @@ other engines do. Update the state column as each is built.
 | 10 | T10-07, 10.5 | Fail 10.5.1 (an author text colour with no background colour on it or any ancestor) and 10.5.3 (a background image with none); ask about 10.5.2. No other engine fails these (one asks about 10.5.3), but the tests' text is literal. | done (`rgaa-color-declarations-paired`) |
 | 11 | T11-14, 11.5.1 | Ask about three or more checkboxes sharing a name, and role="radio" sets, outside a fieldset or group. | done (`rgaa-same-name-checkboxes-review`) |
 | 12 | T11-15, 11.4 | Ask, in a browser, when a label is not right above or left of its field (below or right for a checkbox or radio). | done (`rgaa-label-placement-review`) |
-| 13 | T11-17 | Ask under 11.3 (fields with the same autocomplete token and different labels), 11.7 (each legend, quoted) and 11.11 (a format constraint with no example); 11.12 left open. | done (`rgaa-field-label-consistency-review`, `rgaa-legend-relevance-review`, `rgaa-format-hint-review`); 11.12 open |
+| 13 | T11-17 | Ask under 11.3 (fields with the same autocomplete token and different labels), 11.7 (each legend, quoted) and 11.11 (a format constraint with no example); 11.12 left open. | done (`rgaa-field-label-consistency-review`, `rgaa-legend-relevance-review`, `rgaa-format-hint-review`) |
+| 15 | T11-17, 11.12 | Ask, with narrow signals only (card fields, current plus new password, or a submit button whose whole label is a French or English payment, deletion, cancellation, signature, password or test phrase); generic labels left out. Decided 2026-10-20. | done (`rgaa-consequential-form-review`) |
 | 14 | T12-13, 12.1 | Ask when a page shows fewer than two of a navigation menu, a site map link and a search form. | done (`rgaa-navigation-systems-review`) |
 
 Core PR SureA11y/core#266 is merged into core's main: the pack's rollups
@@ -116,7 +117,7 @@ now say `partial: true` for a criterion with tests no rule checks (T12-08,
 done). Its `findings` entries don't settle T25-12: they file by requirement,
 and RGAA's rollups are per criterion; see CORE_ISSUES.md.
 
-Still for the owner: T11-17's 11.12, and the reword of `dab2b17` below.
+Still for the owner: the reword of `dab2b17` below.
 
 ### 4. Needs browser measurement or crawler work
 

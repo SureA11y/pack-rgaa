@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 112,
-    "withFixture": 112,
+    "total": 113,
+    "withFixture": 113,
     "withoutFixture": 0
   },
   "rows": [
@@ -224,6 +224,23 @@
         "FAIL": 0,
         "CANTTELL": 3,
         "OTHER": 4
+      }
+    },
+    {
+      "ruleId": "rgaa-consequential-form-review",
+      "title": "Forms with financial, legal or data consequences can be checked, confirmed or undone",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/consequential-form-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-consequential-form-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-consequential-form-review-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 2,
+        "OTHER": 1
       }
     },
     {

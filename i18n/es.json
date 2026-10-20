@@ -853,5 +853,16 @@
   "languageChangeReview_title": "Un pasaje en otro idioma tiene indicado su idioma",
   "languageChangeReview_description": "Señala un bloque de 8 palabras o más cuyo texto, según sus palabras más frecuentes, está claramente en otro idioma que el lang vigente, para que una persona compruebe que el cambio de idioma se indica con lang.",
   "languageChangeReview_summary_cantTell": "Este texto parece escrito en \"{{guessed}}\", mientras que el idioma vigente aquí es \"{{declared}}\".",
-  "languageChangeReview_hint_cantTell": "Si está en otro idioma, y no es un nombre propio ni una palabra del diccionario del idioma de la página, indique su idioma con lang en el elemento o en un elemento padre, por ejemplo lang=\"{{guessed}}\" (RGAA 8.7.1)."
+  "languageChangeReview_hint_cantTell": "Si está en otro idioma, y no es un nombre propio ni una palabra del diccionario del idioma de la página, indique su idioma con lang en el elemento o en un elemento padre, por ejemplo lang=\"{{guessed}}\" (RGAA 8.7.1).",
+  "consequentialFormReview_title": "Los formularios con consecuencias financieras, jurídicas o sobre los datos se pueden revisar, confirmar o deshacer",
+  "consequentialFormReview_description": "Señala los formularios de pago, de eliminación de cuenta, de cancelación, de firma, de cambio de contraseña y de examen, hallados por sus campos de tarjeta o por su botón de envío, para que una persona compruebe que los datos se pueden revisar, confirmar o recuperar.",
+  "consequentialFormReview_summary_cantTell_payment": "Este formulario realiza un pago o un pedido (\"{{label}}\").",
+  "consequentialFormReview_summary_cantTell_payment_noLabel": "Este formulario pide los datos de una tarjeta.",
+  "consequentialFormReview_summary_cantTell_accountDeletion": "Este formulario elimina o cierra una cuenta (\"{{label}}\").",
+  "consequentialFormReview_summary_cantTell_cancellation": "Este formulario cancela una suscripción, un pedido o una reserva (\"{{label}}\").",
+  "consequentialFormReview_summary_cantTell_signature": "Este formulario firma un documento o una declaración (\"{{label}}\").",
+  "consequentialFormReview_summary_cantTell_passwordChange": "Este formulario cambia una contraseña (\"{{label}}\").",
+  "consequentialFormReview_summary_cantTell_passwordChange_noLabel": "Este formulario cambia una contraseña: pide la actual y una nueva.",
+  "consequentialFormReview_summary_cantTell_testAnswers": "Este formulario envía las respuestas de una prueba o un examen (\"{{label}}\").",
+  "consequentialFormReview_hint_cantTell": "Compruebe que el usuario puede revisar y corregir los datos antes del envío, confirmarlos explícitamente (una casilla o un paso adicional), o modificarlos, cancelarlos o recuperarlos después (RGAA 11.12)."
 }

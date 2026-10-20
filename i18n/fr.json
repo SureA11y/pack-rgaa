@@ -853,5 +853,16 @@
   "languageChangeReview_title": "Un passage dans une autre langue a son indication de langue",
   "languageChangeReview_description": "Signale un bloc de 8 mots ou plus dont le texte, d’après ses mots les plus fréquents, est clairement dans une autre langue que celle en vigueur, pour qu’une personne vérifie que le changement de langue est indiqué avec lang.",
   "languageChangeReview_summary_cantTell": "Ce texte semble écrit en « {{guessed}} », alors que la langue en vigueur ici est « {{declared}} ».",
-  "languageChangeReview_hint_cantTell": "S’il est dans une autre langue, et n’est pas un nom propre ni un mot présent dans le dictionnaire de la langue de la page, indiquez sa langue avec l’attribut lang sur l’élément ou un parent, par exemple lang=\"{{guessed}}\" (RGAA 8.7.1)."
+  "languageChangeReview_hint_cantTell": "S’il est dans une autre langue, et n’est pas un nom propre ni un mot présent dans le dictionnaire de la langue de la page, indiquez sa langue avec l’attribut lang sur l’élément ou un parent, par exemple lang=\"{{guessed}}\" (RGAA 8.7.1).",
+  "consequentialFormReview_title": "Les formulaires aux conséquences financières, juridiques ou sur les données peuvent être vérifiés, confirmés ou annulés",
+  "consequentialFormReview_description": "Signale les formulaires de paiement, de suppression de compte, de résiliation, de signature, de changement de mot de passe et de test, repérés par des champs de carte ou par leur bouton d’envoi, pour qu’une personne vérifie que les données peuvent être relues, confirmées ou récupérées.",
+  "consequentialFormReview_summary_cantTell_payment": "Ce formulaire effectue un paiement ou passe une commande (« {{label}} »).",
+  "consequentialFormReview_summary_cantTell_payment_noLabel": "Ce formulaire demande des informations de carte bancaire.",
+  "consequentialFormReview_summary_cantTell_accountDeletion": "Ce formulaire supprime ou ferme un compte (« {{label}} »).",
+  "consequentialFormReview_summary_cantTell_cancellation": "Ce formulaire résilie un abonnement ou annule une commande ou une réservation (« {{label}} »).",
+  "consequentialFormReview_summary_cantTell_signature": "Ce formulaire signe un document ou une déclaration (« {{label}} »).",
+  "consequentialFormReview_summary_cantTell_passwordChange": "Ce formulaire modifie un mot de passe (« {{label}} »).",
+  "consequentialFormReview_summary_cantTell_passwordChange_noLabel": "Ce formulaire modifie un mot de passe : il demande l’actuel et un nouveau.",
+  "consequentialFormReview_summary_cantTell_testAnswers": "Ce formulaire transmet les réponses à un test ou à un examen (« {{label}} »).",
+  "consequentialFormReview_hint_cantTell": "Vérifiez que l’utilisateur peut vérifier et corriger les données avant l’envoi, les confirmer explicitement (une case à cocher ou une étape supplémentaire), ou les modifier, les annuler ou les récupérer après (RGAA 11.12)."
 }

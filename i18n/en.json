@@ -853,5 +853,16 @@
   "languageChangeReview_title": "A passage in another language has its language given",
   "languageChangeReview_description": "Flags a block of 8 words or more whose text, guessed from its frequent words, is clearly in another language than the lang in effect, for a person to check that the change of language is given with lang.",
   "languageChangeReview_summary_cantTell": "This text looks written in \"{{guessed}}\", while the language in effect here is \"{{declared}}\".",
-  "languageChangeReview_hint_cantTell": "If it is in another language, and is not a proper noun or a word the dictionary of the page's language has, give its language with lang on the element or a parent, for example lang=\"{{guessed}}\" (RGAA 8.7.1)."
+  "languageChangeReview_hint_cantTell": "If it is in another language, and is not a proper noun or a word the dictionary of the page's language has, give its language with lang on the element or a parent, for example lang=\"{{guessed}}\" (RGAA 8.7.1).",
+  "consequentialFormReview_title": "Forms with financial, legal or data consequences can be checked, confirmed or undone",
+  "consequentialFormReview_description": "Flags payment, account deletion, cancellation, signature, password change and test forms, found by card fields or by their submit button, for a person to check that the data can be reviewed, confirmed or recovered.",
+  "consequentialFormReview_summary_cantTell_payment": "This form pays or places an order (\"{{label}}\").",
+  "consequentialFormReview_summary_cantTell_payment_noLabel": "This form asks for card details.",
+  "consequentialFormReview_summary_cantTell_accountDeletion": "This form deletes or closes an account (\"{{label}}\").",
+  "consequentialFormReview_summary_cantTell_cancellation": "This form cancels a subscription, an order or a booking (\"{{label}}\").",
+  "consequentialFormReview_summary_cantTell_signature": "This form signs a document or a declaration (\"{{label}}\").",
+  "consequentialFormReview_summary_cantTell_passwordChange": "This form changes a password (\"{{label}}\").",
+  "consequentialFormReview_summary_cantTell_passwordChange_noLabel": "This form changes a password: it asks for the current and a new one.",
+  "consequentialFormReview_summary_cantTell_testAnswers": "This form sends the answers to a test or an exam (\"{{label}}\").",
+  "consequentialFormReview_hint_cantTell": "Check that the user can review and correct the data before submitting, confirm explicitly (a checkbox or an extra step), or change, cancel or recover them afterwards (RGAA 11.12)."
 }

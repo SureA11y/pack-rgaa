@@ -284,6 +284,22 @@ A complex table with a summary in its caption: a person checks that it explains 
 ```
 In an HTML5 document the `summary` attribute is not a summary, so the table has none to judge; rgaa-complex-table-summary asks about it under 5.1.1. Under an HTML 4.01 doctype the same table is flagged.
 
+## rgaa-consequential-form-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<form action="/paiement"><label for="cc">Numéro de carte</label><input id="cc" autocomplete="cc-number"><button type="submit">Payer 49 €</button></form>
+```
+A person checks that the order can be reviewed, confirmed or cancelled (RGAA 11.12).
+
+**Not applicable**
+```html
+<form action="/contact"><label for="m">Message</label><textarea id="m"></textarea><button type="submit">Envoyer</button></form>
+```
+A contact form has none of the consequences 11.12 names.
+
 ## rgaa-context-change-review
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*

@@ -4,13 +4,13 @@ This pack's rules and their scenario pages. Every rule should have a `tests/fixt
 
 ## Summary
 
-Total rules: **112**. With fixture: **112**. Without fixture: **0**.
+Total rules: **113**. With fixture: **113**. Without fixture: **0**.
 
 ## Rules WITHOUT a fixture (0)
 
 None — every rule has a fixture.
 
-## Rules WITH a fixture (112)
+## Rules WITH a fixture (113)
 
 | Rule ID | Type | Fixture | Cases | PASS | FAIL | CANTTELL | OTHER |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -27,6 +27,7 @@ None — every rule has a fixture.
 | rgaa-color-reference-review | manual | `tests/fixtures/rgaa-color-reference-review-all-scenarios.html` | 3 | 0 | 0 | 2 | 1 |
 | rgaa-complex-table-summary | manual | `tests/fixtures/rgaa-complex-table-summary-all-scenarios.html` | 8 | 0 | 0 | 0 | 8 |
 | rgaa-complex-table-summary-quality | manual | `tests/fixtures/rgaa-complex-table-summary-quality-all-scenarios.html` | 7 | 0 | 0 | 3 | 4 |
+| rgaa-consequential-form-review | manual | `tests/fixtures/rgaa-consequential-form-review-all-scenarios.html` | 3 | 0 | 0 | 2 | 1 |
 | rgaa-context-change-review | manual | `tests/fixtures/rgaa-context-change-review-all-scenarios.html` | 2 | 0 | 0 | 1 | 1 |
 | rgaa-contrast-minimum | automatic | `tests/fixtures/rgaa-contrast-minimum-all-scenarios.html` | 7 | 4 | 3 | 0 | 0 |
 | rgaa-cryptic-content-review | manual | `tests/fixtures/rgaa-cryptic-content-review-all-scenarios.html` | 2 | 0 | 0 | 1 | 1 |
