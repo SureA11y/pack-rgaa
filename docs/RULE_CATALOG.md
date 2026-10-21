@@ -983,7 +983,7 @@ Compares the page title with the titles of the site’s other pages, given as th
 RGAA 8.6.1 asks that the title be relevant, and the glossary entry « Titre de page » defines a relevant title as one that identifies the page « de manière claire, concise et unique ». The title is compared, with case and spacing ignored, with the other pages of the site given in the `crawl.pageTitles` probe (`{ pages: [{ url, title }] }`):
 
 - another page, at another path, with the same title fails (TITLE_DUPLICATE);
-- another page whose URL differs from this one only by its query string, with the same title, is asked about, since it may be this same page (TITLE_DUPLICATE_SAME_PATH);
+- another page whose URL differs from this one only by its query string, or by what usually names one page twice (http or https, a leading www., a trailing /index.html or /index.php), with the same title, is asked about, since it may be this same page (TITLE_DUPLICATE_SAME_PATH);
 - with no other page to compare, the title is asked about (TITLE_SINGLE_PAGE).
 
 It passes when no other page shares the title.

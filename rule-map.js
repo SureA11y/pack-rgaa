@@ -717,7 +717,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-page-title-unique': {
       tests: ['8.6.1'],
-      note: 'Fails a page whose <title> another page of the site, at another path, shares, compared through the crawl.pageTitles probe with case and spacing ignored. 8.6.1 asks for a relevant title, and the glossary defines it as one that identifies the page « de manière claire, concise et unique ». It asks when the other page differs only by its query string (it may be the same page), and when no other page is given.'
+      note: 'Fails a page whose <title> another page of the site, at another path, shares, compared through the crawl.pageTitles probe with case and spacing ignored. 8.6.1 asks for a relevant title, and the glossary defines it as one that identifies the page « de manière claire, concise et unique ». It asks when the other page differs only by its query string, or by its scheme, a leading www. or a trailing index file (it may be the same page), and when no other page is given.'
     },
     'rgaa-page-zones-reachable': {
       tests: ['12.6.1'],
