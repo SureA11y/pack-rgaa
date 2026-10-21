@@ -44,6 +44,7 @@
   "pageZonesReachable_summary_cantTell_toggle": "Dieser Bereich („{{hint}}“) hat keine Landmark-Rolle. Eine Schaltfläche direkt davor kann ihn verbergen: Prüfen Sie, dass sie diesen Bereich verbirgt.",
   "pageZonesReachable_summary_cantTell_quickLink": "Dieser Bereich („{{hint}}“) hat keine Landmark-Rolle. Ein seiteninterner Link führt zu ihm: Prüfen Sie, dass der Link sichtbar ist, zumindest wenn er den Fokus erhält.",
   "pageZonesReachable_summary_cantTell_none": "Dieser Bereich („{{hint}}“) hat weder eine Landmark-Rolle noch eine einleitende Überschrift noch einen Link oder eine Schaltfläche, um ihn zu erreichen, zu überspringen oder zu verbergen.",
+  "pageZonesReachable_summary_cantTell_unidentified": "Dieses <{{hint}}> außerhalb des Hauptinhalts und aller gefundenen Bereiche enthält Links: Prüfen Sie, ob es eine Kopfzeile, eine Navigation oder eine Fußzeile ist und, falls ja, wie es erreicht werden kann.",
   "pageZonesReachable_summary_cantTell_mainNotFound": "Die Seite hat keine Haupt-Landmark (<main> oder role=\"main\"), daher ließ sich nicht prüfen, wie der Hauptinhalt erreicht wird.",
   "pageZonesReachable_hint_cantTell": "Ein Bereich, der schon über eine Überschrift, die sagt, was er enthält, über einen Sprung- oder Schnellzugriffslink oder über eine Schaltfläche, die ihn ausblendet, erreichbar ist, erfüllt RGAA 12.6.1 so, wie er ist. Andernfalls geben Sie ihm die passende Landmark: <header>, <nav>, <main>, <footer> oder role=\"search\" am Suchformular.",
   "contrastMinimumRgaa_title": "Text erfüllt den Mindestfarbkontrast nach RGAA",

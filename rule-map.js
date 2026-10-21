@@ -732,7 +732,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-page-zones-reachable': {
       tests: ['12.6.1'],
-      note: "Finds the header, main navigation, main content, footer and search areas from their landmarks, or from an id, class or search field that names them, and passes when each has a landmark matching its nature (condition 1). It never fails, since which blocks are areas is a person's call: it asks about an area without a landmark that relies on a heading (condition 2, whether the heading says what the area holds), a button just before it (condition 3), a skip link just before it (condition 4) or a quick-access link to it (condition 5, whether it is visible), about one with none of these, and about a page with no main landmark."
+      note: "Finds the header, main navigation, main content, footer and search areas from their landmarks, or from an id, class or search field that names them, and passes when each has a landmark matching its nature (condition 1). It never fails, since which blocks are areas is a person's call: it asks about an area without a landmark that relies on a heading (condition 2, whether the heading says what the area holds), a button just before it (condition 3), a skip link just before it (condition 4) or a quick-access link to it (condition 5, whether it is visible), about one with none of these, about a page with no main landmark, and about each block outside every area it found that holds links to other places, so a header, navigation or footer it cannot name is not passed unseen."
     },
     'password-paste-enabled': {
       tests: [],

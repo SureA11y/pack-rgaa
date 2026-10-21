@@ -33,6 +33,42 @@ test(`${RULE_ID}: every area with a matching landmark passes`, () => {
   assertRule(run('<search><input type="search" aria-label="q"></search>' + MAIN), RULE_ID, 'pass');
 });
 
+// A header, navigation or footer the rule cannot name would otherwise leave
+// the page passing unseen.
+test(`${RULE_ID}: a block of links outside every area found is asked about`, () => {
+  const rule = assertRule(
+    run(
+      '<div class="top"><div class="inner"><a href="/">Accueil</a><a href="/agenda">Agenda</a></div></div>' +
+        MAIN +
+        '<div class="bas"><a href="/mentions">Mentions légales</a></div>'
+    ),
+    RULE_ID,
+    'cantTell'
+  );
+  assert.deepEqual(reasons(rule), [
+    ['', 'ZONE_UNIDENTIFIED'],
+    ['', 'ZONE_UNIDENTIFIED']
+  ]);
+  assert.match(rule.occurrences[0].html, /class="top"/);
+  assert.match(rule.occurrences[1].html, /class="bas"/);
+  assert.equal(
+    rule.occurrences[0].i18n.summaryKey,
+    'pageZonesReachable_summary_cantTell_unidentified'
+  );
+  assert.equal(rule.occurrences[0].i18n.params.hint, 'div');
+});
+
+test(`${RULE_ID}: same-page links and links inside an area are not a block of their own`, () => {
+  for (const body of [
+    '<a href="#main">Aller au contenu</a><main id="main"><h1>Titre</h1><a href="/x">X</a></main>',
+    '<header><a href="/">Logo</a></header>' + MAIN + '<footer><a href="/m">Mentions</a></footer>',
+    // A wrapper around the areas is not itself a block.
+    '<div id="page"><header><a href="/">Logo</a></header>' + MAIN + '</div>'
+  ]) {
+    assertRule(run(body), RULE_ID, 'pass');
+  }
+});
+
 test(`${RULE_ID}: an area found from its name is asked about, with the mechanism it relies on`, () => {
   for (const [body, expected] of [
     ['<div class="header"><a href="/">Logo</a></div>', [['header', 'ZONE_NO_MECHANISM']]],

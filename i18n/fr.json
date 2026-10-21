@@ -44,6 +44,7 @@
   "pageZonesReachable_summary_cantTell_toggle": "Cette zone (« {{hint}} ») n’a pas de rôle landmark. Un bouton juste avant elle peut la masquer : vérifiez que ce bouton masque cette zone.",
   "pageZonesReachable_summary_cantTell_quickLink": "Cette zone (« {{hint}} ») n’a pas de rôle landmark. Un lien interne y mène : vérifiez que ce lien est visible, au moins à la prise de focus.",
   "pageZonesReachable_summary_cantTell_none": "Cette zone (« {{hint}} ») n’a ni rôle landmark, ni titre qui l’ouvre, ni lien ou bouton pour l’atteindre, l’éviter ou la masquer.",
+  "pageZonesReachable_summary_cantTell_unidentified": "Cet élément <{{hint}}>, hors du contenu principal et de toute zone trouvée, contient des liens : vérifiez s’il s’agit d’un en-tête, d’une navigation ou d’un pied de page et, le cas échéant, comment l’atteindre.",
   "pageZonesReachable_summary_cantTell_mainNotFound": "La page n’a pas de landmark principal (<main> ou role=\"main\") : impossible de vérifier comment atteindre le contenu principal.",
   "pageZonesReachable_hint_cantTell": "Une zone déjà atteignable par un titre qui dit ce qu’elle contient, par un lien d’évitement ou d’accès rapide, ou par un bouton qui la masque respecte le RGAA 12.6.1 telle quelle. Sinon, donnez-lui le landmark qui lui correspond : <header>, <nav>, <main>, <footer>, ou role=\"search\" sur le formulaire de recherche.",
   "contrastMinimumRgaa_title": "Le texte respecte le contraste minimum du RGAA",

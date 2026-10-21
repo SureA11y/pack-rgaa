@@ -1025,6 +1025,7 @@ RGAA 12.6.1: each area has a landmark matching its nature, a heading that says w
 
 - The rule passes when every area it finds has a landmark matching its nature, and no main content is missing.
 - It never fails, since which blocks are areas is a person's call. It asks about an area found from its name, without a landmark: when a heading opens it (whether the heading says what it holds, ZONE_HEADING), a same-page link just before it skips it (ZONE_SKIP_LINK), a button just before it controls it (ZONE_TOGGLE), or a same-page link leads to it (whether that link is visible, ZONE_QUICK_LINK); and when it has none of these (ZONE_NO_MECHANISM). A page with no main landmark is asked about too (MAIN_NOT_FOUND).
+- It also asks about each block outside every area it found that holds links to other pages or places (ZONE_UNIDENTIFIED): a header, navigation or footer whose markup names it in no way the rule recognises, which would otherwise leave the page passing unseen. The block is the outermost element around those links that holds no area. Same-page links are left out, since a skip link sits there.
 
 ### `rgaa-presentational-attributes-absent`
 

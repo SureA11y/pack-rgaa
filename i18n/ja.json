@@ -44,6 +44,7 @@
   "pageZonesReachable_summary_cantTell_toggle": "この領域（「{{hint}}」）にはランドマークロールがありません。直前のボタンで隠せる可能性があるので、そのボタンがこの領域を隠すか確認してください。",
   "pageZonesReachable_summary_cantTell_quickLink": "この領域（「{{hint}}」）にはランドマークロールがありません。ページ内リンクがこの領域へ移動するので、そのリンクが少なくともフォーカス時に見えるか確認してください。",
   "pageZonesReachable_summary_cantTell_none": "この領域（「{{hint}}」）には、ランドマークロールも、冒頭の見出しも、到達・スキップ・非表示のためのリンクやボタンもありません。",
+  "pageZonesReachable_summary_cantTell_unidentified": "メインコンテンツの外にあり、見つかったどの領域にも含まれないこの <{{hint}}> にはリンクがあります。ヘッダー、ナビゲーション、フッターのいずれかであるか、そうであればどのように到達できるかを確認してください。",
   "pageZonesReachable_summary_cantTell_mainNotFound": "ページにメインのランドマーク（<main> または role=\"main\"）がないため、メインコンテンツへの到達方法を確認できませんでした。",
   "pageZonesReachable_hint_cantTell": "内容を表す見出し、スキップリンクやクイックアクセスリンク、または領域を隠すボタンでたどり着ける領域は、そのままで RGAA 12.6.1 を満たします。そうでなければ、対応するランドマークを付けてください：<header>、<nav>、<main>、<footer>、または検索フォームに role=\"search\"。",
   "contrastMinimumRgaa_title": "テキストが RGAA の最低限の色のコントラストを満たしている",

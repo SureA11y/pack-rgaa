@@ -44,6 +44,7 @@
   "pageZonesReachable_summary_cantTell_toggle": "This area (\"{{hint}}\") has no landmark role. A button just before it may hide it: check that the button hides this area.",
   "pageZonesReachable_summary_cantTell_quickLink": "This area (\"{{hint}}\") has no landmark role. A same-page link leads to it: check that the link is visible, at least when it takes focus.",
   "pageZonesReachable_summary_cantTell_none": "This area (\"{{hint}}\") has no landmark role, no heading opening it, and no link or button to reach, skip or hide it.",
+  "pageZonesReachable_summary_cantTell_unidentified": "This <{{hint}}>, outside the main content and outside every area found, holds links: check whether it is a header, a navigation or a footer, and if so how it can be reached.",
   "pageZonesReachable_summary_cantTell_mainNotFound": "The page has no main landmark (<main> or role=\"main\"), so how the main content can be reached could not be checked.",
   "pageZonesReachable_hint_cantTell": "An area already reachable by a heading that says what it holds, a skip or quick-access link, or a button that hides it meets RGAA 12.6.1 as it is. Otherwise give it the landmark that matches it: <header>, <nav>, <main>, <footer>, or role=\"search\" on the search form.",
   "contrastMinimumRgaa_title": "Text meets RGAA minimum color contrast",
