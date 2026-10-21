@@ -149,7 +149,7 @@ require('fs').writeFileSync('rapport.html', renderHtmlReport(result, { title: 'A
 
 ### Probes: what one page can't show
 
-Four rules read evidence the host collects and passes in `engineOptions.probes`. Without it, they judge from the page alone, and ask where it can't tell:
+Five rules read evidence the host collects, through four probes, and passes in `engineOptions.probes`. Without it, they judge from the page alone, and ask where it can't tell:
 
 | Probe | What it holds | Read by |
 |---|---|---|
@@ -175,7 +175,7 @@ runDomRulesInPage(url, null, {
 - **One result per RGAA criterion** that a rule checks (`mappings.js`), in its own section of the HTML report, with RGAA's French wording.
 - **The `rgaa-4.1.2` profile:** RGAA alone. It runs the pack's own rules and every core rule mapped to an RGAA test, WCAG rules and best-practice ones alike (`img-alt-present` for 1.1.1, `heading-order` for 9.1), and nothing else: no rule that counts for no RGAA test, and no WCAG criterion in the results. It is judged by WCAG 2.1, the version RGAA 4.1.2 is built on, so a duplicate id fails 8.2.1.
 - **69 rules,** each id starting with `rgaa-`: for what RGAA requires and WCAG doesn't (a doctype, presentational markup, a skip link's place across pages, say), and where RGAA judges differently, among them `rgaa-contrast-minimum`, a variant of core's `contrast-minimum`. They are opt-in: they run under the profile, or with `engineOptions.optInRules: ['rgaa']`, never in a scan that targets WCAG.
-- **Probes:** four of its rules read evidence the host supplies in `engineOptions.probes` (other pages' titles and skip links, the page's source as sent, a validator report); `describePacks([rgaa])` lists them with what each holds.
+- **Probes:** five of its rules read, through four probes, evidence the host supplies in `engineOptions.probes` (other pages' titles and skip links, the page's source as sent, a validator report); `describePacks([rgaa])` lists them with what each holds.
 
 ## The data and its licence
 
