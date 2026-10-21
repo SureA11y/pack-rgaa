@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**69 rules total: 54 automatic (decide deterministically; can return `fail`), 15 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**70 rules total: 55 automatic (decide deterministically; can return `fail`), 15 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -14,7 +14,7 @@ Under **What a finding reports**, a rule lists the fields its findings carry in 
 
 See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_SCHEMA.md) for what `type`/`confidence`/`severity` mean on a scan result, and [`WCAG_CONFORMANCE.md`](https://github.com/SureA11y/core/blob/main/docs/WCAG_CONFORMANCE.md) for how these roll up to an SC-level conformance claim.
 
-## Automatic rules (54), can return `fail`
+## Automatic rules (55), can return `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -22,6 +22,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-aria-attribute-conformance`](#rgaa-aria-attribute-conformance) | aria-* attributes are valid for the W3C validator | — | — | high | moderate |
 | [`rgaa-aria-list-item-roles`](#rgaa-aria-list-item-roles) | ARIA lists use role="listitem" for their items | — | — | medium | moderate |
 | [`rgaa-aria-role-conformance`](#rgaa-aria-role-conformance) | Role attributes are valid for the W3C validator | — | — | high | moderate |
+| [`rgaa-button-name-present`](#rgaa-button-name-present) | Buttons outside a form have an accessible name | — | — | high | serious |
 | [`rgaa-canvas-decorative-aria-hidden`](#rgaa-canvas-decorative-aria-hidden) | Decorative &lt;canvas&gt; images have aria-hidden="true" and no alternative | — | — | medium | minor |
 | [`rgaa-canvas-role-img`](#rgaa-canvas-role-img) | &lt;canvas&gt; images have role="img" with an ARIA name, or fallback content | — | — | medium | serious |
 | [`rgaa-contrast-minimum`](#rgaa-contrast-minimum) | Text meets RGAA minimum color contrast | — | — | high | serious |
@@ -147,7 +148,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-5.8` | Chaque tableau de mise en forme ne doit pas utiliser d’éléments propres aux tableaux de données. Cette règle est-elle respectée ? | `rgaa-layout-table-no-data-markup` |
 | `rgaa-4.1.2-6.1` | Chaque lien est-il explicite (hors cas particuliers) ? | `identical-links-same-purpose`, `link-name-quality`, `rgaa-link-context-review`, `rgaa-link-label-in-name-sources` |
 | `rgaa-4.1.2-6.2` | Dans chaque page web, chaque lien a-t-il un intitulé ? | `rgaa-link-content-label-present` |
-| `rgaa-4.1.2-7.1` | Chaque script est-il, si nécessaire, compatible avec les technologies d’assistance ? | `aria-role-name-present`, `dialog-name-present`, `focus-order-semantics`, `menuitem-name-present`, `rgaa-scripted-components-review`, `rgaa-widget-label-in-name`, `tab-name-present`, `treeitem-name-present` |
+| `rgaa-4.1.2-7.1` | Chaque script est-il, si nécessaire, compatible avec les technologies d’assistance ? | `aria-role-name-present`, `dialog-name-present`, `focus-order-semantics`, `menuitem-name-present`, `rgaa-button-name-present`, `rgaa-scripted-components-review`, `rgaa-widget-label-in-name`, `tab-name-present`, `treeitem-name-present` |
 | `rgaa-4.1.2-7.3` | Chaque script est-il contrôlable par le clavier et par tout dispositif de pointage (hors cas particuliers) ? | `mouse-only-event-handlers`, `rgaa-keyboard-only-event-handlers` |
 | `rgaa-4.1.2-8.1` | Chaque page web est-elle définie par un type de document ? | `rgaa-doctype-position`, `rgaa-doctype-present`, `rgaa-doctype-valid` |
 | `rgaa-4.1.2-8.10` | Dans chaque page web, les changements du sens de lecture sont-ils signalés ? | `rgaa-dir-attribute-valid` |
@@ -232,6 +233,18 @@ Each role attribute passes the W3C validator (Nu HTML Checker), which RGAA 8.2.1
 - `imgRoleNoName`: an &lt;img&gt; with a role and no alt, aria-label or aria-labelledby attribute.
 
 It asks (cantTell) in one case, `imgPresentationRole`: an &lt;img&gt; with role="presentation" and an empty or missing alt. The validator reports an error there, but RGAA 1.2.1 names role="presentation" on an &lt;img&gt; as a way to mark a decorative image, so whether the audit counts it against 8.2.1 is left to the auditor.
+
+### `rgaa-button-name-present`
+
+**Buttons outside a form have an accessible name**
+
+automatic · no formal WCAG SC mapping · confidence high · default severity serious
+
+Checks that each button outside a form has an accessible name, which RGAA 7.1.1 requires of a scripted interface component.
+
+**Applies to.** Applies to buttons (&lt;button&gt;, &lt;input&gt; of type submit, reset, button or image, and role="button") that sit outside any form: not inside a &lt;form&gt; or an element with role="form", and not joined to one through a form attribute. Buttons in a form are rgaa-form-button-name-present's (11.9.1). A button hidden from assistive technologies, or whose explicit role is another one, is out of scope. A page with no such button is notApplicable.
+
+**Expectation.** The button has an accessible name: an aria-labelledby passage, an aria-label, the alt of an image button, the value of an &lt;input&gt; button, its content (an image's alt, an &lt;svg&gt;'s &lt;title&gt; and the like count), or a title. A button outside a form does something only through script, so it is an interface component that RGAA 7.1.1 covers, whose name must reach assistive technologies (step 2); one with no name fails.
 
 ### `rgaa-canvas-decorative-aria-hidden`
 

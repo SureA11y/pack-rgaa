@@ -154,7 +154,8 @@ test(`${RULE_ID}: WCAG fails a replaced name outside a form, RGAA 11.9 does not 
   const r = rollups('<button aria-label="Fermer la fenêtre">Valider</button>');
   assert.equal(r.wcag, 'fail');
   assert.equal(r.rgaa, 'notApplicable');
-  assert.deepEqual(r.others, ['notApplicable', 'notApplicable', 'notApplicable']);
+  // 7.1 now judges the button's name (rgaa-button-name-present), which it has.
+  assert.deepEqual(r.others, ['notApplicable', 'notApplicable', 'pass']);
 });
 
 test(`${RULE_ID}: a title without the label is outside WCAG 2.5.3, RGAA 11.9 asks`, () => {

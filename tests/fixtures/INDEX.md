@@ -4,13 +4,13 @@ This pack's rules and their scenario pages. Every rule should have a `tests/fixt
 
 ## Summary
 
-Total rules: **69**. With fixture: **69**. Without fixture: **0**.
+Total rules: **70**. With fixture: **70**. Without fixture: **0**.
 
 ## Rules WITHOUT a fixture (0)
 
 None — every rule has a fixture.
 
-## Rules WITH a fixture (69)
+## Rules WITH a fixture (70)
 
 | Rule ID | Type | Fixture | Cases | PASS | FAIL | CANTTELL | OTHER |
 |---|---|---|---:|---:|---:|---:|---:|
@@ -18,6 +18,7 @@ None — every rule has a fixture.
 | rgaa-aria-attribute-conformance | automatic | `tests/fixtures/rgaa-aria-attribute-conformance-all-scenarios.html` | 19 | 5 | 14 | 0 | 0 |
 | rgaa-aria-list-item-roles | automatic | `tests/fixtures/rgaa-aria-list-item-roles-all-scenarios.html` | 6 | 1 | 0 | 3 | 2 |
 | rgaa-aria-role-conformance | automatic | `tests/fixtures/rgaa-aria-role-conformance-all-scenarios.html` | 20 | 5 | 14 | 1 | 0 |
+| rgaa-button-name-present | automatic | `tests/fixtures/rgaa-button-name-present-all-scenarios.html` | 9 | 2 | 3 | 1 | 3 |
 | rgaa-canvas-decorative-aria-hidden | automatic | `tests/fixtures/rgaa-canvas-decorative-aria-hidden-all-scenarios.html` | 8 | 2 | 3 | 1 | 2 |
 | rgaa-canvas-role-img | automatic | `tests/fixtures/rgaa-canvas-role-img-all-scenarios.html` | 9 | 2 | 3 | 2 | 2 |
 | rgaa-complex-table-summary | manual | `tests/fixtures/rgaa-complex-table-summary-all-scenarios.html` | 8 | 0 | 0 | 0 | 8 |

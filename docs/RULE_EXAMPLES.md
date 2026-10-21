@@ -96,6 +96,22 @@ Both roles are ones the W3C validator accepts, and allowed on their elements; th
 ```
 The validator reports the unknown token `bogus` even though `button` follows it as a fallback (WCAG's `aria-roles-valid` passes on one valid token), and `role="tab"` is not allowed on `<nav>`. Both fail RGAA 8.2.1. An `<img alt="" role="presentation">` is asked about instead: the validator reports it, but RGAA 1.2.1 names `role="presentation"` for decorative images.
 
+## rgaa-button-name-present
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Passed**
+```html
+<button type="button" aria-label="Fermer le menu">×</button>
+```
+The button outside any form has a name, its `aria-label`.
+
+**Failed**
+```html
+<button type="button"><img src="menu.svg" alt=""></button>
+```
+The button outside any form has no name: as a component driven by script, it fails RGAA 7.1.1. The same empty button inside a `<form>` is `rgaa-form-button-name-present`'s, under 11.9.1.
+
 ## rgaa-canvas-decorative-aria-hidden
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*

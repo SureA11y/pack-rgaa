@@ -185,11 +185,15 @@ const RGAA_RULE_TESTS = {
     },
     'button-name-present': {
       tests: [],
-      note: 'Flags button, input button/submit/reset and role=button with an empty accessible name. Not mapped to 11.9.1: that test covers only the buttons inside a form (a <form> or role="form"), and most unnamed buttons are outside one; rgaa-form-button-name-present reports the buttons in a form there. Not mapped to 7.1.1 either: it passes when an accessible alternative exists, so a failure under it is not certain.'
+      note: 'Flags button, input button/submit/reset and role=button with an empty accessible name. Not mapped to 11.9.1: that test covers only the buttons inside a form (a <form> or role="form"), and most unnamed buttons are outside one; rgaa-form-button-name-present reports the buttons in a form there. Not mapped to 7.1.1 either: rgaa-button-name-present reports the buttons outside forms there, so an empty button counts once.'
     },
     'bypass-blocks-present': {
       tests: ['12.6.1'],
       note: 'Raises a review question only when the page has no exposed <main>/role=main, no working same-page anchor link and no visible heading. WCAG 2.4.1 is met by one bypass mechanism for the page, while 12.6.1 asks for one in each area (header, main navigation, main content, footer, search), so a page this rule leaves alone can still miss 12.6.1. It is linked to 12.6.1 as a question: on a page with none of them, no area can be reached by a landmark, a heading or a link. rgaa-page-zones-reachable reports 12.6.1 area by area, and is the rule that can fail it.'
+    },
+    'rgaa-button-name-present': {
+      tests: ['7.1.1'],
+      note: 'Fails a button outside any form (not in a <form> or role="form", not joined to one by its form attribute) that has no accessible name. A button outside a form acts only through script, so it is an interface component 7.1.1 covers, and its name must reach assistive technologies (step 2). The buttons in a form are rgaa-form-button-name-present under 11.9.1, so an empty button counts once. 7.1.1 still passes when an accessible component offers the same function elsewhere, which no rule can find. Asks about an image button the browser names only with a generic Submit.'
     },
     'rgaa-canvas-decorative-aria-hidden': {
       tests: ['1.2.5'],
