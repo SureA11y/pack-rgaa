@@ -208,8 +208,11 @@ test(`${RULE_ID}: a main landmark satisfies WCAG 2.4.1 but not RGAA 12.7`, () =>
     rgaa127.meta.normativeMappings.filter((m) => m.standard === 'RGAA').map((m) => m.requirement),
     ['12.7.1']
   );
-  // bypass-blocks-present links no RGAA test: rgaa-page-zones-reachable reports 12.6.1.
-  assert.deepEqual(rule('bypass-blocks-present').rollupIds, ['wcag-2.4.1-bypass-blocks']);
+  // bypass-blocks-present asks under 12.6.1 only; 12.7 is not its criterion.
+  assert.deepEqual(rule('bypass-blocks-present').rollupIds, [
+    'wcag-2.4.1-bypass-blocks',
+    'rgaa-4.1.2-12.6'
+  ]);
   assert.ok(!rgaa127.data.details.checksIds.includes('bypass-blocks-present'));
 });
 

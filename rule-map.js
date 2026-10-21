@@ -86,7 +86,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-aria-attribute-conformance': {
       tests: ['8.2.1'],
-      note: 'Fails, hidden content included, what the W3C validator (version 26.9.27) reports about aria-* attributes: an unknown name, an invalid value (empty, misspelt or out of range, an aria-activedescendant pointing to nothing), an attribute the role or element does not support (aria-pressed on a link, aria-sort on a native td, aria-expanded on a details summary), a name on an element that cannot be named (aria-label on a div, span, p or caption), aria-checked on a native checkbox or radio, a state that contradicts a native attribute, and a missing required attribute even where ARIA gives a default (role=heading without aria-level). That is 8.2.1 step 2, attributes and values following the writing rules. It passes what the validator accepts: aria-expanded on a heading, an aria-describedby that points to nothing.'
+      note: 'Fails, hidden content included, what the W3C validator (version 26.9.27) reports about aria-* attributes: an unknown name, an invalid value (empty, misspelt or out of range, an aria-activedescendant pointing to nothing), an attribute the role or element does not support (aria-pressed on a link, aria-sort on a native td, aria-expanded on a details summary), a name on an element that cannot be named (aria-label on a div, span, p or caption), aria-checked on a native checkbox or radio, a state that contradicts a native attribute, and a missing required attribute even where ARIA gives a default (role=heading without aria-level). That is 8.2.1, whose test asks whether the generated source is valid for its document type, judged by the W3C validator (step 1): the pack counts every error the validator reports as an 8.2.1 failure, though the glossary « Règles d’écriture » names only syntax. It passes what the validator accepts: aria-expanded on a heading, an aria-describedby that points to nothing.'
     },
     'aria-braille-equivalent': {
       tests: [],
@@ -138,7 +138,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-aria-role-conformance': {
       tests: ['8.2.1'],
-      note: 'Fails, hidden content included, what the W3C validator (version 26.9.27) reports about role attributes: an empty value, a token that is not a role it accepts (misspelt, abstract, written with capitals, alone or in a list), a role not allowed on the element (tab on nav, navigation on main, any role on a native td), and an img with a role and an empty or missing alt. That is 8.2.1 step 2, attribute values following the writing rules. An img with role="presentation" and an empty or missing alt is asked about: the validator reports it, but RGAA 1.2.1 names that markup for decorative images.'
+      note: 'Fails, hidden content included, what the W3C validator (version 26.9.27) reports about role attributes: an empty value, a token that is not a role it accepts (misspelt, abstract, written with capitals, alone or in a list), a role not allowed on the element (tab on nav, navigation on main, any role on a native td), and an img with a role and an empty or missing alt. That is 8.2.1, whose test asks whether the generated source is valid for its document type, judged by the W3C validator (step 1): the pack counts every error the validator reports as an 8.2.1 failure, though the glossary « Règles d’écriture » names only syntax. An img with role="presentation" and an empty or missing alt is asked about: the validator reports it, but RGAA 1.2.1 names that markup for decorative images.'
     },
     'aria-role-name-present': {
       tests: ['7.1.1', '11.6.1'],
@@ -173,7 +173,7 @@ const RGAA_RULE_TESTS = {
     },
     'autocomplete-valid': {
       tests: ['11.13.1'],
-      note: 'Fails a non-empty autocomplete value that is not on/off or a well-formed autofill token list. A field name that does not suit its control (street-address on a single-line input) passes, as browsers still derive the purpose from it and ACT 73f2c2 leaves that out; rgaa-html-elements-attributes-valid reports it under 8.2.1, where the W3C validator does. That covers the 11.13.1 step-2 condition that the value is in the list of allowed values; it does not check that the attribute is present or relevant. Not linked to 8.2.1: the rule exempts disabled fields and fixed-value input types, which the W3C validator still checks; rgaa-html-elements-attributes-valid reports invalid autocomplete values under 8.2.1.'
+      note: 'Fails a non-empty autocomplete value that is not on/off or a well-formed autofill token list. A field name that does not suit its control (street-address on a single-line input) passes, as browsers still derive the purpose from it and ACT 73f2c2 leaves that out; rgaa-html-elements-attributes-valid reports it under 8.2.1, where the W3C validator does. It checks the WHATWG grammar, which accepts more than RGAA: on, off, one-time-code and a trailing webauthn pass here though the list RGAA uses (the field names of WCAG 2.1, glossary « Liste des valeurs possibles pour l’attribut autocomplete ») has none of them. So a failure is certain for 11.13.1 step 2, and a pass is not; the rule does not check that the attribute is present or relevant. Not linked to 8.2.1: the rule exempts disabled fields and fixed-value input types, which the W3C validator still checks; rgaa-html-elements-attributes-valid reports invalid autocomplete values under 8.2.1.'
     },
     'avoid-inline-spacing': {
       tests: ['10.12.1'],
@@ -188,8 +188,8 @@ const RGAA_RULE_TESTS = {
       note: 'Flags button, input button/submit/reset and role=button with an empty accessible name. Not mapped to 11.9.1: that test covers only the buttons inside a form (a <form> or role="form"), and most unnamed buttons are outside one; rgaa-form-button-name-present reports the buttons in a form there. Not mapped to 7.1.1 either: it passes when an accessible alternative exists, so a failure under it is not certain.'
     },
     'bypass-blocks-present': {
-      tests: [],
-      note: 'Raises a review question only when the page has no exposed <main>/role=main, no working same-page anchor link and no visible heading. WCAG 2.4.1 is met by one bypass mechanism for the page, while 12.6.1 asks for one in each area (header, main navigation, main content, footer, search), so a page this rule leaves alone can still miss 12.6.1. rgaa-page-zones-reachable reports 12.6.1 area by area.'
+      tests: ['12.6.1'],
+      note: 'Raises a review question only when the page has no exposed <main>/role=main, no working same-page anchor link and no visible heading. WCAG 2.4.1 is met by one bypass mechanism for the page, while 12.6.1 asks for one in each area (header, main navigation, main content, footer, search), so a page this rule leaves alone can still miss 12.6.1. It is linked to 12.6.1 as a question: on a page with none of them, no area can be reached by a landmark, a heading or a link. rgaa-page-zones-reachable reports 12.6.1 area by area, and is the rule that can fail it.'
     },
     'rgaa-canvas-decorative-aria-hidden': {
       tests: ['1.2.5'],
@@ -255,16 +255,16 @@ const RGAA_RULE_TESTS = {
       note: 'Fails an @media (orientation) block that rotates the page by about 90 degrees, a known way to force one orientation. That is direct evidence that viewing is not possible in both portrait and landscape (13.9.1 step 2). An orientation block that hides the main content (a "rotate your device" message) is asked about. The essential-orientation exception still needs a human.'
     },
     'rgaa-data-table-headers-review': {
-      tests: ['5.6.1', '5.6.2'],
-      note: 'Asks about a table of at least two rows and two columns that has no header cell at all (no <th>, no columnheader or rowheader role), and is not role="presentation" or "none". If it is a data table, its headers over a whole column or row fail 5.6.1 or 5.6.2 unless marked with <th> or those roles; only a person can say whether it is a data table and which cells are headers. A table with at least one header is not asked about.'
+      tests: ['5.3.1', '5.6.1', '5.6.2'],
+      note: 'Asks about a table of at least two rows and two columns that has no header cell at all (no <th>, no columnheader or rowheader role), and is not role="presentation" or "none". If it is a data table, its headers over a whole column or row fail 5.6.1 or 5.6.2 unless marked with <th> or those roles; only a person can say whether it is a data table and which cells are headers. Whether it is a layout table is 5.3.1 too, whose second condition is that a layout table has role="presentation": the question bears on it, and the hint says to add that role if the table is for layout. A table with at least one header is not asked about.'
     },
     'definition-list-children-valid': {
       tests: ['9.3.3'],
       note: 'Fails a <dl> whose children are not dt/dd groups (one wrapping div allowed), that has text directly inside it, or whose dt/dd set is unbalanced or out of order (a dd before the first dt, a dt after the last dd), so the description list is not correctly built from <dl>/<dt>/<dd>, which is step 2 of 9.3.3. Not linked to 8.2.1: the rule accepts some content the HTML content model rejects (such as a <style> child) and skips hidden lists; rgaa-html-nesting-valid reports the dl content model under 8.2.1.'
     },
     'deprecated-elements-not-used': {
-      tests: [],
-      note: 'Asks about each <marquee>, the only element it reports (<blink> is left out, since no browser makes it blink). Not mapped to 10.1.1, where rgaa-presentational-elements-absent already reports <marquee> and <blink>: linking both would count the same element twice. Not mapped to 8.2.1: rgaa-html-elements-attributes-valid fails every obsolete element there, hidden ones included, and a question on the same <marquee> would count it twice. Not mapped to 13.8.1/13.8.2: even a <marquee> that can be paused passes 13.8.1, so moving content is left to the auditor.'
+      tests: ['13.8.1'],
+      note: 'Asks about each <marquee>, the only element it reports (<blink> is left out, since no browser makes it blink). Not mapped to 10.1.1, where rgaa-presentational-elements-absent already reports <marquee> and <blink>: linking both would count the same element twice. Not mapped to 8.2.1: rgaa-html-elements-attributes-valid fails every obsolete element there, hidden ones included, and a question on the same <marquee> would count it twice. Linked to 13.8.1 as a question: a <marquee> is moving content started automatically, and whether it lasts under 5 seconds or can be paused, stopped or hidden is what 13.8.1 asks and only a person can tell. Not mapped to 13.8.2, which is about content that blinks.'
     },
     'dialog-name-present': {
       tests: ['7.1.1'],
@@ -344,11 +344,11 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-focus-indicator-contrast': {
       tests: ['10.7.1'],
-      note: "Fails an element in the tab order whose native outline a focus rule replaces or removes, when every outline, border and box-shadow of its focus style is below 3:1 against both the background behind it and the element's own background, and nothing else changes on focus. That is the contrast part of 10.7.1 step 2 (« suffisamment contrastée (ratio de contraste égal ou supérieur à 3.0) »). It asks when a color, a background or the cascade cannot be worked out, when the indicator reaches 3:1 on one side only, or when the focus style is something else (background, text color, another element). An element that keeps the browser's outline meets condition 1 and is not checked. In a browser the element is focused and the rendered indicator is measured against what is painted on each side, so variables, @media and the cascade are settled there."
+      note: "Fails an element in the tab order whose native outline a focus rule replaces or removes, when every outline, border and box-shadow of its focus style is below 3:1 against both the background behind it and the element's own background, and nothing else changes on focus. That is the contrast part of 10.7.1 step 2 (« suffisamment contrastée (ratio de contraste égal ou supérieur à 3:1) »). It asks when a color, a background or the cascade cannot be worked out, when the indicator reaches 3:1 on one side only, or when the focus style is something else (background, text color, another element). An element that keeps the browser's outline meets condition 1 and is not checked. In a browser the element is focused and the rendered indicator is measured against what is painted on each side, so variables, @media and the cascade are settled there."
     },
     'focus-order-semantics': {
-      tests: [],
-      note: 'Flags elements with tabindex>=0 and a non-interactive explicit role (heading, list, region...). When such an element is a scripted control, 7.1.1 step 2 (role consistent with its use) directly applies. Legitimately focusable elements such as scrollable regions make this only partial evidence. Not mapped to 7.1.1: only evidence when the element is a scripted component. Not mapped to 12.8.1 (where other RGAA tools put this check): 12.8.1 checks that the tab order is coherent, not the role of what receives focus.'
+      tests: ['7.1.1'],
+      note: 'Flags elements with tabindex>=0 and a non-interactive explicit role (heading, list, region...). When such an element is a scripted control, 7.1.1 step 2 (role consistent with its use) directly applies. Legitimately focusable elements such as scrollable regions make this only partial evidence. Linked to 7.1.1 as a question (is a script driving this element, and is its role the right one?): an element given a tab stop with a non-interactive role is nearly always made interactive by script. Not mapped to 12.8.1 (where other RGAA tools put this check): 12.8.1 checks that the tab order is coherent, not the role of what receives focus.'
     },
     'rgaa-form-button-label-in-name-sources': {
       tests: ['11.9.2'],
@@ -368,7 +368,7 @@ const RGAA_RULE_TESTS = {
     },
     'form-control-programmatic-label-quality': {
       tests: ['11.1.3', '11.2.2'],
-      note: 'Asks about native input/select/textarea controls whose only name is a placeholder, a title, an aria-label, or aria-labelledby pointing only at hidden text; a control not drawn on screen (transparent or clipped away) is left out. Those are the labels 11.1.3 covers, a label that is not visible (masqué, aria-label): its step asks whether a title, or text next to the field, makes the expected input understandable, which only a person can tell. 11.2.2 asks whether a title is relevant (other RGAA tools review title-labelled fields there). Not mapped to 11.1.1: a placeholder-only field meets none of the 11.1.1 conditions, and rgaa-field-label-listed-source fails it there. The rule is filed under WCAG 3.3.2, which RGAA relates to 11.2.'
+      note: 'Asks about native input/select/textarea controls whose only name is a placeholder, a title, an aria-label, or aria-labelledby pointing only at hidden text; a control not drawn on screen (transparent or clipped away) is left out. Those are some of the labels 11.1.3 covers: a visually hidden (clipped) <label>, its main case, is not asked about here. Its step asks whether a title, or text next to the field, makes the expected input understandable, which only a person can tell. 11.2.2 asks whether a title is relevant (other RGAA tools review title-labelled fields there). Not mapped to 11.1.1: a placeholder-only field meets none of the 11.1.1 conditions, and rgaa-field-label-listed-source fails it there. The rule is filed under WCAG 3.3.2, which RGAA relates to 11.2.'
     },
     'form-control-single-label': {
       tests: [],
@@ -423,8 +423,18 @@ const RGAA_RULE_TESTS = {
       note: 'Flags iframe/frame elements that share an accessible name but embed different resources (WCAG 4.1.2). Not linked to 2.2.1, which judges only the title attribute: this rule groups frames by accessible name, which may come from aria-label. rgaa-frame-title-not-empty fails an empty title under 2.2.1; whether a non-empty title is relevant is for a person.'
     },
     'identical-links-same-purpose': {
-      tests: [],
-      note: 'Asks whether links with the same name but different destinations serve the same purpose (WCAG 2.4.9 AAA, which RGAA does not cover). RGAA 6.1.x accepts context as a way to make a link explicit, so two same-named links with different targets are not direct evidence that either one fails 6.1.1 to 6.1.3.'
+      tests: ['6.1.1', '6.1.2', '6.1.3', '6.1.4'],
+      note: 'Asks whether links with the same name but different destinations serve the same purpose. The RGAA glossary (« Intitulé de lien », note 3) says that links with the same label and different destinations are not explicit unless their context tells them apart, so the question bears on 6.1.1 to 6.1.4: a person checks whether a context RGAA accepts does. A question, so never a failure.',
+      outsideCorrespondence: {
+        '6.1.1':
+          'The glossary « Intitulé de lien » (note 3) makes same-named links with different destinations a question of 6.1.x; the engine files the check under WCAG 2.4.9 (link purpose from the link alone), while RGAA relates 6.1 to 2.4.4.',
+        '6.1.2':
+          'The glossary « Intitulé de lien » (note 3) makes same-named links with different destinations a question of 6.1.x; the engine files the check under WCAG 2.4.9 (link purpose from the link alone), while RGAA relates 6.1 to 2.4.4.',
+        '6.1.3':
+          'The glossary « Intitulé de lien » (note 3) makes same-named links with different destinations a question of 6.1.x; the engine files the check under WCAG 2.4.9 (link purpose from the link alone), while RGAA relates 6.1 to 2.4.4.',
+        '6.1.4':
+          'The glossary « Intitulé de lien » (note 3) makes same-named links with different destinations a question of 6.1.x; the engine files the check under WCAG 2.4.9 (link purpose from the link alone), while RGAA relates 6.1 to 2.4.4.'
+      }
     },
     'iframe-focusable-content': {
       tests: [],
@@ -440,7 +450,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-image-alt-long': {
       tests: ['1.3.9'],
-      note: 'Asks about an image (<img>, <area>, <input type="image">, <svg>, <canvas>, <object>, <embed> or role="img") whose text alternative (alt, aria-label, aria-labelledby, title, or an svg\'s <title>) is longer than 80 characters, for 1.3.9 (short and concise, particular cases aside). RGAA gives no number; 80 is a threshold for asking.'
+      note: 'Asks about an image (<img>, <area>, <input type="image">, <svg>, <canvas>, <object>, <embed> or role="img") whose text alternative (alt, aria-label, aria-labelledby, title, or an svg\'s <title>) is longer than 80 characters, for 1.3.9 (short and concise, particular cases aside). 80 characters is the maximum the RGAA glossary entry « Alternative courte et concise » strongly recommends; a longer one is asked about. A long description belongs in a detailed description (1.6, 1.7).'
     },
     'image-redundant-alt': {
       tests: ['1.3.1'],
@@ -594,12 +604,12 @@ const RGAA_RULE_TESTS = {
       note: 'Steps 4 and 5 of 9.2.1 on HTML5 pages: fails role="main" with no <main> element (step 4), and a second <main> that has no hidden attribute, even if CSS or aria-hidden hides it (step 5 and the 9.2 technical note). Asks when the page has neither <main> nor role="main", or when a <main> is hidden only by an ancestor. Not applicable when the doctype is not HTML5 (9.2 particular case). Steps 1 to 3 and 6 are not checked.'
     },
     'manual-review': {
-      tests: ['12.8.1', '12.9.1', '10.7.1'],
-      note: 'Always-on page-level prompt to review by keyboard whether focus can leave every component (12.9.1 step 2), whether tab order is coherent (12.8.1 step 2) and whether the focus indicator is visible (10.7.1). It is a reminder only and gives no finding on any element.'
+      tests: ['12.8.1', '12.8.2', '12.9.1', '10.7.1'],
+      note: 'Always-on page-level prompt to review by keyboard whether focus can leave every component (12.9.1 step 2), whether tab order is coherent (12.8.1 step 2), also after a script adds or opens content (12.8.2, whose glossary entry « Ordre de tabulation » asks to activate what triggers it) and whether the focus indicator is visible (10.7.1). It is a reminder only and gives no finding on any element.'
     },
     'rgaa-markup-validation-review': {
       tests: ['8.2.1'],
-      note: "Reads the W3C validator report on the generated source, given as the validator.report probe, which is 8.2.1 step 1 (« activer l'option W3C Nu markup checker » on « le code source généré »), and fails each error it lists, CSS messages and warnings aside; a clean report passes. Without a report, with one on the original source (whose errors the parser may repair, and which scripts may change), or with one cut at the engine's 200-item limit, it asks, since the DOM does not show what the parser repaired and the other 8.2.1 rules cover only part of the test."
+      note: "Reads the W3C validator report on the generated source, given as the validator.report probe, which is 8.2.1 step 1 (« activer l'option W3C Nu markup checker » on « le code source généré »), and fails each error it lists, CSS messages and warnings aside; a clean report passes. Without a report, with one on the original source (whose errors the parser may repair, and which scripts may change), or with one cut at the engine's 200-item limit, it asks, since the DOM does not show what the parser repaired and the other 8.2.1 rules cover only part of the test. With a report, the defects the DOM rules also fail under 8.2.1 (duplicate ids, obsolete elements, ARIA and nesting errors) are counted by both: the criterion fails either way."
     },
     'media-alternative-transcript-evidence': {
       tests: [],
@@ -651,7 +661,7 @@ const RGAA_RULE_TESTS = {
     },
     'no-autoplay-audio': {
       tests: ['4.10.1'],
-      note: 'Flags unmuted autoplaying <audio>/<video> with no native controls, and every <bgsound> and every <embed> or <object> that loads sound, video or a plugin, and asks about the 3-second rule and a stop or volume mechanism. That is 4.10.1 step 1, which lists those five elements. Sound started by a script is not detected.'
+      note: 'Flags unmuted autoplaying <audio>/<video> with no native controls, and every <bgsound> and every <embed> or <object> that loads sound, video or a plugin, and asks about the 3-second rule and a stop or volume mechanism. Those are the elements the wording of 4.10.1 and the note of its methodology list. Sound started by a script is not detected.'
     },
     'rgaa-object-image-role-img': {
       tests: ['1.1.6'],
@@ -663,7 +673,7 @@ const RGAA_RULE_TESTS = {
     },
     'object-text-alternative-quality': {
       tests: ['1.3.4'],
-      note: "Asks a human to judge the relevance of an <object>'s title, ARIA name or fallback content, which is 1.3.4 step 2 (fallback content is explicitly listed there). Scope mismatch: 1.3.4 only covers image objects."
+      note: "Asks a human to judge the relevance of an <object>'s title, ARIA name or fallback content, which is 1.3.4 step 2; fallback content is one of the conditions of the test (« S’il est présent le contenu alternatif est pertinent »). Scope mismatch: 1.3.4 only covers image objects."
     },
     'rgaa-office-document-link': {
       tests: ['13.3.1'],
@@ -690,8 +700,8 @@ const RGAA_RULE_TESTS = {
       note: 'Flags short <p> text, and short <div> text with only inline markup inside, that is entirely bold (however the bold is applied) and at least 18px, asking whether it is a visual heading without <hx>/role=heading markup. That is the 9.1.3 question: is each passage that acts as a heading structured with <hx> or role=heading plus aria-level?'
     },
     'page-has-heading-one': {
-      tests: [],
-      note: 'Flags pages with no h1 or role=heading aria-level=1. RGAA does not explicitly require an h1, but a missing top level is evidence the auditor weighs in 9.1.1 step 2 (whether the heading hierarchy is relevant). Not mapped to 9.1.1: RGAA does not require an h1.'
+      tests: ['9.1.1'],
+      note: 'Flags pages with no h1 or role=heading aria-level=1. RGAA does not explicitly require an h1, but a missing top level is evidence the auditor weighs in 9.1.1 step 2 (whether the heading hierarchy is relevant), so it is linked there as a question: is the hierarchy relevant without a level-1 heading?'
     },
     'rgaa-page-language-present': {
       tests: ['8.3.1'],
@@ -755,7 +765,7 @@ const RGAA_RULE_TESTS = {
     },
     'scope-attr-valid': {
       tests: ['5.7.2'],
-      note: 'Flags scope values other than row/col/rowgroup/colgroup. On a th with an invalid scope, 5.7.2 fails because it requires scope="row" or scope="col". The rule accepts rowgroup/colgroup, so it covers only part of 5.7.2. Not linked to 8.2.1: the rule trims values and skips empty ones, which the validator rejects; rgaa-html-elements-attributes-valid reports scope values under 8.2.1.'
+      note: 'Flags scope values other than row/col/rowgroup/colgroup. On a th with an invalid scope, 5.7.2 fails because it requires scope="row" or scope="col". The rule accepts rowgroup/colgroup, so it covers only part of 5.7.2. Not linked to 8.2.1: the rule skips empty values, which the validator rejects; rgaa-html-elements-attributes-valid reports scope values under 8.2.1.'
     },
     'rgaa-scripted-components-review': {
       tests: ['7.1.1', '7.1.2', '7.1.3'],
@@ -779,7 +789,7 @@ const RGAA_RULE_TESTS = {
     },
     'skip-link': {
       tests: ['12.7.1', '12.7.2'],
-      note: "Flags skip links whose #fragment does not resolve to a usable target. A skip link is recognised by its wording in the shipped locales ('skip', 'aller au contenu', 'accès direct', 'zum Inhalt springen', 'saltar al contenido', '本文へ') or as the first link of the page placed before main. A dead skip link means the main zone cannot be skipped, which bears on 12.7.1 (where other RGAA tools report a broken skip link), and it fails 12.7.2's condition that the link works ('Le lien est fonctionnel'). The rule does not check the link's visibility or its place across pages, which rgaa-skip-link-placement checks, and a skip link can target zones other than main."
+      note: "Flags skip links whose #fragment does not resolve to a usable target. A skip link is recognised by its wording in the shipped locales ('skip', 'aller au contenu', 'accès direct', 'zum Inhalt springen', 'saltar al contenido', '本文へ') or as the first link of the page placed before main. A dead skip link means the main zone cannot be skipped, which bears on 12.7.1 (where other RGAA tools report a broken skip link), and it bears on the condition of 12.7.2 that the link works (« Le lien est fonctionnel »); the rule asks, it never fails. The rule does not check the link's visibility or its place across pages, which rgaa-skip-link-placement checks, and a skip link can target zones other than main."
     },
     'rgaa-skip-link-placement': {
       tests: ['12.7.2'],
@@ -787,7 +797,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-skip-link-present': {
       tests: ['12.7.1'],
-      note: 'Fails a page whose navigation block comes before the visible <main> when no same-page link leads to the main content zone (to <main>, or to an element just before or at the start of it), and a skip link whose target does not exist. That is 12.7.1 step 2: the zone can be skipped or reached by a link. Asks when no navigation comes before the zone (the one-page particular case), and on a skip link whose target is hidden or not at the start of the zone. Whether the link is visible on focus is left to 12.7.2.'
+      note: 'Fails a page whose navigation block comes before the visible <main> when no same-page link leads to the main content zone (to <main>, or to an element just before or at the start of it), and a skip link whose target does not exist. That is 12.7.1 step 2: the zone can be skipped or reached by a link. Asks when no navigation comes before the zone (the one-page particular case), and on a skip link whose target is hidden or not at the start of the zone. Whether the link becomes visible on focus, which 12.7.1 also requires of a quick-access link that is not directly before the zone, is not checked; rgaa-skip-link-placement and the auditor see to it.'
     },
     'slider-name-present': {
       tests: [],

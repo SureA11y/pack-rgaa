@@ -113,7 +113,8 @@ test(`${RULE_ID}: WCAG 2.4.1 finds a bypass in <main>, RGAA 12.6 asks about the 
   assert.notEqual(rollup('wcag-2.4.1-bypass-blocks').outcome, 'cantTell');
   assert.equal(rollup('rgaa-4.1.2-12.6').outcome, 'cantTell');
   assert.deepEqual(RGAA_RULE_TESTS['4.1.2'][RULE_ID].tests, ['12.6.1']);
-  assert.deepEqual(RGAA_RULE_TESTS['4.1.2']['bypass-blocks-present'].tests, []);
+  // bypass-blocks-present asks under 12.6.1 only on a page with no bypass at all.
+  assert.deepEqual(RGAA_RULE_TESTS['4.1.2']['bypass-blocks-present'].tests, ['12.6.1']);
 });
 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html)`, () => {
