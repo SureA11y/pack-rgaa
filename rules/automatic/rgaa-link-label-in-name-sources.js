@@ -24,6 +24,10 @@
  *   punctuation and capital letters are ignored. Accents are not folded.
  *   A source that does not contain the visible label fails.
  * @implementation-notes
+ * - Text that is rendered but drawn so that nothing of it can be seen, the
+ *   screen-reader-only patterns (clipped, 1px with its overflow hidden,
+ *   transparent; core's helpers.isVisuallyHidden), is not part of the
+ *   visible label, though assistive technologies read it.
  * - Asks (cantTell) instead of failing when the visible label may be a
  *   symbol, which the particular cases let the name express by its function
  *   rather than literally: a single character absent from the source, or
@@ -205,11 +209,25 @@ function runInPage(ctx) {
 
   const SHOW_TEXT = 4;
 
+  // Rendered and in the accessibility tree but drawn so that nothing can be
+  // seen: the screen-reader-only patterns (clipped, 1px with overflow
+  // hidden, transparent), which are not part of a visible label.
+  function isVisuallyHidden(el) {
+    if (!el || !helpers || typeof helpers.isVisuallyHidden !== 'function') return false;
+    try {
+      return !!helpers.isVisuallyHidden(el);
+    } catch {
+      return false;
+    }
+  }
+
   // The text a person sees in `container`, in document order. With
   // `visibleOnly` false, hidden text counts too (the content of a source).
   function textUnder(container, visibleOnly) {
     if (!container) return { text: '', elements: [] };
-    if (visibleOnly && !isDomVisible(container)) return { text: '', elements: [] };
+    if (visibleOnly && (!isDomVisible(container) || isVisuallyHidden(container))) {
+      return { text: '', elements: [] };
+    }
     let walker;
     try {
       walker = dom.createTreeWalker(document, container, SHOW_TEXT, null);
@@ -230,7 +248,7 @@ function runInPage(ctx) {
       let skip = false;
       for (let a = p; a && a !== container; a = dom.parentElement(a)) {
         const tag = tagOf(a);
-        if (isNonRenderedTag(tag) || isControlTag(tag)) {
+        if (isNonRenderedTag(tag) || isControlTag(tag) || (visibleOnly && isVisuallyHidden(a))) {
           skip = true;
           break;
         }
