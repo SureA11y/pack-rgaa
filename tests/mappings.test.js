@@ -210,6 +210,17 @@ test("the real table is sound against the engine's rules", () => {
   assert.deepEqual(validateRgaaRuleTests(rules), []);
 });
 
+// A new core rule must be a decision, not a silent gap: every rule core
+// runs has a row, with tests: [] and a note when it checks no RGAA test.
+test('every rule core runs has a row in the table', () => {
+  const map = RGAA_RULE_TESTS['4.1.2'];
+  const missing = core
+    .getChecksCatalog()
+    .map((r) => r.ruleId)
+    .filter((id) => !id.startsWith('wcag-') && !map[id]);
+  assert.deepEqual(missing, []);
+});
+
 test('the image button, the title-only field and the labelled decorative image name their RGAA tests', () => {
   const { runa11yCoreOnHtml } = require('./helpers/run.js');
   const html =
@@ -295,4 +306,20 @@ test('an exception on one rule does not carry over to another rule linked to the
       assert.deepEqual(rgaaMappingsFor({ id: 'probe-other', wcagSc: ['2.1.1'] }), []);
     }
   );
+});
+
+// 7.3.1 condition 2 passes an element whose action another keyboard-operable
+// control offers, so core's failure is a question under RGAA.
+test('click-handler-keyboard-operable fails WCAG 2.1.1 and asks under RGAA 7.3', () => {
+  const { runa11yCoreOnHtml } = require('./helpers/run.js');
+  const html =
+    '<!doctype html><html lang="fr"><head><title>t</title></head><body><main>' +
+    '<span role="button" onclick="go()">Envoyer</span>' +
+    '</main></body></html>';
+  const result = runa11yCoreOnHtml(html, { engineOptions: { profile: 'rgaa-4.1.2-with-wcag' } });
+  const check = result.checksResults.find((r) => r.ruleId === 'click-handler-keyboard-operable');
+  assert.equal(check.outcome, 'fail');
+  const rollup = (id) => result.rulesResults.find((r) => r.ruleId === id).outcome;
+  assert.equal(rollup('wcag-2.1.1-keyboard'), 'fail');
+  assert.equal(rollup('rgaa-4.1.2-7.3'), 'cantTell');
 });

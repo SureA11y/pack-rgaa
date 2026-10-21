@@ -204,6 +204,11 @@ const RGAA_RULE_TESTS = {
       reasonCodes: { noAlternative: { tests: ['1.1.8', '1.2.5'] } },
       note: 'Checks each <canvas> not marked decorative. Passes role="img" with aria-labelledby or aria-label (steps 3 and 4), or, without role="img", fallback content (step 6). Fails a <canvas role="img"> with no ARIA name, since the note of the methodology limits its alternative to step 4, and a canvas named by aria-label or title but with no role, no fallback content and no link or button after it. Asks when a link or button follows the canvas, and about a canvas with nothing at all (noAlternative): it fails 1.1.8 if it carries information and 1.2.5 (no aria-hidden) if it is decorative, as animated backgrounds and chart layers often are, so that question counts toward both tests. A replacement mechanism cannot be detected.'
     },
+    'click-handler-keyboard-operable': {
+      tests: [],
+      asks: ['7.3.1'],
+      note: 'Checks that an element with an inline onclick that is not a native control can take keyboard focus and has a key handler, and fails one that says it is a control (role button, link, checkbox or switch) that Tab never reaches. That is 7.3.1 condition 1 (« l’élément est accessible par le clavier et tout dispositif de pointage ») for a script event handler. Linked as a question: condition 2 also passes an element whose action another keyboard-operable control of the page offers, which the rule cannot see. It only sees inline handlers.'
+    },
     'canvas-text-alternative-present': {
       tests: [],
       note: 'Fails a <canvas> with neither fallback content nor an accessible name, and a <canvas role="img"> with no aria-label, aria-labelledby or title. Not mapped to 1.1.8: RGAA passes a canvas followed by a link or button to an alternative content, which this rule fails, and it accepts an aria-label or title without role="img", which 1.1.8 does not. rgaa-canvas-role-img checks 1.1.8 as RGAA words it, and rgaa-canvas-decorative-aria-hidden checks 1.2.5 for a canvas marked decorative.'
@@ -661,6 +666,10 @@ const RGAA_RULE_TESTS = {
     'meter-name-present': {
       tests: [],
       note: 'Fails an element with explicit role="meter" that has no name from aria-label, aria-labelledby or title. It also fails a <label for> pointing at it, which meets 11.1.1 condition 3. Not mapped to 11.1.1: rgaa-field-label-listed-source reports 11.1.1 for every form field, from the sources 11.1.1 lists only. Not mapped to 7.1.1: it passes when an accessible alternative exists, and a meter is not necessarily script-driven.'
+    },
+    'moving-content-pausable': {
+      tests: ['13.8.1', '13.8.2'],
+      note: 'Asks about each element an animation moves by itself when the page loads, for more than five seconds or without end (a CSS animation or transition, or one a script started): whether the user can stop and restart it, show and hide it, or see all its information without the movement. Those are the conditions of 13.8.1 for moving content and of 13.8.2 for blinking content, which an animation can be either of: which one, and whether a control does it, is for a person. Without a browser nothing is applicable.'
     },
     'mouse-only-event-handlers': {
       tests: ['7.3.1'],

@@ -132,7 +132,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-12.9` | Dans chaque page web, la navigation ne doit pas contenir de piège au clavier. Cette règle est-elle respectée ? | `manual-review` |
 | `rgaa-4.1.2-13.1` | Pour chaque page web, l’utilisateur a-t-il le contrôle de chaque limite de temps modifiant le contenu (hors cas particuliers) ? | `rgaa-embedded-refresh-review`, `rgaa-meta-redirect-immediate`, `rgaa-meta-refresh-no-url-timing` |
 | `rgaa-4.1.2-13.3` | Dans chaque page web, chaque document bureautique en téléchargement possède-t-il, si nécessaire, une version accessible (hors cas particuliers) ? | `rgaa-office-document-link` |
-| `rgaa-4.1.2-13.8` | Dans chaque page web, chaque contenu en mouvement ou clignotant est-il contrôlable par l’utilisateur ? | `deprecated-elements-not-used` |
+| `rgaa-4.1.2-13.8` | Dans chaque page web, chaque contenu en mouvement ou clignotant est-il contrôlable par l’utilisateur ? | `deprecated-elements-not-used`, `moving-content-pausable` |
 | `rgaa-4.1.2-13.9` | Dans chaque page web, le contenu proposé est-il consultable quelle que soit l’orientation de l’écran (portrait ou paysage) (hors cas particuliers) ? | `css-orientation-lock`, `rgaa-orientation-content-parity` |
 | `rgaa-4.1.2-2.1` | Chaque cadre a-t-il un titre de cadre ? | `rgaa-frame-title-attribute-present` |
 | `rgaa-4.1.2-2.2` | Pour chaque cadre ayant un titre de cadre, ce titre de cadre est-il pertinent ? | `rgaa-frame-title-not-empty` |
@@ -151,7 +151,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-6.1` | Chaque lien est-il explicite (hors cas particuliers) ? | `identical-links-same-purpose`, `link-name-quality`, `rgaa-link-context-review`, `rgaa-link-label-in-name-sources` |
 | `rgaa-4.1.2-6.2` | Dans chaque page web, chaque lien a-t-il un intitulé ? | `rgaa-link-content-label-present` |
 | `rgaa-4.1.2-7.1` | Chaque script est-il, si nécessaire, compatible avec les technologies d’assistance ? | `aria-role-name-present`, `dialog-name-present`, `focus-order-semantics`, `menuitem-name-present`, `rgaa-button-name-present`, `rgaa-scripted-components-review`, `rgaa-widget-label-in-name`, `tab-name-present`, `treeitem-name-present` |
-| `rgaa-4.1.2-7.3` | Chaque script est-il contrôlable par le clavier et par tout dispositif de pointage (hors cas particuliers) ? | `mouse-only-event-handlers`, `rgaa-keyboard-only-event-handlers` |
+| `rgaa-4.1.2-7.3` | Chaque script est-il contrôlable par le clavier et par tout dispositif de pointage (hors cas particuliers) ? | `click-handler-keyboard-operable`, `mouse-only-event-handlers`, `rgaa-keyboard-only-event-handlers` |
 | `rgaa-4.1.2-8.1` | Chaque page web est-elle définie par un type de document ? | `rgaa-doctype-position`, `rgaa-doctype-present`, `rgaa-doctype-valid` |
 | `rgaa-4.1.2-8.10` | Dans chaque page web, les changements du sens de lecture sont-ils signalés ? | `rgaa-dir-attribute-valid` |
 | `rgaa-4.1.2-8.2` | Pour chaque page web, le code source généré est-il valide selon le type de document spécifié ? | `duplicate-id`, `rgaa-aria-attribute-conformance`, `rgaa-aria-role-conformance`, `rgaa-html-elements-attributes-valid`, `rgaa-html-nesting-valid`, `rgaa-markup-validation-review` |
