@@ -35,7 +35,7 @@ None — every rule has a fixture.
 | rgaa-field-group-legend | manual | `tests/fixtures/rgaa-field-group-legend-all-scenarios.html` | 10 | 0 | 0 | 0 | 10 |
 | rgaa-field-label-in-name-sources | automatic | `tests/fixtures/rgaa-field-label-in-name-sources-all-scenarios.html` | 12 | 4 | 4 | 1 | 3 |
 | rgaa-field-label-listed-source | automatic | `tests/fixtures/rgaa-field-label-listed-source-all-scenarios.html` | 15 | 4 | 7 | 3 | 1 |
-| rgaa-figure-caption-structure | automatic | `tests/fixtures/rgaa-figure-caption-structure-all-scenarios.html` | 8 | 2 | 4 | 0 | 2 |
+| rgaa-figure-caption-structure | automatic | `tests/fixtures/rgaa-figure-caption-structure-all-scenarios.html` | 12 | 2 | 7 | 0 | 3 |
 | rgaa-focus-indicator-contrast | automatic | `tests/fixtures/rgaa-focus-indicator-contrast-all-scenarios.html` | 11 | 2 | 3 | 4 | 2 |
 | rgaa-form-button-label-in-name-sources | automatic | `tests/fixtures/rgaa-form-button-label-in-name-sources-all-scenarios.html` | 10 | 3 | 3 | 2 | 2 |
 | rgaa-form-button-name-present | automatic | `tests/fixtures/rgaa-form-button-name-present-all-scenarios.html` | 9 | 3 | 3 | 2 | 1 |

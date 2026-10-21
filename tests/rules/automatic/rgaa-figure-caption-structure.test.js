@@ -94,6 +94,66 @@ test(`${RULE_ID}: image buttons and role="img" count as images`, () => {
   }
 });
 
+// RGAA 1.9.2 to 1.9.5 ask the same of an object image, an embedded image, an
+// SVG and a canvas as 1.9.1 does of an <img>.
+test(`${RULE_ID}: every kind of image 1.9 names counts, and records its kind`, () => {
+  for (const [image, kind] of [
+    ['<img src="a.png" alt="Chart">', 'img'],
+    ['<input type="image" src="a.png" alt="Go">', 'img'],
+    ['<span role="img" aria-label="Star">*</span>', 'img'],
+    ['<object type="image/svg+xml" data="a.svg"></object>', 'object'],
+    ['<object type="IMAGE/PNG" data="a.png"></object>', 'object'],
+    ['<embed type="image/png" src="a.png">', 'embed'],
+    ['<embed src="a.svg">', 'embed'],
+    ['<svg width="20" height="20"><circle r="5"></circle></svg>', 'svg'],
+    ['<svg role="img" aria-label="Logo"><g role="img"></g></svg>', 'svg'],
+    ['<canvas role="img" aria-label="Chart"></canvas>', 'canvas']
+  ]) {
+    const rule = assertRule(runa11yCoreOnHtml(page(figure('', image)), RUN), RULE_ID, 'fail', {
+      maxOccurrences: 1
+    });
+    assert.equal(rule.occurrences[0].data.details.imageKind, kind, image);
+  }
+});
+
+test(`${RULE_ID}: an object or embed of another type is not an image`, () => {
+  for (const image of [
+    '<object type="text/html" data="a.html"></object>',
+    '<object data="a.png"></object>',
+    '<embed type="video/mp4" src="a.mp4">',
+    '<embed type="application/pdf" src="a.pdf">'
+  ]) {
+    assertRule(runa11yCoreOnHtml(page(figure('', image)), RUN), RULE_ID, 'notApplicable');
+  }
+});
+
+test(`${RULE_ID}: a figure's first image decides its kind`, () => {
+  const html = page(figure('', '<canvas></canvas><img src="a.png" alt="Chart">'));
+  const rule = assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'fail', { maxOccurrences: 1 });
+  assert.equal(rule.occurrences[0].data.details.imageKind, 'canvas');
+});
+
+test(`${RULE_ID}: each finding counts toward the 1.9 test of its image`, () => {
+  const RGAA = { engineOptions: { profile: 'rgaa-4.1.2-with-wcag' } };
+  for (const [image, test] of [
+    ['<img src="a.png" alt="Chart">', '1.9.1'],
+    ['<object type="image/png" data="a.png"></object>', '1.9.2'],
+    ['<embed type="image/png" src="a.png">', '1.9.3'],
+    ['<svg width="20" height="20"></svg>', '1.9.4'],
+    ['<canvas></canvas>', '1.9.5']
+  ]) {
+    const result = runa11yCoreOnHtml(page(figure('', image)), RGAA);
+    const rollup = result.rulesResults.find((r) => r.ruleId === 'rgaa-4.1.2-1.9');
+    assert.equal(rollup.outcome, 'fail', image);
+    const failing = rollup.data.details.contributors.find((c) => c.testId === RULE_ID);
+    assert.deepEqual(
+      failing.requirements.map((r) => r.requirement || r),
+      [test],
+      image
+    );
+  }
+});
+
 test(`${RULE_ID}: opt-in, so a default run does not include it`, () => {
   const result = runa11yCoreOnHtml(page(figure('')));
   assert.ok(!result.checksResults.some((r) => r.ruleId === RULE_ID));
@@ -107,7 +167,18 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-figure-caption-structure
     'rgaa-figure-caption-structure-all-scenarios.html'
   );
   const result = runa11yCoreOnHtml(fs.readFileSync(fixturePath, 'utf8'), RUN);
-  const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 4, maxOccurrences: 4 });
-  const ids = rule.occurrences.map((o) => (o.html.match(/id="([^"]+)"/) || [])[1]);
-  assert.deepEqual(ids, ['fcs_case_01', 'fcs_case_02', 'fcs_case_03', 'fcs_case_04']);
+  const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 7, maxOccurrences: 7 });
+  const got = rule.occurrences.map((o) => [
+    (o.html.match(/id="([^"]+)"/) || [])[1],
+    o.data.details.imageKind
+  ]);
+  assert.deepEqual(got, [
+    ['fcs_case_01', 'img'],
+    ['fcs_case_02', 'img'],
+    ['fcs_case_03', 'img'],
+    ['fcs_case_04', 'svg'],
+    ['fcs_case_09', 'object'],
+    ['fcs_case_10', 'embed'],
+    ['fcs_case_11', 'canvas']
+  ]);
 });

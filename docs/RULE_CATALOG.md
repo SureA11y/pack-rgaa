@@ -521,9 +521,15 @@ automatic · no formal WCAG SC mapping · confidence high · default severity mi
 
 Checks that a &lt;figure&gt; holding an image and a &lt;figcaption&gt; has role="figure" or "group" and an aria-label matching the caption.
 
-**Applies to.** Applies to &lt;figure&gt; elements that contain an image (&lt;img&gt;, &lt;input type="image"&gt; or an element with role="img") and a &lt;figcaption&gt; with text. A page with none is notApplicable.
+**Applies to.** Applies to &lt;figure&gt; elements that contain an image and a &lt;figcaption&gt; with text. The images are those of RGAA 1.9's five tests: an &lt;img&gt;, &lt;input type="image"&gt; or element with role="img" (1.9.1), an &lt;object type="image/…"&gt; (1.9.2), an &lt;embed&gt; (1.9.3), an &lt;svg&gt; (1.9.4) and a &lt;canvas&gt; (1.9.5). An &lt;embed&gt; whose type is not an image type is not an image. A page with none is notApplicable.
 
-**Expectation.** The &lt;figure&gt; has role="figure" or role="group", and an aria-label whose text is the same as the caption's, whitespace collapsed (RGAA 1.9.1). The caption being inside a &lt;figcaption&gt; is what makes the figure applicable.
+**Expectation.** The &lt;figure&gt; has role="figure" or role="group", and an aria-label whose text is the same as the caption's, whitespace collapsed (conditions 2 and 3 of each 1.9 test). The caption being inside a &lt;figcaption&gt; is what makes the figure applicable.
+
+**What a finding reports.**
+
+- `reasonCode`: the first condition that fails, `missingRole`, `missingAriaLabel` or `ariaLabelMismatch`; `reasons` lists all.
+- `imageKind`: the figure's first image, in tree order, by the 1.9 test it belongs to: `img` (1.9.1), `object` (1.9.2), `embed` (1.9.3), `svg` (1.9.4) or `canvas` (1.9.5). An &lt;svg&gt; or &lt;canvas&gt; with role="img" counts by its element.
+- `caption`: the caption's text, whitespace collapsed.
 
 ### `rgaa-focus-indicator-contrast`
 
