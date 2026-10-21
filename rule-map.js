@@ -704,7 +704,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-orientation-content-parity': {
       tests: ['13.9.1'],
-      note: "In a browser, lays the page out as portrait and as landscape by rewriting its orientation media conditions, and fails content shown in one orientation that the other hides with its text shown nowhere else. That is 13.9.1's second condition, « le contenu proposé reste le même quel que soit le mode d’orientation ». It asks when what is hidden holds the main content (a lock, where the essential-orientation exception needs a person; css-orientation-lock asks too), when a hidden element has no text to compare, and in jsdom about each element an orientation rule hides. Width breakpoints are not flipped."
+      note: "In a browser, lays the page out as portrait and as landscape by rewriting its orientation media conditions, and fails content shown in one orientation that the other hides with its text shown nowhere else. That is 13.9.1's second condition, « le contenu proposé reste le même quel que soit le mode d’orientation ». It asks when what is hidden holds the main content (a lock, where the essential-orientation exception needs a person; css-orientation-lock asks too), when a control shown in that orientation opens what is hidden (a collapsed menu: « le moyen d’y accéder peut différer »), when a hidden element has no text to compare, and in jsdom about each element an orientation rule hides. A short text about the orientation itself, such as « tournez votre appareil », is not content. Width breakpoints are not flipped."
     },
     'p-as-heading': {
       tests: ['9.1.3'],

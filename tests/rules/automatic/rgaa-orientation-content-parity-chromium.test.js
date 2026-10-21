@@ -175,6 +175,69 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
     }
   );
 
+  // 13.9.1: the content stays the same « même si sa présentation et le moyen
+  // d'y accéder peut différer », so a menu collapsed behind a toggle in one
+  // orientation is a question, not missing content.
+  await t.test('content a shown control opens is asked about, not failed', async () => {
+    const menu = '<ul id="menu"><li><a href="/agenda">Agenda</a></li></ul>';
+    for (const body of [
+      `<nav><button aria-controls="menu" aria-expanded="false">Menu</button>${menu}</nav>`,
+      `<nav><button aria-expanded="false">Menu</button>${menu}</nav>`
+    ]) {
+      const [result] = await scan(
+        page(
+          '@media (orientation: portrait){#menu{display:none}}',
+          `${body}<main><p>Texte</p></main>`
+        )
+      );
+      assert.deepEqual(
+        findings(result).findings,
+        [['menu', 'cantTell', 'CONTENT_BEHIND_CONTROL']],
+        body
+      );
+      const occ = result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences[0];
+      assert.equal(
+        occ.i18n.summaryKey,
+        'orientationContentParity_summary_cantTell_behindControl_portrait'
+      );
+    }
+    // The control is hidden too in that orientation: nothing opens the menu.
+    const [hidden] = await scan(
+      page(
+        '@media (orientation: portrait){#menu,#b{display:none}}',
+        `<nav><button id="b" aria-controls="menu" aria-expanded="false">Menu</button>${menu}</nav><main><p>Texte</p></main>`
+      )
+    );
+    assert.deepEqual(findings(hidden).findings, [
+      ['b', 'fail', 'CONTENT_MISSING'],
+      ['menu', 'fail', 'CONTENT_MISSING']
+    ]);
+  });
+
+  await t.test('a short hint about the orientation itself is not missing content', async () => {
+    for (const hint of [
+      'Pour un meilleur confort, tournez votre appareil',
+      'Rotate your device for a better view',
+      'Drehen Sie Ihr Gerät ins Querformat'
+    ]) {
+      const [result] = await scan(
+        page(
+          '#h{display:none} @media (orientation: portrait){#h{display:block}}',
+          `<p id="h">${hint}</p><main><p>Texte</p></main>`
+        )
+      );
+      assert.equal(findings(result).outcome, 'pass', hint);
+    }
+    // Content that only mentions an orientation is still content.
+    const [result] = await scan(
+      page(
+        '@media (orientation: portrait){#t{display:none}}',
+        '<p id="t">Horaires : 9 h à 17 h</p><p>Texte</p>'
+      )
+    );
+    assert.equal(findings(result).outcome, 'fail');
+  });
+
   await t.test('an element with no text to compare is asked about', async () => {
     const [result] = await scan(
       page(

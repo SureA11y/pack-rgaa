@@ -23,8 +23,14 @@
  *     there (CONTENT_MISSING), reported on the outermost element hidden.
  *     It is asked about when what is hidden holds the main content (a
  *     "rotate your device" page, which the essential-orientation exception
- *     may allow; MAIN_CONTENT_HIDDEN), and when an element an orientation
- *     rule hides has no text to compare (hiddenInOrientation). The page
+ *     may allow; MAIN_CONTENT_HIDDEN); when a control shown in that
+ *     orientation opens it, a menu collapsed behind a toggle, since the
+ *     means of reaching content may differ (CONTENT_BEHIND_CONTROL); and
+ *     when an element an orientation rule hides has no text to compare
+ *     (hiddenInOrientation). A short text about the orientation itself
+ *     ("rotate your device", in the five languages of the pack's messages)
+ *     shown in one orientation only is not content missing from the other.
+ *     The page
  *     passes when every content shown in one orientation is shown in the
  *     other.
  *   - Without a layout (jsdom), each element that a style rule inside an
@@ -258,7 +264,18 @@ function runInPage(ctx) {
     return root;
   }
 
-  // Each item's state in one orientation: { shown, root }, and the shown text.
+  // Controls that can open hidden content: aria-controls or aria-expanded.
+  const toggles = (() => {
+    const q = helpers.queryAllSource || helpers.queryAllSmart || helpers.queryAll;
+    try {
+      return q('[aria-controls], [aria-expanded]');
+    } catch {
+      return [];
+    }
+  })();
+
+  // Each item's state in one orientation: { shown, root }, the shown text, and
+  // the toggles shown.
   function look(items) {
     const states = items.map((item) => {
       const visible = isShownItem(item);
@@ -268,8 +285,40 @@ function runInPage(ctx) {
       .filter((_, i) => states[i].shown)
       .map((item) => item.text)
       .join(' \n ');
-    return { states, joined };
+    return { states, joined, toggles: toggles.filter((t) => shown(t)) };
   }
+
+  // A shown control that opens `root`: its aria-controls names root, an
+  // element inside it or one around it, or it has aria-expanded="false" and
+  // sits beside root, in the same parent, as a menu button does.
+  function opener(root, shownToggles) {
+    const related = (el) =>
+      !!el && (el === root || dom.contains(root, el) || dom.contains(el, root));
+    for (const t of shownToggles) {
+      const ids = trim(dom.getAttribute(t, 'aria-controls')).split(/\s+/).filter(Boolean);
+      if (ids.some((x) => related(helpers.getElementByIdInTree(t, x)))) return t;
+      const parent = dom.parentElement(root);
+      if (
+        trim(dom.getAttribute(t, 'aria-expanded')).toLowerCase() === 'false' &&
+        parent &&
+        dom.contains(parent, t) &&
+        !dom.contains(root, t)
+      ) {
+        return t;
+      }
+    }
+    return null;
+  }
+
+  // A short text about the orientation itself, such as "Rotate your device",
+  // in the languages of the pack's messages. It is about the presentation,
+  // not content the other orientation lacks.
+  const ROTATE_RE =
+    /\brotat(e|ion|ing)\b|\bturn (your|the) (device|phone|screen|tablet)\b|\borientation\b|\b(landscape|portrait) (mode|view|orientation)\b|\btourn(ez|er) (votre|ton|le|l['’])|\bpivot(ez|er)\b|\bmode (paysage|portrait)\b|\bdrehen sie\b|\b(quer|hoch)format\b|\bgir[ae] (el|su|tu)\b|\bmodo (horizontal|vertical)\b|回転|横向きに|縦向きに/i;
+  const isOrientationHint = (texts) => {
+    const all = texts.join(' ');
+    return all.length <= 160 && ROTATE_RE.test(all);
+  };
 
   function emulate(orientation) {
     for (const entry of saved) {
@@ -375,10 +424,42 @@ function runInPage(ctx) {
     for (const [root, m] of missing) if (holdsMain(root)) locked.add(m.orientation);
     const other = (o) => (o === 'portrait' ? 'landscape' : 'portrait');
 
+    const shownIn = {
+      portrait: decided && portrait.toggles,
+      landscape: decided && landscape.toggles
+    };
     for (const [root, m] of missing) {
       if (!holdsMain(root) && locked.has(other(m.orientation))) continue;
+      if (!holdsMain(root) && isOrientationHint(m.texts)) continue;
       const element = String(dom.localName(root) || '').toLowerCase();
       const text = m.texts.join(' ').slice(0, 80);
+      const control = !holdsMain(root) && opener(root, shownIn[m.orientation] || []);
+      if (control) {
+        questions.push(
+          helpers.reportOccurrence(root, {
+            summary: `In ${m.orientation}, this <${element}> is hidden, and a control shown there may open it ("${text}").`,
+            hint: 'Check that the control shows the same content in this orientation. How content is reached may differ between orientations, but it must stay available (RGAA 13.9.1).',
+            i18n: {
+              summaryKey: `orientationContentParity_summary_cantTell_behindControl_${m.orientation}`,
+              hintKey: 'orientationContentParity_hint_cantTell_behindControl',
+              params: { orientation: m.orientation, element, text }
+            },
+            uncertainty: {
+              code: 'judgement-required',
+              needed: 'Whether the control shows the same content in this orientation.',
+              evidence: { reasonCode: 'CONTENT_BEHIND_CONTROL', orientation: m.orientation }
+            },
+            data: {
+              details: {
+                reasonCode: 'CONTENT_BEHIND_CONTROL',
+                orientation: m.orientation,
+                texts: m.texts
+              }
+            }
+          })
+        );
+        continue;
+      }
       if (holdsMain(root)) {
         questions.push(
           helpers.reportOccurrence(root, {
