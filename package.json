@@ -67,7 +67,7 @@
     "@surea11y/core": ">=1.12.0"
   },
   "devDependencies": {
-    "@surea11y/core": "github:SureA11y/core#92b224de31b0a81f8478242ff9ef46d7e94bd1a4",
+    "@surea11y/core": "github:SureA11y/core#5ee81b8dd8fbcf57450290ce177209e98911e682",
     "eslint": "^10.12.0",
     "jsdom": "^29.1.1",
     "playwright": "^1.62.1",
