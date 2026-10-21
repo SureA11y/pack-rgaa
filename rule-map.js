@@ -26,8 +26,28 @@
  * asks (cantTell) instead of failing. A question is never a false failure, so
  * a manual rule may link to any test its question bears on.
  *
+ * ONE FINDING, ONE TEST
+ * ---------------------
+ * A rule's findings count toward every test in `tests`. When different
+ * findings of one rule fail different tests, the row says which go where,
+ * so each criterion's result names only the tests its findings fail:
+ * - `findings: [{ when, tests, outcome }]` sends a finding whose
+ *   data.details fields equal those `when` gives (by dotted path, such as
+ *   { 'typography.isBold': true }) to `tests` ([] for none). Match only
+ *   fields core keeps stable (its API_STABILITY.md) or that the rule names.
+ * - `reasonCodes: { [code]: { tests, outcome } }` does the same by reason
+ *   code.
+ * - `asks: [...]` are tests where the row's own findings are questions
+ *   (cantTell) rather than failures: the rule's failure bears on them, but
+ *   whether it fails them takes a person.
+ * A finding goes by the first `findings` entry it matches, else by its
+ * reason code, else by the row; `outcome: 'cantTell'` makes a failing one a
+ * question there. The criterion rollups judge such a rule by its findings
+ * (core's meta.contributions, built in mappings.js).
+ *
  * The build rejects an unknown rule id or test id, a field other than tests,
- * note and outsideCorrespondence, and a rule mapped to WCAG criteria none of
+ * asks, reasonCodes, findings, note and outsideCorrespondence, a malformed
+ * route, and a rule mapped to WCAG criteria none of
  * which RGAA relates to the test's criterion, unless outsideCorrespondence
  * says why (mappings.js). A rule with no WCAG mapping may
  * map to any test: RGAA checks some things WCAG leaves to best practice, such
@@ -122,7 +142,14 @@ const RGAA_RULE_TESTS = {
     },
     'aria-role-name-present': {
       tests: ['7.1.1', '11.6.1'],
-      note: 'Fails when role grid, meter, progressbar, radiogroup or tree has no aria-label, aria-labelledby or title, and no name from its host element (the legend of a fieldset, the caption of a table, the label of a <progress> or <meter>). For radiogroup, this is 11.6.1 step 2 (group has aria-label or aria-labelledby); for grid and tree widgets, 7.1.1 step 2 (component has an explicit name), which no other test covers. 11.6.1 can still pass through per-field labels (step 3). Not mapped to 11.1.1: an unnamed meter or progressbar is a form field without a label, which rgaa-field-label-listed-source reports under 11.1.1 for every field, so a link here would count the same field twice.',
+      findings: [
+        { when: { role: 'grid' }, tests: ['7.1.1'] },
+        { when: { role: 'tree' }, tests: ['7.1.1'] },
+        { when: { role: 'radiogroup' }, tests: ['11.6.1'] },
+        { when: { role: 'meter' }, tests: [] },
+        { when: { role: 'progressbar' }, tests: [] }
+      ],
+      note: 'Fails when role grid, meter, progressbar, radiogroup or tree has no aria-label, aria-labelledby or title, and no name from its host element (the legend of a fieldset, the caption of a table, the label of a <progress> or <meter>). For radiogroup, this is 11.6.1 step 2 (group has aria-label or aria-labelledby); for grid and tree widgets, 7.1.1 step 2 (component has an explicit name), which no other test covers. 11.6.1 can still pass through per-field labels (step 3). Not mapped to 11.1.1: an unnamed meter or progressbar is a form field without a label, which rgaa-field-label-listed-source reports under 11.1.1 for every field, so a link here would count the same field twice. Each finding counts toward the test of its role: grid and tree 7.1.1, radiogroup 11.6.1, and an unnamed meter or progressbar toward neither, since it is not an interface component (7.1.1) or a group of fields (11.6.1).',
       outsideCorrespondence: {
         '11.6.1':
           'For role="radiogroup" only: 11.6.1 step 2 requires a radiogroup to have aria-label or aria-labelledby. RGAA relates 11.6 to WCAG 1.3.1 and 3.3.2, while the engine files naming under 4.1.2.'
@@ -206,7 +233,13 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-contrast-minimum': {
       tests: ['3.2.1', '3.2.2', '3.2.3', '3.2.4'],
-      note: "Fails computable text below 4.5:1, or below 3:1 for text of 24px or more and bold text of 18.5px or more, which is step 2 of 3.2.1 to 3.2.4 with RGAA's own sizes. Same code as contrast-minimum apart from the bold threshold. Caveats: it does not look for a mechanism that shows the text with enough contrast (the second condition of each test), nor for logos or decorative text (particular cases)."
+      findings: [
+        { when: { 'typography.isLargeText': false, 'typography.isBold': false }, tests: ['3.2.1'] },
+        { when: { 'typography.isLargeText': false, 'typography.isBold': true }, tests: ['3.2.2'] },
+        { when: { 'typography.isLargeText': true, 'typography.isBold': false }, tests: ['3.2.3'] },
+        { when: { 'typography.isLargeText': true, 'typography.isBold': true }, tests: ['3.2.4'] }
+      ],
+      note: "Fails computable text below 4.5:1, or below 3:1 for text of 24px or more and bold text of 18.5px or more, which is step 2 of 3.2.1 to 3.2.4 with RGAA's own sizes. Same code as contrast-minimum apart from the bold threshold, so isLargeText uses RGAA's 18.5px. Each failure counts toward the one test its text selects: regular text under 24px 3.2.1, bold text under 18.5px 3.2.2, regular text from 24px 3.2.3, bold text from 18.5px 3.2.4 (typography fields, stable in core). Caveats: it does not look for a mechanism that shows the text with enough contrast (the second condition of each test), nor for logos or decorative text (particular cases)."
     },
     'css-focus-indicator-suppressed': {
       tests: ['10.7.1'],
@@ -417,8 +450,9 @@ const RGAA_RULE_TESTS = {
       note: 'Asks whether an <img>, <svg> or <canvas> left out of the accessibility tree (alt="", aria-hidden, role none/presentation, unlabeled svg/canvas) is really decorative. That is step 2 (does the image carry information?) of 1.1.1, 1.1.5 and 1.1.8, and a \'no\' means an informative image with no alternative. It does not check the 1.2.x conditions for correctly ignoring decorative images.'
     },
     'img-alt-present': {
-      tests: ['1.1.1', '1.2.1'],
-      note: 'Fails an exposed <img> (not hidden, not a non-focusable role none/presentation) that has no alt, no ARIA name and no title. If the image is informative, that fails 1.1.1 step 3. If it is decorative, it lacks the alt="" / aria-hidden / role=presentation that 1.2.1 step 2 requires.'
+      tests: ['1.1.1'],
+      asks: ['1.2.1'],
+      note: 'Fails an exposed <img> (not hidden, not a non-focusable role none/presentation) that has no alt, no ARIA name and no title. If the image is informative, that fails 1.1.1 step 3; if it is decorative, it lacks the alt="" / aria-hidden / role=presentation that 1.2.1 step 2 requires. An image fails one of the two, and which takes a person, so a failure counts toward 1.1.1, where most such images belong (axe-core and Tanaguru file it there too), and asks under 1.2.1.'
     },
     'img-alt-quality': {
       tests: ['1.3.1'],
@@ -534,7 +568,12 @@ const RGAA_RULE_TESTS = {
     },
     'list-children-valid': {
       tests: ['9.3.1', '9.3.2'],
-      note: 'Fails a <ul>/<ol> (with no role other than list) with a direct child that is not an <li>/role=listitem (or script/template), so the list is not structured with ul/li (9.3.1) or ol/li (9.3.2), step 2. Not linked to 8.2.1: the rule accepts a child with role=listitem and skips hidden lists, while HTML accepts only li; rgaa-html-nesting-valid reports list nesting under 8.2.1.'
+      findings: [
+        { when: { element: 'ul' }, tests: ['9.3.1'] },
+        { when: { element: 'menu' }, tests: ['9.3.1'] },
+        { when: { element: 'ol' }, tests: ['9.3.2'] }
+      ],
+      note: 'Fails a <ul>/<ol> (with no role other than list) with a direct child that is not an <li>/role=listitem (or script/template), so the list is not structured with ul/li (9.3.1) or ol/li (9.3.2), step 2. A finding counts toward the test of its list, by the element it names: <ul> and <menu> 9.3.1, <ol> 9.3.2. Not linked to 8.2.1: the rule accepts a child with role=listitem and skips hidden lists, while HTML accepts only li; rgaa-html-nesting-valid reports list nesting under 8.2.1.'
     },
     'listbox-name-present': {
       tests: [],
@@ -545,8 +584,9 @@ const RGAA_RULE_TESTS = {
       note: 'Fails an element with role="listbox" (not <select>) that contains role="group". The 11.8 technical note says options cannot be grouped with ARIA, and a list that needs grouping built with role="listbox" does not conform to 11.8; a role="group" shows the options were grouped. The note names the criterion, not a test: 11.8.1 is the test on grouping options.'
     },
     'listitem-parent-valid': {
-      tests: ['9.3.1', '9.3.2'],
-      note: 'Fails an <li> whose parent is not <ul>/<ol>/<menu> or role=list/none/presentation, so items grouped as a list are not structured with a ul/ol container. That is step 2 of 9.3.1 or 9.3.2; the rule cannot tell ordered from unordered, so both apply. Not linked to 8.2.1: HTML does not accept an li in a role=list container, which this rule passes; rgaa-html-nesting-valid reports it under 8.2.1.'
+      tests: ['9.3.1'],
+      findings: [{ when: { parentElement: 'ol' }, tests: ['9.3.2'] }],
+      note: 'Fails an <li> whose parent is not <ul>/<ol>/<menu> or role=list/none/presentation, so items grouped as a list are not structured with a ul/ol container. That is step 2 of 9.3.1 or 9.3.2. An <li> under an <ol> whose role replaces list counts toward 9.3.2; any other, toward 9.3.1: an <li> outside any list says nothing of an order, and unordered lists are far the more common. Not linked to 8.2.1: HTML does not accept an li in a role=list container, which this rule passes; rgaa-html-nesting-valid reports it under 8.2.1.'
     },
     'rgaa-main-element-structure': {
       tests: ['9.2.1'],

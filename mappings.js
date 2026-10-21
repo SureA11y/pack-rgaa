@@ -24,9 +24,67 @@ function rowOf(version, ruleId) {
   return (RGAA_RULE_TESTS[version] || {})[ruleId] || null;
 }
 
+const listOf = (v) => (Array.isArray(v) ? v : []);
+const objectOf = (v) => (v && typeof v === 'object' && !Array.isArray(v) ? v : null);
+
+// A row's routes: where its findings of a reason code (reasonCodes) or with
+// given fields (findings) count instead of the row's own tests.
+function routesOf(row) {
+  return [...Object.values(objectOf(row && row.reasonCodes) || {}), ...listOf(row && row.findings)];
+}
+
+// Every test a rule's findings count toward or are asked about: the row's
+// tests and asks, and those its routes send findings to.
 function testsOfRule(version, ruleId) {
   const row = rowOf(version, ruleId);
-  return row && Array.isArray(row.tests) ? row.tests : [];
+  if (!row) return [];
+  const all = new Set([...listOf(row.tests), ...listOf(row.asks)]);
+  for (const r of routesOf(row)) for (const t of listOf(r && r.tests)) all.add(t);
+  return [...all];
+}
+
+// What a finding that goes by `route` does in the rollup of a criterion
+// whose tests are `criterionTests`: counted toward the tests of the route it
+// shares with the criterion (a failing one as a question where the route
+// says outcome 'cantTell'), else a question in the tests the row asks about
+// there, else left out. The row itself is the route of a finding no other
+// route takes, with its asks.
+function actFor(route, asks, criterionTests) {
+  const counted = listOf(route.tests).filter((t) => criterionTests.includes(t));
+  if (counted.length) {
+    return { act: route.outcome === 'cantTell' ? 'cantTell' : 'count', requirements: counted };
+  }
+  const asked = listOf(asks).filter((t) => criterionTests.includes(t));
+  return asked.length ? { act: 'cantTell', requirements: asked } : 'ignore';
+}
+
+// How a criterion's rollup judges a rule whose row asks or routes findings
+// (core's meta.contributions): each finding by the first `findings` entry
+// it matches, else by its reason code, else by the row. null for a rule
+// judged whole, whose findings all count toward its tests.
+function contributionOf(version, ruleId, criterionTests) {
+  const row = rowOf(version, ruleId);
+  if (!row || (!listOf(row.asks).length && !routesOf(row).length)) return null;
+  const own = { tests: listOf(row.tests) };
+  const out = { default: actFor(own, row.asks, criterionTests) };
+  const codes = objectOf(row.reasonCodes);
+  if (codes) {
+    out.codes = {};
+    for (const [code, r] of Object.entries(codes)) {
+      out.codes[code] = actFor(
+        { tests: r.tests || own.tests, outcome: r.outcome },
+        [],
+        criterionTests
+      );
+    }
+  }
+  if (listOf(row.findings).length) {
+    out.findings = row.findings.map((f) => ({
+      when: { ...f.when },
+      act: actFor({ tests: f.tests || own.tests, outcome: f.outcome }, [], criterionTests)
+    }));
+  }
+  return out;
 }
 
 // Tests a rule is linked to although RGAA relates their criterion to none of
@@ -104,10 +162,16 @@ function rgaaComposites() {
             .filter((t) => row.tests.includes(t))
         )
       ].sort(compareIds);
+      const contributions = {};
+      for (const ruleId of ruleIds) {
+        const c = contributionOf(version, ruleId, row.tests);
+        if (c) contributions[ruleId] = c;
+      }
       out.push({
         id: `rgaa-${version}-${criterion}`,
         checksIds: ruleIds,
         meta: {
+          ...(Object.keys(contributions).length ? { contributions } : {}),
           title: row.title,
           description: '',
           wcagSc: [],
@@ -124,7 +188,59 @@ function rgaaComposites() {
   return out;
 }
 
-const ROW_KEYS = ['tests', 'note', 'outsideCorrespondence'];
+const ROW_KEYS = ['tests', 'asks', 'reasonCodes', 'findings', 'note', 'outsideCorrespondence'];
+
+// Problems with a row's asks and routes; `at` starts each message.
+function routeProblems(row, at) {
+  const problems = [];
+  // A route's tests may be [] (its findings count toward no test); asks may not.
+  const testsField = (tests, where, emptyAllowed = true) => {
+    if (tests !== undefined && (!Array.isArray(tests) || (!emptyAllowed && !tests.length))) {
+      problems.push(`${at}: ${where} must be a ${emptyAllowed ? '' : 'non-empty '}list of tests`);
+    }
+  };
+  const outcomeField = (outcome, where) => {
+    if (outcome !== undefined && outcome !== 'cantTell') {
+      problems.push(`${at}: ${where}.outcome can only be 'cantTell'`);
+    }
+  };
+  testsField(row.asks, 'asks', false);
+  for (const t of listOf(row.asks)) {
+    if (row.tests.includes(t)) problems.push(`${at}: asks names ${t}, which tests already counts`);
+  }
+  if (row.reasonCodes !== undefined) {
+    if (!objectOf(row.reasonCodes))
+      problems.push(`${at}: reasonCodes must be an object of reason codes`);
+    else
+      for (const [code, r] of Object.entries(row.reasonCodes)) {
+        if (!objectOf(r)) problems.push(`${at}: reasonCodes.${code} must be { tests, outcome }`);
+        else {
+          testsField(r.tests, `reasonCodes.${code}.tests`);
+          outcomeField(r.outcome, `reasonCodes.${code}`);
+        }
+      }
+  }
+  if (row.findings !== undefined) {
+    if (!Array.isArray(row.findings)) problems.push(`${at}: findings must be a list`);
+    else
+      row.findings.forEach((f, i) => {
+        const where = `findings[${i}]`;
+        const when = objectOf(f) && objectOf(f.when);
+        if (!when || !Object.keys(when).length) {
+          problems.push(`${at}: ${where}.when must name at least one field`);
+          return;
+        }
+        for (const [path, value] of Object.entries(when)) {
+          if (value !== null && !['string', 'number', 'boolean'].includes(typeof value)) {
+            problems.push(`${at}: ${where}.when.${path} must be a string, number, boolean or null`);
+          }
+        }
+        testsField(f.tests, `${where}.tests`);
+        outcomeField(f.outcome, where);
+      });
+  }
+  return problems;
+}
 
 /**
  * Problems with the mapping table, given the rules that exist
@@ -151,8 +267,12 @@ function validateRgaaRuleTests(rules) {
       for (const key of Object.keys(row)) {
         if (!ROW_KEYS.includes(key)) problems.push(`${version} ${ruleId}: unknown field ${key}`);
       }
+      const routing = routeProblems(row, `${version} ${ruleId}`);
+      problems.push(...routing);
+      if (routing.length) continue;
+      const linked = testsOfRule(version, ruleId);
       for (const test of Object.keys(exceptionsOf(version, ruleId))) {
-        if (!row.tests.includes(test)) {
+        if (!linked.includes(test)) {
           problems.push(
             `${version} ${ruleId}: outsideCorrespondence names ${test}, which is not linked`
           );
@@ -161,7 +281,7 @@ function validateRgaaRuleTests(rules) {
       if (new Set(row.tests).size !== row.tests.length) {
         problems.push(`${version} ${ruleId}: lists a test twice`);
       }
-      for (const test of row.tests) {
+      for (const test of linked) {
         if (!RGAA_TESTS[version][test]) {
           problems.push(`${version} ${ruleId}: no such test ${test}`);
           continue;

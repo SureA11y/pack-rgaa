@@ -145,6 +145,66 @@ test('validate: a row has only tests, note and outsideCorrespondence', () => {
   });
 });
 
+test('validate: asks, reasonCodes and findings must be routes it can use', () => {
+  const problemsOf = (row) =>
+    withRows({ 'probe-img': { tests: ['1.1.1'], note: 'n', ...row } }, () =>
+      validateRgaaRuleTests(RULES).filter((p) => p.includes('probe-'))
+    );
+  assert.deepEqual(
+    problemsOf({
+      asks: ['1.2.1'],
+      reasonCodes: { X: { tests: ['1.1.2'], outcome: 'cantTell' } },
+      findings: [{ when: { role: 'img' }, tests: [] }]
+    }),
+    []
+  );
+  assert.match(problemsOf({ asks: [] }).join('\n'), /asks must be a non-empty list/);
+  assert.match(problemsOf({ asks: ['1.1.1'] }).join('\n'), /asks names 1\.1\.1, which tests/);
+  assert.match(problemsOf({ reasonCodes: [] }).join('\n'), /reasonCodes must be an object/);
+  assert.match(
+    problemsOf({ reasonCodes: { X: { outcome: 'fail' } } }).join('\n'),
+    /reasonCodes\.X\.outcome can only be 'cantTell'/
+  );
+  assert.match(problemsOf({ findings: {} }).join('\n'), /findings must be a list/);
+  assert.match(
+    problemsOf({ findings: [{ when: {} }] }).join('\n'),
+    /findings\[0\]\.when must name/
+  );
+  assert.match(
+    problemsOf({ findings: [{ when: { a: [1] } }] }).join('\n'),
+    /when\.a must be a string, number, boolean or null/
+  );
+  assert.match(
+    problemsOf({ findings: [{ when: { a: 1 }, tests: ['99.9.9'] }] }).join('\n'),
+    /no such test 99\.9\.9/
+  );
+});
+
+test('a criterion rollup judges a routed rule by its findings, naming the tests they go to', () => {
+  withRows(
+    {
+      'img-alt-present': {
+        tests: ['1.1.1'],
+        asks: ['1.2.1'],
+        findings: [{ when: { reasonCode: 'X' }, tests: ['1.1.2'] }],
+        note: 'n'
+      }
+    },
+    () => {
+      const { rgaaComposites } = require('../mappings');
+      const byId = Object.fromEntries(rgaaComposites().map((c) => [c.id, c]));
+      assert.deepEqual(byId['rgaa-4.1.2-1.1'].meta.contributions['img-alt-present'], {
+        default: { act: 'count', requirements: ['1.1.1'] },
+        findings: [{ when: { reasonCode: 'X' }, act: { act: 'count', requirements: ['1.1.2'] } }]
+      });
+      assert.deepEqual(byId['rgaa-4.1.2-1.2'].meta.contributions['img-alt-present'], {
+        default: { act: 'cantTell', requirements: ['1.2.1'] },
+        findings: [{ when: { reasonCode: 'X' }, act: 'ignore' }]
+      });
+    }
+  );
+});
+
 test("the real table is sound against the engine's rules", () => {
   const rules = core.getChecksCatalog().map((r) => ({ ruleId: r.ruleId, wcagSc: r.wcagSc }));
   assert.deepEqual(validateRgaaRuleTests(rules), []);
