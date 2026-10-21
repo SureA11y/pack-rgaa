@@ -67,7 +67,7 @@
     "@surea11y/core": ">=1.12.0"
   },
   "devDependencies": {
-    "@surea11y/core": "github:SureA11y/core#rollup-requirements-by-finding",
+    "@surea11y/core": "github:SureA11y/core#a056772db7f1bbd68e4b9d069d4a556f5caa8f2a",
     "eslint": "^10.12.0",
     "jsdom": "^29.1.1",
     "playwright": "^1.62.1",
