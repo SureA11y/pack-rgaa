@@ -347,8 +347,8 @@ const RGAA_RULE_TESTS = {
       note: 'For a <figure> holding an image and a <figcaption> with text, fails when the figure has no role="figure" or role="group", or no aria-label identical to the caption: conditions 2 and 3 of 1.9.1. Conditions 1 and 4 (figure and figcaption) are what make the rule apply, so a caption given another way is not found.'
     },
     'rgaa-focus-indicator-contrast': {
-      tests: ['10.7.1'],
-      note: "Fails an element in the tab order whose native outline a focus rule replaces or removes, when every outline, border and box-shadow of its focus style is below 3:1 against both the background behind it and the element's own background, and nothing else changes on focus. That is the contrast part of 10.7.1 step 2 (« suffisamment contrastée (ratio de contraste égal ou supérieur à 3:1) »). It asks when a color, a background or the cascade cannot be worked out, when the indicator reaches 3:1 on one side only, or when the focus style is something else (background, text color, another element). An element that keeps the browser's outline meets condition 1 and is not checked. In a browser the element is focused and the rendered indicator is measured against what is painted on each side, so variables, @media and the cascade are settled there."
+      tests: ['10.7.1', '3.3.1'],
+      note: "Fails an element in the tab order whose native outline a focus rule replaces or removes, when every outline, border and box-shadow of its focus style is below 3:1 against both the background behind it and the element's own background, and nothing else changes on focus. That is the contrast part of 10.7.1 step 2 (« suffisamment contrastée (ratio de contraste égal ou supérieur à 3:1) »). It asks when a color, a background or the cascade cannot be worked out, when the indicator reaches 3:1 on one side only, or when the focus style is something else (background, text color, another element). An element that keeps the browser's outline meets condition 1 and is not checked. In a browser the element is focused and the rendered indicator is measured against what is painted on each side, so variables, @media and the cascade are settled there. Also linked to 3.3.1: its methodology checks the contrast of a component « dans ses différents états » against the adjacent background, and focus is one of those states, so an indicator below 3:1 fails 3.3.1 too."
     },
     'focus-order-semantics': {
       tests: ['7.1.1'],
@@ -559,7 +559,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-link-context-review': {
       tests: ['6.1.1', '6.1.2', '6.1.3', '6.1.4'],
-      note: 'Asks about a link named by a generic phrase or a bare file format whose only context is an aria-describedby text or the text of an enclosing <dd>, <dt>, <blockquote> or <figcaption>. The glossary "Contexte du lien" lists only the sentence, the <p>, the <li>, the preceding heading, the associated <th> and the <td>, so the context link-name-quality accepts for WCAG 2.4.4 may not count for 6.1.1 to 6.1.4 step 2. A question, since the link\'s sentence or a preceding heading may still make it explicit.'
+      note: 'Asks about a link named by a generic phrase or a bare file format whose only context is an aria-describedby text or the text of an enclosing <dd>, <dt>, <blockquote> or <figcaption>. The glossary "Contexte du lien" lists only the sentence, the <p>, the <li>, the preceding heading, the associated <th> and the <td>, so the context link-name-quality accepts for WCAG 2.4.4 may not count for 6.1.1 to 6.1.4 step 2. The text of a <th> that contains the link is accepted as context without asking, although the glossary names only the <th> associated with the link\'s <td>: a header cell is context for what it contains as much as for its column. A question, since the link\'s sentence or a preceding heading may still make it explicit.'
     },
     'link-in-text-block': {
       tests: ['10.6.1'],
@@ -575,7 +575,7 @@ const RGAA_RULE_TESTS = {
     },
     'link-name-quality': {
       tests: ['6.1.1', '6.1.2', '6.1.3', '6.1.4'],
-      note: 'Flags a[href], area[href] and role=link elements whose full accessible name, whatever its source (text, img alt, SVG), is a generic phrase or a bare file format with no adjacent context. That is the question 6.1.1 to 6.1.4 step 2 asks per link type: does the name alone or with its context give the link\'s purpose and destination. Unnamed links are explicitly left out, so 6.2.1 is not covered. It accepts an aria-describedby text or a <dd>, <dt>, <blockquote> or <figcaption> as context, which the glossary "Contexte du lien" does not list; rgaa-link-context-review asks about those links.'
+      note: 'Flags a[href], area[href] and role=link elements whose full accessible name, whatever its source (text, img alt, SVG), is a generic phrase or a bare file format with no adjacent context. That is the question 6.1.1 to 6.1.4 step 2 asks per link type: does the name alone or with its context give the link\'s purpose and destination. Unnamed links are explicitly left out, so 6.2.1 is not covered. It accepts an aria-describedby text or a <dd>, <dt>, <blockquote> or <figcaption> as context, which the glossary "Contexte du lien" does not list; rgaa-link-context-review asks about those links. It also accepts the text of a <th> that contains the link, where the glossary names only the <th> associated with the link\'s <td>, and counts it: a header cell is context for what it contains as much as for its column.'
     },
     'rgaa-link-state-colors-review': {
       tests: ['10.6.1'],
