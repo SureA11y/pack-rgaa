@@ -255,6 +255,8 @@
   "skipLinkPlacement_hint_fail_notVisible": "Show the skip link at all times, or at least when it takes keyboard focus, for instance by moving it back into view in a :focus rule (RGAA 12.7.2).",
   "skipLinkPlacement_summary_fail_positionDiffers": "This skip link is not at the same place on other pages of the site, measured at the same window width: {{pages}}.",
   "skipLinkPlacement_hint_fail_positionDiffers": "Place the skip link at the same position on every page, usually first in the page header (RGAA 12.7.2).",
+  "skipLinkPlacement_summary_cantTell_positionShifted": "This skip link is higher or lower on other pages of the site, measured at the same window width: {{pages}}.",
+  "skipLinkPlacement_hint_cantTell_positionShifted": "Check whether the skip link is at another place in the layout of those pages, or only pushed down by content above it, such as a cookie banner or a message (RGAA 12.7.2).",
   "skipLinkPlacement_summary_cantTell_visibility": "Whether this skip link is visible could not be settled: something may cover it, it is animated when it takes focus, or the page was not rendered.",
   "skipLinkPlacement_hint_cantTell_visibility": "Tab to the skip link and check that it is visible when it has focus (RGAA 12.7.2).",
   "skipLinkPlacement_summary_cantTell_orderDiffers": "This skip link comes at another place in the focus order on other pages of the site: {{pages}}.",

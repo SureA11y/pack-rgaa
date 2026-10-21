@@ -255,6 +255,8 @@
   "skipLinkPlacement_hint_fail_notVisible": "Affichez le lien d’évitement en permanence, ou au moins quand il reçoit le focus clavier, par exemple en le ramenant dans la page avec une règle :focus (RGAA 12.7.2).",
   "skipLinkPlacement_summary_fail_positionDiffers": "Ce lien d’évitement n’est pas à la même place sur d’autres pages du site, mesurées à la même largeur de fenêtre : {{pages}}.",
   "skipLinkPlacement_hint_fail_positionDiffers": "Placez le lien d’évitement au même endroit sur chaque page, en général en premier dans l’en-tête (RGAA 12.7.2).",
+  "skipLinkPlacement_summary_cantTell_positionShifted": "Ce lien d’évitement est plus haut ou plus bas sur d’autres pages du site, mesurées à la même largeur de fenêtre : {{pages}}.",
+  "skipLinkPlacement_hint_cantTell_positionShifted": "Vérifiez si le lien d’évitement est à un autre endroit de la mise en page de ces pages, ou seulement décalé vers le bas par un contenu placé au-dessus, comme un bandeau de cookies ou un message (RGAA 12.7.2).",
   "skipLinkPlacement_summary_cantTell_visibility": "Impossible de déterminer si ce lien d’évitement est visible : un élément le recouvre peut-être, il est animé à la prise de focus, ou la page n’a pas été affichée.",
   "skipLinkPlacement_hint_cantTell_visibility": "Atteignez le lien d’évitement avec la touche Tab et vérifiez qu’il est visible quand il a le focus (RGAA 12.7.2).",
   "skipLinkPlacement_summary_cantTell_orderDiffers": "Ce lien d’évitement arrive à une autre place dans l’ordre de tabulation sur d’autres pages du site : {{pages}}.",

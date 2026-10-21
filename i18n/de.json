@@ -255,6 +255,8 @@
   "skipLinkPlacement_hint_fail_notVisible": "Zeigen Sie den Sprunglink immer an, oder zumindest wenn er den Tastaturfokus erhält, etwa indem eine :focus-Regel ihn wieder ins Bild holt (RGAA 12.7.2).",
   "skipLinkPlacement_summary_fail_positionDiffers": "Dieser Sprunglink steht auf anderen Seiten der Website, gemessen bei derselben Fensterbreite, nicht an derselben Stelle: {{pages}}.",
   "skipLinkPlacement_hint_fail_positionDiffers": "Setzen Sie den Sprunglink auf jeder Seite an dieselbe Stelle, meist an den Anfang des Seitenkopfs (RGAA 12.7.2).",
+  "skipLinkPlacement_summary_cantTell_positionShifted": "Dieser Sprunglink steht auf anderen Seiten der Website höher oder tiefer, gemessen bei gleicher Fensterbreite: {{pages}}.",
+  "skipLinkPlacement_hint_cantTell_positionShifted": "Prüfen Sie, ob der Sprunglink im Layout dieser Seiten an einer anderen Stelle steht oder nur durch Inhalt darüber, etwa ein Cookie-Banner oder eine Meldung, nach unten verschoben ist (RGAA 12.7.2).",
   "skipLinkPlacement_summary_cantTell_visibility": "Ob dieser Sprunglink sichtbar ist, ließ sich nicht klären: Etwas verdeckt ihn vielleicht, er ist beim Fokus animiert, oder die Seite wurde nicht dargestellt.",
   "skipLinkPlacement_hint_cantTell_visibility": "Springen Sie mit der Tabulatortaste zum Sprunglink und prüfen Sie, dass er mit Fokus sichtbar ist (RGAA 12.7.2).",
   "skipLinkPlacement_summary_cantTell_orderDiffers": "Dieser Sprunglink steht auf anderen Seiten der Website an einer anderen Stelle der Fokusreihenfolge: {{pages}}.",

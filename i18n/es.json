@@ -255,6 +255,8 @@
   "skipLinkPlacement_hint_fail_notVisible": "Muestre el enlace siempre, o al menos cuando recibe el foco del teclado, por ejemplo devolviéndolo a la vista con una regla :focus (RGAA 12.7.2).",
   "skipLinkPlacement_summary_fail_positionDiffers": "Este enlace para saltar al contenido no está en el mismo lugar en otras páginas del sitio, medidas con el mismo ancho de ventana: {{pages}}.",
   "skipLinkPlacement_hint_fail_positionDiffers": "Coloque el enlace en la misma posición en todas las páginas, normalmente el primero en la cabecera (RGAA 12.7.2).",
+  "skipLinkPlacement_summary_cantTell_positionShifted": "Este enlace de salto está más arriba o más abajo en otras páginas del sitio, medidas con el mismo ancho de ventana: {{pages}}.",
+  "skipLinkPlacement_hint_cantTell_positionShifted": "Comprobar si el enlace de salto está en otro lugar del diseño de esas páginas o solo desplazado hacia abajo por contenido situado encima, como un aviso de cookies o un mensaje (RGAA 12.7.2).",
   "skipLinkPlacement_summary_cantTell_visibility": "No se pudo determinar si este enlace es visible: puede que algo lo cubra, se anima al recibir el foco o la página no se mostró.",
   "skipLinkPlacement_hint_cantTell_visibility": "Llegue al enlace con la tecla Tab y compruebe que es visible cuando tiene el foco (RGAA 12.7.2).",
   "skipLinkPlacement_summary_cantTell_orderDiffers": "Este enlace ocupa otro lugar en el orden de foco en otras páginas del sitio: {{pages}}.",

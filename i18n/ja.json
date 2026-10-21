@@ -255,6 +255,8 @@
   "skipLinkPlacement_hint_fail_notVisible": "スキップリンクを常に表示するか、少なくともキーボードフォーカスを受けたときに、たとえば :focus ルールで画面内に戻して表示してください（RGAA 12.7.2）。",
   "skipLinkPlacement_summary_fail_positionDiffers": "このスキップリンクは、同じウィンドウ幅で測ったサイトの他のページで同じ位置にありません：{{pages}}。",
   "skipLinkPlacement_hint_fail_positionDiffers": "スキップリンクをすべてのページで同じ位置に置いてください。通常はページのヘッダーの最初です（RGAA 12.7.2）。",
+  "skipLinkPlacement_summary_cantTell_positionShifted": "このスキップリンクは、同じウィンドウ幅で測定したサイト内の他のページでは、上下の位置が異なります: {{pages}}。",
+  "skipLinkPlacement_hint_cantTell_positionShifted": "それらのページのレイアウト上で別の場所にあるのか、上にあるコンテンツ (Cookie バナーやメッセージなど) によって下に押し下げられているだけなのかを確認してください (RGAA 12.7.2)。",
   "skipLinkPlacement_summary_cantTell_visibility": "このスキップリンクが見えるかどうかを判断できませんでした。何かに覆われている、フォーカス時にアニメーションする、またはページが描画されていない可能性があります。",
   "skipLinkPlacement_hint_cantTell_visibility": "Tab キーでスキップリンクに移動し、フォーカスがあるときに見えることを確認してください（RGAA 12.7.2）。",
   "skipLinkPlacement_summary_cantTell_orderDiffers": "このスキップリンクは、サイトの他のページでフォーカス順序の別の位置にあります：{{pages}}。",
