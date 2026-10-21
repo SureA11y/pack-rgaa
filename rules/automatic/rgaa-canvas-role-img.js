@@ -31,11 +31,14 @@
  *     count;
  *   - no role="img", an aria-label, aria-labelledby or title, but no
  *     fallback content and no link or button after it (the name alone is
- *     not one of the step 6 options);
- *   - nothing at all.
- *   Asks (cantTell): no role="img" and no fallback content, but a link or
- *   button right after the <canvas> (does it lead to an alternative
- *   content?).
+ *     not one of the step 6 options).
+ *   Asks (cantTell):
+ *   - no role="img" and no fallback content, but a link or button right
+ *     after the <canvas> (does it lead to an alternative content?);
+ *   - nothing at all: no role, name, fallback or link. Such a canvas fails
+ *     1.1.8 if it carries information and 1.2.5 if it is decorative (no
+ *     aria-hidden), and decorative canvases (animated backgrounds, chart
+ *     layers) are common, so a person decides which.
  * @implementation-notes
  * - "Immediately followed" is read in the markup: the next sibling, skipping
  *   white space and comments, is a link (a[href], role="link") or a button
@@ -234,13 +237,25 @@ function runInPage(ctx) {
       continue;
     }
 
-    fail(
-      el,
-      'noAlternative',
-      'This <canvas> has no text alternative, no fallback content and no link or button to an alternative content after it.',
-      'canvasRoleImg_summary_fail',
-      null,
-      null
+    // Nothing marks it either way: it fails 1.1.8 if it carries
+    // information and 1.2.5 (no aria-hidden) if it is decorative, as
+    // background animations and chart layers often are. Which takes a person.
+    cantTells.push(
+      helpers.reportOccurrence(el, {
+        summary:
+          'This <canvas> has no text alternative, no fallback content and no link or button to an alternative content after it.',
+        hint: 'If the canvas conveys information, give it role="img" and an aria-label or aria-labelledby, or put alternative content between <canvas> and </canvas>. If it is decorative, add aria-hidden="true".',
+        i18n: {
+          summaryKey: 'canvasRoleImg_summary_cantTell_noAlternative',
+          hintKey: 'canvasRoleImg_hint_cantTell_noAlternative'
+        },
+        uncertainty: {
+          code: 'judgement-required',
+          needed:
+            'Whether the canvas conveys information (it then needs an alternative, 1.1.8) or is decorative (it then needs aria-hidden="true", 1.2.5).'
+        },
+        data: { details: { reasonCode: 'noAlternative' }, visibilityFilter: VF }
+      })
     );
   }
 

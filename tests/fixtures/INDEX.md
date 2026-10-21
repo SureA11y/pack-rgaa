@@ -19,7 +19,7 @@ None — every rule has a fixture.
 | rgaa-aria-list-item-roles | automatic | `tests/fixtures/rgaa-aria-list-item-roles-all-scenarios.html` | 6 | 1 | 0 | 3 | 2 |
 | rgaa-aria-role-conformance | automatic | `tests/fixtures/rgaa-aria-role-conformance-all-scenarios.html` | 20 | 5 | 14 | 1 | 0 |
 | rgaa-canvas-decorative-aria-hidden | automatic | `tests/fixtures/rgaa-canvas-decorative-aria-hidden-all-scenarios.html` | 8 | 2 | 3 | 1 | 2 |
-| rgaa-canvas-role-img | automatic | `tests/fixtures/rgaa-canvas-role-img-all-scenarios.html` | 9 | 2 | 4 | 1 | 2 |
+| rgaa-canvas-role-img | automatic | `tests/fixtures/rgaa-canvas-role-img-all-scenarios.html` | 9 | 2 | 3 | 2 | 2 |
 | rgaa-complex-table-summary | manual | `tests/fixtures/rgaa-complex-table-summary-all-scenarios.html` | 8 | 0 | 0 | 0 | 8 |
 | rgaa-complex-table-summary-quality | manual | `tests/fixtures/rgaa-complex-table-summary-quality-all-scenarios.html` | 7 | 0 | 0 | 3 | 4 |
 | rgaa-contrast-minimum | automatic | `tests/fixtures/rgaa-contrast-minimum-all-scenarios.html` | 7 | 4 | 3 | 0 | 0 |

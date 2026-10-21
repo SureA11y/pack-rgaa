@@ -56,13 +56,17 @@ test(`${RULE_ID}: a name without role="img" and without fallback content fails`,
   }
 });
 
-test(`${RULE_ID}: no alternative at all fails with reasonCode noAlternative`, () => {
-  const rule = assertRule(run('<canvas width="40" height="20"></canvas>'), RULE_ID, 'fail', {
+// A bare canvas fails 1.1.8 if informative and 1.2.5 if decorative; which
+// one takes a person.
+test(`${RULE_ID}: no alternative at all is asked about with reasonCode noAlternative`, () => {
+  const rule = assertRule(run('<canvas width="40" height="20"></canvas>'), RULE_ID, 'cantTell', {
     minOccurrences: 1,
     maxOccurrences: 1
   });
-  assert.equal(rule.occurrences[0].data.details.reasonCode, 'noAlternative');
-  assert.equal(rule.occurrences[0].i18n.summaryKey, 'canvasRoleImg_summary_fail');
+  const occ = rule.occurrences[0];
+  assert.equal(occ.data.details.reasonCode, 'noAlternative');
+  assert.equal(occ.i18n.summaryKey, 'canvasRoleImg_summary_cantTell_noAlternative');
+  assert.equal(occ.uncertainty.code, 'judgement-required');
 });
 
 test(`${RULE_ID}: without role="img" or fallback, an adjacent link or button is asked about`, () => {

@@ -197,7 +197,8 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-canvas-role-img': {
       tests: ['1.1.8'],
-      note: 'Checks each <canvas> not marked decorative. Passes role="img" with aria-labelledby or aria-label (steps 3 and 4), or, without role="img", fallback content (step 6). Fails a <canvas role="img"> with no ARIA name, since the note of the methodology limits its alternative to step 4, and a canvas with no role, no fallback content and no link or button after it, even if aria-label or title names it. Asks when a link or button follows the canvas. A replacement mechanism cannot be detected.'
+      reasonCodes: { noAlternative: { tests: ['1.1.8', '1.2.5'] } },
+      note: 'Checks each <canvas> not marked decorative. Passes role="img" with aria-labelledby or aria-label (steps 3 and 4), or, without role="img", fallback content (step 6). Fails a <canvas role="img"> with no ARIA name, since the note of the methodology limits its alternative to step 4, and a canvas named by aria-label or title but with no role, no fallback content and no link or button after it. Asks when a link or button follows the canvas, and about a canvas with nothing at all (noAlternative): it fails 1.1.8 if it carries information and 1.2.5 (no aria-hidden) if it is decorative, as animated backgrounds and chart layers often are, so that question counts toward both tests. A replacement mechanism cannot be detected.'
     },
     'canvas-text-alternative-present': {
       tests: [],
@@ -801,8 +802,9 @@ const RGAA_RULE_TESTS = {
       note: 'Flags <summary> elements with an empty name. A native details/summary disclosure is not script-generated, so 7.1.1 does not strictly apply. 11.9.1 covers only buttons inside a form, and no other candidate test concerns disclosure widgets. The auditor may still choose to treat a scripted summary under 7.1.1.'
     },
     'rgaa-svg-hidden-no-alternative': {
-      tests: ['1.1.5', '1.2.4'],
-      note: 'Fails an <svg aria-hidden="true"> that carries a text alternative: aria-label, aria-labelledby, a title attribute, or a non-empty <title> or <desc>, in its own content or in a <symbol>/<svg> it draws through a same-document <use> (as the note of criterion 1.2 asks). As a decorative image it breaks conditions 2 to 4 of 1.2.4. If the alternative means the image carries information, it is hidden from assistive technology and has no role="img", failing 1.1.5. Which of the two applies needs a human.'
+      tests: ['1.2.4'],
+      asks: ['1.1.5'],
+      note: 'Fails an <svg aria-hidden="true"> that carries a text alternative: aria-label, aria-labelledby, a title attribute, or a non-empty <title> or <desc>, in its own content or in a <symbol>/<svg> it draws through a same-document <use> (as the note of criterion 1.2 asks). As a decorative image it breaks conditions 2 to 4 of 1.2.4. If the alternative means the image carries information, it is hidden from assistive technology and has no role="img", failing 1.1.5. Which of the two applies needs a human, so a finding fails 1.2.4, where the aria-hidden of the author puts it (and where sprite icons that keep a <title> belong), and asks under 1.1.5.'
     },
     'svg-image-text-alternative-present': {
       tests: [],

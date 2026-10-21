@@ -108,7 +108,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | Rollup ID | Title | Rules |
 |---|---|---|
 | `rgaa-4.1.2-1.1` | Chaque image porteuse d’information a-t-elle une alternative textuelle ? | `area-alt-present`, `img-alt-decorative`, `img-alt-present`, `input-image-alt-present`, `rgaa-area-alt-source`, `rgaa-canvas-role-img`, `rgaa-embed-image-role-img`, `rgaa-object-image-role-img`, `rgaa-role-img-aria-name`, `rgaa-svg-hidden-no-alternative`, `rgaa-svg-role-img`, `server-side-image-map-absent`, `svg-text-alternative-present` |
-| `rgaa-4.1.2-1.2` | Chaque image de décoration est-elle correctement ignorée par les technologies d’assistance ? | `img-alt-present`, `rgaa-canvas-decorative-aria-hidden`, `rgaa-img-decorative-no-alternative`, `rgaa-svg-hidden-no-alternative` |
+| `rgaa-4.1.2-1.2` | Chaque image de décoration est-elle correctement ignorée par les technologies d’assistance ? | `img-alt-present`, `rgaa-canvas-decorative-aria-hidden`, `rgaa-canvas-role-img`, `rgaa-img-decorative-no-alternative`, `rgaa-svg-hidden-no-alternative` |
 | `rgaa-4.1.2-1.3` | Pour chaque image porteuse d’information ayant une alternative textuelle, cette alternative est-elle pertinente (hors cas particuliers) ? | `area-alt-quality`, `canvas-text-alternative-quality`, `embed-text-alternative-quality`, `image-redundant-alt`, `img-alt-quality`, `input-image-alt-decorative`, `input-image-alt-quality`, `object-text-alternative-quality`, `rgaa-image-alt-long`, `svg-text-alternative-quality` |
 | `rgaa-4.1.2-1.9` | Chaque légende d’image est-elle, si nécessaire, correctement reliée à l’image correspondante ? | `rgaa-figure-caption-structure` |
 | `rgaa-4.1.2-10.1` | Dans le site web, des feuilles de styles sont-elles utilisées pour contrôler la présentation de l’information ? | `rgaa-letters-spaced-with-spaces`, `rgaa-presentational-attributes-absent`, `rgaa-presentational-elements-absent` |
@@ -270,10 +270,12 @@ RGAA 1.1.8 passes when one of these holds:
 Passes: role="img" with aria-labelledby or aria-label; or, without role="img", fallback content (text, or an element with alt or aria-label text). Fails:
 
 - role="img" with no aria-labelledby or aria-label. The methodology's note is explicit: "si l'élément &lt;canvas&gt; dispose d'un rôle img, son alternative ne peut être fournie que par les techniques listées à l'étape 4", so fallback content, title and an adjacent link do not count;
-- no role="img", an aria-label, aria-labelledby or title, but no fallback content and no link or button after it (the name alone is not one of the step 6 options);
-- nothing at all.
+- no role="img", an aria-label, aria-labelledby or title, but no fallback content and no link or button after it (the name alone is not one of the step 6 options).
 
-Asks (cantTell): no role="img" and no fallback content, but a link or button right after the &lt;canvas&gt; (does it lead to an alternative content?).
+Asks (cantTell):
+
+- no role="img" and no fallback content, but a link or button right after the &lt;canvas&gt; (does it lead to an alternative content?);
+- nothing at all: no role, name, fallback or link. Such a canvas fails 1.1.8 if it carries information and 1.2.5 if it is decorative (no aria-hidden), and decorative canvases (animated backgrounds, chart layers) are common, so a person decides which.
 
 ### `rgaa-complex-table-summary`
 

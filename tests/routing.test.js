@@ -111,3 +111,23 @@ test("a rule's result still names every test it can bear on", () => {
     RGAA_RULE_TESTS['4.1.2']['rgaa-contrast-minimum'].tests
   );
 });
+
+test('a bare <canvas> is a question under both 1.1 and 1.2', () => {
+  const result = scan('<canvas width="40" height="20"></canvas>');
+  for (const [id, test] of [
+    ['1.1', '1.1.8'],
+    ['1.2', '1.2.5']
+  ]) {
+    const c = contributor(criterion(result, id), 'rgaa-canvas-role-img');
+    assert.deepEqual([c.outcome, c.requirements], ['cantTell', [test]], id);
+  }
+});
+
+test('a decorative SVG that keeps a <title> fails 1.2.4 and is a question under 1.1.5', () => {
+  const result = scan('<svg aria-hidden="true" width="10" height="10"><title>Logo</title></svg>');
+  const decorative = criterion(result, '1.2');
+  assert.equal(decorative.outcome, 'fail');
+  assert.ok(tests(decorative).includes('1.2.4'));
+  const informative = contributor(criterion(result, '1.1'), 'rgaa-svg-hidden-no-alternative');
+  assert.deepEqual([informative.outcome, informative.requirements], ['cantTell', ['1.1.5']]);
+});
