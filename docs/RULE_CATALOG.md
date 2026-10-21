@@ -298,7 +298,7 @@ Applies to complex data tables, in RGAA's sense: tables whose header cells are n
 
 Tables with role="presentation" or "none" are left out. A page with none is notApplicable. When every complex table has its summary marked (aria-describedby, or a summary attribute where it counts), the rule passes: whether that summary is good is rgaa-complex-table-summary-quality's question.
 
-**Expectation.** A complex table without aria-describedby, and without a summary attribute where one still counts, is flagged for a person to check that a summary is available, as RGAA 5.1.1 asks: in the &lt;caption&gt;, or in a passage near the table. The summary attribute counts only on a &lt;table&gt; in a document whose doctype is not HTML5: 5.1.1 step 2 accepts it only "dans les versions de HTML et de XHTML antérieures à HTML 5". A document with no doctype is not HTML5. An ARIA table's summary comes only through aria-describedby.
+**Expectation.** A complex table without an aria-describedby that points to text (an id that names nothing, or an empty element, is no summary), and without a summary attribute where one still counts, is flagged for a person to check that a summary is available, as RGAA 5.1.1 asks: in the &lt;caption&gt;, or in a passage near the table. The summary attribute counts only on a &lt;table&gt; in a document whose doctype is not HTML5: 5.1.1 step 2 accepts it only "dans les versions de HTML et de XHTML antérieures à HTML 5". A document with no doctype is not HTML5. An ARIA table's summary comes only through aria-describedby.
 
 ### `rgaa-complex-table-summary-quality`
 
