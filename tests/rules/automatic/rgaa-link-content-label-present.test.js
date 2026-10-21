@@ -204,3 +204,36 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-link-content-label-prese
     ['cantTell', 'contentNotReadable']
   ]);
 });
+
+// The label of a link may be rendered by a web component: text in its
+// shadow root, or slotted into it, is the content of the link.
+test(`${RULE_ID}: a label inside a web component's shadow root counts`, () => {
+  const { JSDOM } = require('jsdom');
+  const { runa11yCoreOnDom } = require('../../helpers/run.js');
+  const scan = (setup) => {
+    const dom = new JSDOM(
+      '<!doctype html><html lang="fr"><head><title>t</title></head><body><main><a href="/" id="l"><brand-logo></brand-logo></a></main></body></html>',
+      { url: 'https://example.test/', pretendToBeVisual: true }
+    );
+    const host = dom.window.document.querySelector('brand-logo');
+    setup(host.attachShadow({ mode: 'open' }), host);
+    const rule = runa11yCoreOnDom(dom, RUN).checksResults.find((r) => r.ruleId === RULE_ID);
+    dom.window.close();
+    return rule.outcome;
+  };
+  assert.equal(
+    scan((root) => (root.innerHTML = '<span>Accueil</span>')),
+    'pass'
+  );
+  assert.equal(
+    scan((root, host) => {
+      root.innerHTML = '<slot></slot>';
+      host.textContent = 'Accueil';
+    }),
+    'pass'
+  );
+  assert.equal(
+    scan((root) => (root.innerHTML = '<svg aria-hidden="true"></svg>')),
+    'fail'
+  );
+});
