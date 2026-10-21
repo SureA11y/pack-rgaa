@@ -49,7 +49,7 @@ None — every rule has a fixture.
 | rgaa-img-decorative-no-alternative | automatic | `tests/fixtures/rgaa-img-decorative-no-alternative-all-scenarios.html` | 9 | 3 | 2 | 2 | 2 |
 | rgaa-keyboard-only-event-handlers | manual | `tests/fixtures/rgaa-keyboard-only-event-handlers-all-scenarios.html` | 10 | 0 | 0 | 4 | 6 |
 | rgaa-label-for-target-valid | automatic | `tests/fixtures/rgaa-label-for-target-valid-all-scenarios.html` | 8 | 3 | 4 | 0 | 1 |
-| rgaa-layout-table-no-data-markup | automatic | `tests/fixtures/rgaa-layout-table-no-data-markup-all-scenarios.html` | 11 | 3 | 6 | 1 | 1 |
+| rgaa-layout-table-no-data-markup | automatic | `tests/fixtures/rgaa-layout-table-no-data-markup-all-scenarios.html` | 11 | 4 | 5 | 1 | 1 |
 | rgaa-letters-spaced-with-spaces | manual | `tests/fixtures/rgaa-letters-spaced-with-spaces-all-scenarios.html` | 8 | 0 | 0 | 0 | 8 |
 | rgaa-link-content-label-present | automatic | `tests/fixtures/rgaa-link-content-label-present-all-scenarios.html` | 9 | 3 | 4 | 1 | 1 |
 | rgaa-link-context-review | manual | `tests/fixtures/rgaa-link-context-review-all-scenarios.html` | 6 | 0 | 0 | 3 | 3 |
@@ -69,15 +69,15 @@ None — every rule has a fixture.
 | rgaa-page-language-present | automatic | `tests/fixtures/rgaa-page-language-present-all-scenarios.html` | 1 | 1 | 0 | 0 | 0 |
 | rgaa-page-title-unique | automatic | `tests/fixtures/rgaa-page-title-unique-all-scenarios.html` | 1 | 0 | 0 | 1 | 0 |
 | rgaa-page-zones-reachable | automatic | `tests/fixtures/rgaa-page-zones-reachable-all-scenarios.html` | 6 | 2 | 0 | 4 | 0 |
-| rgaa-presentational-attributes-absent | automatic | `tests/fixtures/rgaa-presentational-attributes-absent-all-scenarios.html` | 11 | 0 | 8 | 0 | 3 |
+| rgaa-presentational-attributes-absent | automatic | `tests/fixtures/rgaa-presentational-attributes-absent-all-scenarios.html` | 11 | 1 | 7 | 0 | 3 |
 | rgaa-presentational-elements-absent | automatic | `tests/fixtures/rgaa-presentational-elements-absent-all-scenarios.html` | 9 | 0 | 7 | 0 | 2 |
 | rgaa-radio-group-present | manual | `tests/fixtures/rgaa-radio-group-present-all-scenarios.html` | 6 | 0 | 0 | 0 | 6 |
-| rgaa-role-img-aria-name | automatic | `tests/fixtures/rgaa-role-img-aria-name-all-scenarios.html` | 9 | 2 | 3 | 1 | 3 |
+| rgaa-role-img-aria-name | automatic | `tests/fixtures/rgaa-role-img-aria-name-all-scenarios.html` | 9 | 3 | 3 | 0 | 3 |
 | rgaa-scripted-components-review | manual | `tests/fixtures/rgaa-scripted-components-review-all-scenarios.html` | 12 | 0 | 0 | 0 | 12 |
 | rgaa-skip-link-placement | automatic | `tests/fixtures/rgaa-skip-link-placement-all-scenarios.html` | 1 | 0 | 0 | 1 | 0 |
 | rgaa-skip-link-present | automatic | `tests/fixtures/rgaa-skip-link-present-all-scenarios.html` | 1 | 0 | 1 | 0 | 0 |
 | rgaa-svg-hidden-no-alternative | automatic | `tests/fixtures/rgaa-svg-hidden-no-alternative-all-scenarios.html` | 10 | 3 | 5 | 0 | 2 |
-| rgaa-svg-role-img | automatic | `tests/fixtures/rgaa-svg-role-img-all-scenarios.html` | 9 | 2 | 3 | 1 | 3 |
+| rgaa-svg-role-img | automatic | `tests/fixtures/rgaa-svg-role-img-all-scenarios.html` | 9 | 3 | 3 | 0 | 3 |
 | rgaa-th-scope-row-col | manual | `tests/fixtures/rgaa-th-scope-row-col-all-scenarios.html` | 5 | 0 | 0 | 2 | 3 |
 | rgaa-title-placeholder-identical | automatic | `tests/fixtures/rgaa-title-placeholder-identical-all-scenarios.html` | 7 | 2 | 0 | 3 | 2 |
 | rgaa-video-captions-track-kind | automatic | `tests/fixtures/rgaa-video-captions-track-kind-all-scenarios.html` | 8 | 2 | 3 | 1 | 2 |

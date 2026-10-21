@@ -13,9 +13,11 @@
  *   notApplicable.
  * @expectation
  *   The table has no non-empty summary attribute and contains no <caption>,
- *   <th>, <thead>, <tfoot>, <colgroup> or element with role="rowheader" or
+ *   <th>, <thead>, <tfoot> or element with role="rowheader" or
  *   role="columnheader", and none of its <td> cells carries scope, headers
- *   or axis (RGAA 5.8.1). Only the table's own cells count, not those of a
+ *   or axis (RGAA 5.8.1). A <colgroup> is allowed: RGAA 4.1.2 took it out
+ *   of 5.8.1's list (notes de révision 4.1 vers 4.1.2), since it sets
+ *   column widths as often as it groups headers. Only the table's own cells count, not those of a
  *   table nested inside it.
  *   A table that has such markup and also looks like a data table is
  *   reported as cantTell instead of fail: 5.8.1 applies to layout tables,
@@ -39,7 +41,7 @@ const id = 'rgaa-layout-table-no-data-markup';
 const meta = {
   title: 'Layout tables use no data table markup',
   description:
-    'Checks that a table marked as layout (role="presentation" or "none") has no caption, header cells, colgroup, summary, or scope, headers or axis attributes, and asks when such a table looks like a data table.',
+    'Checks that a table marked as layout (role="presentation" or "none") has no caption, header cells, summary, or scope, headers or axis attributes, and asks when such a table looks like a data table.',
   i18n: {
     titleKey: 'layoutTableNoDataMarkup_title',
     descriptionKey: 'layoutTableNoDataMarkup_description'
@@ -78,7 +80,6 @@ function runInPage(ctx) {
     ['th', 'th'],
     ['thead', 'thead'],
     ['tfoot', 'tfoot'],
-    ['colgroup', 'colgroup'],
     ['[role~="rowheader" i]', 'role="rowheader"', 'rowheader'],
     ['[role~="columnheader" i]', 'role="columnheader"', 'columnheader'],
     ['td[scope]', 'td[scope]'],

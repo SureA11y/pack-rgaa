@@ -54,21 +54,10 @@ test(`${RULE_ID}: no name at all fails with reasonCode missingAlternative`, () =
   assert.equal(rule.occurrences[0].summary, 'This <span> with role="img" has no text alternative.');
 });
 
-test(`${RULE_ID}: an SVG element named only by a <title> child is asked about (RGAA contradicts itself)`, () => {
+// Since RGAA 4.1.2 the glossary counts an SVG's <title> as its alternative.
+test(`${RULE_ID}: an SVG element named by a <title> child passes`, () => {
   const html = '<svg width="20" height="20"><g role="img"><title>Camembert</title></g></svg>';
-  const rule = assertRule(run(html), RULE_ID, 'cantTell', { minOccurrences: 1, maxOccurrences: 1 });
-  assert.equal(rule.occurrences[0].data.details.reasonCode, 'svgTitleOnly');
-  assert.equal(rule.occurrences[0].i18n.summaryKey, 'roleImgAriaName_summary_cantTell_svgTitle');
-});
-
-test(`${RULE_ID}: a failure and a question on the same page give fail with both occurrences`, () => {
-  const html =
-    '<div role="img" title="x"></div><svg><g role="img"><title>Camembert</title></g></svg>';
-  const rule = assertRule(run(html), RULE_ID, 'fail', { minOccurrences: 2, maxOccurrences: 2 });
-  assert.deepEqual(
-    rule.occurrences.map((o) => o.occurrenceOutcome),
-    ['fail', 'cantTell']
-  );
+  assertRule(run(html), RULE_ID, 'pass');
 });
 
 test(`${RULE_ID}: <img>, an outer <svg>, graphics-* roles and aria-hidden are not applicable`, () => {
@@ -153,14 +142,13 @@ test(`${RULE_ID}: RGAA profile, the two standards agree on no name and on aria-l
 test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-role-img-aria-name-all-scenarios.html)`, () => {
   const fixturePath = path.join(__dirname, '../..', 'fixtures', `${RULE_ID}-all-scenarios.html`);
   const result = runa11yCoreOnHtml(fs.readFileSync(fixturePath, 'utf8'), RUN);
-  const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 4, maxOccurrences: 4 });
+  const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 3, maxOccurrences: 3 });
   assert.deepEqual(
     rule.occurrences.map((o) => [(o.html.match(/id="([^"]+)"/) || [])[1], o.occurrenceOutcome]),
     [
       ['rian_case_01', 'fail'],
       ['rian_case_02', 'fail'],
-      ['rian_case_03', 'fail'],
-      ['rian_case_04', 'cantTell']
+      ['rian_case_03', 'fail']
     ]
   );
 });

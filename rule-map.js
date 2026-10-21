@@ -532,7 +532,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-layout-table-no-data-markup': {
       tests: ['5.8.1'],
-      note: 'Fails a table with role="presentation" or role="none" that has a non-empty summary, a <caption>, <th>, <thead>, <tfoot>, <colgroup>, a rowheader or columnheader role, or cells with scope, headers or axis. Those are the two conditions of 5.8.1, applied to tables marked as layout. Such a table that looks like a data table (a full header row or column over data) is asked about instead, since role="presentation" on a data table is not a 5.8.1 matter. A layout table with no role is not found; deciding which tables are layout tables is 5.3.'
+      note: 'Fails a table with role="presentation" or role="none" that has a non-empty summary, a <caption>, <th>, <thead>, <tfoot>, a rowheader or columnheader role, or cells with scope, headers or axis. Those are the two conditions of 5.8.1, applied to tables marked as layout. A <colgroup> passes: the RGAA 4.1.2 revision notes took it out of the list of 5.8.1. Such a table that looks like a data table (a full header row or column over data) is asked about instead, since role="presentation" on a data table is not a 5.8.1 matter. A layout table with no role is not found; deciding which tables are layout tables is 5.3.'
     },
     'rgaa-letters-spaced-with-spaces': {
       tests: ['10.1.3'],
@@ -746,7 +746,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-role-img-aria-name': {
       tests: ['1.1.1'],
-      note: 'Fails an exposed element with role="img" (not <img>, not an outer <svg>) whose text alternative does not come from aria-labelledby or aria-label, the two sources 1.1.1 step 4 lists for role="img": a title-only name fails, as does no name at all. An element in the SVG namespace named only by a <title> child is asked about, since RGAA contradicts itself on <title> (1.1.5 step 5 against 1.3.6). An element with aria-hidden="true" is left out, as the glossary allows only that for a decorative role="img".'
+      note: 'Fails an exposed element with role="img" (not <img>, not an outer <svg>) whose text alternative does not come from aria-labelledby or aria-label, the two sources 1.1.1 step 4 lists for role="img": a title-only name fails, as does no name at all. An element in the SVG namespace named by a <title> child passes: since RGAA 4.1.2 the glossary counts the <title> of an SVG as its alternative. An element with aria-hidden="true" is left out, as the glossary allows only that for a decorative role="img".'
     },
     'role-img-text-alternative-present': {
       tests: [],
@@ -810,7 +810,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-svg-role-img': {
       tests: ['1.1.5'],
-      note: 'Fails an exposed outer <svg> named by aria-labelledby, aria-label or a <title> child but without role="img": 1.1.5 step 4 says the test is failed without the role. An <svg role="img"> named only by <title> is asked about, since 1.1.5 step 5 lists only the ARIA sources while 1.3.6 treats <title> as the SVG\'s alternative. An unnamed <svg role="img"> is left to svg-text-alternative-present.'
+      note: 'Fails an exposed outer <svg> named by aria-labelledby, aria-label or a <title> child but without role="img": 1.1.5 step 4 says the test is failed without the role. An <svg role="img"> named only by <title> passes: RGAA 4.1.2 added the content of <title> to the sources of 1.1.5 step 5. An unnamed <svg role="img"> is left to svg-text-alternative-present.'
     },
     'svg-text-alternative-present': {
       tests: ['1.1.5'],

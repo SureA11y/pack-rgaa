@@ -1315,13 +1315,13 @@ The SVG has `role="img"` and an `aria-label`.
 ```
 The SVG has a text alternative but no `role="img"`.
 
-**Flagged (cantTell)**
+**Passed**
 ```html
 <svg role="img" width="20" height="20">
   <title>Logo</title>
 </svg>
 ```
-Named only by `<title>`: RGAA 1.1.5 lists only the ARIA sources, while 1.3.6 treats `<title>` as the alternative.
+Named only by `<title>`, which RGAA 4.1.2 added to the sources 1.1.5 accepts.
 
 ## rgaa-th-scope-row-col
 

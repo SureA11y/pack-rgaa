@@ -11,7 +11,7 @@
  *   Applies to any scan scope; whether an HTML element in it carries one of
  *   the attributes RGAA 10.1.2 lists is always an answerable question.
  * @expectation
- *   No HTML element carries align, alink, background, basefont, bgcolor, border,
+ *   No HTML element carries align, alink, background, bgcolor, border,
  *   cellpadding, cellspacing, char, charoff, clear, color, compact,
  *   frameborder, hspace, link, marginheight, marginwidth, text, valign,
  *   vlink or vspace; size is allowed only on <select>, and width and height
@@ -61,7 +61,6 @@ function runInPage(ctx) {
     'align',
     'alink',
     'background',
-    'basefont',
     'bgcolor',
     'border',
     'cellpadding',

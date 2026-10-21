@@ -713,11 +713,11 @@ Checks that the for attribute of each &lt;label&gt; matches the id of a form fie
 
 automatic · no formal WCAG SC mapping · confidence high · default severity moderate
 
-Checks that a table marked as layout (role="presentation" or "none") has no caption, header cells, colgroup, summary, or scope, headers or axis attributes, and asks when such a table looks like a data table.
+Checks that a table marked as layout (role="presentation" or "none") has no caption, header cells, summary, or scope, headers or axis attributes, and asks when such a table looks like a data table.
 
 **Applies to.** Applies to &lt;table&gt; elements whose role is presentation or none, the only way markup says a table is for layout. A page with none is notApplicable.
 
-**Expectation.** The table has no non-empty summary attribute and contains no &lt;caption&gt;, &lt;th&gt;, &lt;thead&gt;, &lt;tfoot&gt;, &lt;colgroup&gt; or element with role="rowheader" or role="columnheader", and none of its &lt;td&gt; cells carries scope, headers or axis (RGAA 5.8.1). Only the table's own cells count, not those of a table nested inside it. A table that has such markup and also looks like a data table is reported as cantTell instead of fail: 5.8.1 applies to layout tables, and role="presentation" on a real data table is a different defect (its headers are no longer exposed). It looks like a data table when it has at least two rows and two columns, a data cell, and a full header row (every cell of the first row a header) or a full header column (the first cell of every row a header), headers being &lt;th&gt;, role="columnheader" or role="rowheader".
+**Expectation.** The table has no non-empty summary attribute and contains no &lt;caption&gt;, &lt;th&gt;, &lt;thead&gt;, &lt;tfoot&gt; or element with role="rowheader" or role="columnheader", and none of its &lt;td&gt; cells carries scope, headers or axis (RGAA 5.8.1). A &lt;colgroup&gt; is allowed: RGAA 4.1.2 took it out of 5.8.1's list (notes de révision 4.1 vers 4.1.2), since it sets column widths as often as it groups headers. Only the table's own cells count, not those of a table nested inside it. A table that has such markup and also looks like a data table is reported as cantTell instead of fail: 5.8.1 applies to layout tables, and role="presentation" on a real data table is a different defect (its headers are no longer exposed). It looks like a data table when it has at least two rows and two columns, a data cell, and a full header row (every cell of the first row a header) or a full header column (the first cell of every row a header), headers being &lt;th&gt;, role="columnheader" or role="rowheader".
 
 ### `rgaa-letters-spaced-with-spaces`
 
@@ -1011,7 +1011,7 @@ Checks that no HTML element carries one of the presentational attributes RGAA li
 
 **Applies to.** Applies to any scan scope; whether an HTML element in it carries one of the attributes RGAA 10.1.2 lists is always an answerable question.
 
-**Expectation.** No HTML element carries align, alink, background, basefont, bgcolor, border, cellpadding, cellspacing, char, charoff, clear, color, compact, frameborder, hspace, link, marginheight, marginwidth, text, valign, vlink or vspace; size is allowed only on &lt;select&gt;, and width and height only on &lt;img&gt;, &lt;object&gt;, &lt;embed&gt;, &lt;canvas&gt; and &lt;svg&gt;. That is RGAA 10.1.2's list as written, so width and height on an &lt;iframe&gt; or a &lt;video&gt;, and size on an &lt;input&gt;, are reported too. One occurrence per element, naming every such attribute it carries.
+**Expectation.** No HTML element carries align, alink, background, bgcolor, border, cellpadding, cellspacing, char, charoff, clear, color, compact, frameborder, hspace, link, marginheight, marginwidth, text, valign, vlink or vspace; size is allowed only on &lt;select&gt;, and width and height only on &lt;img&gt;, &lt;object&gt;, &lt;embed&gt;, &lt;canvas&gt; and &lt;svg&gt;. That is RGAA 10.1.2's list as written, so width and height on an &lt;iframe&gt; or a &lt;video&gt;, and size on an &lt;input&gt;, are reported too. One occurrence per element, naming every such attribute it carries.
 
 ### `rgaa-presentational-elements-absent`
 
@@ -1047,7 +1047,7 @@ Checks that each exposed element with role="img" (other than &lt;img&gt; and an 
 
 **Applies to.** Applies to elements whose role attribute starts with the token img, except &lt;img&gt; (RGAA lists its own sources for it) and an outer &lt;svg&gt; (RGAA test 1.1.5, see rgaa-svg-role-img and svg-text-alternative-present). An element with aria-hidden="true", on itself or an ancestor, is left out: the glossary entry "Image de décoration" says an element with role="img" is decorative only with aria-hidden="true". Content hidden with CSS or the hidden attribute is left out too. A page with none is notApplicable.
 
-**Expectation.** The element has a text alternative from one of the two sources RGAA 1.1.1 step 4 lists for role="img": text referenced by aria-labelledby, or a non-empty aria-label. A name that comes only from the title attribute, or no name at all, fails: the glossary entry "Alternative textuelle (image)" lists title for &lt;img&gt;, &lt;input type="image"&gt;, &lt;object&gt; and &lt;embed&gt; only. An element in the SVG namespace (a &lt;g role="img"&gt;, for example) named only by a &lt;title&gt; child is asked about (cantTell): RGAA contradicts itself on &lt;title&gt; as an SVG alternative (1.1.5 step 5 lists only aria-labelledby and aria-label, while 1.3.6 checks the content of &lt;title&gt;).
+**Expectation.** The element has a text alternative from one of the two sources RGAA 1.1.1 step 4 lists for role="img": text referenced by aria-labelledby, or a non-empty aria-label. A name that comes only from the title attribute, or no name at all, fails: the glossary entry "Alternative textuelle (image)" lists title for &lt;img&gt;, &lt;input type="image"&gt;, &lt;object&gt; and &lt;embed&gt; only. An element in the SVG namespace (a &lt;g role="img"&gt;, for example) named by a &lt;title&gt; child passes: since RGAA 4.1.2 the glossary entry "Alternative textuelle (image)" counts an SVG's &lt;title&gt; as its alternative, and 1.1.5 step 5 lists it.
 
 ### `rgaa-scripted-components-review`
 
@@ -1117,11 +1117,11 @@ Checks that an &lt;svg&gt; with aria-hidden="true" has no aria-label, aria-label
 
 automatic · no formal WCAG SC mapping · confidence high · default severity serious
 
-Checks that an &lt;svg&gt; named by aria-labelledby, aria-label or &lt;title&gt; has role="img", and that its name comes from aria-labelledby or aria-label.
+Checks that an &lt;svg&gt; named by aria-labelledby, aria-label or &lt;title&gt; has role="img".
 
 **Applies to.** Applies to outer &lt;svg&gt; elements that carry a text alternative: text referenced by aria-labelledby, a non-empty aria-label, or a non-empty &lt;title&gt; child. An &lt;svg&gt; with aria-hidden="true", on itself or an ancestor, is left out (rgaa-svg-hidden-no-alternative checks it), and so is content hidden with CSS or the hidden attribute. An &lt;svg role="img"&gt; with no alternative at all is left to svg-text-alternative-present. A page with none is notApplicable.
 
-**Expectation.** The &lt;svg&gt; has role="img" (RGAA 1.1.5 step 3; step 4: "Si ce n'est pas le cas, le test est invalidé"), and its alternative comes from aria-labelledby or aria-label (step 5). An alternative without role="img" fails: the author has shown that the image carries information, and without the role it is not exposed as an image. If the image were in fact decorative, it would fail 1.2.4 instead, which requires aria-hidden="true" and no alternative. An &lt;svg role="img"&gt; named only by its &lt;title&gt; is asked about (cantTell): RGAA contradicts itself there. 1.1.5 step 5 lists only aria-labelledby and aria-label, but 1.3.6 checks "le contenu de l'élément &lt;title&gt;" as the alternative of an SVG.
+**Expectation.** The &lt;svg&gt; has role="img" (RGAA 1.1.5 step 3; step 4: "Si ce n'est pas le cas, le test est invalidé"), and has an alternative from one of the sources step 5 lists: the content of its &lt;title&gt;, aria-labelledby or aria-label. An alternative without role="img" fails: the author has shown that the image carries information, and without the role it is not exposed as an image. If the image were in fact decorative, it would fail 1.2.4 instead, which requires aria-hidden="true" and no alternative. An &lt;svg role="img"&gt; named by its &lt;title&gt; alone passes: RGAA 4.1.2 added "Contenu de l'élément &lt;title&gt;" to step 5 (notes de révision 4.1 vers 4.1.2).
 
 ### `rgaa-th-scope-row-col`
 

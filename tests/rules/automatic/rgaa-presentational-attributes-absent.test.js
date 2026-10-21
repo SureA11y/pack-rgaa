@@ -52,7 +52,6 @@ test(`${RULE_ID}: every attribute RGAA lists is caught`, () => {
     'align',
     'alink',
     'background',
-    'basefont',
     'bgcolor',
     'border',
     'cellpadding',
@@ -107,7 +106,7 @@ test(`${RULE_ID}: hidden content is part of the generated source and is checked`
   const html = page(
     '<div hidden><p id="h1" align="center">x</p></div>' +
       '<p id="h2" style="display:none" align="center">y</p>' +
-      '<p id="b" basefont="3">z</p>' +
+      '<p id="b" valign="top">z</p>' +
       '<template><p align="center">t</p></template>'
   );
   for (const opts of [RUN, { ...RUN, engineOptions: { includeHiddenElements: true } }]) {
@@ -117,7 +116,7 @@ test(`${RULE_ID}: hidden content is part of the generated source and is checked`
     });
     assert.deepEqual(attributesOf(rule, 'h1'), ['align']);
     assert.deepEqual(attributesOf(rule, 'h2'), ['align']);
-    assert.deepEqual(attributesOf(rule, 'b'), ['basefont']);
+    assert.deepEqual(attributesOf(rule, 'b'), ['valign']);
   }
   assertRule(
     runa11yCoreOnHtml(html, { engineOptions: { profile: 'rgaa-4.1.2' } }),
@@ -128,6 +127,11 @@ test(`${RULE_ID}: hidden content is part of the generated source and is checked`
       maxOccurrences: 3
     }
   );
+});
+
+// RGAA 4.1.2 took basefont out of 10.1.2's attributes (notes de révision).
+test(`${RULE_ID}: a basefont attribute is not reported`, () => {
+  assertRule(runa11yCoreOnHtml(page('<p basefont="3">x</p>'), RUN), RULE_ID, 'pass');
 });
 
 test(`${RULE_ID}: excludeSelectors still apply to hidden content`, () => {
@@ -148,7 +152,7 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-presentational-attribute
     'rgaa-presentational-attributes-absent-all-scenarios.html'
   );
   const result = runa11yCoreOnHtml(fs.readFileSync(fixturePath, 'utf8'), RUN);
-  const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 8, maxOccurrences: 8 });
+  const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 7, maxOccurrences: 7 });
   const ids = rule.occurrences.map((o) => (o.html.match(/id="([^"]+)"/) || [])[1]);
   assert.deepEqual(ids, [
     'pat_case_01',
@@ -157,7 +161,6 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-presentational-attribute
     'pat_case_04',
     'pat_case_05',
     'pat_case_09',
-    'pat_case_10',
-    'pat_case_11'
+    'pat_case_10'
   ]);
 });
