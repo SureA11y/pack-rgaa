@@ -530,5 +530,10 @@
   "scriptedComponentsReview_hint_cantTell_contentEditable": "Vérifiez avec les technologies d’assistance que cette zone d’édition expose un rôle, un nom et un état pertinents, et que ses changements sont restitués (RGAA 7.1).",
   "scriptedComponentsReview_summary_cantTell_stateAttribute": "Cet élément <{{element}}> a l’attribut {{attribute}}, qu’un script met généralement à jour.",
   "scriptedComponentsReview_hint_cantTell_stateAttribute": "Vérifiez avec les technologies d’assistance que l’état décrit par cet attribut est mis à jour et restitué quand le composant d’interface change (RGAA 7.1).",
-  "report_rgaaRollup_note": "Une ligne par critère du RGAA 4.1.2 auquel une règle est liée, qui regroupe ces règles. Les liens n’ont pas encore été vérifiés par un auditeur RGAA, et une ligne réussie ne signifie jamais que le critère est conforme."
+  "report_rgaaRollup_note": "Une ligne par critère du RGAA 4.1.2 auquel une règle est liée, qui regroupe ces règles. Les liens n’ont pas encore été vérifiés par un auditeur RGAA, et une ligne réussie ne signifie jamais que le critère est conforme.",
+  "validLangRgaa_title": "Le code de langue d’un changement de langue est valide",
+  "validLangRgaa_description": "Vérifie que le code de langue de l’attribut lang des éléments autres que <html> est un code ISO 639 valide (RGAA 8.8).",
+  "validLangRgaa_summary_fail": "Cette valeur de lang (« {{value}} ») n’est pas une étiquette de langue valide.",
+  "validLangRgaa_summary_unknown": "Cette valeur de lang (« {{value}} ») est bien formée, mais « {{subtag}} » n’est pas un code de langue ISO 639.",
+  "validLangRgaa_hint_fail": "Commencez la valeur par le code ISO 639 à deux ou trois lettres de la langue du passage, par exemple « fr » ou « fr-FR »."
 }

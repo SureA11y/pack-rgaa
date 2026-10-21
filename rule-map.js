@@ -893,8 +893,12 @@ const RGAA_RULE_TESTS = {
       note: 'Checks that role=treeitem has a non-empty name. A tree item is part of a script-driven tree component, and 7.1.1 step 2 requires an explicit name.'
     },
     'valid-lang': {
+      tests: [],
+      note: 'Fails lang on elements other than <html> whose primary subtag is not in the IANA language subtag registry (WCAG 3.1.2, ACT de46e4). Not linked to 8.8.1: the registry leaves out the three-letter ISO 639-2 codes of languages with a two-letter one (fra, fre, eng, ger), which the glossary "Code de langue" accepts, so this rule fails lang="fra", which 8.8.1 passes. rgaa-valid-lang reports 8.8.1.'
+    },
+    'rgaa-valid-lang': {
       tests: ['8.8.1'],
-      note: 'Checks that lang on elements other than <html> has a registered primary language subtag (the glossary "Code de langue" reads only the part before the hyphen). That is the \'valide\' condition of 8.8.1 for language changes; relevance is not checked.'
+      note: "Fails lang on elements other than <html> whose language code, the part before the first hyphen (glossary \"Code de langue\"), is not an ISO 639-1, 639-2 or later ISO 639 code: the 'valide' condition of 8.8.1 step 2. It runs the code of valid-lang, with ISO 639-2 codes such as fra or ger and the qaa to qtz local-use range accepted. Relevance (the 'pertinent' condition) is not judged."
     },
     'video-caption': {
       tests: ['4.3.1'],

@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**70 rules total: 55 automatic (decide deterministically; can return `fail`), 15 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**71 rules total: 56 automatic (decide deterministically; can return `fail`), 15 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -14,7 +14,7 @@ Under **What a finding reports**, a rule lists the fields its findings carry in 
 
 See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_SCHEMA.md) for what `type`/`confidence`/`severity` mean on a scan result, and [`WCAG_CONFORMANCE.md`](https://github.com/SureA11y/core/blob/main/docs/WCAG_CONFORMANCE.md) for how these roll up to an SC-level conformance claim.
 
-## Automatic rules (55), can return `fail`
+## Automatic rules (56), can return `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -71,6 +71,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-svg-hidden-no-alternative`](#rgaa-svg-hidden-no-alternative) | Hidden decorative SVGs carry no text alternative | — | — | high | minor |
 | [`rgaa-svg-role-img`](#rgaa-svg-role-img) | SVGs with a text alternative have role="img" | — | — | high | serious |
 | [`rgaa-title-placeholder-identical`](#rgaa-title-placeholder-identical) | A form field's title and placeholder are identical | — | — | medium | moderate |
+| [`rgaa-valid-lang`](#rgaa-valid-lang) | Language code of a change of language is valid | — | — | high | moderate |
 | [`rgaa-video-captions-track-kind`](#rgaa-video-captions-track-kind) | Video caption tracks use kind="captions" | — | — | high | moderate |
 | [`rgaa-widget-label-in-name`](#rgaa-widget-label-in-name) | The accessible name of a scripted component contains its visible label | — | — | high | serious |
 
@@ -158,7 +159,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-8.4` | Pour chaque page web ayant une langue par défaut, le code de langue est-il pertinent ? | `html-xml-lang-mismatch`, `rgaa-html-lang-code-valid` |
 | `rgaa-4.1.2-8.5` | Chaque page web a-t-elle un titre de page ? | `page-title-present` |
 | `rgaa-4.1.2-8.6` | Pour chaque page web ayant un titre de page, ce titre est-il pertinent ? | `page-title-patterns`, `rgaa-page-title-unique` |
-| `rgaa-4.1.2-8.8` | Dans chaque page web, le code de langue de chaque changement de langue est-il valide et pertinent ? | `valid-lang` |
+| `rgaa-4.1.2-8.8` | Dans chaque page web, le code de langue de chaque changement de langue est-il valide et pertinent ? | `rgaa-valid-lang` |
 | `rgaa-4.1.2-9.1` | Dans chaque page web, l’information est-elle structurée par l’utilisation appropriée de titres ? | `heading-order`, `heading-quality`, `p-as-heading`, `page-has-heading-one`, `rgaa-heading-content-present`, `rgaa-heading-role-level-present` |
 | `rgaa-4.1.2-9.2` | Dans chaque page web, la structure du document est-elle cohérente (hors cas particuliers) ? | `rgaa-main-element-structure` |
 | `rgaa-4.1.2-9.3` | Dans chaque page web, chaque liste est-elle correctement structurée ? | `definition-list-children-valid`, `dlitem-parent-valid`, `list-children-valid`, `listitem-parent-valid`, `rgaa-aria-list-item-roles`, `rgaa-fake-list` |
@@ -1164,6 +1165,18 @@ Asks about form fields whose title and placeholder are both present but differ: 
 **Applies to.** Applies to &lt;input&gt; and &lt;textarea&gt; fields that carry both a non-empty title and a non-empty placeholder. Only these fields show a placeholder; the attribute does nothing elsewhere. A hidden field, or a page with no such field, is notApplicable.
 
 **Expectation.** RGAA's glossary entry "Étiquette de champ de formulaire" says that a placeholder « est susceptible d'être restitué à la place de l'attribut title » and that « lorsque ces deux attributs title et placeholder sont présents, ils doivent être identiques ». A field whose two values are the same once whitespace is collapsed passes.
+
+### `rgaa-valid-lang`
+
+**Language code of a change of language is valid**
+
+automatic · no formal WCAG SC mapping · confidence high · default severity moderate
+
+Checks that the language code of lang on elements other than &lt;html&gt; is a valid ISO 639 code (RGAA 8.8).
+
+**Applies to.** The same elements as valid-lang: an element other than &lt;html&gt; with a non-empty lang attribute and text (or an alt) whose language it sets.
+
+**Expectation.** The language code, which the RGAA glossary "Code de langue" defines as the part before the first hyphen, is an ISO 639-1, ISO 639-2 or later ISO 639 code (8.8.1 step 2, « conforme à la norme ISO 639-1 ou ISO 639-2 et suivantes »). The only difference from valid-lang: the three-letter ISO 639-2 and 639-3 codes of languages that have a two-letter one (fra, fre, eng, ger…), which the IANA registry leaves out, and the qaa to qtz range ISO 639-2 reserves for local use, pass here and fail there. Whether the code names the right language (« pertinent ») is for a person.
 
 ### `rgaa-video-captions-track-kind`
 

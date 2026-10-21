@@ -530,5 +530,10 @@
   "scriptedComponentsReview_hint_cantTell_contentEditable": "Check with assistive technologies that this editing area exposes a relevant role, name and state, and that its changes are rendered (RGAA 7.1).",
   "scriptedComponentsReview_summary_cantTell_stateAttribute": "This <{{element}}> has {{attribute}}, which a script usually updates.",
   "scriptedComponentsReview_hint_cantTell_stateAttribute": "Check with assistive technologies that the state this attribute describes is updated and rendered when the component changes (RGAA 7.1).",
-  "report_rgaaRollup_note": "One row per RGAA 4.1.2 criterion that a rule is linked to, grouping those rules. The links have not yet been reviewed by an RGAA auditor, and a passing row never means the criterion is conforme."
+  "report_rgaaRollup_note": "One row per RGAA 4.1.2 criterion that a rule is linked to, grouping those rules. The links have not yet been reviewed by an RGAA auditor, and a passing row never means the criterion is conforme.",
+  "validLangRgaa_title": "Language code of a change of language is valid",
+  "validLangRgaa_description": "Checks that the language code of lang on elements other than <html> is a valid ISO 639 code (RGAA 8.8).",
+  "validLangRgaa_summary_fail": "This lang value (\"{{value}}\") is not a valid language tag.",
+  "validLangRgaa_summary_unknown": "This lang value (\"{{value}}\") is well formed, but \"{{subtag}}\" is not an ISO 639 language code.",
+  "validLangRgaa_hint_fail": "Start the value with the two- or three-letter ISO 639 code of the passage's language, for example \"fr\" or \"fr-FR\"."
 }

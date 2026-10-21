@@ -1379,6 +1379,22 @@ The title and the placeholder are identical.
 ```
 RGAA's glossary entry "Étiquette de champ de formulaire" says a placeholder may be read in place of the title, so the two must be identical when both are present.
 
+## rgaa-valid-lang
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Passed**
+```html
+<p lang="fra">Bonjour</p>
+```
+`fra` is an ISO 639-2 code, which RGAA 8.8.1 accepts, although the IANA registry lists only `fr`. `valid-lang` fails the same element under WCAG 3.1.2.
+
+**Failed**
+```html
+<p lang="xx">Bonjour</p>
+```
+`xx` is not an ISO 639 language code.
+
 ## rgaa-video-captions-track-kind
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*

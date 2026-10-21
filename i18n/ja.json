@@ -530,5 +530,10 @@
   "scriptedComponentsReview_hint_cantTell_contentEditable": "この編集領域が適切な役割、名前、状態を公開し、その変化が伝えられることを支援技術で確認してください (RGAA 7.1)。",
   "scriptedComponentsReview_summary_cantTell_stateAttribute": "この <{{element}}> には {{attribute}} があり、通常はスクリプトで更新されます。",
   "scriptedComponentsReview_hint_cantTell_stateAttribute": "この属性が表す状態が、コンポーネントの変化に応じて更新され、支援技術で伝えられることを確認してください (RGAA 7.1)。",
-  "report_rgaaRollup_note": "ルールが関連付けられている RGAA 4.1.2 の基準ごとに 1 行を表示し、それらのルールをまとめます。関連付けはまだ RGAA の監査担当者の確認を受けておらず、合格の行があっても基準に適合していることを意味しません。"
+  "report_rgaaRollup_note": "ルールが関連付けられている RGAA 4.1.2 の基準ごとに 1 行を表示し、それらのルールをまとめます。関連付けはまだ RGAA の監査担当者の確認を受けておらず、合格の行があっても基準に適合していることを意味しません。",
+  "validLangRgaa_title": "言語の変更の言語コードが有効であること",
+  "validLangRgaa_description": "<html> 以外の要素の lang の言語コードが有効な ISO 639 コードであるかを確認します (RGAA 8.8)。",
+  "validLangRgaa_summary_fail": "この lang の値「{{value}}」は有効な言語タグではありません。",
+  "validLangRgaa_summary_unknown": "この lang の値 (「{{value}}」) は形式上は正しいものの、「{{subtag}}」は ISO 639 の言語コードではありません。",
+  "validLangRgaa_hint_fail": "値は、その箇所の言語を表す 2 文字または 3 文字の ISO 639 コードで始めてください (例: \"fr\"、\"fr-FR\")。"
 }

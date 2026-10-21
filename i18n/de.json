@@ -530,5 +530,10 @@
   "scriptedComponentsReview_hint_cantTell_contentEditable": "Prüfen Sie mit assistiven Technologien, ob dieser Bearbeitungsbereich eine zutreffende Rolle, einen Namen und einen Zustand bereitstellt und ob seine Änderungen ausgegeben werden (RGAA 7.1).",
   "scriptedComponentsReview_summary_cantTell_stateAttribute": "Dieses <{{element}}> hat {{attribute}}, das normalerweise ein Skript aktualisiert.",
   "scriptedComponentsReview_hint_cantTell_stateAttribute": "Prüfen Sie mit assistiven Technologien, ob der Zustand, den dieses Attribut beschreibt, aktualisiert und ausgegeben wird, wenn sich die Komponente ändert (RGAA 7.1).",
-  "report_rgaaRollup_note": "Eine Zeile pro RGAA-4.1.2-Kriterium, mit dem eine Regel verknüpft ist; sie fasst diese Regeln zusammen. Die Verknüpfungen sind noch nicht von einem RGAA-Auditor geprüft, und eine bestandene Zeile bedeutet nie, dass das Kriterium konform ist."
+  "report_rgaaRollup_note": "Eine Zeile pro RGAA-4.1.2-Kriterium, mit dem eine Regel verknüpft ist; sie fasst diese Regeln zusammen. Die Verknüpfungen sind noch nicht von einem RGAA-Auditor geprüft, und eine bestandene Zeile bedeutet nie, dass das Kriterium konform ist.",
+  "validLangRgaa_title": "Der Sprachcode eines Sprachwechsels ist gültig",
+  "validLangRgaa_description": "Prüft, ob der Sprachcode von lang auf anderen Elementen als <html> ein gültiger ISO-639-Code ist (RGAA 8.8).",
+  "validLangRgaa_summary_fail": "Dieser lang-Wert („{{value}}“) ist kein gültiges Sprach-Tag.",
+  "validLangRgaa_summary_unknown": "Dieser lang-Wert („{{value}}“) ist wohlgeformt, aber „{{subtag}}“ ist kein ISO-639-Sprachcode.",
+  "validLangRgaa_hint_fail": "Beginnen Sie den Wert mit dem zwei- oder dreibuchstabigen ISO-639-Code der Sprache der Passage, etwa „fr“ oder „fr-FR“."
 }

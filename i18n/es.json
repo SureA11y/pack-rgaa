@@ -530,5 +530,10 @@
   "scriptedComponentsReview_hint_cantTell_contentEditable": "Comprobar con tecnologías de asistencia que esta zona de edición expone un rol, un nombre y un estado pertinentes, y que sus cambios se transmiten (RGAA 7.1).",
   "scriptedComponentsReview_summary_cantTell_stateAttribute": "Este <{{element}}> tiene {{attribute}}, que normalmente actualiza un script.",
   "scriptedComponentsReview_hint_cantTell_stateAttribute": "Comprobar con tecnologías de asistencia que el estado que describe este atributo se actualiza y se transmite cuando el componente cambia (RGAA 7.1).",
-  "report_rgaaRollup_note": "Una fila por cada criterio del RGAA 4.1.2 al que está vinculada alguna regla, que agrupa esas reglas. Ningún auditor del RGAA ha revisado aún los vínculos, y una fila superada nunca significa que el criterio sea conforme."
+  "report_rgaaRollup_note": "Una fila por cada criterio del RGAA 4.1.2 al que está vinculada alguna regla, que agrupa esas reglas. Ningún auditor del RGAA ha revisado aún los vínculos, y una fila superada nunca significa que el criterio sea conforme.",
+  "validLangRgaa_title": "El código de idioma de un cambio de idioma es válido",
+  "validLangRgaa_description": "Comprueba que el código de idioma de lang en elementos distintos de <html> sea un código ISO 639 válido (RGAA 8.8).",
+  "validLangRgaa_summary_fail": "Este valor de lang (\"{{value}}\") no es una etiqueta de idioma válida.",
+  "validLangRgaa_summary_unknown": "Este valor de lang (\"{{value}}\") está bien formado, pero \"{{subtag}}\" no es un código de idioma ISO 639.",
+  "validLangRgaa_hint_fail": "Empezar el valor por el código ISO 639 de dos o tres letras del idioma del pasaje, por ejemplo \"fr\" o \"fr-FR\"."
 }
