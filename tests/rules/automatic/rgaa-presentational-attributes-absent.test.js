@@ -164,3 +164,11 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-presentational-attribute
     'pat_case_10'
   ]);
 });
+
+// A pinned-tab colour and a stray text attribute on <script> present no
+// information.
+test(`${RULE_ID}: metadata and script elements are left out`, () => {
+  const html =
+    '<!doctype html><html lang="fr"><head><title>t</title><link rel="mask-icon" href="/s.svg" color="#071f32"><script text="">void 0</script></head><body><p>x</p></body></html>';
+  assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'pass');
+});

@@ -723,7 +723,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-presentational-attributes-absent': {
       tests: ['10.1.2'],
-      note: 'Fails on each HTML element carrying an attribute 10.1.2 step 1 lists, with its exceptions: size allowed on <select>, width and height on <img>, <object>, <embed>, <canvas> and <svg>. SVG and MathML content is not checked, where those attributes are geometry rather than presentation. Hidden content is checked too, since 10.1.2 judges the generated source.'
+      note: 'Fails on each HTML element carrying an attribute 10.1.2 step 1 lists, with its exceptions: size allowed on <select>, width and height on <img>, <object>, <embed>, <canvas> and <svg>. SVG and MathML content is not checked, where those attributes are geometry rather than presentation. Metadata and script elements (<link>, <meta>, <script>…) are not checked either: they present no information, so the color of <link rel="mask-icon">, the colour of a pinned browser tab, is not presentation of the content. Hidden content is checked too, since 10.1.2 judges the generated source.'
     },
     'presentational-children-focusable-absent': {
       tests: [],
