@@ -222,6 +222,24 @@ Bold text of 18.5px is large for RGAA (3.2.4), so 3.54:1 is enough. WCAG makes b
 ```
 Bold text below 18.5px needs 4.5:1 (3.2.2); #888888 on white is 3.54:1.
 
+## rgaa-css-colors-paired
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Passed**
+```html
+<style>body { color: #222; background: #fff; } p { color: #555; }</style>
+<p>Opening hours</p>
+```
+The paragraph's text color is paired with the background color declared on `<body>`, which RGAA 10.5.1 accepts « au moins, héritée d'un parent ».
+
+**Failed**
+```html
+<style>p { color: #555; }</style>
+<p>Opening hours</p>
+```
+A text color is declared and no background color is, on the paragraph or any ancestor (10.5.1): a reader whose browser shows a dark background keeps the grey text on it.
+
 ## rgaa-data-table-headers-review
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*

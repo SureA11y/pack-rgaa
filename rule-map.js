@@ -263,6 +263,15 @@ const RGAA_RULE_TESTS = {
       tests: ['13.9.1'],
       note: 'Fails an @media (orientation) block that rotates the page by about 90 degrees, a known way to force one orientation. That is direct evidence that viewing is not possible in both portrait and landscape (13.9.1 step 2). An orientation block that hides the main content (a "rotate your device" message) is asked about. The essential-orientation exception still needs a human.'
     },
+    'rgaa-css-colors-paired': {
+      tests: ['10.5.1', '10.5.2', '10.5.3'],
+      reasonCodes: {
+        COLOR_WITHOUT_BACKGROUND: { tests: ['10.5.1'] },
+        BACKGROUND_WITHOUT_COLOR: { tests: ['10.5.2'] },
+        BACKGROUND_IMAGE_WITHOUT_COLOR: { tests: ['10.5.3'] }
+      },
+      note: 'Fails an element whose CSS text color reaches rendered text with no background color declared on it or any ancestor (10.5.1), whose background color reaches text with no text color (10.5.2), or whose background image reaches text with no background color (10.5.3). Declarations are read from the style sheets, style and presentational attributes, so a browser default never counts as declared. Each finding counts toward the test of its reason code. It asks instead when a style sheet cannot be read, since the missing half may be there. Text inside a shadow root is not judged. Not mapped to WCAG: F24 describes the same pattern, but no other engine fails it.'
+    },
     'rgaa-data-table-headers-review': {
       tests: ['5.3.1', '5.6.1', '5.6.2'],
       note: 'Asks about a table of at least two rows and two columns that has no header cell at all (no <th>, no columnheader or rowheader role), and is not role="presentation" or "none". If it is a data table, its headers over a whole column or row fail 5.6.1 or 5.6.2 unless marked with <th> or those roles; only a person can say whether it is a data table and which cells are headers. Whether it is a layout table is 5.3.1 too, whose second condition is that a layout table has role="presentation": the question bears on it, and the hint says to add that role if the table is for layout. A table with at least one header is not asked about.'

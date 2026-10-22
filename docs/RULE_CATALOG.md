@@ -4,7 +4,7 @@ The rules of RGAA (`@surea11y/pack-rgaa`), a pack for `@surea11y/core`, which a 
 
 Generated from the compiled engine's own catalog (`getChecksCatalog()`/`getRulesCatalog()`) and each rule's source header. Run `npx surea11y-pack docs` to regenerate this file whenever rules change. Do not hand-edit.
 
-**71 rules total: 56 automatic (decide deterministically; can return `fail`), 15 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
+**72 rules total: 57 automatic (decide deterministically; can return `fail`), 15 manual (a person judges what they find; never `fail`, and `pass` only when nothing needs judging). 0 carry at least one formal WCAG Success Criterion mapping.**
 
 The tables below are an index; [rule reference](#rule-reference) carries each rule's description, what it applies to and what it expects.
 
@@ -14,7 +14,7 @@ Under **What a finding reports**, a rule lists the fields its findings carry in 
 
 See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_SCHEMA.md) for what `type`/`confidence`/`severity` mean on a scan result, and [`WCAG_CONFORMANCE.md`](https://github.com/SureA11y/core/blob/main/docs/WCAG_CONFORMANCE.md) for how these roll up to an SC-level conformance claim.
 
-## Automatic rules (56), can return `fail`
+## Automatic rules (57), can return `fail`
 
 | Rule ID | Title | WCAG SC | Level | Confidence | Default severity |
 |---|---|---|---|---|---|
@@ -26,6 +26,7 @@ See [`OUTPUT_SCHEMA.md`](https://github.com/SureA11y/core/blob/main/docs/OUTPUT_
 | [`rgaa-canvas-decorative-aria-hidden`](#rgaa-canvas-decorative-aria-hidden) | Decorative &lt;canvas&gt; images have aria-hidden="true" and no alternative | — | — | medium | minor |
 | [`rgaa-canvas-role-img`](#rgaa-canvas-role-img) | &lt;canvas&gt; images have role="img" with an ARIA name, or fallback content | — | — | medium | serious |
 | [`rgaa-contrast-minimum`](#rgaa-contrast-minimum) | Text meets RGAA minimum color contrast | — | — | high | serious |
+| [`rgaa-css-colors-paired`](#rgaa-css-colors-paired) | CSS text and background colors are declared together | — | — | medium | moderate |
 | [`rgaa-dir-attribute-valid`](#rgaa-dir-attribute-valid) | dir attributes are ltr or rtl | — | — | high | minor |
 | [`rgaa-doctype-position`](#rgaa-doctype-position) | The doctype comes before the &lt;html&gt; tag | — | — | high | moderate |
 | [`rgaa-doctype-present`](#rgaa-doctype-present) | Page declares a doctype | — | — | high | moderate |
@@ -103,7 +104,7 @@ What a scan runs under each profile (`engineOptions.profile`): the rules its tag
 |---|---|---|---|---|---|---|
 | `rgaa-4.1.2` | `rgaa` | version 4.1.2 | — | — | — | 2.1 |
 
-## Rollups (53)
+## Rollups (54)
 
 Each groups rules into one result, as a WCAG rollup does; the standard's own report sections show them.
 
@@ -116,6 +117,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-10.1` | Dans le site web, des feuilles de styles sont-elles utilisées pour contrôler la présentation de l’information ? | `rgaa-letters-spaced-with-spaces`, `rgaa-presentational-attributes-absent`, `rgaa-presentational-elements-absent` |
 | `rgaa-4.1.2-10.12` | Dans chaque page web, les propriétés d’espacement du texte peuvent-elles être redéfinies par l’utilisateur sans perte de contenu ou de fonctionnalité (hors cas particuliers) ? | `avoid-inline-spacing`, `text-spacing-content-loss` |
 | `rgaa-4.1.2-10.4` | Dans chaque page web, le texte reste-t-il lisible lorsque la taille des caractères est augmentée jusqu’à 200 %, au moins (hors cas particuliers) ? | `rgaa-viewport-zoom-review` |
+| `rgaa-4.1.2-10.5` | Dans chaque page web, les déclarations CSS de couleurs de fond d’élément et de police sont-elles correctement utilisées ? | `rgaa-css-colors-paired` |
 | `rgaa-4.1.2-10.6` | Dans chaque page web, chaque lien dont la nature n’est pas évidente est-il visible par rapport au texte environnant ? | `link-in-text-block`, `rgaa-link-state-colors-review` |
 | `rgaa-4.1.2-10.7` | Dans chaque page web, pour chaque élément recevant le focus, la prise de focus est-elle visible ? | `css-focus-indicator-suppressed`, `css-hidden-focus`, `manual-review`, `rgaa-focus-indicator-contrast` |
 | `rgaa-4.1.2-10.8` | Pour chaque page web, les contenus cachés ont-ils vocation à être ignorés par les technologies d’assistance ? | `aria-hidden-body`, `aria-hidden-focus` |
@@ -354,6 +356,24 @@ Checks that visible text has a contrast ratio of at least 4.5:1, or 3:1 for text
 **Expectation.** Every computable text node reaches the ratio RGAA 3.2 requires for its size: 3:1 for text of 24px or more (3.2.3), and for bold text (computed weight 700 or more) of 18.5px or more (3.2.4); 4.5:1 for everything else (3.2.1, 3.2.2). The only difference from contrast-minimum is the bold threshold: WCAG's 14pt is about 18.67px, so bold text from 18.5px up to 18.67px needs 3:1 here and 4.5:1 there.
 
 **Margin.** `contrast-ratio`, in a ratio: the value must reach the threshold, and the result's `margin` names the element that came closest while meeting it.
+
+### `rgaa-css-colors-paired`
+
+**CSS text and background colors are declared together**
+
+automatic · no formal WCAG SC mapping · confidence medium · default severity moderate
+
+Checks that a CSS text color reaching text comes with a background color, a background color with a text color, and a background image with a background color, at least on an ancestor (RGAA 10.5).
+
+**Applies to.** Applies to a run over a whole document with rendered text that an author text color, background color or background image applies to: declared on the text's element or one of its ancestors, in a readable style sheet, a style attribute or a presentational attribute (bgcolor, background, &lt;font color&gt;, &lt;body text&gt;). A page whose text no author color reaches is notApplicable.
+
+**Expectation.**
+
+RGAA 10.5: each declaration of a text color (color) on an element that can hold text comes with a background color (background, background-color), at least on an ancestor (10.5.1); each background color comes with a text color the same way (10.5.2); and each background image comes with a background color (10.5.3).
+
+- For each rendered text, the nearest element declaring a text color, a background color and a background image are looked for, from the text's element up to &lt;html&gt;. A text color with no background color fails COLOR_WITHOUT_BACKGROUND, a background color with no text color BACKGROUND_WITHOUT_COLOR, and a background image with no background color BACKGROUND_IMAGE_WITHOUT_COLOR. One occurrence per element that declares the unpaired color, however much text it reaches.
+- Without a browser's cascade layers (jsdom), a style sheet that cannot be read (another origin's, with no text given in engineOptions.styleSheetTexts) may declare the missing half: the same findings are asked about instead of failed. In a browser the cascade applies such a sheet, so it counts like any other.
+- It passes when every color that reaches text is paired.
 
 ### `rgaa-data-table-headers-review`
 

@@ -541,5 +541,16 @@
   "validLangRgaa_description": "Prüft, ob der Sprachcode von lang auf anderen Elementen als <html> ein gültiger ISO-639-Code ist (RGAA 8.8).",
   "validLangRgaa_summary_fail": "Dieser lang-Wert („{{value}}“) ist kein gültiges Sprach-Tag.",
   "validLangRgaa_summary_unknown": "Dieser lang-Wert („{{value}}“) ist wohlgeformt, aber „{{subtag}}“ ist kein ISO-639-Sprachcode.",
-  "validLangRgaa_hint_fail": "Beginnen Sie den Wert mit dem zwei- oder dreibuchstabigen ISO-639-Code der Sprache der Passage, etwa „fr“ oder „fr-FR“."
+  "validLangRgaa_hint_fail": "Beginnen Sie den Wert mit dem zwei- oder dreibuchstabigen ISO-639-Code der Sprache der Passage, etwa „fr“ oder „fr-FR“.",
+  "cssColorsPaired_title": "CSS-Text- und Hintergrundfarben werden zusammen angegeben",
+  "cssColorsPaired_description": "Prüft, ob eine CSS-Textfarbe, die Text erreicht, mit einer Hintergrundfarbe angegeben ist, eine Hintergrundfarbe mit einer Textfarbe und ein Hintergrundbild mit einer Hintergrundfarbe, mindestens auf einem Vorfahren (RGAA 10.5).",
+  "cssColorsPaired_summary_fail_colorWithoutBackground": "Dieses <{{element}}> gibt eine Textfarbe an, aber weder es noch ein Vorfahre gibt eine Hintergrundfarbe an.",
+  "cssColorsPaired_summary_cantTell_colorWithoutBackground": "Dieses <{{element}}> gibt eine Textfarbe an, aber weder es noch ein Vorfahre gibt eine Hintergrundfarbe an. Ein Stylesheet konnte nicht gelesen werden und kann sie angeben.",
+  "cssColorsPaired_hint_colorWithoutBackground": "Geben Sie mit der Textfarbe eine Hintergrundfarbe an, auf diesem Element oder einem Vorfahren wie <body> (RGAA 10.5.1).",
+  "cssColorsPaired_summary_fail_backgroundWithoutColor": "Dieses <{{element}}> gibt eine Hintergrundfarbe an, aber weder es noch ein Vorfahre gibt eine Textfarbe an.",
+  "cssColorsPaired_summary_cantTell_backgroundWithoutColor": "Dieses <{{element}}> gibt eine Hintergrundfarbe an, aber weder es noch ein Vorfahre gibt eine Textfarbe an. Ein Stylesheet konnte nicht gelesen werden und kann sie angeben.",
+  "cssColorsPaired_hint_backgroundWithoutColor": "Geben Sie mit der Hintergrundfarbe eine Textfarbe an, auf diesem Element oder einem Vorfahren wie <body> (RGAA 10.5.2).",
+  "cssColorsPaired_summary_fail_imageWithoutColor": "Dieses <{{element}}> hat ein Hintergrundbild, aber weder es noch ein Vorfahre gibt eine Hintergrundfarbe an.",
+  "cssColorsPaired_summary_cantTell_imageWithoutColor": "Dieses <{{element}}> hat ein Hintergrundbild, aber weder es noch ein Vorfahre gibt eine Hintergrundfarbe an. Ein Stylesheet konnte nicht gelesen werden und kann sie angeben.",
+  "cssColorsPaired_hint_imageWithoutColor": "Geben Sie mit dem Hintergrundbild eine Hintergrundfarbe an, nahe an den Farben des Bildes, damit der Text lesbar bleibt, wenn das Bild nicht angezeigt wird (RGAA 10.5.3)."
 }

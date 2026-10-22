@@ -541,5 +541,16 @@
   "validLangRgaa_description": "Checks that the language code of lang on elements other than <html> is a valid ISO 639 code (RGAA 8.8).",
   "validLangRgaa_summary_fail": "This lang value (\"{{value}}\") is not a valid language tag.",
   "validLangRgaa_summary_unknown": "This lang value (\"{{value}}\") is well formed, but \"{{subtag}}\" is not an ISO 639 language code.",
-  "validLangRgaa_hint_fail": "Start the value with the two- or three-letter ISO 639 code of the passage's language, for example \"fr\" or \"fr-FR\"."
+  "validLangRgaa_hint_fail": "Start the value with the two- or three-letter ISO 639 code of the passage's language, for example \"fr\" or \"fr-FR\".",
+  "cssColorsPaired_title": "CSS text and background colors are declared together",
+  "cssColorsPaired_description": "Checks that a CSS text color reaching text comes with a background color, a background color with a text color, and a background image with a background color, at least on an ancestor (RGAA 10.5).",
+  "cssColorsPaired_summary_fail_colorWithoutBackground": "This <{{element}}> declares a text color, but neither it nor any ancestor declares a background color.",
+  "cssColorsPaired_summary_cantTell_colorWithoutBackground": "This <{{element}}> declares a text color, but neither it nor any ancestor declares a background color. A style sheet could not be read and may declare it.",
+  "cssColorsPaired_hint_colorWithoutBackground": "Declare a background color with the text color, on this element or an ancestor such as <body> (RGAA 10.5.1).",
+  "cssColorsPaired_summary_fail_backgroundWithoutColor": "This <{{element}}> declares a background color, but neither it nor any ancestor declares a text color.",
+  "cssColorsPaired_summary_cantTell_backgroundWithoutColor": "This <{{element}}> declares a background color, but neither it nor any ancestor declares a text color. A style sheet could not be read and may declare it.",
+  "cssColorsPaired_hint_backgroundWithoutColor": "Declare a text color with the background color, on this element or an ancestor such as <body> (RGAA 10.5.2).",
+  "cssColorsPaired_summary_fail_imageWithoutColor": "This <{{element}}> has a background image, but neither it nor any ancestor declares a background color.",
+  "cssColorsPaired_summary_cantTell_imageWithoutColor": "This <{{element}}> has a background image, but neither it nor any ancestor declares a background color. A style sheet could not be read and may declare it.",
+  "cssColorsPaired_hint_imageWithoutColor": "Declare a background color with the background image, close to the image’s colors, so the text stays readable when the image does not show (RGAA 10.5.3)."
 }

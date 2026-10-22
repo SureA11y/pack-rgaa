@@ -541,5 +541,16 @@
   "validLangRgaa_description": "Comprueba que el código de idioma de lang en elementos distintos de <html> sea un código ISO 639 válido (RGAA 8.8).",
   "validLangRgaa_summary_fail": "Este valor de lang (\"{{value}}\") no es una etiqueta de idioma válida.",
   "validLangRgaa_summary_unknown": "Este valor de lang (\"{{value}}\") está bien formado, pero \"{{subtag}}\" no es un código de idioma ISO 639.",
-  "validLangRgaa_hint_fail": "Empezar el valor por el código ISO 639 de dos o tres letras del idioma del pasaje, por ejemplo \"fr\" o \"fr-FR\"."
+  "validLangRgaa_hint_fail": "Empezar el valor por el código ISO 639 de dos o tres letras del idioma del pasaje, por ejemplo \"fr\" o \"fr-FR\".",
+  "cssColorsPaired_title": "Los colores de texto y de fondo CSS se declaran juntos",
+  "cssColorsPaired_description": "Comprueba que un color de texto CSS que llega a un texto va acompañado de un color de fondo, un color de fondo de un color de texto, y una imagen de fondo de un color de fondo, al menos en un antecesor (RGAA 10.5).",
+  "cssColorsPaired_summary_fail_colorWithoutBackground": "Este <{{element}}> declara un color de texto, pero ni él ni ningún antecesor declara un color de fondo.",
+  "cssColorsPaired_summary_cantTell_colorWithoutBackground": "Este <{{element}}> declara un color de texto, pero ni él ni ningún antecesor declara un color de fondo. No se pudo leer una hoja de estilos, que puede declararlo.",
+  "cssColorsPaired_hint_colorWithoutBackground": "Declare un color de fondo junto con el color de texto, en este elemento o en un antecesor como <body> (RGAA 10.5.1).",
+  "cssColorsPaired_summary_fail_backgroundWithoutColor": "Este <{{element}}> declara un color de fondo, pero ni él ni ningún antecesor declara un color de texto.",
+  "cssColorsPaired_summary_cantTell_backgroundWithoutColor": "Este <{{element}}> declara un color de fondo, pero ni él ni ningún antecesor declara un color de texto. No se pudo leer una hoja de estilos, que puede declararlo.",
+  "cssColorsPaired_hint_backgroundWithoutColor": "Declare un color de texto junto con el color de fondo, en este elemento o en un antecesor como <body> (RGAA 10.5.2).",
+  "cssColorsPaired_summary_fail_imageWithoutColor": "Este <{{element}}> tiene una imagen de fondo, pero ni él ni ningún antecesor declara un color de fondo.",
+  "cssColorsPaired_summary_cantTell_imageWithoutColor": "Este <{{element}}> tiene una imagen de fondo, pero ni él ni ningún antecesor declara un color de fondo. No se pudo leer una hoja de estilos, que puede declararlo.",
+  "cssColorsPaired_hint_imageWithoutColor": "Declare un color de fondo junto con la imagen de fondo, cercano a los colores de la imagen, para que el texto siga legible cuando la imagen no se muestre (RGAA 10.5.3)."
 }

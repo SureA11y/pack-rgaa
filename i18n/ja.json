@@ -541,5 +541,16 @@
   "validLangRgaa_description": "<html> 以外の要素の lang の言語コードが有効な ISO 639 コードであるかを確認します (RGAA 8.8)。",
   "validLangRgaa_summary_fail": "この lang の値「{{value}}」は有効な言語タグではありません。",
   "validLangRgaa_summary_unknown": "この lang の値 (「{{value}}」) は形式上は正しいものの、「{{subtag}}」は ISO 639 の言語コードではありません。",
-  "validLangRgaa_hint_fail": "値は、その箇所の言語を表す 2 文字または 3 文字の ISO 639 コードで始めてください (例: \"fr\"、\"fr-FR\")。"
+  "validLangRgaa_hint_fail": "値は、その箇所の言語を表す 2 文字または 3 文字の ISO 639 コードで始めてください (例: \"fr\"、\"fr-FR\")。",
+  "cssColorsPaired_title": "CSS の文字色と背景色が一緒に指定されていること",
+  "cssColorsPaired_description": "テキストに適用される CSS の文字色に背景色が、背景色に文字色が、背景画像に背景色が、少なくとも祖先要素で指定されているかを確認します (RGAA 10.5)。",
+  "cssColorsPaired_summary_fail_colorWithoutBackground": "この <{{element}}> は文字色を指定していますが、この要素にも祖先要素にも背景色の指定がありません。",
+  "cssColorsPaired_summary_cantTell_colorWithoutBackground": "この <{{element}}> は文字色を指定していますが、この要素にも祖先要素にも背景色の指定がありません。 読み込めなかったスタイルシートで指定されている可能性があります。",
+  "cssColorsPaired_hint_colorWithoutBackground": "文字色と一緒に背景色を、この要素または <body> などの祖先要素で指定してください (RGAA 10.5.1)。",
+  "cssColorsPaired_summary_fail_backgroundWithoutColor": "この <{{element}}> は背景色を指定していますが、この要素にも祖先要素にも文字色の指定がありません。",
+  "cssColorsPaired_summary_cantTell_backgroundWithoutColor": "この <{{element}}> は背景色を指定していますが、この要素にも祖先要素にも文字色の指定がありません。 読み込めなかったスタイルシートで指定されている可能性があります。",
+  "cssColorsPaired_hint_backgroundWithoutColor": "背景色と一緒に文字色を、この要素または <body> などの祖先要素で指定してください (RGAA 10.5.2)。",
+  "cssColorsPaired_summary_fail_imageWithoutColor": "この <{{element}}> には背景画像がありますが、この要素にも祖先要素にも背景色の指定がありません。",
+  "cssColorsPaired_summary_cantTell_imageWithoutColor": "この <{{element}}> には背景画像がありますが、この要素にも祖先要素にも背景色の指定がありません。 読み込めなかったスタイルシートで指定されている可能性があります。",
+  "cssColorsPaired_hint_imageWithoutColor": "背景画像と一緒に、画像の色に近い背景色を指定し、画像が表示されないときもテキストが読めるようにしてください (RGAA 10.5.3)。"
 }
