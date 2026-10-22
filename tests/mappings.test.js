@@ -323,3 +323,19 @@ test('click-handler-keyboard-operable fails WCAG 2.1.1 and asks under RGAA 7.3',
   assert.equal(rollup('wcag-2.1.1-keyboard'), 'fail');
   assert.equal(rollup('rgaa-4.1.2-7.3'), 'cantTell');
 });
+
+// RGAA 7.3.2: « Un script ne doit pas supprimer le focus d'un élément qui le
+// reçoit ». Core's rule only asks, so the test is asked about.
+test('focus-not-removed-by-script asks under RGAA 7.3', () => {
+  const { runa11yCoreOnHtml } = require('./helpers/run.js');
+  const html =
+    '<!doctype html><html lang="fr"><head><title>t</title></head><body><main>' +
+    '<a href="/offres" onfocus="this.blur()">Offres</a>' +
+    '</main></body></html>';
+  const result = runa11yCoreOnHtml(html, { engineOptions: { profile: 'rgaa-4.1.2-with-wcag' } });
+  const check = result.checksResults.find((r) => r.ruleId === 'focus-not-removed-by-script');
+  assert.equal(check.outcome, 'cantTell');
+  assert.ok(check.rollupIds.includes('rgaa-4.1.2-7.3'));
+  const rollup = result.rulesResults.find((r) => r.ruleId === 'rgaa-4.1.2-7.3');
+  assert.equal(rollup.outcome, 'cantTell');
+});

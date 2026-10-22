@@ -371,6 +371,11 @@ const RGAA_RULE_TESTS = {
       tests: ['10.7.1'],
       note: "Fails an element in the tab order whose native outline a focus rule replaces or removes, when every outline, border and box-shadow of its focus style is below 3:1 against both the background behind it and the element's own background, and nothing else changes on focus. That is the contrast part of 10.7.1 step 2 (« suffisamment contrastée (ratio de contraste égal ou supérieur à 3:1) »). It asks when a color, a background or the cascade cannot be worked out, when the indicator reaches 3:1 on one side only, or when the focus style is something else (background, text color, another element). An element that keeps the browser's outline meets condition 1 and is not checked. In a browser the element is focused and the rendered indicator is measured against what is painted on each side, so variables, @media and the cascade are settled there."
     },
+    'focus-not-removed-by-script': {
+      tests: [],
+      asks: ['7.3.2'],
+      note: 'Asks about each element that can take focus whose inline onfocus handler calls blur(), which can remove focus as soon as the element receives it: 7.3.2, « un script ne doit pas supprimer le focus d’un élément qui le reçoit ». A question, as in core: it reads only inline handlers, and only tabbing to the element shows whether focus is lost.'
+    },
     'focus-order-semantics': {
       tests: ['7.1.1'],
       note: 'Flags elements with tabindex>=0 and a non-interactive explicit role (heading, list, region...). When such an element is a scripted control, 7.1.1 step 2 (role consistent with its use) directly applies. Legitimately focusable elements such as scrollable regions make this only partial evidence. Linked to 7.1.1 as a question (is a script driving this element, and is its role the right one?): an element given a tab stop with a non-interactive role is nearly always made interactive by script. Not mapped to 12.8.1 (where other RGAA tools put this check): 12.8.1 checks that the tab order is coherent, not the role of what receives focus.'
