@@ -56,8 +56,9 @@
  * - Text inside a shadow root is not judged: its style sheets are not the
  *   document's, so half a pair could be missed and the other half reported.
  * - Only text nodes are judged, not the values of form fields.
- * - WCAG lists the same pattern as failure F24, but no other engine fails it
- *   and its premise is debated, so the rule is RGAA's only.
+ * - WCAG lists the same pattern as failure F24, an informative technique
+ *   whose premise, a browser that overrides only some of the colors, no
+ *   success criterion states, so the rule is RGAA's only.
  * - Opt-in (tag `rgaa`): the rule runs only under the rgaa-4.1.2 profile,
  *   the `rgaa` tag or its own id.
  */

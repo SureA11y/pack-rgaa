@@ -270,7 +270,7 @@ const RGAA_RULE_TESTS = {
         BACKGROUND_WITHOUT_COLOR: { tests: ['10.5.2'] },
         BACKGROUND_IMAGE_WITHOUT_COLOR: { tests: ['10.5.3'] }
       },
-      note: 'Fails an element whose CSS text color reaches rendered text with no background color declared on it or any ancestor (10.5.1), whose background color reaches text with no text color (10.5.2), or whose background image reaches text with no background color (10.5.3). Declarations are read from the style sheets, style and presentational attributes, so a browser default never counts as declared. Each finding counts toward the test of its reason code. It asks instead when a style sheet cannot be read, since the missing half may be there. Text inside a shadow root is not judged. Not mapped to WCAG: F24 describes the same pattern, but no other engine fails it.'
+      note: 'Fails an element whose CSS text color reaches rendered text with no background color declared on it or any ancestor (10.5.1), whose background color reaches text with no text color (10.5.2), or whose background image reaches text with no background color (10.5.3). Declarations are read from the style sheets, style and presentational attributes, so a browser default never counts as declared. Each finding counts toward the test of its reason code. It asks instead when a style sheet cannot be read, since the missing half may be there. Text inside a shadow root is not judged. Not mapped to WCAG: F24 describes the same pattern, but as an informative failure technique whose premise, a browser that overrides only some of the colors, WCAG states in no success criterion.'
     },
     'rgaa-data-table-headers-review': {
       tests: ['5.3.1', '5.6.1', '5.6.2'],
@@ -493,7 +493,7 @@ const RGAA_RULE_TESTS = {
     'img-alt-present': {
       tests: ['1.1.1'],
       asks: ['1.2.1'],
-      note: 'Fails an exposed <img> (not hidden, not a non-focusable role none/presentation) that has no alt, no ARIA name and no title. If the image is informative, that fails 1.1.1 step 3; if it is decorative, it lacks the alt="" / aria-hidden / role=presentation that 1.2.1 step 2 requires. An image fails one of the two, and which takes a person, so a failure counts toward 1.1.1, where most such images belong (axe-core and Tanaguru file it there too), and asks under 1.2.1.'
+      note: 'Fails an exposed <img> (not hidden, not a non-focusable role none/presentation) that has no alt, no ARIA name and no title. If the image is informative, that fails 1.1.1 step 3; if it is decorative, it lacks the alt="" / aria-hidden / role=presentation that 1.2.1 step 2 requires. An image fails one of the two, and which takes a person, so a failure counts toward 1.1.1, where most such images belong, and asks under 1.2.1.'
     },
     'img-alt-quality': {
       tests: ['1.3.1'],
