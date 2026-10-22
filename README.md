@@ -2,7 +2,7 @@
 
 RGAA 4.1.2, the French accessibility standard, as a pack for [`@surea11y/core`](https://github.com/SureA11y/core#readme): its criteria and tests, the RGAA tests each of core's rules checks, one result per RGAA criterion, the `rgaa-4.1.2` profile, 71 rules for what RGAA requires beyond WCAG or judges differently, and their messages in English, French, German, Spanish and Japanese.
 
-It automates what can be checked in the page, not an RGAA audit: a scan gives results for 54 of RGAA's 106 criteria, many rules ask (`cantTell`) where only a person can judge, and 15 of the pack's rules are manual, finding what a person must review without ever failing it. A conformance claim still needs an auditor to check every criterion.
+It automates what can be checked in the page, not an RGAA audit: a scan gives results for 53 of RGAA's 106 criteria, many rules ask (`cantTell`) where only a person can judge, and 15 of the pack's rules are manual, finding what a person must review without ever failing it. A conformance claim still needs an auditor to check every criterion.
 
 It needs `@surea11y/core` 1.12.0 or later, which runs packs and judges a pack's profile by the WCAG version it names (see [Packs in core's `ENGINE_OPTIONS.md`](https://github.com/SureA11y/core/blob/main/docs/ENGINE_OPTIONS.md#packs--rules-and-standards-from-outside-core)).
 

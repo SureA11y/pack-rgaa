@@ -103,7 +103,7 @@ What a scan runs under each profile (`engineOptions.profile`): the rules its tag
 |---|---|---|---|---|---|---|
 | `rgaa-4.1.2` | `rgaa` | version 4.1.2 | — | — | — | 2.1 |
 
-## Rollups (54)
+## Rollups (53)
 
 Each groups rules into one result, as a WCAG rollup does; the standard's own report sections show them.
 
@@ -137,7 +137,6 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-2.1` | Chaque cadre a-t-il un titre de cadre ? | `rgaa-frame-title-attribute-present` |
 | `rgaa-4.1.2-2.2` | Pour chaque cadre ayant un titre de cadre, ce titre de cadre est-il pertinent ? | `rgaa-frame-title-not-empty` |
 | `rgaa-4.1.2-3.2` | Dans chaque page web, le contraste entre la couleur du texte et la couleur de son arrière-plan est-il suffisamment élevé (hors cas particuliers) ? | `contrast-computable`, `rgaa-contrast-minimum` |
-| `rgaa-4.1.2-3.3` | Dans chaque page web, les couleurs utilisées dans les composants d’interface ou les éléments graphiques porteurs d’informations sont-elles suffisamment contrastées (hors cas particuliers) ? | `rgaa-focus-indicator-contrast` |
 | `rgaa-4.1.2-4.1` | Chaque média temporel pré-enregistré a-t-il, si nécessaire, une transcription textuelle ou une audiodescription (hors cas particuliers) ? | `rgaa-media-transcript-adjacent` |
 | `rgaa-4.1.2-4.10` | Chaque son déclenché automatiquement est-il contrôlable par l’utilisateur ? | `no-autoplay-audio` |
 | `rgaa-4.1.2-4.3` | Chaque média temporel synchronisé pré-enregistré a-t-il, si nécessaire, des sous-titres synchronisés (hors cas particuliers) ? | `rgaa-video-captions-track-kind`, `video-caption` |

@@ -225,15 +225,6 @@ test(`${RULE_ID}: WCAG 2.4.7 has no finding on a light box-shadow, RGAA 10.7 fai
   assert.equal(rollup(result, 'rgaa-4.1.2-10.7').outcome, 'fail');
 });
 
-// 3.3.1 checks the contrast of a component in its different states against
-// the adjacent background, and focus is one of them.
-test(`${RULE_ID}: a focus indicator below 3:1 fails RGAA 3.3 as well as 10.7`, () => {
-  const bad = runa11yCoreOnHtml(page('a:focus{outline:none;box-shadow:0 0 0 2px #eee}'), RGAA);
-  assert.equal(rollup(bad, 'rgaa-4.1.2-3.3').outcome, 'fail');
-  const good = runa11yCoreOnHtml(page('a:focus{outline:2px solid #000}'), RGAA);
-  assert.notEqual(rollup(good, 'rgaa-4.1.2-3.3').outcome, 'fail');
-});
-
 test(`${RULE_ID}: WCAG 2.4.7 and RGAA 10.7 agree on a black outline`, () => {
   const result = runa11yCoreOnHtml(page('a:focus{outline:2px solid #000}'), RGAA);
   assert.equal(check(result, WCAG_RULE).outcome, 'notApplicable');
