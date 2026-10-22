@@ -53,6 +53,7 @@
   "contrastMinimumRgaa_hint_fail": "Cambiar el color del texto, el del fondo o ambos para que la relación de contraste alcance al menos {{threshold}}:1.",
   "contrastMinimumRgaa_pass_allAboveThreshold": "Todo el texto computable cumple el umbral de contraste de RGAA 3.2. Nodos de texto elegibles: {{eligibleTextCount}}. Computables: {{computableTextCount}}.",
   "contrastMinimumRgaa_notApplicable_noComputableText": "Ningún texto elegible tuvo contraste computable (nodos de texto elegibles: {{eligibleTextCount}}). Consultar la regla de computabilidad de contraste para más información.",
+  "contrastMinimumRgaa_cantTell_logo": "Este texto parece formar parte de un logotipo y tiene un contraste de {{ratio}}:1 (primer plano: {{foregroundHex}}, fondo: {{backgroundHex}}), inferior a {{threshold}}:1. El texto que forma parte de un logotipo o nombre de marca no está sujeto al criterio 3.2 del RGAA.",
   "contrastMinimumRgaa_cantTell_engineFailure": "No se pudo determinar el contraste de RGAA 3.2 debido a un error interno del motor ({{reasonCode}}).",
   "focusIndicatorContrast_title": "Los indicadores de foco definidos por el autor tienen una relación de contraste de al menos 3:1",
   "focusIndicatorContrast_description": "Comprueba que un contorno, un borde o una sombra dibujados por una regla :focus o :focus-visible en lugar del contorno del navegador tienen una relación de contraste de al menos 3:1 con los colores contiguos, y pregunta cuando no se puede calcular.",

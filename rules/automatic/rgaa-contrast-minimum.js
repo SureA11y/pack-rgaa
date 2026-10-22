@@ -24,10 +24,15 @@
  *   variants"): its code, with bold text large from 18.5px. The other
  *   thresholds are WCAG's and RGAA's alike. Its verdicts are cached apart
  *   from contrast-minimum's, since the thresholds differ.
+ * - Text that looks like part of a logo (an id or class naming a logo or
+ *   brand near it, or the banner's first link to the home page) below its
+ *   ratio is asked about (cantTell, LOGO_TEXT_BELOW_THRESHOLD) rather than
+ *   failed: 3.2's particular cases make « un logo ou un nom de marque »
+ *   not applicable, and the logo is found by a heuristic.
  * - Like contrast-minimum, it does not look for a mechanism that shows the
  *   text with enough contrast (3.2.x, second condition), nor for RGAA's
- *   particular cases (logos, decorative text) beyond the disabled controls
- *   the shared text scan leaves out.
+ *   other particular cases (decorative text, text in an informative image)
+ *   beyond the disabled controls the shared text scan leaves out.
  * - Opt-in (tag `rgaa`): the rule runs only under the rgaa-4.1.2 profile,
  *   the `rgaa` tag or its own id.
  */
@@ -55,7 +60,9 @@ const meta = {
   margin: { measure: 'contrast-ratio', unit: 'ratio', limit: 'min' }
 };
 
-// RGAA 3.2.2/3.2.4: bold text is large from 18.5px.
-const config = { boldLargeMinPx: 18.5 };
+// RGAA 3.2.2/3.2.4: bold text is large from 18.5px. Text that looks like
+// part of a logo is asked about: 3.2's particular cases make logo and brand
+// text not applicable, and whether text is a logo is a person's call.
+const config = { boldLargeMinPx: 18.5, logoText: 'ask' };
 
 module.exports = { id, from: 'contrast-minimum', config, meta };

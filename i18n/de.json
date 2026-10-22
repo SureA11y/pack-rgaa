@@ -53,6 +53,7 @@
   "contrastMinimumRgaa_hint_fail": "Ändern Sie die Textfarbe, die Hintergrundfarbe oder beide, sodass das Kontrastverhältnis mindestens {{threshold}}:1 erreicht.",
   "contrastMinimumRgaa_pass_allAboveThreshold": "Der gesamte berechenbare Text erfüllt den Kontrastschwellenwert von RGAA 3.2. Zutreffende Textknoten: {{eligibleTextCount}}. Berechenbar: {{computableTextCount}}.",
   "contrastMinimumRgaa_notApplicable_noComputableText": "Bei keinem zutreffenden Text war der Kontrast berechenbar (zutreffende Textknoten: {{eligibleTextCount}}). Details siehe Regel zur Kontrastberechenbarkeit.",
+  "contrastMinimumRgaa_cantTell_logo": "Dieser Text scheint Teil eines Logos zu sein und hat einen Kontrast von {{ratio}}:1 (Vordergrund: {{foregroundHex}}, Hintergrund: {{backgroundHex}}), unter {{threshold}}:1. Text, der Teil eines Logos oder Markennamens ist, fällt nicht unter RGAA 3.2.",
   "contrastMinimumRgaa_cantTell_engineFailure": "Der Kontrast nach RGAA 3.2 konnte aufgrund eines internen Engine-Fehlers nicht bestimmt werden ({{reasonCode}}).",
   "focusIndicatorContrast_title": "Vom Autor gestaltete Fokusindikatoren haben ein Kontrastverhältnis von mindestens 3:1",
   "focusIndicatorContrast_description": "Prüft, ob ein Umriss, ein Rahmen oder ein Schatten, den eine :focus- oder :focus-visible-Regel anstelle des Browser-Umrisses zeichnet, ein Kontrastverhältnis von mindestens 3:1 zu den angrenzenden Farben hat, und fragt nach, wenn es nicht berechenbar ist.",

@@ -53,6 +53,7 @@
   "contrastMinimumRgaa_hint_fail": "Change the text color, the background color, or both, so the contrast ratio reaches at least {{threshold}}:1.",
   "contrastMinimumRgaa_pass_allAboveThreshold": "All computable text meets the RGAA 3.2 contrast threshold. Eligible text nodes: {{eligibleTextCount}}. Computable: {{computableTextCount}}.",
   "contrastMinimumRgaa_notApplicable_noComputableText": "No eligible text had computable contrast (eligible text nodes: {{eligibleTextCount}}). See the contrast computability rule for details.",
+  "contrastMinimumRgaa_cantTell_logo": "This text looks like part of a logo and has a contrast of {{ratio}}:1 (foreground: {{foregroundHex}}, background: {{backgroundHex}}), below {{threshold}}:1. Text that is part of a logo or brand name is not covered by RGAA 3.2.",
   "contrastMinimumRgaa_cantTell_engineFailure": "The RGAA 3.2 contrast could not be determined due to an internal engine error ({{reasonCode}}).",
   "focusIndicatorContrast_title": "Author focus indicators have a contrast ratio of at least 3:1",
   "focusIndicatorContrast_description": "Checks that an outline, border or box-shadow drawn by a :focus or :focus-visible rule in place of the browser outline has a contrast ratio of at least 3:1 with the colors next to it, and asks when it cannot be computed.",

@@ -53,6 +53,7 @@
   "contrastMinimumRgaa_hint_fail": "Modifiez la couleur du texte, celle de l’arrière-plan, ou les deux, pour que le rapport de contraste atteigne au moins {{threshold}}:1.",
   "contrastMinimumRgaa_pass_allAboveThreshold": "Tout le texte calculable respecte le seuil de contraste du RGAA 3.2. Nœuds de texte éligibles : {{eligibleTextCount}}. Calculables : {{computableTextCount}}.",
   "contrastMinimumRgaa_notApplicable_noComputableText": "Aucun texte éligible n’avait un contraste calculable (nœuds de texte éligibles : {{eligibleTextCount}}). Voir la règle de calculabilité du contraste pour les détails.",
+  "contrastMinimumRgaa_cantTell_logo": "Ce texte semble faire partie d’un logo et a un contraste de {{ratio}}:1 (premier plan : {{foregroundHex}}, arrière-plan : {{backgroundHex}}), inférieur à {{threshold}}:1. Le texte qui fait partie d’un logo ou d’un nom de marque n’est pas concerné par le critère 3.2 du RGAA.",
   "contrastMinimumRgaa_cantTell_engineFailure": "Le contraste du RGAA 3.2 n’a pas pu être déterminé en raison d’une erreur interne du moteur ({{reasonCode}}).",
   "focusIndicatorContrast_title": "Les indicateurs de prise de focus définis par l’auteur ont un rapport de contraste d’au moins 3:1",
   "focusIndicatorContrast_description": "Vérifie qu’un contour, une bordure ou une ombre dessinés par une règle :focus ou :focus-visible à la place du contour du navigateur ont un rapport de contraste d’au moins 3:1 avec les couleurs qui les entourent, et pose la question quand le contraste ne peut pas être calculé.",

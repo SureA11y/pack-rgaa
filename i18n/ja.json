@@ -53,6 +53,7 @@
   "contrastMinimumRgaa_hint_fail": "コントラスト比が {{threshold}}:1 以上になるよう、テキストの色、背景色、またはその両方を変更してください。",
   "contrastMinimumRgaa_pass_allAboveThreshold": "計算できたすべてのテキストが、RGAA 3.2 のコントラストの基準値を満たしています。対象のテキストノード: {{eligibleTextCount}}。計算できたもの: {{computableTextCount}}。",
   "contrastMinimumRgaa_notApplicable_noComputableText": "対象となるテキストのうち、コントラストを計算できたものはありません (対象のテキストノード: {{eligibleTextCount}})。詳しくは、コントラストの計算可否を判定するルールを参照してください。",
+  "contrastMinimumRgaa_cantTell_logo": "このテキストはロゴの一部のようで、コントラスト比は {{ratio}}:1 (前景: {{foregroundHex}}、背景: {{backgroundHex}}) で、{{threshold}}:1 未満です。ロゴやブランド名の一部であるテキストは RGAA 3.2 の対象外です。",
   "contrastMinimumRgaa_cantTell_engineFailure": "エンジン内部のエラーにより、RGAA 3.2 のコントラストを判定できませんでした ({{reasonCode}})。",
   "focusIndicatorContrast_title": "作成者が定義したフォーカスインジケーターのコントラスト比が 3:1 以上である",
   "focusIndicatorContrast_description": ":focus または :focus-visible のルールがブラウザーのアウトラインの代わりに描くアウトライン、ボーダー、box-shadow が、隣接する色とのコントラスト比 3:1 以上であるかを確認し、計算できない場合は確認を求めます。",
