@@ -7,7 +7,7 @@ const path = require('node:path');
 
 const { RGAA_RULE_TESTS } = require('../../../rule-map.js');
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-link-state-colors-review';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -131,7 +131,7 @@ function rollups(css, body = TEXT_LINK) {
   });
   const outcome = (ruleId) => {
     const r = result.rulesResults.find((x) => x.ruleId === ruleId);
-    return r ? r.outcome : 'missing';
+    return r ? rollupOutcome(r) : 'missing';
   };
   return { rgaa: outcome('rgaa-4.1.2-10.6'), wcag: outcome('wcag-1.4.1-use-of-color') };
 }
@@ -141,14 +141,14 @@ test(`${RULE_ID}: a highlighted link whose hover changes only its color passes u
   const css = 'p a{color:#000;background:#ff0;text-decoration:none} a:hover{color:#900}';
   assert.equal(run(css).checksResults.find((r) => r.ruleId === RULE_ID).outcome, 'notApplicable');
   const r = rollups(css);
-  assert.equal(r.wcag, 'pass');
-  assert.equal(r.rgaa, 'pass');
+  assert.equal(r.wcag, 'passedInPart');
+  assert.equal(r.rgaa, 'passedInPart');
 });
 
 test(`${RULE_ID}: WCAG and RGAA agree on an underlined link and on one shown by color below 3:1`, () => {
   const good = rollups('p a{color:#000;text-decoration:underline} a:hover{color:#900}');
-  assert.equal(good.wcag, 'pass');
-  assert.equal(good.rgaa, 'pass');
+  assert.equal(good.wcag, 'passedInPart');
+  assert.equal(good.rgaa, 'passedInPart');
   const bad = rollups('p a{color:#111;text-decoration:none} a:hover{color:#222}');
   assert.equal(bad.wcag, 'fail');
   assert.equal(bad.rgaa, 'fail');

@@ -7,7 +7,7 @@ const path = require('node:path');
 
 const { RGAA_RULE_TESTS } = require('../../../rule-map.js');
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-valid-lang';
 const WCAG_RULE = 'valid-lang';
@@ -69,14 +69,14 @@ test(`${RULE_ID}: lang="fra" fails WCAG 3.1.2 and passes RGAA 8.8`, () => {
   const result = run(page('fra'), RGAA);
   assert.equal(check(result, WCAG_RULE).outcome, 'fail');
   assert.equal(check(result, RULE_ID).outcome, 'pass');
-  assert.equal(rollup(result, 'wcag-3.1.2-language-of-parts').outcome, 'fail');
-  assert.notEqual(rollup(result, 'rgaa-4.1.2-8.8').outcome, 'fail');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-3.1.2-language-of-parts')), 'fail');
+  assert.notEqual(rollupOutcome(rollup(result, 'rgaa-4.1.2-8.8')), 'fail');
 });
 
 test(`${RULE_ID}: a code that is no language fails both`, () => {
   const result = run(page('xx'), RGAA);
-  assert.equal(rollup(result, 'wcag-3.1.2-language-of-parts').outcome, 'fail');
-  assert.equal(rollup(result, 'rgaa-4.1.2-8.8').outcome, 'fail');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-3.1.2-language-of-parts')), 'fail');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-8.8')), 'fail');
 });
 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html)`, () => {

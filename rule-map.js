@@ -78,7 +78,7 @@ const RGAA_RULE_TESTS = {
     },
     'aria-allowed-attr': {
       tests: [],
-      note: "Fails when an aria-* attribute is neither global nor supported by the element's role (WCAG 4.1.2). Not linked to 8.2.1, where the W3C validator decides: the rule fails <h2 aria-expanded>, which the validator accepts, skips elements whose role depends on context (a[href], td, section, summary), where the validator reports errors, and skips hidden content, which 8.2.1 judges. rgaa-aria-attribute-conformance reports 8.2.1. Not mapped to 7.1.1 (where other RGAA tools put this check): the rule also fires on static markup, which is not a scripted component."
+      note: "Fails when an aria-* attribute is neither global nor supported by the element's role (WCAG 4.1.2). Not linked to 8.2.1, where the W3C validator decides: the rule fails <h2 aria-expanded>, which the validator accepts, judges elements whose role depends on their attributes or their table by that role, where the validator applies its own table of allowed attributes, and skips hidden content, which 8.2.1 judges. rgaa-aria-attribute-conformance reports 8.2.1. Not mapped to 7.1.1 (where other RGAA tools put this check): the rule also fires on static markup, which is not a scripted component."
     },
     'aria-allowed-role': {
       tests: [],
@@ -104,6 +104,10 @@ const RGAA_RULE_TESTS = {
       tests: [],
       note: "Flags roles that WAI-ARIA deprecates or reserves for user agents (e.g. generic). The spec only advises against these ('SHOULD NOT'); it does not make them invalid, so this is not a failed 8.2.1 validity condition. No other RGAA test covers the choice of role outside scripted components (7.1.3)."
     },
+    'aria-expanded-state-mismatch': {
+      tests: ['7.1.1'],
+      note: 'Asks about an element whose aria-expanded says the opposite of what the page shows of the elements its aria-controls names: false while they are all shown, true while they are all hidden. A disclosure or accordion that sets aria-expanded is an interface component a script controls, and 7.1.1 condition 1 asks that its changes of state reach assistive technologies; a state that contradicts the page does not. A question, as in core: a panel may be caught mid-transition, or collapsed in a way the rule does not see.'
+    },
     'aria-hidden-body': {
       tests: ['10.8.1'],
       note: 'Fails aria-hidden="true" on <body>, which hides the whole page from AT. 10.8.1 step 1 lists aria-hidden elements as hidden content, and step 2 requires hidden content to be meant to be ignored, which the whole page never is.'
@@ -115,6 +119,10 @@ const RGAA_RULE_TESTS = {
     'rgaa-aria-list-item-roles': {
       tests: ['9.3.1', '9.3.2'],
       note: 'Asks about an element with role="list" (not <ul> or <ol>) whose children do not all have role="listitem", <li> elements without that role included: 9.3.1 and 9.3.2 step 2 accept only <ul>/<ol> with <li>, or role="list" with role="listitem". It asks rather than fails, because whether the content is visually a list, and an ordered or unordered one, only a person can tell.'
+    },
+    'aria-owns-valid': {
+      tests: [],
+      note: 'Fails an element named in the aria-owns of two or more elements, and an aria-owns that names its own element or an ancestor. Not linked to 8.2.1: the W3C validator reports neither, as both are valid markup. Not mapped to 7.1.1: aria-owns rebuilds the accessibility tree whether or not a script drives the element, and a lost ownership is a structure problem that the other ARIA rules, and the auditor, weigh under the criterion of the widget concerned.'
     },
     'aria-prohibited-attr': {
       tests: [],
@@ -169,7 +177,7 @@ const RGAA_RULE_TESTS = {
     },
     'aria-valid-attr-value': {
       tests: [],
-      note: 'Flags recognized aria-* attributes whose value does not match the declared type (WCAG 4.1.2), and asks about an idref list that resolves to nothing. Not linked to 8.2.1: it passes values the W3C validator rejects (aria-expanded="", a token with surrounding spaces) and skips hidden content. rgaa-aria-attribute-conformance reports 8.2.1. Not mapped to 7.1.1 (where other RGAA tools put this check): the rule also fires on static markup, which is not a scripted component.'
+      note: 'Flags recognized aria-* attributes whose value does not match the declared type (WCAG 4.1.2), and the constraints WAI-ARIA sets between attributes (aria-valuemin above aria-valuemax, an aria-valuenow outside its range, aria-posinset above aria-setsize), and asks about an idref list that resolves to nothing, an aria-haspopup that names another role than the popup, and an aria-activedescendant outside the widget. Not linked to 8.2.1: it passes values the W3C validator rejects (aria-expanded="", a token with surrounding spaces) and skips hidden content. rgaa-aria-attribute-conformance reports 8.2.1. Not mapped to 7.1.1 (where other RGAA tools put this check): the rule also fires on static markup, which is not a scripted component.'
     },
     'autocomplete-valid': {
       tests: ['11.13.1'],
@@ -251,6 +259,10 @@ const RGAA_RULE_TESTS = {
       ],
       note: "Fails computable text below 4.5:1, or below 3:1 for text of 24px or more and bold text of 18.5px or more, which is step 2 of 3.2.1 to 3.2.4 with RGAA's own sizes. Same code as contrast-minimum apart from the bold threshold, so isLargeText uses RGAA's 18.5px. Each failure counts toward the one test its text selects: regular text under 24px 3.2.1, bold text under 18.5px 3.2.2, regular text from 24px 3.2.3, bold text from 18.5px 3.2.4 (typography fields, stable in core). Text that looks like part of a logo (an id or class naming a logo or brand near it, or the banner's first link to the home page) is asked about rather than failed: the particular cases make logo and brand text not applicable, and the logo is found by a heuristic. Caveats: it does not look for a mechanism that shows the text with enough contrast (the second condition of each test), nor for decorative text (another particular case)."
     },
+    'control-name-title-only': {
+      tests: [],
+      note: 'Asks about a button or link whose only name is its title, shown only on mouse hover (best practice). RGAA accepts a title as a name: 6.1 and 11.9 judge whether the name is relevant, not where it comes from. A link with no content but a title fails 6.2.1 under rgaa-link-content-label-present, and an image link named only by its title is 6.1.2, which link-name-quality asks about.'
+    },
     'css-focus-indicator-suppressed': {
       tests: ['10.7.1'],
       note: "Flags tab-order elements whose outline is removed, by a :focus/:focus-visible rule or by a rule with no state such as a { outline: none }, with no border, box-shadow or background replacement in any matching focus rule. That is 10.7.1 condition 1 (native focus style removed) and step 2 (visual focus indicator present). The 3:1 contrast part of step 2 is rgaa-focus-indicator-contrast's."
@@ -310,7 +322,8 @@ const RGAA_RULE_TESTS = {
     },
     'duplicate-id': {
       tests: ['8.2.1'],
-      note: 'Fails on non-empty id values that are not unique in their document or shadow tree, compared as written (id="a " and id="a" differ). That is the 8.2.1 condition \'Les valeurs d\'attribut id sont uniques dans la page\'.'
+      reasonCodes: { DUPLICATE_ID_IN_SHADOW_TREE: { outcome: 'cantTell' } },
+      note: 'Fails on non-empty id values that are not unique in their document or shadow tree, compared as written (id="a " and id="a" differ). That is the 8.2.1 condition \'Les valeurs d\'attribut id sont uniques dans la page\'. Core asks rather than fails under WCAG 2.1, whose 2023 errata count 4.1.1 as satisfied; the rgaa-4.1.2 profile keeps 4.1.1 (keepsParsing), as RGAA 8.2 still requires valid code, so it fails there. A duplicate inside one shadow tree is asked about under 8.2.1: the source the W3C validator checks does not hold an open shadow root, so whether the audit counts it is the auditor\'s call.'
     },
     'duplicate-id-aria': {
       tests: [],
@@ -372,9 +385,8 @@ const RGAA_RULE_TESTS = {
       note: "Fails an element in the tab order whose native outline a focus rule replaces or removes, when every outline, border and box-shadow of its focus style is below 3:1 against both the background behind it and the element's own background, and nothing else changes on focus. That is the contrast part of 10.7.1 step 2 (« suffisamment contrastée (ratio de contraste égal ou supérieur à 3:1) »). It asks when a color, a background or the cascade cannot be worked out, when the indicator reaches 3:1 on one side only, or when the focus style is something else (background, text color, another element). An element that keeps the browser's outline meets condition 1 and is not checked. In a browser the element is focused and the rendered indicator is measured against what is painted on each side, so variables, @media and the cascade are settled there."
     },
     'focus-not-removed-by-script': {
-      tests: [],
-      asks: ['7.3.2'],
-      note: 'Asks about each element that can take focus whose inline onfocus handler calls blur(), which can remove focus as soon as the element receives it: 7.3.2, « un script ne doit pas supprimer le focus d’un élément qui le reçoit ». A question, as in core: it reads only inline handlers, and only tabbing to the element shows whether focus is lost.'
+      tests: ['7.3.2'],
+      note: 'Fails an element in the tab order whose inline onfocus handler does nothing but blur() it (WCAG F55), so focus is removed as soon as the element receives it: 7.3.2, « un script ne doit pas supprimer le focus d’un élément qui le reçoit ». It asks about a handler that calls blur() among other code, or focus() on another element, and about an element out of the tab order whose handler only blurs it: there, only tabbing to the element shows whether focus is lost.'
     },
     'focus-order-semantics': {
       tests: ['7.1.1'],
@@ -402,7 +414,7 @@ const RGAA_RULE_TESTS = {
     },
     'form-control-single-label': {
       tests: [],
-      note: "Fails when two or more non-empty <label> elements compete for one control. No RGAA test forbids multiple labels. 11.1.1 (a label exists) and 11.1.2 (for/id match) are met in that case, and 11.2.1 judges each label's wording, not how many labels there are; multiple labels are also valid HTML, so 8.2.1 does not apply."
+      note: "Asks about a control named by two or more <label> elements with text, which browsers join into one name. No RGAA test forbids multiple labels. 11.1.1 (a label exists) and 11.1.2 (for/id match) are met in that case, and 11.2.1 judges each label's wording, not how many labels there are; multiple labels are also valid HTML, so 8.2.1 does not apply."
     },
     'rgaa-frame-title-attribute-present': {
       tests: ['2.1.1'],
@@ -482,6 +494,11 @@ const RGAA_RULE_TESTS = {
       tests: ['1.3.9'],
       note: 'Asks about an image (<img>, <area>, <input type="image">, <svg>, <canvas>, <object>, <embed> or role="img") whose text alternative (alt, aria-label, aria-labelledby, title, or an svg\'s <title>) is longer than 80 characters, for 1.3.9 (short and concise, particular cases aside). 80 characters is the maximum the RGAA glossary entry « Alternative courte et concise » strongly recommends; a longer one is asked about. A long description belongs in a detailed description (1.6, 1.7).'
     },
+    'image-of-text': {
+      tests: ['1.8.2'],
+      reasonCodes: { SVG_IMAGE_TEXT_REVIEW: { tests: ['1.8.1'] } },
+      note: 'Asks whether an image button (<input type="image">) draws text that could be real text, the question of 1.8.2, and whether an <img> showing an SVG data URL whose markup holds <text> does, the question of 1.8.1 (an <img> image texte). A question, as in core: whether an image holds text, and whether it falls under the logo or essential-presentation particular cases, is for a person. An inline <svg> with <text> is real text, which the 1.8 technical note leaves out, and so does the rule.'
+    },
     'image-redundant-alt': {
       tests: ['1.3.1'],
       note: 'Flags <img> whose non-empty alt equals the visible text in its parent. The question is either whether the alternative is relevant (1.3.1 step 2) or whether the image is really decorative and should have alt="" (1.2.1). Both tests cover the same <img> element. Not mapped to 1.2.1: a redundant alt is not evidence that a decorative image is wrongly exposed.'
@@ -515,6 +532,11 @@ const RGAA_RULE_TESTS = {
       tests: ['1.3.3'],
       note: "Asks a human to judge the relevance of an image button's text alternative (a non-empty alt, aria-label, aria-labelledby or title, each source listed), which is 1.3.3 step 2. An empty alt with another name is input-image-alt-decorative's question."
     },
+    'invalid-field-error-message': {
+      tests: [],
+      asks: ['11.10.4', '11.10.7'],
+      note: 'Asks about a field marked aria-invalid whose error message is hidden, empty, out of reach of assistive technology, missing or not tied to it. 11.10.4 (a required field) and 11.10.7 (a field with a required format) ask that the field with aria-invalid="true" have its error visible in its label or in the text passage aria-labelledby or aria-describedby associates with it. The rule cannot tell which of the two applies, and passes a message tied by aria-errormessage, which is not one of those associations, so it is linked as a question to both.'
+    },
     'rgaa-keyboard-only-event-handlers': {
       tests: ['7.3.1'],
       note: 'Asks about each element that is not interactive natively and has an inline key handler (onkeydown, onkeyup, onkeypress) but no inline click or pointer handler. 7.3.1 steps 4 and 5 require the action to work with any pointing device too, or an equivalent element that does, which WCAG 2.1.1 does not ask. It only sees inline attributes, so it never fails.'
@@ -522,6 +544,10 @@ const RGAA_RULE_TESTS = {
     'rgaa-label-for-target-valid': {
       tests: ['11.1.2'],
       note: "Fails a <label for> whose value is empty, matches no id in the label's tree, or matches an element that cannot be labelled and has no form-field role: then the field it names has no id equal to the for value, the condition 11.1.2 step 2 checks. A for matching an ARIA field (role=textbox and the other roles the glossary counts) meets 11.1.2; its missing name is 11.1.1."
+    },
+    'label-for-valid': {
+      tests: [],
+      note: 'Asks about a <label for> that names no element, or an element that cannot be labelled. rgaa-label-for-target-valid fails the same labels under 11.1.2, whose condition (the for value equals the field’s id) they do not meet, so this rule is left off to count each label once.'
     },
     'label-in-name': {
       tests: [],
@@ -628,6 +654,10 @@ const RGAA_RULE_TESTS = {
       tests: ['9.3.1'],
       findings: [{ when: { parentElement: 'ol' }, tests: ['9.3.2'] }],
       note: 'Fails an <li> whose parent is not <ul>/<ol>/<menu> or role=list/none/presentation, so items grouped as a list are not structured with a ul/ol container. That is step 2 of 9.3.1 or 9.3.2. An <li> under an <ol> whose role replaces list counts toward 9.3.2; any other, toward 9.3.1: an <li> outside any list says nothing of an order, and unordered lists are far the more common. Not linked to 8.2.1: HTML does not accept an li in a role=list container, which this rule passes; rgaa-html-nesting-valid reports it under 8.2.1.'
+    },
+    'live-region-announcements': {
+      tests: ['7.5.1', '7.5.2', '7.5.3'],
+      note: 'Asks about a live region assistive technologies cannot reach (aria-hidden, inert, behind an open modal dialog) or that is aria-busy, and, with the live-region hook, about one inserted with its text or shown and filled at once. 7.5 asks that status messages be rendered by assistive technologies, through role status (7.5.1), alert (7.5.2), or log, progressbar or status (7.5.3): a status message in such a region is not rendered, whatever its role. The rule cannot tell which kind of message the region holds, so a finding is a question about each of the three tests.'
     },
     'rgaa-main-element-structure': {
       tests: ['9.2.1'],
@@ -743,7 +773,7 @@ const RGAA_RULE_TESTS = {
     },
     'page-title-patterns': {
       tests: ['8.6.1'],
-      note: "Manual signal on the <title> content (generic words like 'Home' or 'Untitled', very short titles, and titles duplicated or templated across crawled pages). This is exactly 8.6.1 step 2: is the title relevant enough to find the page in history or tabs."
+      note: "Asks about every page's <title>, and says why when it is generic ('Home', 'Untitled'), very short, or duplicated or templated across crawled pages. That is exactly 8.6.1 step 2: is the title relevant enough to find the page in history or tabs, which only a person can judge (G88)."
     },
     'page-title-present': {
       tests: ['8.5.1'],
@@ -767,7 +797,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-presentational-attributes-absent': {
       tests: ['10.1.2'],
-      note: 'Fails on each HTML element carrying an attribute 10.1.2 step 1 lists, with its exceptions: size allowed on <select>, width and height on <img>, <object>, <embed>, <canvas> and <svg>. SVG and MathML content is not checked, where those attributes are geometry rather than presentation. Metadata and script elements (<link>, <meta>, <script>…) are not checked either: they present no information, so the color of <link rel="mask-icon">, the colour of a pinned browser tab, is not presentation of the content. Hidden content is checked too, since 10.1.2 judges the generated source.'
+      note: 'Fails on each HTML element carrying an attribute 10.1.2 step 1 lists, with its exceptions: size allowed on <select>, width and height on <img>, <object>, <embed>, <canvas> and <svg>. SVG and MathML content is not checked, where those attributes are geometry rather than presentation. Metadata and script elements (<link>, <meta>, <script>…) are not checked either: they present no information, so the color of <link rel="mask-icon">, the color of a pinned browser tab, is not presentation of the content. Hidden content is checked too, since 10.1.2 judges the generated source.'
     },
     'presentational-children-focusable-absent': {
       tests: [],
@@ -888,7 +918,7 @@ const RGAA_RULE_TESTS = {
     },
     'table-th-has-data-cells': {
       tests: [],
-      note: 'Fails a table (not role=presentation) that has <th> but no <td> at all. If the auditor judges it a layout table, the <th> use fails 5.8.1 step 2. If it is a data table whose cells are all marked <th>, no RGAA test forbids that (5.6.4 allows th), so the auditor must decide which applies. Not mapped to 5.8.1: only a failure if the auditor judges the table a layout table. Not mapped to 5.7.1 (where other RGAA tools put this check): a table with no <td> says nothing about the id, scope or role that 5.7.1 checks.'
+      note: 'Fails a table (not role=presentation) that has <th> but no <td> at all, and asks about a header no data cell is assigned to (ACT d0f69e). If the auditor judges the first a layout table, the <th> use fails 5.8.1 step 2. If it is a data table whose cells are all marked <th>, no RGAA test forbids that (5.6.4 allows th), so the auditor must decide which applies. Not mapped to 5.8.1: only a failure if the auditor judges the table a layout table. Not mapped to 5.7.1 (where other RGAA tools put this check): a table with no <td>, or a header with no cell under it, says nothing about the id, scope or role that 5.7.1 checks.'
     },
     'target-size-minimum': {
       tests: [],
@@ -896,7 +926,7 @@ const RGAA_RULE_TESTS = {
     },
     'td-has-header': {
       tests: [],
-      note: 'In large tables (4x4 or more, no colspan/rowspan, and no role other than table, grid or treegrid), fails a non-empty <td> with no headers attribute and no header cell (<th>, or role columnheader or rowheader) above it in its column or before it in its row. Not mapped to 5.7.4: that test covers cells "associée à un ou plusieurs en-têtes possédant un attribut id", and a cell with no header at all is not one. Not mapped to 5.6.1/5.6.2: a cell without associated headers does not show that the headers were not declared with <th>.'
+      note: 'In large tables (4x4 or more, no colspan/rowspan, and no role other than table, grid or treegrid) that have header cells, fails a non-empty <td> with no headers attribute and no header cell (<th>, or role columnheader or rowheader) above it in its column or before it in its row; a large table with no header cell at all is asked about once (TD_TABLE_NO_HEADERS), as it may be a layout table (F46). Not mapped to 5.7.4: that test covers cells "associée à un ou plusieurs en-têtes possédant un attribut id", and a cell with no header at all is not one. Not mapped to 5.6.1/5.6.2: a cell without associated headers does not show that the headers were not declared with <th>; rgaa-data-table-headers-review asks the 5.6 question about a table with no header cell.'
     },
     'text-spacing-content-loss': {
       tests: ['10.12.1'],
@@ -928,11 +958,13 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-valid-lang': {
       tests: ['8.8.1'],
-      note: "Fails lang on elements other than <html> whose language code, the part before the first hyphen (glossary \"Code de langue\"), is not an ISO 639-1, 639-2 or later ISO 639 code: the 'valide' condition of 8.8.1 step 2. It runs the code of valid-lang, with ISO 639-2 codes such as fra or ger and the qaa to qtz local-use range accepted. Relevance (the 'pertinent' condition) is not judged."
+      reasonCodes: { DEFAULT_LANG_INVALID: { tests: ['8.4.1'] } },
+      note: "Fails lang on elements other than <html> whose language code, the part before the first hyphen (glossary \"Code de langue\"), is not an ISO 639-1, 639-2 or later ISO 639 code: the 'valide' condition of 8.8.1 step 2. It runs the code of valid-lang, with ISO 639-2 codes such as fra or ger and the qaa to qtz local-use range accepted. A lang with no lang above it, such as <body lang> on a page whose <html> has none, sets the page's default language rather than changing it (DEFAULT_LANG_INVALID): that finding counts toward 8.4.1, the validity of the default language's code. Relevance (the 'pertinent' condition) is not judged."
     },
     'video-caption': {
       tests: ['4.3.1'],
-      note: 'Flags <video> without a <track kind="captions"> (with a src), raising the question of 4.3.1 step 2 (are synchronised captions present?). A video with only kind="subtitles" tracks is asked about too, since the glossary "Sous-titres synchronisés" (note 2) does not count translation subtitles as captions.'
+      reasonCodes: { CAPTIONS_REVIEW: { tests: ['4.4.1'] } },
+      note: 'Asks about a <video> without a <track kind="captions"> (with a src), the question of 4.3.1 step 2 (are synchronised captions present?). A video with only kind="subtitles" tracks is asked about too, since the glossary "Sous-titres synchronisés" (note 2) does not count translation subtitles as captions. A video with a captions track is asked whether its captions are complete (CAPTIONS_REVIEW, F8), which is 4.4.1: are the captions relevant?'
     },
     'rgaa-video-captions-track-kind': {
       tests: ['4.3.2'],
@@ -945,6 +977,10 @@ const RGAA_RULE_TESTS = {
     'rgaa-viewport-zoom-review': {
       tests: ['10.4.2'],
       note: 'Asks about each viewport meta tag that disables zoom or caps it below 2, the tags meta-viewport-zoom-enabled fails. 10.4.2 is met when text reaches 200% by any one of its three conditions (browser text zoom, browser graphic zoom, a zoom control of the site), and the tag acts only on pinch zoom, so whether it blocks all three depends on the audit environment. It never fails.'
+    },
+    'widget-keyboard-focusable': {
+      tests: ['7.3.1'],
+      note: 'Asks about an element with a widget role that Tab never reaches: a single widget that cannot take focus or takes it only from script (tabindex=-1), a composite widget with no tab stop, and an aria-activedescendant host that cannot take focus. A widget role means a script handles the element, so 7.3.1 condition 1 applies: the element is accessible by the keyboard. A question, as in core: a script may move focus there, and condition 2 passes the element when another keyboard-operable control does the same.'
     },
     'rgaa-widget-label-in-name': {
       tests: ['7.1.3'],

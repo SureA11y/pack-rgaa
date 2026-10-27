@@ -7,7 +7,7 @@ const path = require('node:path');
 
 const { RGAA_RULE_TESTS } = require('../../../rule-map.js');
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-page-zones-reachable';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -146,8 +146,8 @@ test(`${RULE_ID}: WCAG 2.4.1 finds a bypass in <main>, RGAA 12.6 asks about the 
     engineOptions: { profile: 'rgaa-4.1.2-with-wcag' }
   });
   const rollup = (id) => result.rulesResults.find((r) => r.ruleId === id);
-  assert.notEqual(rollup('wcag-2.4.1-bypass-blocks').outcome, 'cantTell');
-  assert.equal(rollup('rgaa-4.1.2-12.6').outcome, 'cantTell');
+  assert.notEqual(rollupOutcome(rollup('wcag-2.4.1-bypass-blocks')), 'cantTell');
+  assert.equal(rollupOutcome(rollup('rgaa-4.1.2-12.6')), 'cantTell');
   assert.deepEqual(RGAA_RULE_TESTS['4.1.2'][RULE_ID].tests, ['12.6.1']);
   // bypass-blocks-present asks under 12.6.1 only on a page with no bypass at all.
   assert.deepEqual(RGAA_RULE_TESTS['4.1.2']['bypass-blocks-present'].tests, ['12.6.1']);

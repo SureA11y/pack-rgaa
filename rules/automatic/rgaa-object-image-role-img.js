@@ -64,7 +64,51 @@ const meta = {
   category: 'perceivable',
   type: 'automatic',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  // The reason codes the rule gives, so definePack can check that `review`
+  // names only these.
+  reasonCodes: [
+    'alternativeWithoutRoleImg',
+    'adjacentLinkOrButton',
+    'fallbackOnly',
+    'noAlternative'
+  ],
+  // How a person answers each question the rule asks, per reason code: a few
+  // steps from the element the finding names, then what they see if it
+  // passes and if it fails. In English; reports show it as "How to check".
+  review: {
+    alternativeWithoutRoleImg: {
+      steps: [
+        'Find the <object> the report names; it has an aria-label, aria-labelledby or title but no role="img".',
+        'Read that text alternative and check that it says what the image conveys.',
+        'Decide, with the audit’s rules, whether the alternative without role="img" is accepted: the 1.1.6 wording asks for both, its methodology checks the alternative alone.'
+      ],
+      passWhen:
+        'The text alternative is relevant, and role="img" is added or the audit accepts it without.',
+      failWhen:
+        'The image has no usable text alternative for assistive technologies, which fails RGAA 1.1.6.'
+    },
+    adjacentLinkOrButton: {
+      steps: [
+        'Find the <object> the report names and the link or button right after it.',
+        'Activate that link or button and see where it leads.'
+      ],
+      passWhen: 'It leads to an alternative content that gives the information the image conveys.',
+      failWhen:
+        'It does not lead to an alternative to the image, and the image has no other, which fails RGAA 1.1.6.'
+    },
+    fallbackOnly: {
+      steps: [
+        'Find the <object> the report names; its only alternative is the content between <object> and </object>.',
+        'Read that content, and check with a screen reader whether it is read out while the image displays.',
+        'Give the <object> role="img" and an aria-label, aria-labelledby or title, or a link or button right after it, if the audit does not accept fallback content.'
+      ],
+      passWhen:
+        'The <object> has role="img" and a text alternative, or a link or button right after it that leads to an alternative content.',
+      failWhen:
+        'The image keeps only fallback content, which RGAA 1.1.6 does not list as an alternative for an <object> image, and fails it.'
+    }
+  }
 };
 
 function runInPage(ctx) {

@@ -63,7 +63,53 @@ const meta = {
   category: 'operable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  // The reason codes the rule gives, so definePack can check that `review`
+  // names only these.
+  reasonCodes: [
+    'NAME_LACKS_VISIBLE_LABEL',
+    'SOURCE_LACKS_VISIBLE_LABEL',
+    'POSSIBLE_SYMBOL',
+    'POSSIBLE_ABBREVIATION',
+    'PARENTHESISED_TEXT_MISSING'
+  ],
+  // How a person answers each question the rule asks, per reason code: a few
+  // steps from the element the finding names, then what they see if it
+  // passes and if it fails. In English; reports show it as "How to check".
+  review: {
+    POSSIBLE_SYMBOL: {
+      steps: [
+        'Find the link the report names and read its visible text.',
+        'Decide whether that text is a symbol (an icon glyph, "X" for close, ">" for next) or literal text.',
+        'Read each of its title, aria-label and the text its aria-labelledby points to.'
+      ],
+      passWhen:
+        'The visible text is a symbol and each source says what it means, or it is literal text that each source contains.',
+      failWhen:
+        'The visible text is literal text that a title, aria-label or aria-labelledby source does not contain, which fails RGAA 6.1.5.'
+    },
+    POSSIBLE_ABBREVIATION: {
+      steps: [
+        'Find the link the report names and read its visible text, which holds an abbreviation (such as "Av." for "Avenue").',
+        'Read each of its title, aria-label and the text its aria-labelledby points to.',
+        'Check whether each source still holds the visible text as a user would say it, by speech input for example.'
+      ],
+      passWhen:
+        'Each source holds the visible text, written in full or as displayed, so a user saying what they see reaches the link.',
+      failWhen:
+        'A source replaces the visible text with other words, which fails RGAA 6.1.5: RGAA excuses only punctuation and capital letters.'
+    },
+    PARENTHESISED_TEXT_MISSING: {
+      steps: [
+        'Find the link the report names and read its visible text, part of which is in parentheses.',
+        'Read each of its title, aria-label and the text its aria-labelledby points to.',
+        'Check whether each source holds the whole visible text, the text in parentheses included.'
+      ],
+      passWhen:
+        'Each source holds the visible text, or leaves out only text in parentheses that is not part of the link’s label (a file size, a note).',
+      failWhen: 'A source leaves out part of the visible label, which fails RGAA 6.1.5.'
+    }
+  }
 };
 
 function runInPage(ctx) {

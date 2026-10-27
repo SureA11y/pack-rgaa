@@ -7,7 +7,7 @@ const path = require('node:path');
 
 const { RGAA_RULE_TESTS } = require('../../../rule-map.js');
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-field-label-in-name-sources';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -141,7 +141,7 @@ function rollups(body) {
   });
   const outcome = (ruleId) => {
     const r = result.rulesResults.find((x) => x.ruleId === ruleId);
-    return r ? r.outcome : 'missing';
+    return r ? rollupOutcome(r) : 'missing';
   };
   return { rgaa: outcome('rgaa-4.1.2-11.2'), wcag: outcome('wcag-2.5.3-label-in-name'), result };
 }
@@ -159,7 +159,7 @@ test(`${RULE_ID}: WCAG and RGAA agree on a replaced name, and neither fails a na
   assert.equal(bad.wcag, 'fail');
   assert.equal(bad.rgaa, 'fail');
   const good = rollups('<label for="x">Nom</label><input id="x" aria-label="Nom de famille">');
-  assert.equal(good.wcag, 'pass');
+  assert.equal(good.wcag, 'passedInPart');
   assert.notEqual(good.rgaa, 'fail');
   const own = good.result.checksResults.find((x) => x.ruleId === RULE_ID);
   assert.equal(own.outcome, 'pass');

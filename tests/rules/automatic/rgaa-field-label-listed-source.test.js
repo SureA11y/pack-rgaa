@@ -7,7 +7,7 @@ const path = require('node:path');
 
 const { RGAA_RULE_TESTS } = require('../../../rule-map.js');
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-field-label-listed-source';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -238,7 +238,7 @@ function rollups(body) {
   });
   const outcome = (id) => {
     const r = result.rulesResults.find((x) => x.ruleId === id);
-    return r ? r.outcome : 'missing';
+    return r ? rollupOutcome(r) : 'missing';
   };
   return {
     rgaa: outcome('rgaa-4.1.2-11.1'),
@@ -251,7 +251,7 @@ function rollups(body) {
 
 test(`${RULE_ID}: WCAG passes a checkbox named by its content, RGAA 11.1 fails it`, () => {
   const r = rollups('<div role="checkbox" aria-checked="false" tabindex="0">J’accepte</div>');
-  assert.equal(r.wcagName, 'pass');
+  assert.equal(r.wcagName, 'passedInPart');
   assert.equal(r.rgaa, 'fail');
   const rgaa = r.result.rulesResults.find((x) => x.ruleId === 'rgaa-4.1.2-11.1');
   assert.ok(rgaa.data.details.checksIds.includes(RULE_ID));
@@ -262,17 +262,17 @@ test(`${RULE_ID}: WCAG passes a checkbox named by its content, RGAA 11.1 fails i
 // shown to everyone is WCAG 3.3.2's question, which asks. RGAA 11.1 fails it.
 test(`${RULE_ID}: WCAG 4.1.2 finds a name and 3.3.2 asks about a placeholder-only field, RGAA 11.1 fails it`, () => {
   const r = rollups('<input type="text" placeholder="Nom">');
-  assert.equal(r.wcagName, 'pass');
+  assert.equal(r.wcagName, 'passedInPart');
   assert.equal(r.wcagLabels, 'cantTell');
   assert.equal(r.rgaa, 'fail');
 });
 
-test(`${RULE_ID}: WCAG fails a role="meter" named by <label for>, RGAA 11.1 passes it`, () => {
+test(`${RULE_ID}: WCAG fails a role="meter" named by <label for>, RGAA 11.1 does not`, () => {
   const r = rollups(
     '<label for="m">Remplissage</label><meter id="m" role="meter" value="0.5"></meter>'
   );
   assert.equal(r.wcagNonText, 'fail');
-  assert.equal(r.rgaa, 'pass');
+  assert.equal(r.rgaa, 'passedInPart');
 });
 
 test(`${RULE_ID}: WCAG fails a <label for> on a role="listbox", RGAA 11.1 asks`, () => {
@@ -288,8 +288,8 @@ test(`${RULE_ID}: WCAG and RGAA agree on an unlabelled field and on a <label for
   assert.equal(bad.wcagName, 'fail');
   assert.equal(bad.rgaa, 'fail');
   const good = rollups('<label for="n">Nom</label><input type="text" id="n">');
-  assert.equal(good.wcagName, 'pass');
-  assert.equal(good.rgaa, 'pass');
+  assert.equal(good.wcagName, 'passedInPart');
+  assert.equal(good.rgaa, 'passedInPart');
 });
 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-field-label-listed-source-all-scenarios.html)`, () => {

@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-skip-link-present';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -201,7 +201,7 @@ function rgaaRun(body) {
 test(`${RULE_ID}: a main landmark satisfies WCAG 2.4.1 but not RGAA 12.7`, () => {
   const { rollup, rule } = rgaaRun(NAV + MAIN);
   assert.equal(rule('bypass-blocks-present').outcome, 'pass');
-  assert.equal(rollup('wcag-2.4.1-').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup('wcag-2.4.1-')), 'passedInPart');
   const rgaa127 = rollup('rgaa-4.1.2-12.7');
   assert.equal(rgaa127.outcome, 'fail');
   assert.deepEqual(
@@ -218,9 +218,9 @@ test(`${RULE_ID}: a main landmark satisfies WCAG 2.4.1 but not RGAA 12.7`, () =>
 
 // 12.7.1 passes here. 12.7 as a whole stays a question: rgaa-skip-link-placement
 // asks about 12.7.2 (visibility needs a browser, place needs other pages).
-test(`${RULE_ID}: with a skip link to main, WCAG finds a bypass and RGAA 12.7.1 passes`, () => {
+test(`${RULE_ID}: with a skip link to main, WCAG finds a bypass and RGAA 12.7.1 does not fail`, () => {
   const { rule, rollup } = rgaaRun('<a href="#main">Aller au contenu</a>' + NAV + MAIN);
-  assert.equal(rollup('wcag-2.4.1-').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup('wcag-2.4.1-')), 'passedInPart');
   assert.equal(rule(RULE_ID).outcome, 'pass');
   const rgaa127 = rollup('rgaa-4.1.2-12.7');
   assert.equal(rgaa127.outcome, 'cantTell');
@@ -232,8 +232,8 @@ test(`${RULE_ID}: with a skip link to main, WCAG finds a bypass and RGAA 12.7.1 
 
 test(`${RULE_ID}: with no main, no heading and no anchor, both ask`, () => {
   const { rollup } = rgaaRun(NAV + '<div><p>Texte</p></div>');
-  assert.equal(rollup('wcag-2.4.1-').outcome, 'cantTell');
-  assert.equal(rollup('rgaa-4.1.2-12.7').outcome, 'cantTell');
+  assert.equal(rollupOutcome(rollup('wcag-2.4.1-')), 'cantTell');
+  assert.equal(rollupOutcome(rollup('rgaa-4.1.2-12.7')), 'cantTell');
 });
 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-skip-link-present-all-scenarios.html)`, () => {

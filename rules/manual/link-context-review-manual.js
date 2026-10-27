@@ -59,7 +59,31 @@ const meta = {
   coverage: {},
   // Reason codes built at runtime, so not found by reading the source: the
   // finding identities a baseline holds include them.
-  reasonCodes: ['CONTAINER_CONTEXT_ONLY', 'DESCRIBEDBY_CONTEXT_ONLY']
+  reasonCodes: ['CONTAINER_CONTEXT_ONLY', 'DESCRIBEDBY_CONTEXT_ONLY'],
+  review: {
+    DESCRIBEDBY_CONTEXT_ONLY: {
+      steps: [
+        'Find the link the report names; its text is generic, such as "En savoir plus", or only a format, such as "PDF".',
+        'Read the sentence it is in, its paragraph or list item, the heading before it, and the table header and cell around it.',
+        'Check whether one of those, not the text aria-describedby points to, says where the link goes.'
+      ],
+      passWhen:
+        'The sentence, paragraph, list item, preceding heading, table header or cell around the link makes its destination clear.',
+      failWhen:
+        'Only the text aria-describedby points to says where the link goes, which RGAA’s glossary « Contexte du lien » does not count, so the link fails RGAA 6.1 (6.1.1 to 6.1.4 by the kind of link).'
+    },
+    CONTAINER_CONTEXT_ONLY: {
+      steps: [
+        'Find the link the report names; its text is generic, such as "En savoir plus", or only a format, such as "PDF".',
+        'Read the sentence it is in, the heading before it, and the table header and cell around it.',
+        'Check whether one of those says where the link goes, rather than only the <dd>, <dt>, <blockquote> or <figcaption> that contains it.'
+      ],
+      passWhen:
+        'The sentence around the link, the heading before it, or a table header or cell makes its destination clear.',
+      failWhen:
+        'Only the enclosing <dd>, <dt>, <blockquote> or <figcaption> says where the link goes, which RGAA’s glossary « Contexte du lien » does not count, so the link fails RGAA 6.1 (6.1.1 to 6.1.4 by the kind of link).'
+    }
+  }
 };
 
 function runInPage(ctx) {

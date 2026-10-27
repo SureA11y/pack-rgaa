@@ -54,7 +54,10 @@ const meta = {
   category: 'operable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  // The reason codes the rule gives, so definePack can check that `review`
+  // names only these.
+  reasonCodes: ['refreshUnder20Hours']
 };
 
 function applicability(ctx) {

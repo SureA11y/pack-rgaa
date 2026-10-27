@@ -55,7 +55,25 @@ const meta = {
   category: 'perceivable',
   type: 'automatic',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  reasonCodes: [
+    'hiddenCanvasHasAlternative',
+    'presentationWithContent',
+    'presentationWithoutAriaHidden'
+  ],
+  review: {
+    presentationWithContent: {
+      steps: [
+        'Find the <canvas> the report names: it has role="none" or role="presentation", no aria-hidden="true", and content between <canvas> and </canvas>.',
+        'Look at what the canvas draws on screen and decide whether it carries information or is only decoration.',
+        'Read the content inside the <canvas> element in the source.'
+      ],
+      passWhen:
+        'The canvas carries information and its content is a relevant alternative to it, which meets RGAA 1.1.8 (the role is then misleading and better removed).',
+      failWhen:
+        'The canvas is decorative but is not hidden with aria-hidden="true" and keeps content assistive technologies can read, which fails RGAA 1.2.5.'
+    }
+  }
 };
 
 function runInPage(ctx) {

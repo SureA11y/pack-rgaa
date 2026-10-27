@@ -54,7 +54,26 @@ const meta = {
   category: 'perceivable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  // The reason codes the rule gives, so definePack can check that `review`
+  // names only these.
+  reasonCodes: ['hiddenImgHasAlternative', 'decorativeImgHasAlternative'],
+  // How a person answers each question the rule asks, per reason code: a few
+  // steps from the element the finding names, then what they see if it
+  // passes and if it fails. In English; reports show it as "How to check".
+  review: {
+    decorativeImgHasAlternative: {
+      steps: [
+        'Find the image the report names; it is marked decorative (alt="" or role="presentation") but has an aria-label, aria-labelledby or title.',
+        'Look at the image on the page and decide whether it carries information a user needs, or only decorates.',
+        'If it carries information, read the text its aria-label, aria-labelledby or title gives and check that it says what the image conveys.'
+      ],
+      passWhen:
+        'The image carries information and the aria-label, aria-labelledby or title gives it a relevant alternative (RGAA 1.1.1 accepts them), or it is decorative once those attributes are removed.',
+      failWhen:
+        'The image is decorative but keeps an aria-label, aria-labelledby or title, which fails RGAA 1.2.1; or it carries information that no alternative gives, which fails RGAA 1.1.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

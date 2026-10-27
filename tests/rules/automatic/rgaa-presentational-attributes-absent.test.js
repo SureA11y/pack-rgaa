@@ -165,7 +165,7 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-presentational-attribute
   ]);
 });
 
-// A pinned-tab colour and a stray text attribute on <script> present no
+// A pinned-tab color and a stray text attribute on <script> present no
 // information.
 test(`${RULE_ID}: metadata and script elements are left out`, () => {
   const html =

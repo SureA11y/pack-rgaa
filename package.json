@@ -64,10 +64,10 @@
     "test": "npm run format:check && npm run lint && npm run map:check && npm run mapping-doc:check && npm run docs:check && node scripts/run-tests.js"
   },
   "peerDependencies": {
-    "@surea11y/core": ">=1.12.0"
+    "@surea11y/core": "^1.14.0"
   },
   "devDependencies": {
-    "@surea11y/core": "github:SureA11y/core#48fab1519e56b9ae39eb19df1c7a0fb9134bfc16",
+    "@surea11y/core": "^1.14.0",
     "eslint": "^10.12.0",
     "jsdom": "^29.1.1",
     "playwright": "^1.62.1",

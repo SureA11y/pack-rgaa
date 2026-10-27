@@ -61,7 +61,20 @@ const meta = {
   category: 'perceivable',
   type: 'manual',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['complexTableNoSummary'],
+  review: {
+    complexTableNoSummary: {
+      steps: [
+        'Find the table the report names, and check that it is a data table whose headers do not all apply to whole rows or columns.',
+        'Read its <caption> and the text just before and after it.',
+        'Look there for a summary: a passage that explains how the table is built (what its groups of headers are and how to read a cell).'
+      ],
+      passWhen:
+        'The caption, or a passage next to the table, explains the nature and structure of the table, or the table is in fact simple.',
+      failWhen: 'Nothing near the complex table explains its structure, which fails RGAA 5.1.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

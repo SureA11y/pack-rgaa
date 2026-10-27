@@ -12,7 +12,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-const { runa11yCoreOnHtml } = require('./helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('./helpers/run.js');
 
 const RGAA = { engineOptions: { profile: 'rgaa-4.1.2-with-wcag' } };
 const page = (body) =>
@@ -73,7 +73,7 @@ const CASES = [
     'video-caption',
     page('<video controls src="a.mp4"><track kind="subtitles" srclang="en" src="en.vtt"></video>'),
     'cantTell',
-    ['4.3.1'],
+    ['4.3.1', '4.4.1'],
     'subtitles may be dialogue alone, without speakers and sounds'
   ],
   [
@@ -111,17 +111,39 @@ test('img-alt-present fails alt=" " under RGAA 1.1.1, and img-alt-decorative doe
   assert.ok(rgaaTestsOf(rule('img-alt-present')).includes('1.1.1'));
 });
 
+// A video with a captions track is asked whether the captions are complete
+// (CAPTIONS_REVIEW): that is 4.4.1, their relevance, not 4.3.1, their
+// presence.
+test('video-caption asks about complete captions under RGAA 4.4.1, and about missing ones under 4.3.1', () => {
+  const run = (track) =>
+    runa11yCoreOnHtml(page(`<video controls src="a.mp4">${track}</video>`), RGAA);
+  const outcome = (result, id) => rollupOutcome(result.rulesResults.find((r) => r.ruleId === id));
+  const captioned = run('<track kind="captions" srclang="fr" src="fr.vtt">');
+  const occ = captioned.checksResults.find((r) => r.ruleId === 'video-caption').occurrences[0];
+  assert.equal(occ.data.details.reasonCode, 'CAPTIONS_REVIEW');
+  assert.equal(outcome(captioned, 'rgaa-4.1.2-4.4'), 'cantTell');
+  assert.notEqual(outcome(captioned, 'rgaa-4.1.2-4.3'), 'cantTell');
+  const bare = run('');
+  assert.equal(outcome(bare, 'rgaa-4.1.2-4.3'), 'cantTell');
+  assert.notEqual(outcome(bare, 'rgaa-4.1.2-4.4'), 'cantTell');
+});
+
 // RGAA 5.7.4 covers cells associated with headers that have an id; a cell
 // with no header at all is not one, so td-has-header does not report under
 // 5.7 while its WCAG 1.3.1 verdict stays.
 test('td-has-header fails WCAG 1.3.1 but not RGAA 5.7 in the same run', () => {
-  const rows = [1, 5, 9, 13]
-    .map((n) => `<tr>${[0, 1, 2, 3].map((i) => `<td>${n + i}</td>`).join('')}</tr>`)
-    .join('');
+  // Headers over the first two columns only: the cells of the other two
+  // have none. A table with no header at all is only asked about.
+  const head = '<tr><th>A</th><th>B</th><td>3</td><td>4</td></tr>';
+  const rows =
+    head +
+    [5, 9, 13]
+      .map((n) => `<tr>${[0, 1, 2, 3].map((i) => `<td>${n + i}</td>`).join('')}</tr>`)
+      .join('');
   const result = runa11yCoreOnHtml(page(`<table>${rows}</table>`), RGAA);
   const rollup = (id) => result.rulesResults.find((r) => r.ruleId === id);
   assert.equal(result.checksResults.find((r) => r.ruleId === 'td-has-header').outcome, 'fail');
-  assert.equal(rollup('wcag-1.3.1-info-and-relationships').outcome, 'fail');
+  assert.equal(rollupOutcome(rollup('wcag-1.3.1-info-and-relationships')), 'fail');
   const r57 = rollup('rgaa-4.1.2-5.7');
   assert.ok(!r57 || !r57.data.details.checksIds.includes('td-has-header'));
   assert.ok(!r57 || r57.outcome !== 'fail');

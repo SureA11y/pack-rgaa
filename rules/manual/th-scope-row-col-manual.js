@@ -49,7 +49,21 @@ const meta = {
   category: 'perceivable',
   type: 'manual',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['groupScope'],
+  review: {
+    groupScope: {
+      steps: [
+        'Find the header cell the report names, with scope="rowgroup" or scope="colgroup".',
+        'Look at the table and decide whether the header applies to a whole row or column, or only to part of one.',
+        'For part of a row or column, check that the cells it heads point to it through headers attributes and its unique id.'
+      ],
+      passWhen:
+        'The header uses no group scope: scope="row" or "col" over a whole row or column, or no scope and a unique id over part of one, with the cells it heads pointing to that id.',
+      failWhen:
+        'A header over a whole row or column fails RGAA 5.7.2 without scope="row" or "col"; one over part of a row or column fails RGAA 5.7.3 with a scope.'
+    }
+  }
 };
 
 function runInPage(ctx) {

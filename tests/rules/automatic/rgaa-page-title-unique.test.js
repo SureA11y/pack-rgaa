@@ -7,7 +7,7 @@ const path = require('node:path');
 
 const { RGAA_RULE_TESTS } = require('../../../rule-map.js');
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-page-title-unique';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -119,7 +119,7 @@ test(`${RULE_ID}: WCAG 2.4.2 does not fail a duplicated title, RGAA 8.6 does`, (
       }
     }
   });
-  const rollup = (id) => result.rulesResults.find((r) => r.ruleId === id).outcome;
+  const rollup = (id) => rollupOutcome(result.rulesResults.find((r) => r.ruleId === id));
   assert.notEqual(rollup('wcag-2.4.2-page-titled'), 'fail');
   assert.equal(rollup('rgaa-4.1.2-8.6'), 'fail');
   assert.deepEqual(RGAA_RULE_TESTS['4.1.2'][RULE_ID].tests, ['8.6.1']);

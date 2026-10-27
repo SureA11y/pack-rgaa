@@ -54,7 +54,26 @@ const meta = {
   category: 'perceivable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  // The reason codes the rule gives, so definePack can check that `review`
+  // names only these.
+  reasonCodes: ['dataLikeTableMarkedLayout', 'dataMarkupInLayoutTable'],
+  // How a person answers each question the rule asks, per reason code: a few
+  // steps from the element the finding names, then what they see if it
+  // passes and if it fails. In English; reports show it as "How to check".
+  review: {
+    dataLikeTableMarkedLayout: {
+      steps: [
+        'Find the table the report names; it has role="presentation" or role="none" and header markup (th, caption, summary, scope or headers).',
+        'Look at it on the page and decide whether it presents data in rows and columns, whose header cells label the others, or only lays out content.',
+        'If it lays out content, list the header markup it still holds.'
+      ],
+      passWhen:
+        'The table lays out content and holds no caption, th, thead, tfoot, summary, scope, headers or axis; or it is a data table, and its role is removed so its headers are exposed (RGAA 5.6 and 5.7 then apply).',
+      failWhen:
+        'The table lays out content but keeps markup meant for data tables, which fails RGAA 5.8.1; or it is a data table hidden as layout by its role, so its headers are not exposed.'
+    }
+  }
 };
 
 function runInPage(ctx) {

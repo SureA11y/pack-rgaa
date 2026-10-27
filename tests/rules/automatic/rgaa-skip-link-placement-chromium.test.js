@@ -40,7 +40,7 @@ const skip = !chromium
 
 const RULE_ID = 'rgaa-skip-link-placement';
 // Core's browser bundle with the RGAA pack registered, every scan naming it.
-const { BROWSER_BUNDLE: BUNDLE } = require('../../helpers/run.js');
+const { BROWSER_BUNDLE: BUNDLE, rollupOutcome } = require('../../helpers/run.js');
 const FIXTURE = fs.readFileSync(
   path.join(__dirname, '../../fixtures', `${RULE_ID}-all-scenarios.html`),
   'utf8'
@@ -202,7 +202,7 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
     });
     const rollup = (id) => result.rulesResults.find((r) => r.ruleId === id);
     assert.equal(result.checksResults.find((r) => r.ruleId === RULE_ID).outcome, 'fail');
-    assert.notEqual(rollup('wcag-2.4.1-bypass-blocks').outcome, 'fail');
-    assert.equal(rollup('rgaa-4.1.2-12.7').outcome, 'fail');
+    assert.notEqual(rollupOutcome(rollup('wcag-2.4.1-bypass-blocks')), 'fail');
+    assert.equal(rollupOutcome(rollup('rgaa-4.1.2-12.7')), 'fail');
   });
 });

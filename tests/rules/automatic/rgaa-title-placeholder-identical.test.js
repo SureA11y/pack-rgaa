@@ -7,7 +7,7 @@ const path = require('node:path');
 
 const { RGAA_RULE_TESTS } = require('../../../rule-map.js');
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-title-placeholder-identical';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -105,7 +105,7 @@ function rollups(body) {
   });
   const outcome = (ruleId) => {
     const r = result.rulesResults.find((x) => x.ruleId === ruleId);
-    return r ? r.outcome : 'missing';
+    return r ? rollupOutcome(r) : 'missing';
   };
   return { rgaa: outcome('rgaa-4.1.2-11.2'), wcag: outcome('wcag-4.1.2-name') };
 }
@@ -114,14 +114,14 @@ test(`${RULE_ID}: WCAG passes a labelled field whose title and placeholder diffe
   const r = rollups(
     '<label for="a">Nom</label><input id="a" title="Nom de famille" placeholder="Dupont">'
   );
-  assert.equal(r.wcag, 'pass');
+  assert.equal(r.wcag, 'passedInPart');
   assert.equal(r.rgaa, 'cantTell');
 });
 
 test(`${RULE_ID}: WCAG and RGAA agree when the two are identical`, () => {
   const r = rollups('<label for="a">Nom</label><input id="a" title="Nom" placeholder="Nom">');
-  assert.equal(r.wcag, 'pass');
-  assert.equal(r.rgaa, 'pass');
+  assert.equal(r.wcag, 'passedInPart');
+  assert.equal(r.rgaa, 'passedInPart');
 });
 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-title-placeholder-identical-all-scenarios.html)`, () => {

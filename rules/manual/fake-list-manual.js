@@ -45,7 +45,31 @@ const meta = {
   category: 'perceivable',
   type: 'manual',
   defaultConfidence: 'low',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['unorderedListAsText', 'orderedListAsText'],
+  review: {
+    unorderedListAsText: {
+      steps: [
+        'Find the text the report names: lines or paragraphs starting with the same bullet character.',
+        'Read it and decide whether it is a list of items or something else, such as lines of dialogue.',
+        'Inspect it: the items are lines or paragraphs, not a <ul> with <li> or role="list" with role="listitem".'
+      ],
+      passWhen: 'The text is not a list (dialogue, a poem, a single statement split over lines).',
+      failWhen:
+        'The text is a list of items marked up as lines or paragraphs, which fails RGAA 9.3.1.'
+    },
+    orderedListAsText: {
+      steps: [
+        'Find the text the report names: lines or paragraphs numbered 1, 2, 3.',
+        'Read it and decide whether it is a list whose order matters, such as steps, or something else.',
+        'Inspect it: the items are lines or paragraphs, not an <ol> with <li> or role="list" with role="listitem".'
+      ],
+      passWhen:
+        'The text is not a list, or its numbers are part of something else (dates, references).',
+      failWhen:
+        'The text is an ordered list marked up as lines or paragraphs, which fails RGAA 9.3.2.'
+    }
+  }
 };
 
 function runInPage(ctx) {

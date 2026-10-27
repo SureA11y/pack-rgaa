@@ -56,7 +56,8 @@ const meta = {
   category: 'perceivable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['missingRole', 'missingAriaLabel', 'ariaLabelMismatch']
 };
 
 function runInPage(ctx) {

@@ -53,9 +53,50 @@ const meta = {
   type: 'automatic',
   defaultConfidence: 'high',
   coverage: {},
-  // Reason codes built at runtime, so not found by reading the source: the
-  // finding identities a baseline holds include them.
-  reasonCodes: ['SOURCE_LACKS_VISIBLE_LABEL']
+  // The reason codes the rule gives, SOURCE_LACKS_VISIBLE_LABEL built at
+  // runtime: the finding identities a baseline holds include them.
+  reasonCodes: [
+    'NAME_LACKS_VISIBLE_LABEL',
+    'SOURCE_LACKS_VISIBLE_LABEL',
+    'POSSIBLE_SYMBOL',
+    'POSSIBLE_ABBREVIATION',
+    'PARENTHESISED_TEXT_MISSING'
+  ],
+  review: {
+    POSSIBLE_SYMBOL: {
+      steps: [
+        'Find the component the report names (a tab, menu item, tree item, grid cell or option) and read its visible text.',
+        'Decide whether that text is a symbol, such as an icon glyph, "X" for close or ">" for next, or text meant to be read as written.',
+        'With a screen reader, or the browser’s accessibility inspector, read the component’s accessible name.'
+      ],
+      passWhen:
+        'The visible text is a symbol, and the accessible name says what it does (close, next).',
+      failWhen:
+        'The visible text is literal text that the accessible name does not contain, so people using speech input cannot say it to activate the component, which fails RGAA 7.1.3.'
+    },
+    POSSIBLE_ABBREVIATION: {
+      steps: [
+        'Find the component the report names and read its visible text.',
+        'With a screen reader, or the browser’s accessibility inspector, read its accessible name.',
+        'Compare the two: the name differs from the visible text only by an abbreviation (written out in one, short in the other).'
+      ],
+      passWhen:
+        'The accessible name still says the visible text as a user would say it, for instance the visible abbreviation spelled out.',
+      failWhen:
+        'Saying the visible text would not match the accessible name: RGAA excuses only punctuation and capital letters, so this fails RGAA 7.1.3.'
+    },
+    PARENTHESISED_TEXT_MISSING: {
+      steps: [
+        'Find the component the report names and read its visible text, including the part in parentheses.',
+        'With a screen reader, or the browser’s accessibility inspector, read its accessible name.',
+        'Check whether the name leaves out the text in parentheses, and whether that text is part of the label people see and would say.'
+      ],
+      passWhen:
+        'The text in parentheses is a side note (a count, a unit) rather than part of the label, and the name contains the rest of the visible text.',
+      failWhen:
+        'The name leaves out text that is part of the visible label, which fails RGAA 7.1.3.'
+    }
+  }
 };
 
 function runInPage(ctx) {

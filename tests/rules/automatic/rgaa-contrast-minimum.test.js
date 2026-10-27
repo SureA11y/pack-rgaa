@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-contrast-minimum';
 const WCAG_RULE = 'contrast-minimum';
@@ -117,32 +117,32 @@ test(`${RULE_ID}: the RGAA profile, the rgaa tag and the 3.2 rollup id run it`, 
 
 // The divergence: bold text from 18.5px to 14pt (about 18.67px) with a ratio
 // between 3:1 and 4.5:1.
-test(`${RULE_ID}: WCAG 1.4.3 fails 18.5px bold text at 3.54:1 while RGAA 3.2 passes it`, () => {
+test(`${RULE_ID}: WCAG 1.4.3 fails 18.5px bold text at 3.54:1 while RGAA 3.2 does not`, () => {
   const result = runa11yCoreOnHtml(page(`font-size:18.5px;font-weight:700;${GREY}`), RGAA);
   assert.equal(check(result, WCAG_RULE).outcome, 'fail');
   assert.equal(check(result, RULE_ID).outcome, 'pass');
-  assert.equal(rollup(result, 'wcag-1.4.3-contrast-minimum').outcome, 'fail');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-1.4.3-contrast-minimum')), 'fail');
   const rgaa = rollup(result, 'rgaa-4.1.2-3.2');
-  assert.equal(rgaa.outcome, 'pass');
+  assert.equal(rollupOutcome(rgaa), 'passedInPart');
   assert.ok(!rgaa.data.details.checksIds.includes(WCAG_RULE));
   assert.ok(rgaa.data.details.checksIds.includes(RULE_ID));
 });
 
 test(`${RULE_ID}: WCAG 1.4.3 and RGAA 3.2 agree outside the 18.5px band`, () => {
   for (const [style, outcome] of [
-    [`font-size:18.67px;font-weight:700;${GREY}`, 'pass'],
+    [`font-size:18.67px;font-weight:700;${GREY}`, 'passedInPart'],
     [`font-size:16px;${GREY}`, 'fail'],
     [`font-size:18.5px;font-weight:700;${LIGHT}`, 'fail']
   ]) {
     const result = runa11yCoreOnHtml(page(style), RGAA);
-    assert.equal(rollup(result, 'wcag-1.4.3-contrast-minimum').outcome, outcome, style);
-    assert.equal(rollup(result, 'rgaa-4.1.2-3.2').outcome, outcome, style);
+    assert.equal(rollupOutcome(rollup(result, 'wcag-1.4.3-contrast-minimum')), outcome, style);
+    assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-3.2')), outcome, style);
   }
 });
 
 // contrast-minimum is unchanged: running the RGAA rule beside it, in either
 // order and under any profile, leaves its result as it was. The two share the
-// colour caches but not the font or result caches. Core's variant test checks
+// color caches but not the font or result caches. Core's variant test checks
 // the same over contrast-minimum's own scenario page.
 // RGAA 3.2's particular cases: « Le texte fait partie d'un logo ou d'un nom
 // de marque d'un organisme ou d'une société ». Whether it does is found by a
@@ -163,7 +163,7 @@ test(`${RULE_ID}: text that looks like part of a logo is asked about, not failed
   // WCAG's rule still fails it, with a hint that logo text is exempt.
   const result = runa11yCoreOnHtml(logo(`font-size:16px;${LIGHT}`), RGAA);
   assert.equal(check(result, WCAG_RULE).outcome, 'fail');
-  assert.equal(rollup(result, 'rgaa-4.1.2-3.2').outcome, 'cantTell');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-3.2')), 'cantTell');
 
   // Grey text that is not a logo still fails.
   assertRule(runa11yCoreOnHtml(page(`font-size:16px;${LIGHT}`), RUN), RULE_ID, 'fail');

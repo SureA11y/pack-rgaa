@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 const { RGAA_RULE_TESTS } = require('../../../rule-map.js');
 
 const RULE_ID = 'rgaa-data-table-headers-review';
@@ -119,25 +119,25 @@ test(`${RULE_ID}: the map links it to 5.3.1, 5.6.1 and 5.6.2`, () => {
   assert.deepEqual(RGAA_RULE_TESTS['4.1.2'][RULE_ID].tests, ['5.3.1', '5.6.1', '5.6.2']);
 });
 
-// A large table with no headers fails WCAG 1.3.1 through td-has-header, which
-// does not link 5.6; RGAA 5.6 asks, since only a person can say the table is a
-// data table.
-test(`${RULE_ID}: WCAG 1.3.1 fails a large headerless table, RGAA 5.6 asks`, () => {
+// A large table with no headers: td-has-header, which does not link 5.6, asks
+// once under WCAG 1.3.1 whether it holds data (F46); RGAA 5.6 asks the same,
+// since only a person can say the table is a data table.
+test(`${RULE_ID}: WCAG 1.3.1 and RGAA 5.6 both ask about a large headerless table`, () => {
   const result = runa11yCoreOnHtml(page(`<table>${rows(4, 4)}</table>`), {
     engineOptions: { profile: 'rgaa-4.1.2-with-wcag' }
   });
-  const outcome = (id) => (result.rulesResults.find((r) => r.ruleId === id) || {}).outcome;
-  assert.equal(outcome('wcag-1.3.1-info-and-relationships'), 'fail');
+  const outcome = (id) => rollupOutcome(result.rulesResults.find((r) => r.ruleId === id));
+  assert.equal(outcome('wcag-1.3.1-info-and-relationships'), 'cantTell');
   assert.equal(outcome('rgaa-4.1.2-5.6'), 'cantTell');
 });
 
-test(`${RULE_ID}: RGAA 5.6 is not applicable when every table has header cells`, () => {
+test(`${RULE_ID}: RGAA 5.6 finds nothing to ask when every table has header cells`, () => {
   const body = '<table><tr><th>Name</th><th>Age</th></tr><tr><td>Ann</td><td>34</td></tr></table>';
   const result = runa11yCoreOnHtml(page(body), {
     engineOptions: { profile: 'rgaa-4.1.2-with-wcag' }
   });
   const r = result.rulesResults.find((x) => x.ruleId === 'rgaa-4.1.2-5.6');
-  assert.equal(r ? r.outcome : 'notApplicable', 'notApplicable');
+  assert.equal(r ? rollupOutcome(r) : 'noneFoundInPart', 'noneFoundInPart');
 });
 
 test(`${RULE_ID}: i18n default is English, French under the fr locale`, () => {

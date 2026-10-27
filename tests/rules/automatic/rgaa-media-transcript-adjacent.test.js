@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-media-transcript-adjacent';
 const WCAG_RULE = 'media-alternative-transcript-evidence';
@@ -175,14 +175,14 @@ test(`${RULE_ID}: a distant aria-describedby transcript satisfies WCAG 1.2.1, RG
 test(`${RULE_ID}: an adjacent link to an external transcript passes RGAA 4.1, WCAG 1.2.1 asks`, () => {
   const html = page('<audio controls src="a.mp3"></audio><a href="/t">Transcription</a>');
   const result = runa11yCoreOnHtml(html, RGAA);
-  assert.equal(rollup(result, WCAG_ROLLUP).outcome, 'cantTell');
-  assert.equal(rollup(result, 'rgaa-4.1.2-4.1').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup(result, WCAG_ROLLUP)), 'cantTell');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-4.1')), 'passedInPart');
 });
 
 test(`${RULE_ID}: WCAG 1.2.1 and RGAA 4.1 agree on media with no transcript at all`, () => {
   const result = runa11yCoreOnHtml(page('<video controls src="v.mp4"></video>'), RGAA);
-  assert.equal(rollup(result, WCAG_ROLLUP).outcome, 'cantTell');
-  assert.equal(rollup(result, 'rgaa-4.1.2-4.1').outcome, 'cantTell');
+  assert.equal(rollupOutcome(rollup(result, WCAG_ROLLUP)), 'cantTell');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-4.1')), 'cantTell');
 });
 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html)`, () => {

@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-markup-validation-review';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -81,9 +81,9 @@ test(`${RULE_ID}: the RGAA profile, the rgaa tag and the 8.2 rollup id run it`, 
 test(`${RULE_ID}: without a validator report, 8.2 never rolls up to pass, and a sure failure still fails it`, () => {
   const clean = runa11yCoreOnHtml(page('<p id="a">a</p><p id="b">b</p>'), RGAA);
   assert.equal(check(clean, 'duplicate-id').outcome, 'pass');
-  assert.equal(rollup(clean, 'rgaa-4.1.2-8.2').outcome, 'cantTell');
+  assert.equal(rollupOutcome(rollup(clean, 'rgaa-4.1.2-8.2')), 'cantTell');
   const dup = runa11yCoreOnHtml(page('<p id="a">a</p><p id="a">b</p>'), RGAA);
-  assert.equal(rollup(dup, 'rgaa-4.1.2-8.2').outcome, 'fail');
+  assert.equal(rollupOutcome(rollup(dup, 'rgaa-4.1.2-8.2')), 'fail');
 });
 
 // After this change 8.2.1 is reported by duplicate-id and the RGAA-only
@@ -252,7 +252,7 @@ test(`${RULE_ID}: messages follow the scan locale, with the validator's own mess
   );
 });
 
-test(`${RULE_ID}: with a clean report on the generated source, RGAA 8.2 can pass`, () => {
+test(`${RULE_ID}: with a clean report on the generated source, every RGAA 8.2 rule passes`, () => {
   const result = runa11yCoreOnHtml(page('<p>Text</p>'), {
     url: URL,
     engineOptions: {
@@ -261,5 +261,5 @@ test(`${RULE_ID}: with a clean report on the generated source, RGAA 8.2 can pass
     }
   });
   assert.equal(check(result, RULE_ID).outcome, 'pass');
-  assert.equal(rollup(result, 'rgaa-4.1.2-8.2').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-8.2')), 'passedInPart');
 });

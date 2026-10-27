@@ -83,9 +83,38 @@ const meta = {
   type: 'automatic',
   defaultConfidence: 'high',
   coverage: {},
-  // Reason codes built at runtime, so not found by reading the source: the
-  // finding identities a baseline holds include them.
-  reasonCodes: ['dlText', 'listText', 'otherDoctype']
+  // The reason codes the rule gives, so definePack can check that `review`
+  // names only these.
+  reasonCodes: [
+    'listChild',
+    'listText',
+    'listItemParent',
+    'dlChild',
+    'dlText',
+    'dlGroupOrder',
+    'dlMixedGroups',
+    'dlItemParent',
+    'interactiveDescendant',
+    'tabindexDescendant',
+    'ismapOutsideLink',
+    'extraMain',
+    'otherDoctype'
+  ],
+  // How a person answers each question the rule asks, per reason code: a few
+  // steps from the element the finding names, then what they see if it
+  // passes and if it fails. In English; reports show it as "How to check".
+  review: {
+    otherDoctype: {
+      steps: [
+        'Find the doctype at the top of the page source: it is neither the HTML5 one nor missing, so the HTML5 nesting rules this check applies do not hold.',
+        'Check the page with the W3C validator (Nu HTML Checker) on its generated source, against the document type it declares.',
+        'Read the errors about how elements are nested, opened and closed.'
+      ],
+      passWhen: 'The validator reports no nesting error for the declared document type.',
+      failWhen:
+        'The validator reports an element nested where the declared document type does not allow it, which fails RGAA 8.2.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

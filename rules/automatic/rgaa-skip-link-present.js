@@ -69,7 +69,61 @@ const meta = {
   category: 'operable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: [
+    'mainNotFound',
+    'skipLinkTargetMissing',
+    'skipLinkTargetNotMain',
+    'skipLinkTargetHidden',
+    'noSkipLink',
+    'noNavigationBeforeMain'
+  ],
+  review: {
+    mainNotFound: {
+      steps: [
+        'Open the page and find its main content: the part that changes from one page of the site to the next.',
+        'Look before it for a link such as "Skip to content" or "Aller au contenu", or a quick-access menu, and press Tab from the top of the page to reach it.',
+        'Activate the link and check that reading and keyboard focus move to the start of the main content.'
+      ],
+      passWhen:
+        'A link before the main content takes reading and focus to its start, or the site is a single page with no navigation to skip.',
+      failWhen:
+        'Nothing lets a keyboard user skip to the main content, which fails RGAA 12.7.1; mark the main content with <main> so the link can point to it.'
+    },
+    skipLinkTargetNotMain: {
+      steps: [
+        'Find the skip link the report names, and press Tab from the top of the page to reach it.',
+        'Activate it with Enter.',
+        'Press Tab once more and check where focus goes: the first link or control of the main content, or something before it.'
+      ],
+      passWhen:
+        'Activating the link takes reading and keyboard focus to the start of the main content; what lies between the target and <main> is not part of the repeated blocks.',
+      failWhen:
+        'The link leads to a place before the main content, so keyboard users still go through other links or controls, which fails RGAA 12.7.1.'
+    },
+    skipLinkTargetHidden: {
+      steps: [
+        'Find the skip link the report names, and press Tab from the top of the page to reach it.',
+        'Activate it with Enter, then press Tab once more.',
+        'Check that focus moves into the main content, and that the element the link points to is shown at that moment.'
+      ],
+      passWhen:
+        'The target is shown when the link is used (for instance a script reveals it) and focus moves to the start of the main content.',
+      failWhen:
+        'The link points to a hidden element, so activating it does not move to the main content, which fails RGAA 12.7.1.'
+    },
+    noNavigationBeforeMain: {
+      steps: [
+        'Open the page and look at what comes before its main content: a header, a menu, a search form.',
+        'Press Tab from the top of the page and count the links and controls you go through before reaching the main content.',
+        'Check whether the site has other pages with the same header or menu.'
+      ],
+      passWhen:
+        'The site is a single page, or nothing repeated comes before the main content, so no skip link is needed (the particular case of RGAA 12.7).',
+      failWhen:
+        'Repeated content, such as a header or a menu not marked as navigation, comes before the main content with no link to skip it, which fails RGAA 12.7.1.'
+    }
+  }
 };
 
 // Not applicable while a modal dialog is open either: the rest of the page

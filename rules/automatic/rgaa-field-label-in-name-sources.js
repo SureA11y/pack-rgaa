@@ -58,7 +58,49 @@ const meta = {
   category: 'operable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: [
+    'NAME_LACKS_VISIBLE_LABEL',
+    'SOURCE_LACKS_VISIBLE_LABEL',
+    'POSSIBLE_SYMBOL',
+    'POSSIBLE_ABBREVIATION',
+    'PARENTHESISED_TEXT_MISSING'
+  ],
+  review: {
+    POSSIBLE_SYMBOL: {
+      steps: [
+        'Find the form field the report names, and read its visible label on screen.',
+        'Inspect the field and note each label source it has: aria-label, the text aria-labelledby points to, title, and the content of its <label>.',
+        'Decide whether the visible label is a symbol (an icon glyph, "X" for close, ">" for next) or literal text.'
+      ],
+      passWhen:
+        'The visible label is a symbol, and each source says what the symbol means, which the particular cases of RGAA 11.2 accept.',
+      failWhen:
+        'The visible label is literal text that a source does not contain, which fails RGAA 11.2.5.'
+    },
+    POSSIBLE_ABBREVIATION: {
+      steps: [
+        'Find the form field the report names, and read its visible label on screen.',
+        'Inspect each label source it has: aria-label, the text aria-labelledby points to, title, and the content of its <label>.',
+        'Compare the source with the visible label: they differ only by an abbreviation (such as "N°" and "Numéro").'
+      ],
+      passWhen:
+        'The source contains the visible label as a speech-input user would say it, the abbreviation aside.',
+      failWhen:
+        'The source does not contain the visible label: RGAA excuses only punctuation and capital letters, so the field fails RGAA 11.2.5.'
+    },
+    PARENTHESISED_TEXT_MISSING: {
+      steps: [
+        'Find the form field the report names, and read its visible label on screen, including any text in parentheses.',
+        'Inspect each label source it has: aria-label, the text aria-labelledby points to, title, and the content of its <label>.',
+        'Check whether the source leaves out the text in parentheses, and whether that text is part of the label a user would say.'
+      ],
+      passWhen:
+        'The source contains the visible label, the text in parentheses being only a note (such as "(optional)") that does not name the field.',
+      failWhen:
+        'The source leaves out words of the visible label that a user would say to reach the field, which fails RGAA 11.2.5.'
+    }
+  }
 };
 
 function runInPage(ctx) {

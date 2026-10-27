@@ -47,7 +47,20 @@ const meta = {
   category: 'understandable',
   type: 'manual',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['radiosNotGrouped'],
+  review: {
+    radiosNotGrouped: {
+      steps: [
+        'Find the radio buttons the report names, which share one name.',
+        'Read their labels and decide whether each one is understood on its own, or only with the question they answer.',
+        'If they need the question, check that a <fieldset> with a <legend>, or an element with role="group" or role="radiogroup", holds them all.'
+      ],
+      passWhen: 'Each radio button’s label is clear on its own, so the set needs no grouping.',
+      failWhen:
+        'The radio buttons answer one question that only their layout shows, and nothing groups them, which fails RGAA 11.5.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

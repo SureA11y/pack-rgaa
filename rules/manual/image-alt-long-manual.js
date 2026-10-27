@@ -47,7 +47,21 @@ const meta = {
   category: 'perceivable',
   type: 'manual',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['longAlternative'],
+  review: {
+    longAlternative: {
+      steps: [
+        'Find the image the report names, and read each text alternative it lists.',
+        'Look at the image and decide what information it carries.',
+        'Check whether the alternative is short and concise, or a detailed description that belongs in a separate long description.'
+      ],
+      passWhen:
+        'The alternative is as short as the information allows, or the image is one of RGAA 1.3’s particular cases.',
+      failWhen:
+        'The alternative is a long description in place of a short text, which fails RGAA 1.3.9.'
+    }
+  }
 };
 
 function runInPage(ctx) {

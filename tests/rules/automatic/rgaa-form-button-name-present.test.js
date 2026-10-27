@@ -7,7 +7,7 @@ const path = require('node:path');
 
 const { RGAA_RULE_TESTS } = require('../../../rule-map.js');
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-form-button-name-present';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -165,7 +165,7 @@ function rollups(body) {
   });
   const outcome = (id) => {
     const r = result.rulesResults.find((x) => x.ruleId === id);
-    return r ? r.outcome : 'missing';
+    return r ? rollupOutcome(r) : 'missing';
   };
   return { rgaa: outcome('rgaa-4.1.2-11.9'), wcag: outcome('wcag-4.1.2-name'), result };
 }
@@ -173,7 +173,7 @@ function rollups(body) {
 test(`${RULE_ID}: WCAG fails an unnamed button outside a form, RGAA 11.9 does not apply`, () => {
   const r = rollups('<button onclick="void 0"></button>');
   assert.equal(r.wcag, 'fail');
-  assert.equal(r.rgaa, 'notApplicable');
+  assert.equal(r.rgaa, 'noneFoundInPart');
   const rgaa = r.result.rulesResults.find((x) => x.ruleId === 'rgaa-4.1.2-11.9');
   assert.ok(!rgaa.data.details.checksIds.includes('button-name-present'));
 });
@@ -183,8 +183,8 @@ test(`${RULE_ID}: WCAG and RGAA agree on an unnamed button in a form and on a na
   assert.equal(bad.wcag, 'fail');
   assert.equal(bad.rgaa, 'fail');
   const good = rollups('<div role="form" aria-label="Connexion"><button>OK</button></div>');
-  assert.equal(good.wcag, 'pass');
-  assert.equal(good.rgaa, 'pass');
+  assert.equal(good.wcag, 'passedInPart');
+  assert.equal(good.rgaa, 'passedInPart');
 });
 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-form-button-name-present-all-scenarios.html)`, () => {

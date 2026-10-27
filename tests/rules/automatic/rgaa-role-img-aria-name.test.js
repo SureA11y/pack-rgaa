@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-role-img-aria-name';
 const WCAG_RULE = 'role-img-text-alternative-present';
@@ -93,7 +93,7 @@ function verdicts(body) {
   const html = page(body);
   const rgaa = runa11yCoreOnHtml(html, { engineOptions: { profile: 'rgaa-4.1.2-with-wcag' } });
   const wcag = runa11yCoreOnHtml(html, { engineOptions: { profile: 'wcag22-aa' } });
-  const rollup = (r, id) => (r.rulesResults.find((x) => x.ruleId === id) || {}).outcome;
+  const rollup = (r, id) => rollupOutcome(r.rulesResults.find((x) => x.ruleId === id));
   const check = (r, id) => (r.checksResults.find((x) => x.ruleId === id) || {}).outcome;
   assert.equal(rollup(rgaa, WCAG_ROLLUP), rollup(wcag, WCAG_ROLLUP), body);
   assert.equal(check(rgaa, WCAG_RULE), check(wcag, WCAG_RULE), body);
@@ -112,7 +112,7 @@ test(`${RULE_ID}: RGAA profile, a title-only name: WCAG passes, RGAA 1.1 fails`,
     rule: 'fail',
     rgaa: 'fail',
     wcagRule: 'pass',
-    wcag: 'pass'
+    wcag: 'passedInPart'
   });
 });
 
@@ -133,9 +133,9 @@ test(`${RULE_ID}: RGAA profile, the two standards agree on no name and on aria-l
   });
   assert.deepEqual(verdicts('<div role="img" aria-label="Graphique"></div>'), {
     rule: 'pass',
-    rgaa: 'pass',
+    rgaa: 'passedInPart',
     wcagRule: 'pass',
-    wcag: 'pass'
+    wcag: 'passedInPart'
   });
 });
 

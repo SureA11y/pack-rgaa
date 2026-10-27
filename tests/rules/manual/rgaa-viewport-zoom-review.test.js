@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-viewport-zoom-review';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -110,14 +110,14 @@ test(`${RULE_ID}: the RGAA profile, the rgaa tag and the 10.4 rollup id run it`,
 // the same run keeps meta-viewport-zoom-enabled's failure.
 test(`${RULE_ID}: WCAG 1.4.4 fails user-scalable=no while RGAA 10.4 only asks`, () => {
   const result = runa11yCoreOnHtml(page('width=device-width, user-scalable=no'), RGAA);
-  assert.equal(rollup(result, 'wcag-1.4.4-resize-text').outcome, 'fail');
-  assert.equal(rollup(result, 'rgaa-4.1.2-10.4').outcome, 'cantTell');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-1.4.4-resize-text')), 'fail');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-10.4')), 'cantTell');
   assert.deepEqual(rollup(result, 'rgaa-4.1.2-10.4').data.details.checksIds, [RULE_ID]);
 });
 
 test(`${RULE_ID}: WCAG 1.4.4 and RGAA 10.4 agree when zoom is not restricted`, () => {
   const result = runa11yCoreOnHtml(page('width=device-width, maximum-scale=5'), RGAA);
-  assert.equal(rollup(result, 'wcag-1.4.4-resize-text').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-1.4.4-resize-text')), 'passedInPart');
   const rgaa = rollup(result, 'rgaa-4.1.2-10.4');
   assert.ok(!rgaa || rgaa.outcome !== 'fail');
   const checks = result.checksResults.filter((r) =>

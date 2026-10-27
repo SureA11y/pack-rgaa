@@ -7,7 +7,7 @@ const path = require('node:path');
 
 const { RGAA_RULE_TESTS } = require('../../../rule-map.js');
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-form-button-label-in-name-sources';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -140,7 +140,7 @@ function rollups(body) {
   });
   const outcome = (ruleId) => {
     const r = result.rulesResults.find((x) => x.ruleId === ruleId);
-    return r ? r.outcome : 'missing';
+    return r ? rollupOutcome(r) : 'missing';
   };
   return {
     rgaa: outcome('rgaa-4.1.2-11.9'),
@@ -153,9 +153,9 @@ function rollups(body) {
 test(`${RULE_ID}: WCAG fails a replaced name outside a form, RGAA 11.9 does not apply and no other RGAA test gets it`, () => {
   const r = rollups('<button aria-label="Fermer la fenêtre">Valider</button>');
   assert.equal(r.wcag, 'fail');
-  assert.equal(r.rgaa, 'notApplicable');
+  assert.equal(r.rgaa, 'noneFoundInPart');
   // 7.1 now judges the button's name (rgaa-button-name-present), which it has.
-  assert.deepEqual(r.others, ['notApplicable', 'notApplicable', 'pass']);
+  assert.deepEqual(r.others, ['noneFoundInPart', 'noneFoundInPart', 'passedInPart']);
 });
 
 test(`${RULE_ID}: a title without the label is outside WCAG 2.5.3, RGAA 11.9 asks`, () => {
@@ -168,10 +168,10 @@ test(`${RULE_ID}: WCAG and RGAA agree on a replaced name in a form, reported und
   const bad = rollups('<form><button aria-label="Fermer la fenêtre">Valider</button></form>');
   assert.equal(bad.wcag, 'fail');
   assert.equal(bad.rgaa, 'fail');
-  assert.deepEqual(bad.others, ['notApplicable', 'notApplicable', 'notApplicable']);
+  assert.deepEqual(bad.others, ['noneFoundInPart', 'noneFoundInPart', 'noneFoundInPart']);
   const good = rollups('<form><button aria-label="Valider la commande">Valider</button></form>');
-  assert.equal(good.wcag, 'pass');
-  assert.equal(good.rgaa, 'pass');
+  assert.equal(good.wcag, 'passedInPart');
+  assert.equal(good.rgaa, 'passedInPart');
 });
 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-form-button-label-in-name-sources-all-scenarios.html)`, () => {

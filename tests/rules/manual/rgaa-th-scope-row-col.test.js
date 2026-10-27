@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-th-scope-row-col';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -110,14 +110,16 @@ test(`${RULE_ID}: occurrences carry RGAA 5.7.2 and 5.7.3`, () => {
 // and col on a header over a whole row or column, and no scope otherwise.
 test(`${RULE_ID}: RGAA 5.7 asks about a group scope that WCAG 1.3.1 passes in the same run`, () => {
   const result = runa11yCoreOnHtml(page(GROUP_TABLE), RGAA);
-  assert.equal(rollup(result, 'rgaa-4.1.2-5.7').outcome, 'cantTell');
-  assert.equal(rollup(result, 'wcag-1.3.1-info-and-relationships').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-5.7')), 'cantTell');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-1.3.1-info-and-relationships')), 'passedInPart');
 });
 
 test(`${RULE_ID}: RGAA 5.7 and WCAG 1.3.1 find nothing wrong with scope="col"`, () => {
   const result = runa11yCoreOnHtml(page(COL_TABLE), RGAA);
-  assert.ok(['pass', 'notApplicable'].includes(rollup(result, 'rgaa-4.1.2-5.7').outcome));
-  assert.equal(rollup(result, 'wcag-1.3.1-info-and-relationships').outcome, 'pass');
+  assert.ok(
+    ['passedInPart', 'noneFoundInPart'].includes(rollupOutcome(rollup(result, 'rgaa-4.1.2-5.7')))
+  );
+  assert.equal(rollupOutcome(rollup(result, 'wcag-1.3.1-info-and-relationships')), 'passedInPart');
 });
 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html)`, () => {

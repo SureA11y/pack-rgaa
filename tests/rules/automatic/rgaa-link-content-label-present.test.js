@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-link-content-label-present';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -149,7 +149,7 @@ test(`${RULE_ID}: an aria-label-only link fails 6.2 under RGAA while WCAG 2.4.4 
     '<main><h1>T</h1><a href="/" aria-label="Accueil"><svg aria-hidden="true"></svg></a></main>'
   );
   assert.equal(rule('link-name-present').outcome, 'pass');
-  assert.equal(rollup('wcag-2.4.4-').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup('wcag-2.4.4-')), 'passedInPart');
   const rgaa62 = rollup('rgaa-4.1.2-6.2');
   assert.equal(rgaa62.outcome, 'fail');
   assert.deepEqual(rgaa62.data.details.checksIds, [RULE_ID]);
@@ -161,22 +161,22 @@ test(`${RULE_ID}: an unnamed area fails WCAG 2.4.4 and RGAA 1.1, not RGAA 6.2`, 
     '<img src="m.png" alt="Plan" usemap="#m"><map name="m"><area href="/a" shape="rect" coords="0,0,1,1"></map><main><h1>T</h1></main>'
   );
   assert.equal(rule('link-name-present').outcome, 'fail');
-  assert.equal(rollup('wcag-2.4.4-').outcome, 'fail');
-  assert.equal(rollup('rgaa-4.1.2-6.2').outcome, 'notApplicable');
-  assert.equal(rollup('rgaa-4.1.2-1.1').outcome, 'fail');
+  assert.equal(rollupOutcome(rollup('wcag-2.4.4-')), 'fail');
+  assert.equal(rollupOutcome(rollup('rgaa-4.1.2-6.2')), 'noneFoundInPart');
+  assert.equal(rollupOutcome(rollup('rgaa-4.1.2-1.1')), 'fail');
   assert.deepEqual(rule('link-name-present').rollupIds, [
     'wcag-2.4.4-link-purpose-in-context',
     'wcag-4.1.2-name'
   ]);
 });
 
-test(`${RULE_ID}: both fail an empty link and both pass a text link`, () => {
+test(`${RULE_ID}: both fail an empty link and neither fails a text link`, () => {
   const empty = rgaaRun('<main><h1>T</h1><a href="/"></a></main>');
-  assert.equal(empty.rollup('wcag-2.4.4-').outcome, 'fail');
-  assert.equal(empty.rollup('rgaa-4.1.2-6.2').outcome, 'fail');
+  assert.equal(rollupOutcome(empty.rollup('wcag-2.4.4-')), 'fail');
+  assert.equal(rollupOutcome(empty.rollup('rgaa-4.1.2-6.2')), 'fail');
   const text = rgaaRun('<main><h1>T</h1><a href="/">Accueil</a></main>');
-  assert.equal(text.rollup('wcag-2.4.4-').outcome, 'pass');
-  assert.equal(text.rollup('rgaa-4.1.2-6.2').outcome, 'pass');
+  assert.equal(rollupOutcome(text.rollup('wcag-2.4.4-')), 'passedInPart');
+  assert.equal(rollupOutcome(text.rollup('rgaa-4.1.2-6.2')), 'passedInPart');
 });
 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-link-content-label-present-all-scenarios.html)`, () => {

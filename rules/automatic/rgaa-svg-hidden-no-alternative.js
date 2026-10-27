@@ -44,7 +44,8 @@ const meta = {
   category: 'perceivable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['hiddenSvgHasAlternative']
 };
 
 function runInPage(ctx) {

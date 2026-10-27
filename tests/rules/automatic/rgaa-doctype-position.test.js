@@ -7,7 +7,7 @@ const path = require('node:path');
 
 const { RGAA_RULE_TESTS } = require('../../../rule-map.js');
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-doctype-position';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -92,7 +92,10 @@ test(`${RULE_ID}: under the RGAA profile, the late doctype fails 8.1.3 and not 8
   const check = (id) => result.checksResults.find((r) => r.ruleId === id).outcome;
   assert.equal(check(RULE_ID), 'fail');
   assert.equal(check('rgaa-doctype-present'), 'pass');
-  assert.equal(result.rulesResults.find((r) => r.ruleId === 'rgaa-4.1.2-8.1').outcome, 'fail');
+  assert.equal(
+    rollupOutcome(result.rulesResults.find((r) => r.ruleId === 'rgaa-4.1.2-8.1')),
+    'fail'
+  );
   assert.deepEqual(RGAA_RULE_TESTS['4.1.2'][RULE_ID].tests, ['8.1.3']);
 });
 

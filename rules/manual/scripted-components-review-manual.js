@@ -81,7 +81,84 @@ const meta = {
   category: 'robust',
   type: 'manual',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  reasonCodes: [
+    'pageReview',
+    'widgetRole',
+    'focusableNonNative',
+    'inlineHandler',
+    'contentEditable',
+    'stateAttribute'
+  ],
+  review: {
+    pageReview: {
+      steps: [
+        'List the components the page builds or controls with script: menus, tabs, carousels, dialogs, accordions, custom form fields.',
+        'For each, check with a screen reader that its name, role, value and state are announced, and that a change of state is announced when it happens.',
+        'Check that its name is relevant and contains its visible label, and that its role matches what it does.',
+        'Where a component falls short, look for an accessible alternative on the page giving the same function.'
+      ],
+      passWhen:
+        'Every scripted component exposes its name, role, value and state changes, is rendered correctly by assistive technologies and has a relevant name and role, or has an accessible alternative.',
+      failWhen:
+        'A scripted component is not rendered correctly by assistive technologies, with no accessible alternative, which fails RGAA 7.1.1, 7.1.2 or 7.1.3.'
+    },
+    widgetRole: {
+      steps: [
+        'Find the element the report names, which has an ARIA widget role.',
+        'Use it with the keyboard and a screen reader: listen to its name, role and state, and operate it.',
+        'Check that the role matches what it does, and that changes of its state are announced.'
+      ],
+      passWhen:
+        'The component announces a relevant name, the right role and its state, and works with the screen reader.',
+      failWhen:
+        'The role, name or state is wrong or missing, or the screen reader cannot operate it, which fails RGAA 7.1.1, 7.1.2 or 7.1.3.'
+    },
+    focusableNonNative: {
+      steps: [
+        'Find the element the report names, which takes keyboard focus although it is not a link or a form control.',
+        'Press Tab to reach it and listen with a screen reader to what is announced.',
+        'Check what it does, and that its name and role say so.'
+      ],
+      passWhen:
+        'The element is a component with a relevant name and role, or is only a focus target such as a scrolling region with a name.',
+      failWhen:
+        'The element acts as a component but announces no role or name, or the wrong ones, which fails RGAA 7.1.1 or 7.1.3.'
+    },
+    inlineHandler: {
+      steps: [
+        'Find the element the report names, which has an event handler although it is not a link or a form control.',
+        'Use it with the mouse and note what it does.',
+        'With a screen reader, check that what it does is announced: a name, a role such as button, and any state.'
+      ],
+      passWhen:
+        'The handler adds no function of its own (tracking, delegation to a native control), or the element announces a relevant name, role and state.',
+      failWhen:
+        'The element acts as a control but assistive technologies are not told what it is, which fails RGAA 7.1.1 or 7.1.3.'
+    },
+    contentEditable: {
+      steps: [
+        'Find the editable element the report names.',
+        'Reach it with Tab and listen with a screen reader to what is announced.',
+        'Check that it is announced as an editable field with a name that says what to type, and that typed text is read back.'
+      ],
+      passWhen:
+        'The editable area announces its role and a relevant name, and works with the screen reader.',
+      failWhen:
+        'The editable area has no name or is not rendered as an editable field, which fails RGAA 7.1.1, 7.1.2 or 7.1.3.'
+    },
+    stateAttribute: {
+      steps: [
+        'Find the element the report names, which says it controls content (aria-expanded, aria-pressed, aria-haspopup or aria-controls).',
+        'Operate it with the keyboard and a screen reader.',
+        'Check that its state is announced, and that the state it announces changes to match what the page shows.'
+      ],
+      passWhen:
+        'The announced state follows what happens on the page (expanded when the content shows, pressed when on).',
+      failWhen:
+        'The state is not announced, or contradicts what the page shows, which fails RGAA 7.1.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

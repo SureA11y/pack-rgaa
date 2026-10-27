@@ -53,7 +53,32 @@ const meta = {
   category: 'perceivable',
   type: 'automatic',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['liWithoutListitemRole', 'childWithoutListitemRole'],
+  review: {
+    liWithoutListitemRole: {
+      steps: [
+        'Find the role="list" element the report names, and look at it on screen.',
+        'Decide whether its items read as a list: grouped visually one after another, with bullets, numbers or a clear common layout.',
+        'Inspect its children: they are <li> elements, but without role="listitem".'
+      ],
+      passWhen:
+        'The content is not presented as a list, so 9.3 does not apply to it; or each item is given role="listitem".',
+      failWhen:
+        'The content reads as a list, but its <li> items have no role="listitem" under a role="list" container (nor a <ul> or <ol>), which fails RGAA 9.3.1 (unordered) or 9.3.2 (ordered).'
+    },
+    childWithoutListitemRole: {
+      steps: [
+        'Find the role="list" element the report names, and look at it on screen.',
+        'Decide whether its items read as a list, and whether their order matters (ordered) or not (unordered).',
+        'Inspect its children: some are neither <li> nor role="listitem".'
+      ],
+      passWhen:
+        'The content is not presented as a list, so 9.3 does not apply to it; or each item is given role="listitem".',
+      failWhen:
+        'The content reads as a list, but its items are not structured with role="listitem" (nor with <ul> or <ol> and <li>), which fails RGAA 9.3.1 (unordered) or 9.3.2 (ordered).'
+    }
+  }
 };
 
 function runInPage(ctx) {

@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-listbox-option-groups-absent';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -100,15 +100,15 @@ test(`${RULE_ID}: the RGAA profile, the rgaa tag and the 11.8 rollup id run it`,
 // not accept ARIA option groups.
 test(`${RULE_ID}: RGAA 11.8 fails grouped ARIA options that WCAG 1.3.1 and 4.1.2 pass in the same run`, () => {
   const result = runa11yCoreOnHtml(page(GROUPED), RGAA);
-  assert.equal(rollup(result, 'rgaa-4.1.2-11.8').outcome, 'fail');
-  assert.equal(rollup(result, 'wcag-1.3.1-info-and-relationships').outcome, 'pass');
-  assert.equal(rollup(result, 'wcag-4.1.2-name').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-11.8')), 'fail');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-1.3.1-info-and-relationships')), 'passedInPart');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-4.1.2-name')), 'passedInPart');
 });
 
 test(`${RULE_ID}: RGAA 11.8 and WCAG 1.3.1 agree on a listbox without groups`, () => {
   const result = runa11yCoreOnHtml(page(FLAT), RGAA);
-  assert.equal(rollup(result, 'rgaa-4.1.2-11.8').outcome, 'pass');
-  assert.equal(rollup(result, 'wcag-1.3.1-info-and-relationships').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-11.8')), 'passedInPart');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-1.3.1-info-and-relationships')), 'passedInPart');
 });
 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html)`, () => {

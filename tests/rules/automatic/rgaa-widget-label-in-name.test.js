@@ -7,7 +7,7 @@ const path = require('node:path');
 
 const { RGAA_RULE_TESTS } = require('../../../rule-map.js');
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-widget-label-in-name';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -115,7 +115,7 @@ function rollups(body) {
   });
   const outcome = (ruleId) => {
     const r = result.rulesResults.find((x) => x.ruleId === ruleId);
-    return r ? r.outcome : 'missing';
+    return r ? rollupOutcome(r) : 'missing';
   };
   return {
     rgaa: outcome('rgaa-4.1.2-7.1'),
@@ -128,16 +128,16 @@ test(`${RULE_ID}: WCAG and RGAA agree on a replaced tab name, reported under 7.1
   const bad = rollups(TAB('aria-label="Réglages"', 'Paramètres'));
   assert.equal(bad.wcag, 'fail');
   assert.equal(bad.rgaa, 'fail');
-  assert.deepEqual(bad.others, ['notApplicable', 'notApplicable', 'notApplicable']);
+  assert.deepEqual(bad.others, ['noneFoundInPart', 'noneFoundInPart', 'noneFoundInPart']);
   const good = rollups(TAB('aria-label="Paramètres avancés"', 'Paramètres'));
-  assert.equal(good.wcag, 'pass');
-  assert.equal(good.rgaa, 'pass');
+  assert.equal(good.wcag, 'passedInPart');
+  assert.equal(good.rgaa, 'passedInPart');
 });
 
 test(`${RULE_ID}: WCAG asks about a hyphenation difference, RGAA ignores punctuation and passes`, () => {
   const r = rollups(TAB('aria-label="Email"', 'E-mail'));
   assert.equal(r.wcag, 'cantTell');
-  assert.equal(r.rgaa, 'pass');
+  assert.equal(r.rgaa, 'passedInPart');
 });
 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-widget-label-in-name-all-scenarios.html)`, () => {

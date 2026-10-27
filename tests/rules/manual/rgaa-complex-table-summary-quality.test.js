@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-complex-table-summary-quality';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -137,8 +137,8 @@ test(`${RULE_ID}: RGAA 5.2 asks about a complex table's caption that WCAG 1.3.1 
     page(`<table><caption>Sales</caption>${TWO_HEADER_ROWS}</table>`),
     RGAA
   );
-  assert.equal(rollup(result, 'rgaa-4.1.2-5.2').outcome, 'cantTell');
-  assert.equal(rollup(result, 'wcag-1.3.1-info-and-relationships').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-5.2')), 'cantTell');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-1.3.1-info-and-relationships')), 'passedInPart');
 });
 
 // table-duplicate-name keeps asking about a caption repeated in summary, but
@@ -153,8 +153,8 @@ test(`${RULE_ID}: a simple HTML5 table whose summary repeats the caption leaves 
   );
   const rgaa = runa11yCoreOnHtml(page(body), RGAA);
   assert.ok(!rgaa.checksResults.some((r) => r.ruleId === 'table-duplicate-name'));
-  assert.equal(rollup(rgaa, 'rgaa-4.1.2-5.2').outcome, 'notApplicable');
-  assert.equal(rollup(rgaa, 'wcag-1.3.1-info-and-relationships').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup(rgaa, 'rgaa-4.1.2-5.2')), 'noneFoundInPart');
+  assert.equal(rollupOutcome(rollup(rgaa, 'wcag-1.3.1-info-and-relationships')), 'passedInPart');
 });
 
 test(`${RULE_ID}: before HTML5, both ask about a complex table whose summary repeats the caption`, () => {
@@ -165,7 +165,7 @@ test(`${RULE_ID}: before HTML5, both ask about a complex table whose summary rep
     'cantTell'
   );
   const rgaa = runa11yCoreOnHtml(page(body, HTML401), RGAA);
-  assert.equal(rollup(rgaa, 'rgaa-4.1.2-5.2').outcome, 'cantTell');
+  assert.equal(rollupOutcome(rollup(rgaa, 'rgaa-4.1.2-5.2')), 'cantTell');
   assert.deepEqual(
     rgaa.checksResults.find((r) => r.ruleId === RULE_ID).occurrences[0].data.details.sources,
     ['caption', 'summary']

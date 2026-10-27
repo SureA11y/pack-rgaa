@@ -42,7 +42,8 @@ const meta = {
   category: 'robust',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['missingDoctype']
 };
 
 function applicability(ctx) {

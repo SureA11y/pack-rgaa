@@ -61,7 +61,49 @@ const meta = {
   category: 'understandable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: [
+    'noLabel',
+    'placeholderOnly',
+    'contentOnly',
+    'wrappingLabel',
+    'labelForNotLabelable',
+    'emptySource'
+  ],
+  review: {
+    wrappingLabel: {
+      steps: [
+        'Find the form field the report names: a <label> without a for attribute wraps it.',
+        "Listen to the field with a screen reader, or read its accessible name in the browser's accessibility tree, and check that the label text names it.",
+        'Check whether the audit accepts a wrapping <label>, which the RGAA glossary "Étiquette de champ de formulaire" allows and 11.1.1 does not list.'
+      ],
+      passWhen:
+        "The wrapping label names the field and the audit accepts it; giving the label a for attribute matching the field's id settles it.",
+      failWhen:
+        'The audit holds to the conditions 11.1.1 lists, none of which the field meets, so it fails RGAA 11.1.1.'
+    },
+    labelForNotLabelable: {
+      steps: [
+        'Find the form field the report names: a <label for> points at it, but it is not an element a <label> can name (an ARIA field such as role="textbox").',
+        "Read its accessible name in the browser's accessibility tree, or listen to it with a screen reader: the label gives it none.",
+        'Check whether the field has another name source that 11.1.1 lists (aria-labelledby, aria-label, title).'
+      ],
+      passWhen:
+        'Another source names the field, or the audit counts the <label for>, which meets the wording of 11.1.1, as enough.',
+      failWhen:
+        'The field has no name from any source 11.1.1 lists, which assistive technologies can read, so it fails RGAA 11.1.1.'
+    },
+    emptySource: {
+      steps: [
+        'Find the form field the report names: one of its label sources (aria-labelledby, aria-label, <label for> or title) is there but empty.',
+        'Look at the field on screen: is there a button right next to it whose text says what to enter (a search field and its "Search" button)?',
+        'Check whether the field gets a label some other way that 11.1.1 lists.'
+      ],
+      passWhen:
+        'An adjacent button gives the field a visible label and another source a name, or the field has a label 11.1.1 accepts elsewhere.',
+      failWhen: 'The field has no label that 11.1.1 lists, which fails RGAA 11.1.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

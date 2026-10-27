@@ -78,7 +78,69 @@ const meta = {
   category: 'operable',
   type: 'automatic',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  reasonCodes: [
+    'SKIP_LINK_NOT_VISIBLE',
+    'SKIP_LINK_POSITION_DIFFERS',
+    'SKIP_LINK_POSITION_SHIFTED',
+    'SKIP_LINK_VISIBILITY_UNKNOWN',
+    'SKIP_LINK_ORDER_DIFFERS',
+    'SKIP_LINK_VIEWPORT_DIFFERS',
+    'SKIP_LINK_SINGLE_PAGE'
+  ],
+  review: {
+    SKIP_LINK_POSITION_SHIFTED: {
+      steps: [
+        'Open the page the report names and the other pages it lists, in windows of the same width.',
+        'Find the skip link on each, pressing Tab from the top of the page if it shows only on focus.',
+        'Check whether it sits at another place in the layout, or only lower because of content above it, such as a cookie banner or a message.'
+      ],
+      passWhen:
+        'The skip link is at the same place in the layout of every page; only content above it, such as a banner, pushes it down.',
+      failWhen:
+        'The skip link is placed elsewhere in the layout on some pages, which fails RGAA 12.7.2.'
+    },
+    SKIP_LINK_VISIBILITY_UNKNOWN: {
+      steps: [
+        'Find the skip link the report names.',
+        'Load the page and press Tab from the top until the skip link takes focus.',
+        'Check that it can be seen at that moment, not covered by another element, and that it stays visible once any animation ends.'
+      ],
+      passWhen: 'The skip link is visible, at all times or at least when it has keyboard focus.',
+      failWhen: 'The skip link stays hidden or covered when it has focus, which fails RGAA 12.7.2.'
+    },
+    SKIP_LINK_ORDER_DIFFERS: {
+      steps: [
+        'Open the page the report names and the other pages it lists.',
+        'On each, press Tab from the top of the page and note what comes before the skip link.',
+        'Compare: the skip link comes at the same place relative to the rest of the page (first, or right after the same elements).'
+      ],
+      passWhen:
+        'On every page the skip link comes in the same order relative to the content around it.',
+      failWhen:
+        'The skip link comes earlier or later relative to the rest of the page on some pages, which fails RGAA 12.7.2.'
+    },
+    SKIP_LINK_VIEWPORT_DIFFERS: {
+      steps: [
+        'Open the page the report names and several other pages of the site, in windows of the same width.',
+        'Find the skip link on each, pressing Tab from the top of the page if it shows only on focus.',
+        'Compare where it shows.'
+      ],
+      passWhen: 'The skip link is at the same place on every page.',
+      failWhen: 'The skip link is at another place on some pages, which fails RGAA 12.7.2.'
+    },
+    SKIP_LINK_SINGLE_PAGE: {
+      steps: [
+        'Open the page the report names and several other pages of the site, in windows of the same width.',
+        'On each, press Tab from the top of the page until the skip link takes focus, and note where it shows and what comes before it.',
+        'Compare the pages.'
+      ],
+      passWhen:
+        'On every page the skip link is at the same place and comes in the same order, or the site has a single page.',
+      failWhen:
+        'The skip link is at another place, or comes in another order, on some pages, which fails RGAA 12.7.2.'
+    }
+  }
 };
 
 // Not applicable while a modal dialog is open either: the rest of the page

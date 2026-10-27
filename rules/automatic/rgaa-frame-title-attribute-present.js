@@ -48,7 +48,8 @@ const meta = {
   category: 'robust',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['missingTitle']
 };
 
 function runInPage(ctx) {

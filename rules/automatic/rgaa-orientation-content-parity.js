@@ -81,7 +81,52 @@ const meta = {
   category: 'perceivable',
   type: 'automatic',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  // The reason codes the rule gives, so definePack can check that `review`
+  // names only these.
+  reasonCodes: [
+    'CONTENT_MISSING',
+    'MAIN_CONTENT_HIDDEN',
+    'CONTENT_BEHIND_CONTROL',
+    'hiddenInOrientation'
+  ],
+  // How a person answers each question the rule asks, per reason code: a few
+  // steps from the element the finding names, then what they see if it
+  // passes and if it fails. In English; reports show it as "How to check".
+  review: {
+    MAIN_CONTENT_HIDDEN: {
+      steps: [
+        'Open the page on a phone or tablet, or in the browser’s device emulation, in the orientation the report names.',
+        'Look at what is shown instead of the main content, such as a "rotate your device" message.',
+        'Decide whether one orientation is essential to the content (a piano keyboard, a check deposit).'
+      ],
+      passWhen:
+        'The orientation is essential to the content, which RGAA 13.9 allows, or the main content is shown in both orientations.',
+      failWhen:
+        'The main content is hidden in one orientation though no orientation is essential to it, which fails RGAA 13.9.1.'
+    },
+    CONTENT_BEHIND_CONTROL: {
+      steps: [
+        'Open the page in the orientation the report names, on a device or in the browser’s device emulation.',
+        'Find the control, such as a menu button, that the report says opens the hidden content, and activate it.',
+        'Check that the content it shows is the same as the content shown in the other orientation.'
+      ],
+      passWhen:
+        'The control shows the same content, so only the means of reaching it differs, which RGAA 13.9.1 allows.',
+      failWhen:
+        'Some of the content stays out of reach in that orientation, which fails RGAA 13.9.1.'
+    },
+    hiddenInOrientation: {
+      steps: [
+        'Find the element the report names; a style rule for one orientation hides it.',
+        'Open the page in portrait and in landscape, on a device or in the browser’s device emulation.',
+        'Compare what each orientation shows: is the hidden element’s content, or the same information, shown elsewhere in that orientation, or reachable by a control there?'
+      ],
+      passWhen: 'The same content is available in both orientations, whatever its presentation.',
+      failWhen:
+        'Content shown in one orientation is missing from the other, which fails RGAA 13.9.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

@@ -57,7 +57,33 @@ const meta = {
   category: 'operable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  // The reason codes the rule gives, so definePack can check that `review`
+  // names only these.
+  reasonCodes: ['TITLE_DUPLICATE', 'TITLE_DUPLICATE_SAME_PATH', 'TITLE_SINGLE_PAGE'],
+  // How a person answers each question the rule asks, per reason code: a few
+  // steps from the element the finding names, then what they see if it
+  // passes and if it fails. In English; reports show it as "How to check".
+  review: {
+    TITLE_DUPLICATE_SAME_PATH: {
+      steps: [
+        'Open this page and the other pages the report names, whose address differs only by a query string, http or https, www. or an index file.',
+        'Compare their content: are they one page under several addresses, or different pages, such as search results or the pages of a list?'
+      ],
+      passWhen: 'They are the same page under several addresses, or their titles tell them apart.',
+      failWhen:
+        'They are different pages with the same title, so the title does not identify the page, which fails RGAA 8.6.1.'
+    },
+    TITLE_SINGLE_PAGE: {
+      steps: [
+        'Read the page’s title in the browser tab or history.',
+        'Compare it with the titles of the site’s other pages, through the browser history or a crawl of the site.'
+      ],
+      passWhen: 'The title identifies this page clearly, concisely and uniquely.',
+      failWhen:
+        'Another page of the site has the same title, or the title does not say what the page is, which fails RGAA 8.6.1.'
+    }
+  }
 };
 
 function applicability(ctx) {

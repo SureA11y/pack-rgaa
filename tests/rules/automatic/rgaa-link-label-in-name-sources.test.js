@@ -7,7 +7,7 @@ const path = require('node:path');
 
 const { RGAA_RULE_TESTS } = require('../../../rule-map.js');
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-link-label-in-name-sources';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -187,7 +187,7 @@ function rollups(body) {
   });
   const outcome = (ruleId) => {
     const r = result.rulesResults.find((x) => x.ruleId === ruleId);
-    return r ? r.outcome : 'missing';
+    return r ? rollupOutcome(r) : 'missing';
   };
   return { rgaa: outcome('rgaa-4.1.2-6.1'), wcag: outcome('wcag-2.5.3-label-in-name'), result };
 }
@@ -202,14 +202,14 @@ test(`${RULE_ID}: a title without the link text is outside WCAG 2.5.3 but fails 
 
 test(`${RULE_ID}: WCAG passes a name that drops the parenthesised text, RGAA asks`, () => {
   const r = rollups('<a href="/r.pdf" aria-label="Rapport">Rapport (PDF)</a>');
-  assert.equal(r.wcag, 'pass');
+  assert.equal(r.wcag, 'passedInPart');
   assert.equal(r.rgaa, 'cantTell');
 });
 
 test(`${RULE_ID}: WCAG asks about a hyphenation difference, RGAA ignores punctuation and passes`, () => {
   const r = rollups('<a href="/m" aria-label="Email">E-mail</a>');
   assert.equal(r.wcag, 'cantTell');
-  assert.equal(r.rgaa, 'pass');
+  assert.equal(r.rgaa, 'passedInPart');
 });
 
 test(`${RULE_ID}: WCAG and RGAA agree on a replaced name and on a name that contains the label`, () => {
@@ -217,8 +217,8 @@ test(`${RULE_ID}: WCAG and RGAA agree on a replaced name and on a name that cont
   assert.equal(bad.wcag, 'fail');
   assert.equal(bad.rgaa, 'fail');
   const good = rollups('<a href="/c" aria-label="Contact, nouvelle fenêtre">Contact</a>');
-  assert.equal(good.wcag, 'pass');
-  assert.equal(good.rgaa, 'pass');
+  assert.equal(good.wcag, 'passedInPart');
+  assert.equal(good.rgaa, 'passedInPart');
 });
 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-link-label-in-name-sources-all-scenarios.html)`, () => {

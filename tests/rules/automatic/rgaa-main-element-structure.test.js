@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-main-element-structure';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -174,30 +174,36 @@ function landmarks(html) {
 
 test(`${RULE_ID}: RGAA 9.2 fails role="main" and a CSS-hidden duplicate that the landmark rules accept`, () => {
   const roleMain = page('<div role="main"><p>a</p></div>');
-  assert.equal(rollup(runa11yCoreOnHtml(roleMain, RGAA), 'rgaa-4.1.2-9.2').outcome, 'fail');
+  assert.equal(rollupOutcome(rollup(runa11yCoreOnHtml(roleMain, RGAA), 'rgaa-4.1.2-9.2')), 'fail');
   assert.equal(landmarks(roleMain).one, 'pass');
 
   const cssHidden = page('<main><p>a</p></main><main style="display:none"><p>b</p></main>');
   const result = runa11yCoreOnHtml(cssHidden, RGAA);
-  assert.equal(rollup(result, 'rgaa-4.1.2-9.2').outcome, 'fail');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-9.2')), 'fail');
   assert.deepEqual(rollup(result, 'rgaa-4.1.2-9.2').data.details.checksIds, [RULE_ID]);
   assert.ok(!result.checksResults.some((r) => r.ruleId === 'landmark-no-duplicate-main'));
   assert.equal(landmarks(cssHidden).duplicate, 'pass');
 });
 
-test(`${RULE_ID}: RGAA 9.2 is not applicable on HTML 4.01 where the landmark rule asks`, () => {
+test(`${RULE_ID}: RGAA 9.2 finds nothing to check on HTML 4.01, where the landmark rule asks`, () => {
   const html = page('<main><p>a</p></main><main><p>b</p></main>', HTML401);
-  assert.equal(rollup(runa11yCoreOnHtml(html, RGAA), 'rgaa-4.1.2-9.2').outcome, 'notApplicable');
+  assert.equal(
+    rollupOutcome(rollup(runa11yCoreOnHtml(html, RGAA), 'rgaa-4.1.2-9.2')),
+    'noneFoundInPart'
+  );
   assert.equal(landmarks(html).duplicate, 'cantTell');
 });
 
 test(`${RULE_ID}: RGAA 9.2 and the landmark rules agree on one <main>, and both ask when there is none`, () => {
   const one = page('<main><p>a</p></main>');
-  assert.equal(rollup(runa11yCoreOnHtml(one, RGAA), 'rgaa-4.1.2-9.2').outcome, 'pass');
+  assert.equal(
+    rollupOutcome(rollup(runa11yCoreOnHtml(one, RGAA), 'rgaa-4.1.2-9.2')),
+    'passedInPart'
+  );
   assert.equal(landmarks(one).one, 'pass');
   assert.equal(landmarks(one).duplicate, 'pass');
   const none = page('<div><p>a</p></div>');
-  assert.equal(rollup(runa11yCoreOnHtml(none, RGAA), 'rgaa-4.1.2-9.2').outcome, 'cantTell');
+  assert.equal(rollupOutcome(rollup(runa11yCoreOnHtml(none, RGAA), 'rgaa-4.1.2-9.2')), 'cantTell');
   assert.equal(landmarks(none).one, 'cantTell');
 });
 

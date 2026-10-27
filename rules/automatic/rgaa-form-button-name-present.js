@@ -59,7 +59,30 @@ const meta = {
   category: 'understandable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['nameMissing', 'imageButtonNoAlt', 'formAttributeOnly'],
+  review: {
+    imageButtonNoAlt: {
+      steps: [
+        'Find the image button (<input type="image">) the report names, in its form.',
+        'Look at the image and decide what the button does.',
+        'Listen to it with a screen reader, or read its accessible name in the browser\'s accessibility tree: the browser names it with a generic word such as "Submit".'
+      ],
+      passWhen:
+        'The generic name says what the button does, which is rare; an alt describing the action settles it.',
+      failWhen:
+        "The generic name does not tell what the button does, so the button has no relevant label, which fails RGAA 11.9.1 (and the image button's alternative, 1.1.3)."
+    },
+    formAttributeOnly: {
+      steps: [
+        'Find the button the report names: it has no label, and sits outside the form it submits, joined to it by its form attribute.',
+        'Check whether the audit counts such a button as a button of the form (11.9.1), or as an interface component of the page (7.1.1).'
+      ],
+      passWhen: 'The button is given a label that says what it does, under either reading.',
+      failWhen:
+        'The button has no label, which fails RGAA 11.9.1 if the audit counts it in the form, or 7.1.1 otherwise.'
+    }
+  }
 };
 
 function runInPage(ctx) {

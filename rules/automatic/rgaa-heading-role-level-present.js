@@ -47,7 +47,8 @@ const meta = {
   category: 'perceivable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['missingAriaLevel', 'ariaLevelNotNumber']
 };
 
 function runInPage(ctx) {

@@ -55,7 +55,20 @@ const meta = {
   category: 'operable',
   type: 'manual',
   defaultConfidence: 'low',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['keyboardOnlyHandler'],
+  review: {
+    keyboardOnlyHandler: {
+      steps: [
+        'Find the element the report names, which reacts to the keyboard.',
+        'Use it with the keyboard and note what it does.',
+        'Then try to do the same with a mouse, and on a touch screen: click or tap the element, or look for another control on the page that does it.'
+      ],
+      passWhen:
+        'What the keys do can also be done with any pointing device, on this element or another one of the page.',
+      failWhen: 'The action can only be done from the keyboard, which fails RGAA 7.3.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

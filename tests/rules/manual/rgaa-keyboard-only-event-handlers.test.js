@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-keyboard-only-event-handlers';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -174,8 +174,8 @@ test(`${RULE_ID}: WCAG and RGAA both ask about a pointer-only div, through mouse
     'cantTell'
   );
   assert.equal(result.checksResults.find((r) => r.ruleId === RULE_ID).outcome, 'notApplicable');
-  assert.equal(rollup(result, 'wcag-2.1.1-keyboard').outcome, 'cantTell');
-  assert.equal(rollup(result, 'rgaa-4.1.2-7.3').outcome, 'cantTell');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-2.1.1-keyboard')), 'cantTell');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-7.3')), 'cantTell');
 });
 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html)`, () => {

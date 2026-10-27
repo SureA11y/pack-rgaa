@@ -51,7 +51,21 @@ const meta = {
   category: 'perceivable',
   type: 'manual',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['lettersSeparatedBySpaces'],
+  review: {
+    lettersSeparatedBySpaces: {
+      steps: [
+        'Find the text the report names, letters separated by spaces.',
+        'Decide whether the letters spell a word (such as "S O L D E S") or are separate items, such as a list of options or an example.',
+        'With a screen reader, listen to the text: a spaced word is read letter by letter.'
+      ],
+      passWhen:
+        'The letters are separate items, not a word, or the spacing is made with CSS letter-spacing.',
+      failWhen:
+        'A word is spaced out with space characters, so a screen reader spells it, which fails RGAA 10.1.3.'
+    }
+  }
 };
 
 function runInPage(ctx) {

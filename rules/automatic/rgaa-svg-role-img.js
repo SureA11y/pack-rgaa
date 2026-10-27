@@ -53,7 +53,8 @@ const meta = {
   category: 'perceivable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['missingRoleImg']
 };
 
 function runInPage(ctx) {

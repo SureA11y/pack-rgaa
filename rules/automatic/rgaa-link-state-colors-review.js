@@ -91,7 +91,53 @@ const meta = {
   type: 'automatic',
   defaultConfidence: 'medium',
   coverage: {},
-  margin: { measure: 'contrast-ratio', unit: 'ratio', limit: 'min' }
+  margin: { measure: 'contrast-ratio', unit: 'ratio', limit: 'min' },
+  // The reason codes the rule gives, so definePack can check that `review`
+  // names only these.
+  reasonCodes: [
+    'STATE_CONTRAST_LOW',
+    'STATE_COLOR_CHANGE',
+    'BROWSER_STATE_COLORS',
+    'STYLESHEET_UNREADABLE'
+  ],
+  // How a person answers each question the rule asks, per reason code: a few
+  // steps from the element the finding names, then what they see if it
+  // passes and if it fails. In English; reports show it as "How to check".
+  review: {
+    STATE_COLOR_CHANGE: {
+      steps: [
+        'Find the link the report names, in a run of text and shown only by its color.',
+        'Put it in each state the report lists: hover it with the mouse, tab to it, press it, and follow it so it shows as visited.',
+        'In each state, measure the contrast between the link color and the surrounding text with a contrast checker.'
+      ],
+      passWhen:
+        'In each state the link either has a mark other than color (an underline, a weight) or its color contrasts at least 3:1 with the surrounding text.',
+      failWhen:
+        'In a state, the link is shown only by a color that contrasts below 3:1 with the surrounding text, which fails RGAA 10.6.1.'
+    },
+    BROWSER_STATE_COLORS: {
+      steps: [
+        'Find the link the report names, in a run of text and shown only by its color, which no style rule sets.',
+        'Follow the link so it shows as visited, and come back to the page.',
+        'Measure the contrast between the visited color and the surrounding text with a contrast checker.'
+      ],
+      passWhen:
+        'The visited link contrasts at least 3:1 with the surrounding text, or has a mark other than color.',
+      failWhen:
+        'The visited link is shown only by a color that contrasts below 3:1 with the surrounding text, which fails RGAA 10.6.1.'
+    },
+    STYLESHEET_UNREADABLE: {
+      steps: [
+        'Find the link the report names, in a run of text and shown only by its color.',
+        'Put it in each state: visited, hovered, focused with the keyboard and pressed.',
+        'In each state where its color changes and no other mark appears, measure the contrast between the link color and the surrounding text.'
+      ],
+      passWhen:
+        'In each state the link has a mark other than color, or a color that contrasts at least 3:1 with the surrounding text.',
+      failWhen:
+        'In a state, the link is shown only by a color that contrasts below 3:1 with the surrounding text, which fails RGAA 10.6.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

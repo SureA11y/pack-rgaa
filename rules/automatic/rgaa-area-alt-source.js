@@ -48,7 +48,8 @@ const meta = {
   category: 'perceivable',
   type: 'automatic',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['unlistedNameSource']
 };
 
 function runInPage(ctx) {

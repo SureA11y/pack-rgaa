@@ -46,7 +46,21 @@ const meta = {
   category: 'understandable',
   type: 'automatic',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['TITLE_PLACEHOLDER_DIFFER'],
+  review: {
+    TITLE_PLACEHOLDER_DIFFER: {
+      steps: [
+        'Find the form field the report names, and read its title and placeholder attributes.',
+        'Compare the two texts, spaces aside.',
+        'With a screen reader, move to the field and listen to what is announced as its label or description.'
+      ],
+      passWhen:
+        'The title and the placeholder say the same thing, and whichever the screen reader reads tells the field’s function.',
+      failWhen:
+        'The title and the placeholder differ, so a screen reader may read the placeholder in place of the title and give another label than the one meant: RGAA’s glossary « Étiquette de champ de formulaire » asks for them to be identical, which the audit records under RGAA 11.2.2.'
+    }
+  }
 };
 
 function runInPage(ctx) {

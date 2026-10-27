@@ -49,7 +49,8 @@ const meta = {
   category: 'understandable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['invalidDir', 'autoDir']
 };
 
 function runInPage(ctx) {

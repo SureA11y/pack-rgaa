@@ -104,7 +104,7 @@ What a scan runs under each profile (`engineOptions.profile`): the rules its tag
 |---|---|---|---|---|---|---|
 | `rgaa-4.1.2` | `rgaa` | version 4.1.2 | — | — | — | 2.1 |
 
-## Rollups (54)
+## Rollups (58)
 
 Each groups rules into one result, as a WCAG rollup does; the standard's own report sections show them.
 
@@ -113,6 +113,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-1.1` | Chaque image porteuse d’information a-t-elle une alternative textuelle ? | `area-alt-present`, `img-alt-decorative`, `img-alt-present`, `input-image-alt-present`, `rgaa-area-alt-source`, `rgaa-canvas-role-img`, `rgaa-embed-image-role-img`, `rgaa-object-image-role-img`, `rgaa-role-img-aria-name`, `rgaa-svg-hidden-no-alternative`, `rgaa-svg-role-img`, `server-side-image-map-absent`, `svg-text-alternative-present` |
 | `rgaa-4.1.2-1.2` | Chaque image de décoration est-elle correctement ignorée par les technologies d’assistance ? | `img-alt-present`, `rgaa-canvas-decorative-aria-hidden`, `rgaa-canvas-role-img`, `rgaa-img-decorative-no-alternative`, `rgaa-svg-hidden-no-alternative` |
 | `rgaa-4.1.2-1.3` | Pour chaque image porteuse d’information ayant une alternative textuelle, cette alternative est-elle pertinente (hors cas particuliers) ? | `area-alt-quality`, `canvas-text-alternative-quality`, `embed-text-alternative-quality`, `image-redundant-alt`, `img-alt-quality`, `input-image-alt-decorative`, `input-image-alt-quality`, `object-text-alternative-quality`, `rgaa-image-alt-long`, `svg-text-alternative-quality` |
+| `rgaa-4.1.2-1.8` | Chaque image texte porteuse d’information, en l’absence d’un mécanisme de remplacement, doit si possible être remplacée par du texte stylé. Cette règle est-elle respectée (hors cas particuliers) ? | `image-of-text` |
 | `rgaa-4.1.2-1.9` | Chaque légende d’image est-elle, si nécessaire, correctement reliée à l’image correspondante ? | `rgaa-figure-caption-structure` |
 | `rgaa-4.1.2-10.1` | Dans le site web, des feuilles de styles sont-elles utilisées pour contrôler la présentation de l’information ? | `rgaa-letters-spaced-with-spaces`, `rgaa-presentational-attributes-absent`, `rgaa-presentational-elements-absent` |
 | `rgaa-4.1.2-10.12` | Dans chaque page web, les propriétés d’espacement du texte peuvent-elles être redéfinies par l’utilisateur sans perte de contenu ou de fonctionnalité (hors cas particuliers) ? | `avoid-inline-spacing`, `text-spacing-content-loss` |
@@ -122,6 +123,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-10.7` | Dans chaque page web, pour chaque élément recevant le focus, la prise de focus est-elle visible ? | `css-focus-indicator-suppressed`, `css-hidden-focus`, `manual-review`, `rgaa-focus-indicator-contrast` |
 | `rgaa-4.1.2-10.8` | Pour chaque page web, les contenus cachés ont-ils vocation à être ignorés par les technologies d’assistance ? | `aria-hidden-body`, `aria-hidden-focus` |
 | `rgaa-4.1.2-11.1` | Chaque champ de formulaire a-t-il une étiquette ? | `form-control-programmatic-label-quality`, `option-name-present`, `rgaa-field-label-listed-source`, `rgaa-label-for-target-valid` |
+| `rgaa-4.1.2-11.10` | Dans chaque formulaire, le contrôle de saisie est-il utilisé de manière pertinente (hors cas particuliers) ? | `invalid-field-error-message` |
 | `rgaa-4.1.2-11.13` | La finalité d’un champ de saisie peut-elle être déduite pour faciliter le remplissage automatique des champs avec les données de l’utilisateur ? | `autocomplete-valid` |
 | `rgaa-4.1.2-11.2` | Chaque étiquette associée à un champ de formulaire est-elle pertinente (hors cas particuliers) ? | `form-control-label-quality`, `form-control-programmatic-label-quality`, `rgaa-field-label-in-name-sources`, `rgaa-title-placeholder-identical` |
 | `rgaa-4.1.2-11.5` | Dans chaque formulaire, les champs de même nature sont-ils regroupés, si nécessaire ? | `rgaa-radio-group-present` |
@@ -142,6 +144,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-4.1` | Chaque média temporel pré-enregistré a-t-il, si nécessaire, une transcription textuelle ou une audiodescription (hors cas particuliers) ? | `rgaa-media-transcript-adjacent` |
 | `rgaa-4.1.2-4.10` | Chaque son déclenché automatiquement est-il contrôlable par l’utilisateur ? | `no-autoplay-audio` |
 | `rgaa-4.1.2-4.3` | Chaque média temporel synchronisé pré-enregistré a-t-il, si nécessaire, des sous-titres synchronisés (hors cas particuliers) ? | `rgaa-video-captions-track-kind`, `video-caption` |
+| `rgaa-4.1.2-4.4` | Pour chaque média temporel synchronisé pré-enregistré ayant des sous-titres synchronisés, ces sous-titres sont-ils pertinents ? | `video-caption` |
 | `rgaa-4.1.2-5.1` | Chaque tableau de données complexe a-t-il un résumé ? | `rgaa-complex-table-summary` |
 | `rgaa-4.1.2-5.2` | Pour chaque tableau de données complexe ayant un résumé, celui-ci est-il pertinent ? | `rgaa-complex-table-summary-quality` |
 | `rgaa-4.1.2-5.3` | Pour chaque tableau de mise en forme, le contenu linéarisé reste-t-il compréhensible ? | `rgaa-data-table-headers-review` |
@@ -151,13 +154,14 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-5.8` | Chaque tableau de mise en forme ne doit pas utiliser d’éléments propres aux tableaux de données. Cette règle est-elle respectée ? | `rgaa-layout-table-no-data-markup` |
 | `rgaa-4.1.2-6.1` | Chaque lien est-il explicite (hors cas particuliers) ? | `identical-links-same-purpose`, `link-name-quality`, `rgaa-link-context-review`, `rgaa-link-label-in-name-sources` |
 | `rgaa-4.1.2-6.2` | Dans chaque page web, chaque lien a-t-il un intitulé ? | `rgaa-link-content-label-present` |
-| `rgaa-4.1.2-7.1` | Chaque script est-il, si nécessaire, compatible avec les technologies d’assistance ? | `aria-role-name-present`, `dialog-name-present`, `focus-order-semantics`, `menuitem-name-present`, `rgaa-button-name-present`, `rgaa-scripted-components-review`, `rgaa-widget-label-in-name`, `tab-name-present`, `treeitem-name-present` |
-| `rgaa-4.1.2-7.3` | Chaque script est-il contrôlable par le clavier et par tout dispositif de pointage (hors cas particuliers) ? | `click-handler-keyboard-operable`, `focus-not-removed-by-script`, `mouse-only-event-handlers`, `rgaa-keyboard-only-event-handlers` |
+| `rgaa-4.1.2-7.1` | Chaque script est-il, si nécessaire, compatible avec les technologies d’assistance ? | `aria-expanded-state-mismatch`, `aria-role-name-present`, `dialog-name-present`, `focus-order-semantics`, `menuitem-name-present`, `rgaa-button-name-present`, `rgaa-scripted-components-review`, `rgaa-widget-label-in-name`, `tab-name-present`, `treeitem-name-present` |
+| `rgaa-4.1.2-7.3` | Chaque script est-il contrôlable par le clavier et par tout dispositif de pointage (hors cas particuliers) ? | `click-handler-keyboard-operable`, `focus-not-removed-by-script`, `mouse-only-event-handlers`, `rgaa-keyboard-only-event-handlers`, `widget-keyboard-focusable` |
+| `rgaa-4.1.2-7.5` | Dans chaque page web, les messages de statut sont-ils correctement restitués par les technologies d’assistance ? | `live-region-announcements` |
 | `rgaa-4.1.2-8.1` | Chaque page web est-elle définie par un type de document ? | `rgaa-doctype-position`, `rgaa-doctype-present`, `rgaa-doctype-valid` |
 | `rgaa-4.1.2-8.10` | Dans chaque page web, les changements du sens de lecture sont-ils signalés ? | `rgaa-dir-attribute-valid` |
 | `rgaa-4.1.2-8.2` | Pour chaque page web, le code source généré est-il valide selon le type de document spécifié ? | `duplicate-id`, `rgaa-aria-attribute-conformance`, `rgaa-aria-role-conformance`, `rgaa-html-elements-attributes-valid`, `rgaa-html-nesting-valid`, `rgaa-markup-validation-review` |
 | `rgaa-4.1.2-8.3` | Dans chaque page web, la langue par défaut est-elle présente ? | `rgaa-page-language-present` |
-| `rgaa-4.1.2-8.4` | Pour chaque page web ayant une langue par défaut, le code de langue est-il pertinent ? | `html-xml-lang-mismatch`, `rgaa-html-lang-code-valid` |
+| `rgaa-4.1.2-8.4` | Pour chaque page web ayant une langue par défaut, le code de langue est-il pertinent ? | `html-xml-lang-mismatch`, `rgaa-html-lang-code-valid`, `rgaa-valid-lang` |
 | `rgaa-4.1.2-8.5` | Chaque page web a-t-elle un titre de page ? | `page-title-present` |
 | `rgaa-4.1.2-8.6` | Pour chaque page web ayant un titre de page, ce titre est-il pertinent ? | `page-title-patterns`, `rgaa-page-title-unique` |
 | `rgaa-4.1.2-8.8` | Dans chaque page web, le code de langue de chaque changement de langue est-il valide et pertinent ? | `rgaa-valid-lang` |

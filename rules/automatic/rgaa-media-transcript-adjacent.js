@@ -62,7 +62,38 @@ const meta = {
   category: 'perceivable',
   type: 'automatic',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  // The reason codes the rule gives, so definePack can check that `review`
+  // names only these.
+  reasonCodes: ['noAdjacentTranscript', 'describedTranscriptNotAdjacent'],
+  // How a person answers each question the rule asks, per reason code: a few
+  // steps from the element the finding names, then what they see if it
+  // passes and if it fails. In English; reports show it as "How to check".
+  review: {
+    noAdjacentTranscript: {
+      steps: [
+        'Find the audio or video the report names and play it.',
+        'Decide whether it needs a transcript: it does unless it is decorative, is itself an alternative to content on the page, or is a CAPTCHA; a video may have audio description instead.',
+        'Look right before and right after it, in the code and on screen, for the transcript or a link or button to it.',
+        'Read the transcript and check that it gives the information the media carries.'
+      ],
+      passWhen:
+        'The media needs no transcript, or a relevant transcript, or a link or button to one, sits right before or after it (or, for a video, audio description covers it).',
+      failWhen:
+        'The media needs a transcript and none sits right next to it, or it does not give the media’s information, which fails RGAA 4.1.1, 4.1.2 or 4.1.3 (4.2 for its relevance).'
+    },
+    describedTranscriptNotAdjacent: {
+      steps: [
+        'Find the audio or video the report names: its aria-describedby points to a text, but no transcript, or link or button to one, sits right before or after it.',
+        'Read the text aria-describedby points to, and find where it is on the page.',
+        'Check whether it is the transcript, and whether it sits right before or after the media in the code and on screen.'
+      ],
+      passWhen:
+        'The media needs no transcript, or its transcript, or a link or button to it, sits right before or after it.',
+      failWhen:
+        'The transcript is elsewhere on the page and nothing next to the media leads to it, which fails RGAA 4.1.1, 4.1.2 or 4.1.3.'
+    }
+  }
 };
 
 function runInPage(ctx) {
