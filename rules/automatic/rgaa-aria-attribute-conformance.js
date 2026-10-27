@@ -94,7 +94,16 @@ const meta = {
   category: 'robust',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: [
+    'unknownAttribute',
+    'invalidValue',
+    'attributeNotAllowed',
+    'namingProhibited',
+    'nativeCheckedConflict',
+    'nativeAttributeConflict',
+    'missingRequired'
+  ]
 };
 
 function runInPage(ctx) {

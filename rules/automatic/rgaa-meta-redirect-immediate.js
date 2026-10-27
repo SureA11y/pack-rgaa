@@ -52,7 +52,25 @@ const meta = {
   category: 'operable',
   type: 'automatic',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  // The reason codes the rule gives, so definePack can check that `review`
+  // names only these.
+  reasonCodes: ['delayedRedirect'],
+  // How a person answers each question the rule asks, per reason code: a few
+  // steps from the element the finding names, then what they see if it
+  // passes and if it fails. In English; reports show it as "How to check".
+  review: {
+    delayedRedirect: {
+      steps: [
+        'Find the <meta http-equiv="refresh"> in the page’s head; it sends the visitor to another address after a delay.',
+        'Compare the page with the one it leads to: is this an obsolete address sending visitors on to the new version of the page?'
+      ],
+      passWhen:
+        'The page is an obsolete address redirecting to its new version, which the particular cases of RGAA 13.1 make not applicable; or the redirect is made immediate (a delay of 0).',
+      failWhen:
+        'The page redirects after a delay and is not an obsolete address of the page it leads to, which fails RGAA 13.1.2.'
+    }
+  }
 };
 
 function applicability(ctx) {

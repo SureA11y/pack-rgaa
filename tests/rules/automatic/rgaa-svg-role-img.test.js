@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-svg-role-img';
 const WCAG_RULE = 'svg-text-alternative-present';
@@ -94,7 +94,7 @@ function verdicts(body) {
   const html = page(body);
   const rgaa = runa11yCoreOnHtml(html, { engineOptions: { profile: 'rgaa-4.1.2-with-wcag' } });
   const wcag = runa11yCoreOnHtml(html, { engineOptions: { profile: 'wcag22-aa' } });
-  const rollup = (r, id) => (r.rulesResults.find((x) => x.ruleId === id) || {}).outcome;
+  const rollup = (r, id) => rollupOutcome(r.rulesResults.find((x) => x.ruleId === id));
   const check = (r, id) => (r.checksResults.find((x) => x.ruleId === id) || {}).outcome;
   assert.equal(rollup(rgaa, WCAG_ROLLUP), rollup(wcag, WCAG_ROLLUP), body);
   assert.equal(check(rgaa, WCAG_RULE), check(wcag, WCAG_RULE), body);
@@ -114,10 +114,10 @@ test(`${RULE_ID}: RGAA profile, a named SVG without role="img": WCAG passes it, 
   }
 });
 
-test(`${RULE_ID}: RGAA profile, role="img" named only by <title>: WCAG and RGAA 1.1 both pass it`, () => {
+test(`${RULE_ID}: RGAA profile, role="img" named only by <title>: neither WCAG nor RGAA 1.1 fails it`, () => {
   assert.deepEqual(verdicts('<svg role="img"><title>Logo</title></svg>'), {
     rule: 'pass',
-    rgaa: 'pass',
+    rgaa: 'passedInPart',
     wcagRule: 'pass'
   });
 });
@@ -125,7 +125,7 @@ test(`${RULE_ID}: RGAA profile, role="img" named only by <title>: WCAG and RGAA 
 test(`${RULE_ID}: RGAA profile, the two standards agree on aria-label with role="img" and on no name`, () => {
   assert.deepEqual(verdicts('<svg role="img" aria-label="Logo"></svg>'), {
     rule: 'pass',
-    rgaa: 'pass',
+    rgaa: 'passedInPart',
     wcagRule: 'pass'
   });
   // An unnamed <svg role="img"> stays with svg-text-alternative-present, which keeps 1.1.5.

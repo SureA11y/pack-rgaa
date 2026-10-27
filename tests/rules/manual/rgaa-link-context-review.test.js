@@ -7,7 +7,7 @@ const path = require('node:path');
 
 const { RGAA_RULE_TESTS } = require('../../../rule-map.js');
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-link-context-review';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -130,7 +130,7 @@ function rollups(body) {
   });
   const outcome = (ruleId) => {
     const r = result.rulesResults.find((x) => x.ruleId === ruleId);
-    return r ? r.outcome : 'missing';
+    return r ? rollupOutcome(r) : 'missing';
   };
   return { rgaa: outcome('rgaa-4.1.2-6.1'), wcag: outcome('wcag-2.4.4-link-purpose-in-context') };
 }
@@ -139,14 +139,14 @@ test(`${RULE_ID}: WCAG passes a generic link with aria-describedby context, RGAA
   const r = rollups(
     '<div><a href="/r" aria-describedby="d">En savoir plus</a><span id="d">sur le rapport 2025</span></div>'
   );
-  assert.equal(r.wcag, 'pass');
+  assert.equal(r.wcag, 'passedInPart');
   assert.equal(r.rgaa, 'cantTell');
 });
 
 test(`${RULE_ID}: WCAG and RGAA agree on a link with paragraph context and on one with none`, () => {
   const good = rollups('<p>Rapport 2025 : <a href="/r">en savoir plus</a></p>');
-  assert.equal(good.wcag, 'pass');
-  assert.equal(good.rgaa, 'notApplicable');
+  assert.equal(good.wcag, 'passedInPart');
+  assert.equal(good.rgaa, 'noneFoundInPart');
   const bare = rollups('<div><a href="/r">en savoir plus</a></div>');
   assert.equal(bare.wcag, 'cantTell');
   assert.equal(bare.rgaa, 'cantTell');

@@ -22,7 +22,7 @@
  * @implementation-notes
  * - Metadata and script elements (<head>, <title>, <base>, <link>, <meta>,
  *   <style>, <script>) are left out: they present no information, so a
- *   color on <link rel="mask-icon">, which colours a browser's pinned tab,
+ *   color on <link rel="mask-icon">, which colors a browser's pinned tab,
  *   is not presentation of the page's content.
  * - Opt-in (tag `rgaa`): WCAG does not forbid these attributes, so the rule
  *   runs only under the rgaa-4.1.2 profile, the `rgaa` tag or its own id.
@@ -53,7 +53,10 @@ const meta = {
   category: 'perceivable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  // The reason codes the rule gives, so definePack can check that `review`
+  // names only these.
+  reasonCodes: ['presentationalAttribute']
 };
 
 function runInPage(ctx) {
@@ -86,7 +89,7 @@ function runInPage(ctx) {
   ];
   const SIZE_ALLOWED_ON = ['select'];
   // Metadata and script elements present no information: a color on
-  // <link rel="mask-icon"> colours Safari's pinned tab, a text attribute
+  // <link rel="mask-icon"> colors Safari's pinned tab, a text attribute
   // on <script> is ignored by browsers.
   const NOT_PRESENTED = ['head', 'title', 'base', 'link', 'meta', 'style', 'script'];
   const DIMENSIONS_ALLOWED_ON = ['img', 'object', 'embed', 'canvas', 'svg'];

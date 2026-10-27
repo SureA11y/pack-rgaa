@@ -52,7 +52,21 @@ const meta = {
   category: 'perceivable',
   type: 'manual',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['officeDocument'],
+  review: {
+    officeDocument: {
+      steps: [
+        'Find the link, form or button the report names, and download the document it gives.',
+        'Open the document and check that it is accessible: structured headings, text alternatives for images, a reading order, a language.',
+        'If it is not, look next to the link for an accessible version of it, to download or as an HTML page.'
+      ],
+      passWhen:
+        'The document is accessible, or an accessible version of it is offered for download or in HTML.',
+      failWhen:
+        'The document is not accessible and no accessible version is offered, which fails RGAA 13.3.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

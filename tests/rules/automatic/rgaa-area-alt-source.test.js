@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-area-alt-source';
 const WCAG_RULE = 'area-alt-present';
@@ -82,7 +82,7 @@ function verdicts(body) {
   const html = page(body);
   const rgaa = runa11yCoreOnHtml(html, { engineOptions: { profile: 'rgaa-4.1.2-with-wcag' } });
   const wcag = runa11yCoreOnHtml(html, { engineOptions: { profile: 'wcag22-aa' } });
-  const rollup = (r, id) => (r.rulesResults.find((x) => x.ruleId === id) || {}).outcome;
+  const rollup = (r, id) => rollupOutcome(r.rulesResults.find((x) => x.ruleId === id));
   const check = (r, id) => (r.checksResults.find((x) => x.ruleId === id) || {}).outcome;
   assert.equal(rollup(rgaa, WCAG_ROLLUP), rollup(wcag, WCAG_ROLLUP), body);
   assert.equal(check(rgaa, WCAG_RULE), check(wcag, WCAG_RULE), body);

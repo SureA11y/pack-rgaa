@@ -17,7 +17,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 let chromium;
 try {
@@ -185,7 +185,7 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
     const { result } = await scan(html, { profile: 'rgaa-4.1.2-with-wcag' });
     const rollup = (id) => result.rulesResults.find((r) => r.ruleId === id);
     assert.equal(result.checksResults.find((r) => r.ruleId === RULE_ID).outcome, 'fail');
-    assert.notEqual(rollup('wcag-2.4.7-focus-visible').outcome, 'fail');
-    assert.equal(rollup('rgaa-4.1.2-10.7').outcome, 'fail');
+    assert.notEqual(rollupOutcome(rollup('wcag-2.4.7-focus-visible')), 'fail');
+    assert.equal(rollupOutcome(rollup('rgaa-4.1.2-10.7')), 'fail');
   });
 });

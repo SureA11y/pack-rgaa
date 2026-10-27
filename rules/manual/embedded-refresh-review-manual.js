@@ -52,7 +52,20 @@ const meta = {
   category: 'operable',
   type: 'manual',
   defaultConfidence: 'low',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['POSSIBLE_REFRESH_SOURCE'],
+  review: {
+    POSSIBLE_REFRESH_SOURCE: {
+      steps: [
+        'Find the element the report names (an <object>, <embed>, <canvas> or an <svg> with a script).',
+        'Watch it for a few minutes and check whether its content reloads or updates by itself.',
+        'If it does, look for a way to stop or restart the updates, to lengthen the delay, or a warning before it updates.'
+      ],
+      passWhen:
+        'The content never refreshes by itself, or the user can stop and restart the refresh, lengthen its delay tenfold, is warned in time to lengthen it, or the delay is twenty hours or more.',
+      failWhen: 'The content refreshes by itself with none of those means, which fails RGAA 13.1.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

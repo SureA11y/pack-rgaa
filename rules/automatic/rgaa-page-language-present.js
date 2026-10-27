@@ -60,7 +60,25 @@ const meta = {
   category: 'understandable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  // The reason codes the rule gives, so definePack can check that `review`
+  // names only these.
+  reasonCodes: ['missingLanguage', 'xmlLangOnly'],
+  // How a person answers each question the rule asks, per reason code: a few
+  // steps from the element the finding names, then what they see if it
+  // passes and if it fails. In English; reports show it as "How to check".
+  review: {
+    xmlLangOnly: {
+      steps: [
+        'Find the doctype and the <html> element of the page source; the language is given by xml:lang alone, without lang, where the report names it.',
+        'Check which attribute the page’s document type needs: lang for HTML 4 and HTML5, both lang and xml:lang for XHTML 1.0 served as text/html, xml:lang for XHTML 1.1.'
+      ],
+      passWhen:
+        'The language is given by the attribute the document type needs, on <html> or on each text element or a parent.',
+      failWhen:
+        'The page gives its language only by an attribute its document type does not use for it, so no default language is set, which fails RGAA 8.3.1.'
+    }
+  }
 };
 
 function applicability(ctx) {

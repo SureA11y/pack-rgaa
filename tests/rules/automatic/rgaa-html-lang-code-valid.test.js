@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-html-lang-code-valid';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -110,22 +110,22 @@ test(`${RULE_ID}: the RGAA profile, the rgaa tag and the 8.4 rollup id run it`, 
 });
 
 // html-lang-attr-present checks the IANA registry, which has no "fra".
-test(`${RULE_ID}: RGAA 8.4 passes lang="fra", which WCAG 3.1.1 fails in the same run`, () => {
+test(`${RULE_ID}: RGAA 8.4 accepts lang="fra", which WCAG 3.1.1 fails in the same run`, () => {
   const result = runa11yCoreOnHtml(page(' lang="fra"'), RGAA);
-  assert.equal(rollup(result, 'rgaa-4.1.2-8.4').outcome, 'pass');
-  assert.equal(rollup(result, 'rgaa-4.1.2-8.3').outcome, 'pass');
-  assert.equal(rollup(result, 'wcag-3.1.1-language-of-page').outcome, 'fail');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-8.4')), 'passedInPart');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-8.3')), 'pass');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-3.1.1-language-of-page')), 'fail');
 });
 
 test(`${RULE_ID}: RGAA 8.4 and WCAG 3.1.1 agree on lang="xx" and on lang="fr"`, () => {
   const bad = runa11yCoreOnHtml(page(' lang="xx"'), RGAA);
-  assert.equal(rollup(bad, 'rgaa-4.1.2-8.4').outcome, 'fail');
+  assert.equal(rollupOutcome(rollup(bad, 'rgaa-4.1.2-8.4')), 'fail');
   // The language is present: 8.3 passes although the code is invalid.
-  assert.equal(rollup(bad, 'rgaa-4.1.2-8.3').outcome, 'pass');
-  assert.equal(rollup(bad, 'wcag-3.1.1-language-of-page').outcome, 'fail');
+  assert.equal(rollupOutcome(rollup(bad, 'rgaa-4.1.2-8.3')), 'pass');
+  assert.equal(rollupOutcome(rollup(bad, 'wcag-3.1.1-language-of-page')), 'fail');
   const good = runa11yCoreOnHtml(page(' lang="fr"'), RGAA);
-  assert.equal(rollup(good, 'rgaa-4.1.2-8.4').outcome, 'pass');
-  assert.equal(rollup(good, 'wcag-3.1.1-language-of-page').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup(good, 'rgaa-4.1.2-8.4')), 'passedInPart');
+  assert.equal(rollupOutcome(rollup(good, 'wcag-3.1.1-language-of-page')), 'passedInPart');
 });
 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html)`, () => {

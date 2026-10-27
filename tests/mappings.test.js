@@ -14,7 +14,7 @@ const assert = require('node:assert/strict');
 const { RGAA_RULE_TESTS } = require('../rule-map');
 const { rgaaMappingsFor, validateRgaaRuleTests } = require('../mappings');
 const { RGAA_TESTS } = require('../map');
-const { core } = require('./helpers/run.js');
+const { core, rollupOutcome } = require('./helpers/run.js');
 
 const V = '4.1.2';
 
@@ -319,14 +319,15 @@ test('click-handler-keyboard-operable fails WCAG 2.1.1 and asks under RGAA 7.3',
   const result = runa11yCoreOnHtml(html, { engineOptions: { profile: 'rgaa-4.1.2-with-wcag' } });
   const check = result.checksResults.find((r) => r.ruleId === 'click-handler-keyboard-operable');
   assert.equal(check.outcome, 'fail');
-  const rollup = (id) => result.rulesResults.find((r) => r.ruleId === id).outcome;
+  const rollup = (id) => rollupOutcome(result.rulesResults.find((r) => r.ruleId === id));
   assert.equal(rollup('wcag-2.1.1-keyboard'), 'fail');
   assert.equal(rollup('rgaa-4.1.2-7.3'), 'cantTell');
 });
 
 // RGAA 7.3.2: « Un script ne doit pas supprimer le focus d'un élément qui le
-// reçoit ». Core's rule only asks, so the test is asked about.
-test('focus-not-removed-by-script asks under RGAA 7.3', () => {
+// reçoit ». A handler that only blurs an element in the tab order fails it
+// (F55); one that calls blur() among other code is asked about.
+test('focus-not-removed-by-script fails RGAA 7.3.2 on a handler that only blurs, and asks about others', () => {
   const { runa11yCoreOnHtml } = require('./helpers/run.js');
   const html =
     '<!doctype html><html lang="fr"><head><title>t</title></head><body><main>' +
@@ -334,8 +335,15 @@ test('focus-not-removed-by-script asks under RGAA 7.3', () => {
     '</main></body></html>';
   const result = runa11yCoreOnHtml(html, { engineOptions: { profile: 'rgaa-4.1.2-with-wcag' } });
   const check = result.checksResults.find((r) => r.ruleId === 'focus-not-removed-by-script');
-  assert.equal(check.outcome, 'cantTell');
+  assert.equal(check.outcome, 'fail');
   assert.ok(check.rollupIds.includes('rgaa-4.1.2-7.3'));
-  const rollup = result.rulesResults.find((r) => r.ruleId === 'rgaa-4.1.2-7.3');
-  assert.equal(rollup.outcome, 'cantTell');
+  const rollup = (r) => rollupOutcome(r.rulesResults.find((x) => x.ruleId === 'rgaa-4.1.2-7.3'));
+  assert.equal(rollup(result), 'fail');
+  const other = runa11yCoreOnHtml(
+    '<!doctype html><html lang="fr"><head><title>t</title></head><body><main>' +
+      '<a href="/offres" onfocus="track(); this.blur()">Offres</a>' +
+      '</main></body></html>',
+    { engineOptions: { profile: 'rgaa-4.1.2-with-wcag' } }
+  );
+  assert.equal(rollup(other), 'cantTell');
 });

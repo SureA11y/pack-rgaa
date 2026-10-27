@@ -50,7 +50,22 @@ const meta = {
   category: 'perceivable',
   type: 'manual',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['NO_HEADER_CELLS'],
+  review: {
+    NO_HEADER_CELLS: {
+      steps: [
+        'Find the table the report names and look at it on screen.',
+        'Decide whether it presents data in rows and columns, with a row or column that labels the others, or only lays out content side by side.',
+        'If it holds data, find the cells that label each column or row and inspect them: they are <td>, not <th>.',
+        'If it lays content out, read the page with styles turned off or with a screen reader and check that the content still reads in a sensible order.'
+      ],
+      passWhen:
+        'The table only lays out content, which reads in a sensible order, or it holds data with no cell that labels a whole row or column.',
+      failWhen:
+        'The table holds data but its header cells are marked as <td> without a columnheader or rowheader role, which fails RGAA 5.6.1 or 5.6.2; a layout table whose content no longer makes sense once read in order fails RGAA 5.3.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

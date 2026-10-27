@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-html-nesting-valid';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -245,8 +245,8 @@ test(`${RULE_ID}: the RGAA profile, the rgaa tag and the 8.2 rollup id run it`, 
 test(`${RULE_ID}: RGAA 8.2 fails a role=listitem child of ul that WCAG 1.3.1 accepts`, () => {
   const result = runa11yCoreOnHtml(page('<ul><li>a</li><div role="listitem">b</div></ul>'), RGAA);
   assert.equal(check(result, 'list-children-valid').outcome, 'pass');
-  assert.equal(rollup(result, 'wcag-1.3.1-info-and-relationships').outcome, 'pass');
-  assert.equal(rollup(result, 'rgaa-4.1.2-8.2').outcome, 'fail');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-1.3.1-info-and-relationships')), 'passedInPart');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-8.2')), 'fail');
   assert.ok(rollup(result, 'rgaa-4.1.2-8.2').data.details.checksIds.includes(RULE_ID));
   assert.ok(
     !rollup(result, 'rgaa-4.1.2-8.2').data.details.checksIds.includes('list-children-valid')
@@ -256,7 +256,7 @@ test(`${RULE_ID}: RGAA 8.2 fails a role=listitem child of ul that WCAG 1.3.1 acc
 test(`${RULE_ID}: RGAA 8.2 fails a disabled button in a link that WCAG 4.1.2 accepts`, () => {
   const result = runa11yCoreOnHtml(page('<a href="/x">L <button disabled>b</button></a>'), RGAA);
   assert.equal(check(result, 'nested-interactive-controls-absent').outcome, 'pass');
-  assert.equal(rollup(result, 'rgaa-4.1.2-8.2').outcome, 'fail');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-8.2')), 'fail');
 });
 
 test(`${RULE_ID}: WCAG 4.1.2 fails ARIA-only nesting that RGAA 8.2 does not fail`, () => {
@@ -265,22 +265,22 @@ test(`${RULE_ID}: WCAG 4.1.2 fails ARIA-only nesting that RGAA 8.2 does not fail
     RGAA
   );
   assert.equal(check(result, 'nested-interactive-controls-absent').outcome, 'fail');
-  assert.equal(rollup(result, 'wcag-4.1.2-aria-validity').outcome, 'fail');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-4.1.2-aria-validity')), 'fail');
   assert.equal(check(result, RULE_ID).outcome, 'pass');
-  assert.notEqual(rollup(result, 'rgaa-4.1.2-8.2').outcome, 'fail');
+  assert.notEqual(rollupOutcome(rollup(result, 'rgaa-4.1.2-8.2')), 'fail');
 });
 
 test(`${RULE_ID}: RGAA 8.2 and WCAG 1.3.1 agree on a misordered dl and on a valid list`, () => {
   const bad = runa11yCoreOnHtml(page('<dl><dd>b</dd><dt>a</dt></dl>'), RGAA);
   assert.equal(check(bad, 'definition-list-children-valid').outcome, 'fail');
-  assert.equal(rollup(bad, 'wcag-1.3.1-info-and-relationships').outcome, 'fail');
-  assert.equal(rollup(bad, 'rgaa-4.1.2-8.2').outcome, 'fail');
+  assert.equal(rollupOutcome(rollup(bad, 'wcag-1.3.1-info-and-relationships')), 'fail');
+  assert.equal(rollupOutcome(rollup(bad, 'rgaa-4.1.2-8.2')), 'fail');
 
   const good = runa11yCoreOnHtml(page('<ul><li>a</li></ul>'), RGAA);
   assert.equal(check(good, 'list-children-valid').outcome, 'pass');
-  assert.equal(rollup(good, 'wcag-1.3.1-info-and-relationships').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup(good, 'wcag-1.3.1-info-and-relationships')), 'passedInPart');
   assert.equal(check(good, RULE_ID).outcome, 'pass');
-  assert.notEqual(rollup(good, 'rgaa-4.1.2-8.2').outcome, 'fail');
+  assert.notEqual(rollupOutcome(rollup(good, 'rgaa-4.1.2-8.2')), 'fail');
 });
 
 test(`${RULE_ID}: the WCAG list and nesting rules no longer carry 8.2.1`, () => {

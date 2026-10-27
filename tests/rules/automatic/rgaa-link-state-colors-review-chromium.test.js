@@ -43,7 +43,7 @@ const skip = !chromium
 
 const RULE_ID = 'rgaa-link-state-colors-review';
 // Core's browser bundle with the RGAA pack registered, every scan naming it.
-const { BROWSER_BUNDLE: BUNDLE } = require('../../helpers/run.js');
+const { BROWSER_BUNDLE: BUNDLE, rollupOutcome } = require('../../helpers/run.js');
 const FIXTURE = fs.readFileSync(
   path.join(__dirname, '../../fixtures', `${RULE_ID}-all-scenarios.html`),
   'utf8'
@@ -191,7 +191,7 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
     const { result } = await scan(page('a:hover{color:#222}', LINK), {
       profile: 'rgaa-4.1.2-with-wcag'
     });
-    const rollup = (id) => result.rulesResults.find((r) => r.ruleId === id).outcome;
+    const rollup = (id) => rollupOutcome(result.rulesResults.find((r) => r.ruleId === id));
     assert.equal(rule(result).outcome, 'fail');
     assert.notEqual(rollup('wcag-1.4.1-use-of-color'), 'fail');
     assert.equal(rollup('rgaa-4.1.2-10.6'), 'fail');

@@ -40,7 +40,7 @@ const skip = !chromium
 
 const RULE_ID = 'rgaa-orientation-content-parity';
 // Core's browser bundle with the RGAA pack registered, every scan naming it.
-const { BROWSER_BUNDLE: BUNDLE } = require('../../helpers/run.js');
+const { BROWSER_BUNDLE: BUNDLE, rollupOutcome } = require('../../helpers/run.js');
 const FIXTURE = fs.readFileSync(
   path.join(__dirname, '../../fixtures', `${RULE_ID}-all-scenarios.html`),
   'utf8'
@@ -260,7 +260,7 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
 
   await t.test('under the RGAA profile: WCAG 1.3.4 does not fail, RGAA 13.9 does', async () => {
     const [result] = await scan(FIXTURE, { profile: 'rgaa-4.1.2-with-wcag' });
-    const rollup = (id) => result.rulesResults.find((r) => r.ruleId === id).outcome;
+    const rollup = (id) => rollupOutcome(result.rulesResults.find((r) => r.ruleId === id));
     assert.notEqual(rollup('wcag-1.3.4-orientation'), 'fail');
     assert.equal(rollup('rgaa-4.1.2-13.9'), 'fail');
   });

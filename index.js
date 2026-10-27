@@ -32,13 +32,16 @@ const standard = {
     // RGAA alone: the pack's own rules (the rgaa tag) and the core rules
     // rule-map.js gives an RGAA test (mappedRules), and nothing else, so
     // results hold RGAA's criteria and no WCAG ones. With no WCAG tag to
-    // imply it, the profile names the WCAG version RGAA is built on, where
-    // 4.1.1 Parsing still counts: a duplicate id fails 8.2.1.
+    // imply it, the profile names the WCAG version RGAA is built on. RGAA
+    // 8.2 requires valid code as written, which the 2023 errata to WCAG 2.1
+    // no longer count under 4.1.1 Parsing: keepsParsing keeps a duplicate id
+    // a failure of 8.2.1.
     'rgaa-4.1.2': {
       version: '4.1.2',
       tags: ['rgaa'],
       mappedRules: true,
-      wcagVersion: wcagVersionOf('4.1.2')
+      wcagVersion: wcagVersionOf('4.1.2'),
+      keepsParsing: true
     }
   },
   ruleTag: 'rgaa',
@@ -75,7 +78,7 @@ module.exports = definePack({
   name: '@surea11y/pack-rgaa',
   version: '0.1.0',
   namespace: 'rgaa',
-  core: '>=1.12.0',
+  core: '^1.14.0',
   description: 'RGAA 4.1.2, the French accessibility standard',
   rules,
   standard,

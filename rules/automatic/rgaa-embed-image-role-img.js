@@ -61,7 +61,32 @@ const meta = {
   category: 'perceivable',
   type: 'automatic',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['noAlternative', 'alternativeWithoutRoleImg', 'adjacentLinkOrButton'],
+  review: {
+    alternativeWithoutRoleImg: {
+      steps: [
+        'Find the <embed> image the report names: it has a text alternative (aria-labelledby, aria-label or title) but no role="img".',
+        'Look at the image and read its text alternative.',
+        'Check which reading of RGAA 1.1.7 the audit follows: the test asks for both the alternative and role="img", while its methodology checks the alternative alone.'
+      ],
+      passWhen:
+        'The image is informative, its alternative is there, and the audit reads 1.1.7 by its methodology; adding role="img" settles it either way.',
+      failWhen:
+        'The audit reads 1.1.7 by its wording, which requires role="img" with the alternative, so the image fails RGAA 1.1.7.'
+    },
+    adjacentLinkOrButton: {
+      steps: [
+        'Find the <embed> image the report names, and the link or button right after it in the code.',
+        'Activate the link or button.',
+        'Compare what it gives access to with what the image shows.'
+      ],
+      passWhen:
+        'The link or button leads to an alternative content that gives the same information as the image.',
+      failWhen:
+        'The link or button does not lead to an alternative, so the informative image has none, which fails RGAA 1.1.7.'
+    }
+  }
 };
 
 function runInPage(ctx) {

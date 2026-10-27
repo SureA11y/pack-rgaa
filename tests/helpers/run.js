@@ -72,8 +72,25 @@ const BROWSER_BUNDLE =
 })();
 `;
 
+// A rollup's outcome as a test states it. Since core 1.14 a criterion whose
+// rules check only part of it is cantTell where they all pass
+// (partialCheck) or all find nothing to check (partialCoverage): every WCAG
+// criterion, and every RGAA criterion outside COMPLETE_CHECK (mappings.js).
+// Those read 'passedInPart' and 'noneFoundInPart', so a test still says
+// which way the rules went; any other rollup reads its outcome.
+const PARTIAL = {
+  'composite.rollup.cantTell.partialCheck': 'passedInPart',
+  'composite.rollup.cantTell.partialCoverage': 'noneFoundInPart'
+};
+function rollupOutcome(rollup) {
+  if (!rollup) return undefined;
+  const code = rollup.data && rollup.data.details && rollup.data.details.reasonCode;
+  return (rollup.outcome === 'cantTell' && PARTIAL[code]) || rollup.outcome;
+}
+
 module.exports = {
   ...helpers,
+  rollupOutcome,
   runa11yCoreOnHtml,
   runa11yCoreOnDom,
   core,

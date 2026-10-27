@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-meta-redirect-immediate';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -108,17 +108,17 @@ test(`${RULE_ID}: the RGAA profile, the rgaa tag and the 13.1 rollup id run it`,
 // than 20 hours; RGAA asks about both.
 test(`${RULE_ID}: RGAA 13.1 asks where WCAG 2.2.1 fails or passes a delayed redirect`, () => {
   const short = runa11yCoreOnHtml(page('5; url=/new'), RGAA);
-  assert.equal(rollup(short, 'rgaa-4.1.2-13.1').outcome, 'cantTell');
-  assert.equal(rollup(short, 'wcag-2.2.1-timing-adjustable').outcome, 'fail');
+  assert.equal(rollupOutcome(rollup(short, 'rgaa-4.1.2-13.1')), 'cantTell');
+  assert.equal(rollupOutcome(rollup(short, 'wcag-2.2.1-timing-adjustable')), 'fail');
   const long = runa11yCoreOnHtml(page('100000; url=/new'), RGAA);
-  assert.equal(rollup(long, 'rgaa-4.1.2-13.1').outcome, 'cantTell');
-  assert.equal(rollup(long, 'wcag-2.2.1-timing-adjustable').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup(long, 'rgaa-4.1.2-13.1')), 'cantTell');
+  assert.equal(rollupOutcome(rollup(long, 'wcag-2.2.1-timing-adjustable')), 'passedInPart');
 });
 
 test(`${RULE_ID}: RGAA 13.1 and WCAG 2.2.1 agree on an immediate redirect`, () => {
   const result = runa11yCoreOnHtml(page('0; url=/new'), RGAA);
-  assert.equal(rollup(result, 'rgaa-4.1.2-13.1').outcome, 'pass');
-  assert.equal(rollup(result, 'wcag-2.2.1-timing-adjustable').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-13.1')), 'passedInPart');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-2.2.1-timing-adjustable')), 'passedInPart');
 });
 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html)`, () => {

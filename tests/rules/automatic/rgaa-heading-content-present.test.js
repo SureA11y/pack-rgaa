@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-heading-content-present';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -173,7 +173,7 @@ test(`${RULE_ID}: an empty heading fails 9.1 under RGAA; WCAG's rollups are unch
   const wcag = runa11yCoreOnHtml(page(body), { engineOptions: { profile: 'wcag22-aa' } });
   for (const prefix of ['wcag-1.3.1-', 'wcag-2.4.6-']) {
     const inWcagRun = wcag.rulesResults.find((r) => r.ruleId.startsWith(prefix));
-    assert.equal(rollup(prefix).outcome, inWcagRun.outcome, prefix);
+    assert.equal(rollupOutcome(rollup(prefix)), rollupOutcome(inWcagRun), prefix);
   }
 });
 
@@ -190,7 +190,7 @@ test(`${RULE_ID}: both agree on a heading with text`, () => {
   assert.equal(emptyHeadingByDefault(body).outcome, 'pass');
   const { result, rollup } = rgaaRun(body);
   assert.equal(result.checksResults.find((r) => r.ruleId === RULE_ID).outcome, 'pass');
-  assert.notEqual(rollup('rgaa-4.1.2-9.1').outcome, 'fail');
+  assert.notEqual(rollupOutcome(rollup('rgaa-4.1.2-9.1')), 'fail');
 });
 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-heading-content-present-all-scenarios.html)`, () => {

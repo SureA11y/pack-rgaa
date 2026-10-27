@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-img-decorative-no-alternative';
 const WCAG_RULE = 'presentation-role-conflict';
@@ -97,7 +97,7 @@ function verdicts(body) {
   const html = page(body);
   const rgaa = runa11yCoreOnHtml(html, { engineOptions: { profile: 'rgaa-4.1.2' } });
   const plain = runa11yCoreOnHtml(html);
-  const rollup = (r, id) => (r.rulesResults.find((x) => x.ruleId === id) || {}).outcome;
+  const rollup = (r, id) => rollupOutcome(r.rulesResults.find((x) => x.ruleId === id));
   const check = (r, id) => (r.checksResults.find((x) => x.ruleId === id) || {}).outcome;
   const conflict = rgaa.checksResults.find((x) => x.ruleId === WCAG_RULE);
   assert.ok(!conflict || !conflict.rollupIds.includes(RGAA_ROLLUP), 'unlinked from 1.2.1');
@@ -120,14 +120,14 @@ test(`${RULE_ID}: RGAA profile, a focusable role="presentation" div: the WCAG-si
   const v = verdicts('<div role="presentation" tabindex="0">x</div>');
   assert.equal(v.wcagRule, 'cantTell');
   assert.equal(v.rule, 'notApplicable');
-  assert.equal(v.rgaa, 'notApplicable');
+  assert.equal(v.rgaa, 'noneFoundInPart');
 });
 
 test(`${RULE_ID}: RGAA profile, the two agree that alt="" alone raises nothing`, () => {
   const v = verdicts('<img src="a.png" alt="">');
   assert.equal(v.wcagRule, 'pass');
   assert.equal(v.rule, 'pass');
-  assert.equal(v.rgaa, 'pass');
+  assert.equal(v.rgaa, 'passedInPart');
 });
 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-img-decorative-no-alternative-all-scenarios.html)`, () => {

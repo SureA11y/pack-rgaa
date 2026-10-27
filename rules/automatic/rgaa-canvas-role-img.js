@@ -72,7 +72,37 @@ const meta = {
   category: 'perceivable',
   type: 'automatic',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  reasonCodes: [
+    'roleImgWithoutAriaName',
+    'nameWithoutRoleImg',
+    'adjacentLinkOrButton',
+    'noAlternative'
+  ],
+  review: {
+    adjacentLinkOrButton: {
+      steps: [
+        'Find the <canvas> the report names, and the link or button right after it in the code.',
+        'Activate the link or button.',
+        'Compare what it gives access to with what the canvas shows.'
+      ],
+      passWhen:
+        'The link or button leads to an alternative content that gives the same information as the canvas, or the canvas is decorative and hidden with aria-hidden="true".',
+      failWhen:
+        'The link or button does not lead to an alternative, so the informative canvas has none, which fails RGAA 1.1.8.'
+    },
+    noAlternative: {
+      steps: [
+        'Find the <canvas> the report names: it has no role, name, content or adjacent link.',
+        'Look at what it draws on screen (a chart, text, a game, or only an animated background or a decorative layer).',
+        'Decide whether it carries information.'
+      ],
+      passWhen:
+        'The canvas carries information and a mechanism on the page lets the user replace it with an alternative content, which RGAA 1.1.8 accepts.',
+      failWhen:
+        'The canvas carries information and nothing gives an alternative to it, which fails RGAA 1.1.8; or it is decorative but not hidden with aria-hidden="true", which fails 1.2.5.'
+    }
+  }
 };
 
 function runInPage(ctx) {

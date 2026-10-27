@@ -57,7 +57,21 @@ const meta = {
   category: 'robust',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['nameMissing', 'imageButtonNoAlt'],
+  review: {
+    imageButtonNoAlt: {
+      steps: [
+        'Find the image button (<input type="image">) the report names.',
+        'Look at the image and decide what the button does.',
+        'Listen to it with a screen reader, or read its accessible name in the browser\'s accessibility tree: the browser names it with a generic word such as "Submit".'
+      ],
+      passWhen:
+        'The generic name the browser gives says what the button does, which is rare; an alt describing the action settles it.',
+      failWhen:
+        "The generic name does not tell what the button does, so this scripted control has no relevant name for assistive technologies, which fails RGAA 7.1.1 (and the image button's alternative, 1.1.3)."
+    }
+  }
 };
 
 module.exports = { id, meta, runInPage };

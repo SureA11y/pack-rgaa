@@ -62,7 +62,20 @@ const meta = {
   category: 'perceivable',
   type: 'manual',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['complexTableSummary'],
+  review: {
+    complexTableSummary: {
+      steps: [
+        'Find the table the report names, and read the summary it lists: the caption, the text aria-describedby points to, or the summary attribute.',
+        'Look at how the table is built: which headers apply to which groups of rows or columns.',
+        'Ask whether someone who cannot see the table would know from the summary how to read it.'
+      ],
+      passWhen: 'The summary explains the nature and structure of the table, not only its title.',
+      failWhen:
+        'The summary gives only a title or says nothing of how the table is built, which fails RGAA 5.2.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

@@ -51,7 +51,28 @@ const meta = {
   category: 'robust',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['DOCTYPE_AFTER_HTML', 'SOURCE_MISSING', 'SOURCE_TOO_SHORT'],
+  review: {
+    SOURCE_MISSING: {
+      steps: [
+        "Open the page's source as the server sends it (view-source: in the browser, or curl), not the developer tools' element tree.",
+        'Find the <html> tag, skipping comments, and look for a <!DOCTYPE> declaration before it.'
+      ],
+      passWhen: 'The doctype comes before the <html> tag.',
+      failWhen:
+        'The doctype comes after the <html> tag, which fails RGAA 8.1.3; a page with no doctype at all fails 8.1.1 instead.'
+    },
+    SOURCE_TOO_SHORT: {
+      steps: [
+        "Open the page's source as the server sends it (view-source: in the browser, or curl).",
+        'Read past its start, which the scan was given, to the <html> tag, and look for a <!DOCTYPE> declaration before it.'
+      ],
+      passWhen: 'The doctype comes before the <html> tag.',
+      failWhen:
+        'The doctype comes after the <html> tag, which fails RGAA 8.1.3; a page with no doctype at all fails 8.1.1 instead.'
+    }
+  }
 };
 
 function applicability(ctx) {

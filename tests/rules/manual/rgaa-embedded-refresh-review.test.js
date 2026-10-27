@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 const { RGAA_RULE_TESTS } = require('../../../rule-map.js');
 
 const RULE_ID = 'rgaa-embedded-refresh-review';
@@ -117,9 +117,9 @@ test(`${RULE_ID}: RGAA 13.1 asks when a passing meta refresh sits next to a canv
     const result = runa11yCoreOnHtml(page(body, head), {
       engineOptions: { profile: 'rgaa-4.1.2' }
     });
-    return (result.rulesResults.find((r) => r.ruleId === 'rgaa-4.1.2-13.1') || {}).outcome;
+    return rollupOutcome(result.rulesResults.find((r) => r.ruleId === 'rgaa-4.1.2-13.1'));
   };
-  assert.equal(outcome('<p>Scores</p>'), 'pass');
+  assert.equal(outcome('<p>Scores</p>'), 'passedInPart');
   assert.equal(outcome('<canvas></canvas>'), 'cantTell');
 });
 

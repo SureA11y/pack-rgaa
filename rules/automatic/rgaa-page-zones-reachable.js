@@ -69,7 +69,88 @@ const meta = {
   category: 'operable',
   type: 'automatic',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  // The reason codes the rule gives, so definePack can check that `review`
+  // names only these.
+  reasonCodes: [
+    'ZONE_HEADING',
+    'ZONE_SKIP_LINK',
+    'ZONE_TOGGLE',
+    'ZONE_QUICK_LINK',
+    'ZONE_NO_MECHANISM',
+    'ZONE_UNIDENTIFIED',
+    'MAIN_NOT_FOUND'
+  ],
+  // How a person answers each question the rule asks, per reason code: a few
+  // steps from the element the finding names, then what they see if it
+  // passes and if it fails. In English; reports show it as "How to check".
+  review: {
+    ZONE_HEADING: {
+      steps: [
+        'Find the area the report names (a header, navigation, main content, footer or search) and the heading that opens it.',
+        'Read the heading and check that it says what the area holds.'
+      ],
+      passWhen:
+        'The heading says what the area holds, so a user can reach it from the headings list.',
+      failWhen:
+        'The heading does not say what the area holds, and the area has no landmark, skip link, toggle button or quick-access link, which fails RGAA 12.6.1.'
+    },
+    ZONE_SKIP_LINK: {
+      steps: [
+        'Find the area the report names and the same-page link just before it.',
+        'Tab to the link: check that it shows, at least on focus, and that activating it moves past the area.'
+      ],
+      passWhen: 'The link is visible, at least on focus, and skips the area.',
+      failWhen:
+        'The link is never shown or does not skip the area, and the area has no landmark, relevant heading or other way past it, which fails RGAA 12.6.1.'
+    },
+    ZONE_TOGGLE: {
+      steps: [
+        'Find the area the report names and the button just before it.',
+        'Activate the button with the keyboard and check that it hides and shows the area.'
+      ],
+      passWhen: 'The button hides the area, so a user can move past it.',
+      failWhen:
+        'The button does not hide the area, and the area has no landmark, relevant heading or link past it, which fails RGAA 12.6.1.'
+    },
+    ZONE_QUICK_LINK: {
+      steps: [
+        'Find the area the report names and the same-page link that leads to it.',
+        'Tab through the page and check that the link shows, at least when it has focus, and that activating it reaches the area.'
+      ],
+      passWhen: 'The link is visible, at least on focus, and leads to the area.',
+      failWhen:
+        'The link stays hidden or does not reach the area, and the area has no landmark, relevant heading or other way to it, which fails RGAA 12.6.1.'
+    },
+    ZONE_NO_MECHANISM: {
+      steps: [
+        'Find the block the report names and decide whether it is one of the page’s areas: header, main navigation, main content, footer or search.',
+        'If it is, check how a user reaches or skips it: a landmark matching its nature, a heading saying what it holds, a button just before it that hides it, a skip link just before it, or a visible quick-access link to it.'
+      ],
+      passWhen: 'The block is not one of those areas, or one of those ways reaches or skips it.',
+      failWhen:
+        'The block is one of those areas and none of those ways reaches or skips it, which fails RGAA 12.6.1.'
+    },
+    ZONE_UNIDENTIFIED: {
+      steps: [
+        'Find the block the report names; it holds links to other pages or places and sits outside every area found.',
+        'Decide whether it is a header, navigation or footer.',
+        'If it is, check whether a landmark matching its nature, a heading that says what it holds, a button before it that hides it, a skip link before it or a visible quick-access link lets a user reach or skip it.'
+      ],
+      passWhen:
+        'The block is not one of the areas RGAA 12.6.1 lists, or one of those ways reaches or skips it.',
+      failWhen:
+        'The block is a header, navigation or footer that none of those ways reaches or skips, which fails RGAA 12.6.1.'
+    },
+    MAIN_NOT_FOUND: {
+      steps: [
+        'Look at the page and find its main content.',
+        'Check how a user reaches it: a main landmark, a heading that says what it holds, a skip link just before it or a visible quick-access link to it.'
+      ],
+      passWhen: 'One of those ways reaches the main content.',
+      failWhen: 'Nothing lets a user reach the main content directly, which fails RGAA 12.6.1.'
+    }
+  }
 };
 
 // Not applicable while a modal dialog is open either: the rest of the page

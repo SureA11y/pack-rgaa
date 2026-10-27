@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-frame-title-not-empty';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -97,15 +97,15 @@ test(`${RULE_ID}: RGAA 2.2 fails an empty title that WCAG 4.1.2 passes in the sa
     page('<iframe src="a.html" title="" aria-label="Map"></iframe>'),
     RGAA
   );
-  assert.equal(rollup(result, 'rgaa-4.1.2-2.2').outcome, 'fail');
-  assert.equal(rollup(result, 'rgaa-4.1.2-2.1').outcome, 'pass');
-  assert.equal(rollup(result, 'wcag-4.1.2-name').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-2.2')), 'fail');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-2.1')), 'pass');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-4.1.2-name')), 'passedInPart');
 });
 
 test(`${RULE_ID}: RGAA 2.2 and WCAG 4.1.2 agree on an empty title with no other name`, () => {
   const result = runa11yCoreOnHtml(page('<iframe src="a.html" title=""></iframe>'), RGAA);
-  assert.equal(rollup(result, 'rgaa-4.1.2-2.2').outcome, 'fail');
-  assert.equal(rollup(result, 'wcag-4.1.2-name').outcome, 'fail');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-2.2')), 'fail');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-4.1.2-name')), 'fail');
 });
 
 // identical-iframes-same-purpose no longer reports 2.2.1: it groups frames by
@@ -123,7 +123,7 @@ test(`${RULE_ID}: two frames sharing only an aria-label do not fail RGAA 2.2`, (
       'identical-iframes-same-purpose'
     )
   );
-  assert.equal(rollup(result, 'rgaa-4.1.2-2.2').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-2.2')), 'passedInPart');
 });
 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html)`, () => {

@@ -60,7 +60,31 @@ const meta = {
   category: 'perceivable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['emptyHeading', 'nameOutsideContent', 'contentNotReadable'],
+  review: {
+    nameOutsideContent: {
+      steps: [
+        'Find the heading the report names, and look at what it shows on screen.',
+        'Inspect it: its text comes only from a title, aria-label or aria-labelledby on it, or from an aria-label on an element inside it, not from its content.',
+        'Listen to the heading with a screen reader, and compare what is read with what is shown.'
+      ],
+      passWhen:
+        'What the heading shows, and what assistive technologies read, say what the section is about, so its content is relevant.',
+      failWhen:
+        'The heading shows nothing that says what the section is about, or what is read differs from what is shown, which fails RGAA 9.1.2.'
+    },
+    contentNotReadable: {
+      steps: [
+        'Find the heading the report names, and look at what it shows on screen.',
+        'Inspect its content: text hidden with aria-hidden="true", an image with no text alternative, text added by CSS (::before, ::after), or an embedded element.',
+        'Listen to the heading with a screen reader.'
+      ],
+      passWhen: 'The heading is read with a text that says what the section is about.',
+      failWhen:
+        'The heading is read as empty or meaningless (an unnamed image, CSS text a screen reader skips), so its content is not relevant, which fails RGAA 9.1.2.'
+    }
+  }
 };
 
 function runInPage(ctx) {

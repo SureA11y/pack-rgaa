@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-canvas-decorative-aria-hidden';
 const WCAG_RULE = 'canvas-text-alternative-present';
@@ -104,7 +104,7 @@ function verdicts(body) {
   const html = page(body);
   const rgaa = runa11yCoreOnHtml(html, { engineOptions: { profile: 'rgaa-4.1.2-with-wcag' } });
   const wcag = runa11yCoreOnHtml(html, { engineOptions: { profile: 'wcag22-aa' } });
-  const rollup = (r, id) => (r.rulesResults.find((x) => x.ruleId === id) || {}).outcome;
+  const rollup = (r, id) => rollupOutcome(r.rulesResults.find((x) => x.ruleId === id));
   const check = (r, id) => (r.checksResults.find((x) => x.ruleId === id) || {}).outcome;
   assert.equal(rollup(rgaa, WCAG_ROLLUP), rollup(wcag, WCAG_ROLLUP), body);
   assert.equal(check(rgaa, WCAG_RULE), check(wcag, WCAG_RULE), body);
@@ -126,7 +126,7 @@ test(`${RULE_ID}: RGAA profile, the two standards agree on aria-hidden="true" wi
   const v = verdicts('<canvas aria-hidden="true"></canvas>');
   assert.equal(v.wcagRule, 'notApplicable');
   assert.equal(v.rule, 'pass');
-  assert.equal(v.rgaa, 'pass');
+  assert.equal(v.rgaa, 'passedInPart');
 });
 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-canvas-decorative-aria-hidden-all-scenarios.html)`, () => {

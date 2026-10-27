@@ -67,7 +67,58 @@ const meta = {
   category: 'robust',
   type: 'automatic',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  // The reason codes the rule gives, so definePack can check that `review`
+  // names only these.
+  reasonCodes: [
+    'VALIDATOR_ERROR',
+    'pageReview',
+    'VALIDATOR_FAILED',
+    'ORIGINAL_SOURCE',
+    'REPORT_TRUNCATED'
+  ],
+  // How a person answers each question the rule asks, per reason code: a few
+  // steps from the element the finding names, then what they see if it
+  // passes and if it fails. In English; reports show it as "How to check".
+  review: {
+    pageReview: {
+      steps: [
+        'Open the page in a browser and let its scripts run.',
+        'Copy the generated source (the DOM, from the developer tools) and check it with the W3C validator (Nu HTML Checker).',
+        'Read the errors, leaving out the CSS messages and the warnings: tags, attributes and values written as allowed, tags nested, opened and closed correctly, id values unique, no attribute repeated on an element.'
+      ],
+      passWhen: 'The validator reports no HTML error on the generated source.',
+      failWhen:
+        'The validator reports an HTML error on the generated source, which fails RGAA 8.2.1.'
+    },
+    VALIDATOR_FAILED: {
+      steps: [
+        'Copy the page’s generated source (the DOM, after its scripts have run) and check it with the W3C validator (Nu HTML Checker) again.',
+        'If the validator still cannot read it, find out why (the page is too large, served with an unexpected type) and check it in parts.'
+      ],
+      passWhen: 'The validator checks the generated source and reports no HTML error.',
+      failWhen:
+        'The validator reports an HTML error on the generated source, which fails RGAA 8.2.1.'
+    },
+    ORIGINAL_SOURCE: {
+      steps: [
+        'Open the page in a browser and let its scripts run.',
+        'Copy the generated source (the DOM, from the developer tools) and check it with the W3C validator (Nu HTML Checker), rather than the source the server sent.',
+        'Read the HTML errors it reports.'
+      ],
+      passWhen: 'The validator reports no HTML error on the generated source.',
+      failWhen:
+        'The validator reports an HTML error on the generated source, which fails RGAA 8.2.1.'
+    },
+    REPORT_TRUNCATED: {
+      steps: [
+        'Open the validator’s full report for the page’s generated source; the scan read only its first 200 messages.',
+        'Read every HTML error in it, leaving out the CSS messages and the warnings.'
+      ],
+      passWhen: 'The full report holds no HTML error.',
+      failWhen: 'The report holds an HTML error, which fails RGAA 8.2.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

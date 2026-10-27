@@ -49,7 +49,8 @@ const meta = {
   category: 'robust',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['invalidDoctype']
 };
 
 function applicability(ctx) {

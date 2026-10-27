@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-orientation-content-parity';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -141,7 +141,7 @@ test(`${RULE_ID}: the RGAA profile, the rgaa tag and the 13.9 rollup id run it`,
 test(`${RULE_ID}: WCAG 1.3.4 passes a table hidden in portrait while RGAA 13.9 asks`, () => {
   const html = page('@media (orientation: portrait) { .tableau { display: none } }', TABLE);
   const result = runa11yCoreOnHtml(html, RGAA);
-  assert.equal(rollup(result, 'wcag-1.3.4-orientation').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-1.3.4-orientation')), 'passedInPart');
   const rgaa = rollup(result, 'rgaa-4.1.2-13.9');
   assert.equal(rgaa.outcome, 'cantTell');
   assert.ok(rgaa.data.details.checksIds.includes(RULE_ID));
@@ -149,8 +149,8 @@ test(`${RULE_ID}: WCAG 1.3.4 passes a table hidden in portrait while RGAA 13.9 a
 
 test(`${RULE_ID}: WCAG 1.3.4 and RGAA 13.9 agree on a page with no orientation query`, () => {
   const result = runa11yCoreOnHtml(page('p { color: #000 }', TABLE), RGAA);
-  assert.equal(rollup(result, 'wcag-1.3.4-orientation').outcome, 'pass');
-  assert.equal(rollup(result, 'rgaa-4.1.2-13.9').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-1.3.4-orientation')), 'passedInPart');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-13.9')), 'passedInPart');
   assert.equal(result.checksResults.find((r) => r.ruleId === RULE_ID).outcome, 'notApplicable');
 });
 

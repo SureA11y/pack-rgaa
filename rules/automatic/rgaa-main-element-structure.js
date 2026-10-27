@@ -56,9 +56,42 @@ const meta = {
   type: 'automatic',
   defaultConfidence: 'high',
   coverage: {},
-  // Reason codes built at runtime, so not found by reading the source: the
-  // finding identities a baseline holds include them.
-  reasonCodes: ['allHidden', 'hiddenByAncestor', 'noMain', 'roleMainOnly']
+  // The reason codes the rule gives, so definePack can check that `review`
+  // names only these.
+  reasonCodes: ['roleMainOnly', 'noMain', 'extraMain', 'hiddenByAncestor', 'allHidden'],
+  // How a person answers each question the rule asks, per reason code: a few
+  // steps from the element the finding names, then what they see if it
+  // passes and if it fails. In English; reports show it as "How to check".
+  review: {
+    noMain: {
+      steps: [
+        'Look at the page and find its main content, the part that differs from one page of the site to the next.',
+        'Inspect the code around it for a <main> element.'
+      ],
+      passWhen:
+        'The page has no main content of its own, or its main content is inside a <main> element.',
+      failWhen: 'The main content is not structured with a <main> element, which fails RGAA 9.2.1.'
+    },
+    hiddenByAncestor: {
+      steps: [
+        'Find the <main> element the report names; it has no hidden attribute of its own, but is hidden by an ancestor, a closed <details> or a closed <dialog>.',
+        'Inspect the page for its other <main> elements, and check which one is shown.'
+      ],
+      passWhen:
+        'Only one <main> is shown, and every other one carries the hidden attribute itself.',
+      failWhen:
+        'A <main> other than the one shown lacks its own hidden attribute, which fails RGAA 9.2.1: hiding it another way does not count.'
+    },
+    allHidden: {
+      steps: [
+        'Find the <main> elements of the page; each carries the hidden attribute.',
+        'Load the page as a user does, and check whether a script shows one of them, removing its hidden attribute.'
+      ],
+      passWhen:
+        'Once the page is shown, one <main> holds the main content and has no hidden attribute.',
+      failWhen: 'The main content stays outside any shown <main> element, which fails RGAA 9.2.1.'
+    }
+  }
 };
 
 function applicability(ctx) {

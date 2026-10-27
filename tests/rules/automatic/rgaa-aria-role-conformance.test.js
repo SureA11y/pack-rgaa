@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-aria-role-conformance';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -250,28 +250,28 @@ test(`${RULE_ID}: the RGAA profile, the rgaa tag and the 8.2 rollup id run it`, 
 test(`${RULE_ID}: RGAA 8.2 fails a role list with an unknown token that WCAG 4.1.2 passes`, () => {
   const result = runa11yCoreOnHtml(page('<div role="bogus button" tabindex="0">Open</div>'), RGAA);
   assert.equal(check(result, 'aria-roles-valid').outcome, 'pass');
-  assert.equal(rollup(result, 'rgaa-4.1.2-8.2').outcome, 'fail');
-  assert.equal(rollup(result, 'wcag-4.1.2-aria-validity').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-8.2')), 'fail');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-4.1.2-aria-validity')), 'passedInPart');
   assert.ok(!rollup(result, 'rgaa-4.1.2-8.2').data.details.checksIds.includes('aria-roles-valid'));
 });
 
 test(`${RULE_ID}: RGAA 8.2 fails an unknown role on a native element that WCAG 4.1.2 only asks about`, () => {
   const result = runa11yCoreOnHtml(page('<button role="bogus">Save</button>'), RGAA);
   assert.equal(check(result, 'aria-roles-valid').outcome, 'cantTell');
-  assert.equal(rollup(result, 'rgaa-4.1.2-8.2').outcome, 'fail');
-  assert.equal(rollup(result, 'wcag-4.1.2-aria-validity').outcome, 'cantTell');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-8.2')), 'fail');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-4.1.2-aria-validity')), 'cantTell');
 });
 
 test(`${RULE_ID}: RGAA 8.2 and WCAG 4.1.2 agree on an unknown role and on a valid one`, () => {
   const bad = runa11yCoreOnHtml(page('<div role="bogus">a</div>'), RGAA);
-  assert.equal(rollup(bad, 'rgaa-4.1.2-8.2').outcome, 'fail');
-  assert.equal(rollup(bad, 'wcag-4.1.2-aria-validity').outcome, 'fail');
+  assert.equal(rollupOutcome(rollup(bad, 'rgaa-4.1.2-8.2')), 'fail');
+  assert.equal(rollupOutcome(rollup(bad, 'wcag-4.1.2-aria-validity')), 'fail');
   // A valid role passes both rules; 8.2 still asks for the validator report
   // (rgaa-markup-validation-review), so it is at best cantTell.
   const good = runa11yCoreOnHtml(page('<div role="button" tabindex="0">Open</div>'), RGAA);
   assert.equal(check(good, RULE_ID).outcome, 'pass');
-  assert.equal(rollup(good, 'wcag-4.1.2-aria-validity').outcome, 'pass');
-  assert.equal(rollup(good, 'rgaa-4.1.2-8.2').outcome, 'cantTell');
+  assert.equal(rollupOutcome(rollup(good, 'wcag-4.1.2-aria-validity')), 'passedInPart');
+  assert.equal(rollupOutcome(rollup(good, 'rgaa-4.1.2-8.2')), 'cantTell');
 });
 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html)`, () => {

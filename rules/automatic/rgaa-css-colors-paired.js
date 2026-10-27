@@ -81,7 +81,47 @@ const meta = {
   category: 'perceivable',
   type: 'automatic',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  reasonCodes: [
+    'COLOR_WITHOUT_BACKGROUND',
+    'BACKGROUND_WITHOUT_COLOR',
+    'BACKGROUND_IMAGE_WITHOUT_COLOR'
+  ],
+  review: {
+    COLOR_WITHOUT_BACKGROUND: {
+      steps: [
+        'Find the element the report names: an author style sheet gives it a text color (color).',
+        "In the browser's developer tools, look at the styles that apply to it and to its ancestors, including those from the style sheets the scan could not read.",
+        'Look for a background color (background or background-color) on it or on an ancestor.'
+      ],
+      passWhen:
+        'A background color is declared on the element or on an ancestor, so its text stays readable when the user changes one of the two colors.',
+      failWhen:
+        "No author style declares a background color for the text, so a user's own background color can make it unreadable, which fails RGAA 10.5.1."
+    },
+    BACKGROUND_WITHOUT_COLOR: {
+      steps: [
+        'Find the element the report names: an author style sheet gives it, or an ancestor, a background color.',
+        "In the browser's developer tools, look at the styles that apply to the text inside it, including those from the style sheets the scan could not read.",
+        'Look for a text color (color) on the element or on an ancestor.'
+      ],
+      passWhen:
+        'A text color is declared on the element or on an ancestor, along with the background color.',
+      failWhen:
+        "No author style declares a text color for the text, so a user's own text color can make it unreadable on that background, which fails RGAA 10.5.2."
+    },
+    BACKGROUND_IMAGE_WITHOUT_COLOR: {
+      steps: [
+        'Find the element the report names: an author style sheet gives it a background image.',
+        "In the browser's developer tools, look at the styles that apply to it, including those from the style sheets the scan could not read.",
+        'Look for a background color (background or background-color) on the element or on an ancestor.'
+      ],
+      passWhen:
+        'A background color is declared too, so the text stays readable when the image does not load or images are turned off.',
+      failWhen:
+        'No author style declares a background color behind the image, which fails RGAA 10.5.3.'
+    }
+  }
 };
 
 function applicability(ctx) {

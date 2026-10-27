@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-meta-refresh-no-url-timing';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -125,25 +125,25 @@ test(`${RULE_ID}: the RGAA profile, the rgaa tag and the 13.1 rollup id run it`,
 // accepts twenty hours "au moins".
 test(`${RULE_ID}: a refresh of exactly 20 hours passes RGAA 13.1 and fails WCAG 2.2.1`, () => {
   const result = runa11yCoreOnHtml(page('72000'), RGAA);
-  assert.equal(rollup(result, 'rgaa-4.1.2-13.1').outcome, 'pass');
-  assert.equal(rollup(result, 'wcag-2.2.1-timing-adjustable').outcome, 'fail');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-13.1')), 'passedInPart');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-2.2.1-timing-adjustable')), 'fail');
 });
 
 // meta-refresh-timing-absent treats a zero delay as an immediate redirect;
 // without a URL it reloads the page over and over.
 test(`${RULE_ID}: a zero-delay reload fails RGAA 13.1 and passes WCAG 2.2.1`, () => {
   const result = runa11yCoreOnHtml(page('0'), RGAA);
-  assert.equal(rollup(result, 'rgaa-4.1.2-13.1').outcome, 'fail');
-  assert.equal(rollup(result, 'wcag-2.2.1-timing-adjustable').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-13.1')), 'fail');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-2.2.1-timing-adjustable')), 'passedInPart');
 });
 
 test(`${RULE_ID}: RGAA 13.1 and WCAG 2.2.1 agree on a 30-second refresh and a 24-hour one`, () => {
   const short = runa11yCoreOnHtml(page('30'), RGAA);
-  assert.equal(rollup(short, 'rgaa-4.1.2-13.1').outcome, 'fail');
-  assert.equal(rollup(short, 'wcag-2.2.1-timing-adjustable').outcome, 'fail');
+  assert.equal(rollupOutcome(rollup(short, 'rgaa-4.1.2-13.1')), 'fail');
+  assert.equal(rollupOutcome(rollup(short, 'wcag-2.2.1-timing-adjustable')), 'fail');
   const long = runa11yCoreOnHtml(page('86400'), RGAA);
-  assert.equal(rollup(long, 'rgaa-4.1.2-13.1').outcome, 'pass');
-  assert.equal(rollup(long, 'wcag-2.2.1-timing-adjustable').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup(long, 'rgaa-4.1.2-13.1')), 'passedInPart');
+  assert.equal(rollupOutcome(rollup(long, 'wcag-2.2.1-timing-adjustable')), 'passedInPart');
 });
 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html)`, () => {

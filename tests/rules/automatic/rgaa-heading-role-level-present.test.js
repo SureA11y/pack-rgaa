@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-heading-role-level-present';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -123,16 +123,16 @@ test(`${RULE_ID}: under the RGAA profile, 9.1 fails where WCAG 1.3.1 passes`, ()
     rgaa91.meta.normativeMappings.filter((m) => m.standard === 'RGAA').map((m) => m.requirement),
     ['9.1.3']
   );
-  assert.equal(rollup('wcag-1.3.1-').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup('wcag-1.3.1-')), 'passedInPart');
 });
 
-test(`${RULE_ID}: under the RGAA profile, both pass on role="heading" with aria-level`, () => {
+test(`${RULE_ID}: under the RGAA profile, neither fails role="heading" with aria-level`, () => {
   const { result, rollup } = rgaaRun(
     '<main><div role="heading" aria-level="1">News</div><p>Text.</p></main>'
   );
   assert.equal(result.checksResults.find((r) => r.ruleId === RULE_ID).outcome, 'pass');
-  assert.equal(rollup('rgaa-4.1.2-9.1').outcome, 'pass');
-  assert.equal(rollup('wcag-1.3.1-').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup('rgaa-4.1.2-9.1')), 'passedInPart');
+  assert.equal(rollupOutcome(rollup('wcag-1.3.1-')), 'passedInPart');
 });
 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-heading-role-level-present-all-scenarios.html)`, () => {

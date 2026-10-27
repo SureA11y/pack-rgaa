@@ -51,7 +51,21 @@ const meta = {
   category: 'perceivable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['noCaptionsKind', 'subtitlesMayBeTranslation'],
+  review: {
+    subtitlesMayBeTranslation: {
+      steps: [
+        'Find the video the report names, and note the language spoken in it.',
+        'Turn on each of its subtitles tracks in the player and watch a passage with dialogue and sounds.',
+        'Check whether a track is in the language of the video and gives who speaks and the sounds that matter, which makes it captions.'
+      ],
+      passWhen:
+        'Every subtitles track is a translation into another language, and captions are provided some other way, so the tracks need no kind="captions".',
+      failWhen:
+        'A track carries the captions of the video in its own language but is marked kind="subtitles" (or has no kind), which fails RGAA 4.3.2.'
+    }
+  }
 };
 
 function runInPage(ctx) {

@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-frame-title-attribute-present';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -126,8 +126,8 @@ test(`${RULE_ID}: the RGAA profile, the rgaa tag and the 2.1 rollup id run it`, 
 // the same run keeps iframe-name-present's.
 test(`${RULE_ID}: RGAA 2.1 and WCAG 4.1.2 disagree on a frame named by aria-label`, () => {
   const result = runa11yCoreOnHtml(page('<iframe src="a.html" aria-label="Map"></iframe>'), RGAA);
-  assert.equal(rollup(result, 'rgaa-4.1.2-2.1').outcome, 'fail');
-  assert.equal(rollup(result, 'wcag-4.1.2-name').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-2.1')), 'fail');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-4.1.2-name')), 'passedInPart');
   assert.deepEqual(rollup(result, 'rgaa-4.1.2-2.1').data.details.checksIds, [
     'rgaa-frame-title-attribute-present'
   ]);
@@ -135,11 +135,11 @@ test(`${RULE_ID}: RGAA 2.1 and WCAG 4.1.2 disagree on a frame named by aria-labe
 
 test(`${RULE_ID}: RGAA 2.1 and WCAG 4.1.2 agree on a frame with no name at all`, () => {
   const result = runa11yCoreOnHtml(page('<iframe src="a.html"></iframe>'), RGAA);
-  assert.equal(rollup(result, 'rgaa-4.1.2-2.1').outcome, 'fail');
-  assert.equal(rollup(result, 'wcag-4.1.2-name').outcome, 'fail');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-2.1')), 'fail');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-4.1.2-name')), 'fail');
   const titled = runa11yCoreOnHtml(page('<iframe src="a.html" title="Carte"></iframe>'), RGAA);
-  assert.equal(rollup(titled, 'rgaa-4.1.2-2.1').outcome, 'pass');
-  assert.equal(rollup(titled, 'wcag-4.1.2-name').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup(titled, 'rgaa-4.1.2-2.1')), 'pass');
+  assert.equal(rollupOutcome(rollup(titled, 'wcag-4.1.2-name')), 'passedInPart');
 });
 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html)`, () => {

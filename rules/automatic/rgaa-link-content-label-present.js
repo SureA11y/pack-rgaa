@@ -61,7 +61,26 @@ const meta = {
   category: 'operable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  // The reason codes the rule gives, so definePack can check that `review`
+  // names only these.
+  reasonCodes: ['contentNotReadable', 'nameOutsideContent', 'noContentLabel'],
+  // How a person answers each question the rule asks, per reason code: a few
+  // steps from the element the finding names, then what they see if it
+  // passes and if it fails. In English; reports show it as "How to check".
+  review: {
+    contentNotReadable: {
+      steps: [
+        'Find the link the report names and look at what is between its opening and closing tags.',
+        'Note what its content holds: text added by CSS (::before, ::after), an embedded element such as a form field, an element named by its own aria-label, or text hidden with aria-hidden="true" beside a name the link takes from aria-label, aria-labelledby or title.',
+        'Listen to the link with a screen reader, or read its content in the accessibility inspector, and check whether that content gives it a label: text, or an image with a text alternative.'
+      ],
+      passWhen:
+        'The content of the link gives it a label that assistive technologies read: text, or an image with a text alternative.',
+      failWhen:
+        'Nothing in the content of the link gives it a label assistive technologies read, its name coming only from attributes or from nothing, which fails RGAA 6.2.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

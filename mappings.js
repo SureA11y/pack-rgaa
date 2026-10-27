@@ -10,6 +10,21 @@
 const { RGAA_VERSIONS, RGAA_CRITERIA, RGAA_TESTS } = require('./map');
 const { RGAA_RULE_TESTS } = require('./rule-map');
 
+// The criteria whose rules check all their tests ask, on every element they
+// apply to, so their rollup may pass, or be notApplicable, on the rules
+// alone. Every other criterion's rollup is partial (core's meta.partial): it
+// is cantTell where its rules all pass or all find nothing to check, as
+// core's WCAG rollups are, since they check only some steps of its tests
+// and a person checks the rest.
+const COMPLETE_CHECK = {
+  '4.1.2': [
+    '2.1', // 2.1.1: every <iframe> and <frame> has a title attribute.
+    '8.1', // 8.1.1 to 8.1.3: a doctype, valid, before <html>; asked without the source.
+    '8.3', // 8.3.1: the default language is given on <html> or for every text.
+    '8.5' // 8.5.1: the page has a <title>.
+  ]
+};
+
 function compareIds(a, b) {
   const pa = a.split('.').map(Number);
   const pb = b.split('.').map(Number);
@@ -180,6 +195,7 @@ function rgaaComposites() {
           version,
           criterion,
           tags: ['rgaa'],
+          ...((COMPLETE_CHECK[version] || []).includes(criterion) ? {} : { partial: true }),
           standardMappings: tests.map((t) => entry(version, t, []))
         }
       });
@@ -309,4 +325,4 @@ function validateRgaaRuleTests(rules) {
   return problems;
 }
 
-module.exports = { rgaaMappingsFor, rgaaComposites, validateRgaaRuleTests };
+module.exports = { rgaaMappingsFor, rgaaComposites, validateRgaaRuleTests, COMPLETE_CHECK };

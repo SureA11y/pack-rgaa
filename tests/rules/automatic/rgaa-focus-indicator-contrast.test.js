@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-focus-indicator-contrast';
 const WCAG_RULE = 'css-focus-indicator-suppressed';
@@ -90,6 +90,14 @@ test(`${RULE_ID}: one passing indicator is enough`, () => {
   only(page('a:focus{outline:2px solid #eee;box-shadow:0 0 0 4px #000}'), 'pass');
 });
 
+// A page that paints no background is drawn on the browser's canvas, white in
+// the light scheme a page gets when it asks for none (core 1.14 measures it
+// so), so a black outline there is measured, not asked about.
+test(`${RULE_ID}: an outline on a page with no background is measured against the canvas`, () => {
+  only(page('a:focus{outline:2px solid #000}', undefined, 'html,body{color:#000}'), 'pass');
+  only(page('a:focus{outline:2px solid #eee}', undefined, 'html,body{color:#000}'), 'fail');
+});
+
 test(`${RULE_ID}: a color or background it cannot compute is asked about`, () => {
   for (const [css, rootCss, cause] of [
     [
@@ -98,7 +106,6 @@ test(`${RULE_ID}: a color or background it cannot compute is asked about`, () =>
       'background'
     ],
     ['a:focus{outline:2px solid var(--c)}', undefined, 'color'],
-    ['a:focus{outline:2px solid #000}', 'html,body{color:#000}', 'background'],
     ['a:focus{outline:none;box-shadow:0 0 4px #000}', undefined, 'blur'],
     [':is(a,button):focus{outline:none} a:focus{outline:2px solid #eee}', undefined, 'cascade'],
     ['@media print{a:focus{outline:2px solid #eee}}', undefined, 'condition']
@@ -222,23 +229,23 @@ test(`${RULE_ID}: WCAG 2.4.7 has no finding on a light box-shadow, RGAA 10.7 fai
     wcag.data.details.contributors.filter((c) => c.outcome === 'cantTell').map((c) => c.testId),
     ['manual-review']
   );
-  assert.equal(rollup(result, 'rgaa-4.1.2-10.7').outcome, 'fail');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-10.7')), 'fail');
 });
 
 test(`${RULE_ID}: WCAG 2.4.7 and RGAA 10.7 agree on a black outline`, () => {
   const result = runa11yCoreOnHtml(page('a:focus{outline:2px solid #000}'), RGAA);
   assert.equal(check(result, WCAG_RULE).outcome, 'notApplicable');
   assert.equal(check(result, RULE_ID).outcome, 'pass');
-  assert.notEqual(rollup(result, 'wcag-2.4.7-focus-visible').outcome, 'fail');
-  assert.notEqual(rollup(result, 'rgaa-4.1.2-10.7').outcome, 'fail');
+  assert.notEqual(rollupOutcome(rollup(result, 'wcag-2.4.7-focus-visible')), 'fail');
+  assert.notEqual(rollupOutcome(rollup(result, 'rgaa-4.1.2-10.7')), 'fail');
 });
 
 test(`${RULE_ID}: an outline removed with no replacement stays css-focus-indicator-suppressed's question`, () => {
   const result = runa11yCoreOnHtml(page('a:focus{outline:none}'), RGAA);
   assert.equal(check(result, WCAG_RULE).outcome, 'cantTell');
   assert.equal(check(result, RULE_ID).outcome, 'notApplicable');
-  assert.equal(rollup(result, 'wcag-2.4.7-focus-visible').outcome, 'cantTell');
-  assert.equal(rollup(result, 'rgaa-4.1.2-10.7').outcome, 'cantTell');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-2.4.7-focus-visible')), 'cantTell');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-10.7')), 'cantTell');
 });
 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html)`, () => {

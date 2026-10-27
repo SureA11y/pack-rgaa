@@ -86,7 +86,28 @@ const meta = {
   category: 'robust',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: [
+    'emptyRole',
+    'unknownRoleToken',
+    'roleNotAllowed',
+    'imgRoleEmptyAlt',
+    'imgRoleNoName',
+    'imgPresentationRole'
+  ],
+  review: {
+    imgPresentationRole: {
+      steps: [
+        'Find the <img role="presentation"> the report names.',
+        'Look at the image on screen and decide whether it is decorative.',
+        'Check which validation rule the audit applies to role="presentation" on an <img>, which the W3C validator reports as an error.'
+      ],
+      passWhen:
+        'The image is decorative and the audit accepts role="presentation" on it, as RGAA 1.2.1 names it as a way to mark a decorative image; alt="" alone avoids the question.',
+      failWhen:
+        'The audit counts the validator error against the generated source, which fails RGAA 8.2.1; if the image carries information, it also lacks a text alternative (RGAA 1.1.1).'
+    }
+  }
 };
 
 function runInPage(ctx) {

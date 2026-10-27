@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-doctype-valid';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -110,7 +110,7 @@ test(`${RULE_ID}: RGAA 8.1 reports a missing doctype under 8.1.1 and an invalid 
   };
 
   const invalid = runa11yCoreOnHtml('<!DOCTYPE html PUBLIC "-//FOO//DTD X//EN">' + BODY, RGAA);
-  assert.equal(rollup(invalid, 'rgaa-4.1.2-8.1').outcome, 'fail');
+  assert.equal(rollupOutcome(rollup(invalid, 'rgaa-4.1.2-8.1')), 'fail');
   assert.equal(
     invalid.checksResults.find((r) => r.ruleId === 'rgaa-doctype-present').outcome,
     'pass'
@@ -118,12 +118,12 @@ test(`${RULE_ID}: RGAA 8.1 reports a missing doctype under 8.1.1 and an invalid 
   assert.deepEqual(tests(invalid, RULE_ID), ['8.1.2']);
 
   const missing = runa11yCoreOnHtml(BODY, RGAA);
-  assert.equal(rollup(missing, 'rgaa-4.1.2-8.1').outcome, 'fail');
+  assert.equal(rollupOutcome(rollup(missing, 'rgaa-4.1.2-8.1')), 'fail');
   assert.equal(missing.checksResults.find((r) => r.ruleId === RULE_ID).outcome, 'notApplicable');
   assert.deepEqual(tests(missing, 'rgaa-doctype-present'), ['8.1.1']);
 
   const html5 = runa11yCoreOnHtml('<!doctype html>' + BODY, RGAA);
-  assert.equal(rollup(html5, 'rgaa-4.1.2-8.1').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup(html5, 'rgaa-4.1.2-8.1')), 'pass');
   assert.deepEqual(rollup(html5, 'rgaa-4.1.2-8.1').data.details.checksIds.sort(), [
     'rgaa-doctype-position',
     'rgaa-doctype-present',

@@ -10,7 +10,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 
-const { core } = require('./helpers/run.js');
+const { core, rollupOutcome } = require('./helpers/run.js');
 const { runa11yCoreOnHtml } = require('./helpers/run.js');
 const { renderHtmlReport } = require('@surea11y/core/report');
 const { RGAA_RULE_TESTS } = require('../rule-map');
@@ -74,7 +74,7 @@ test('findings with no WCAG rollup get one: heading order and the missing doctyp
     headings.meta.normativeMappings.filter((m) => m.standard === 'RGAA').map((m) => m.requirement),
     ['9.1.1']
   );
-  assert.equal(rollup(result, 'rgaa-4.1.2-8.1').outcome, 'fail');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-8.1')), 'fail');
 });
 
 test('each rule result lists the rollups that group it; an empty list means none', () => {
@@ -127,7 +127,7 @@ test('a refresh of 20 hours or more passes RGAA 13.1', () => {
     '<!doctype html><html lang="en"><head><title>t</title><meta http-equiv="refresh" content="86400"></head>' +
     '<body><main><p>x</p></main></body></html>';
   const result = runa11yCoreOnHtml(page, { engineOptions: { profile: 'rgaa-4.1.2' } });
-  assert.equal(rollup(result, 'rgaa-4.1.2-13.1').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-13.1')), 'passedInPart');
   assert.ok(!result.checksResults.some((r) => r.ruleId === 'meta-refresh-no-exceptions'));
 });
 
@@ -171,4 +171,28 @@ test('text-spacing-content-loss, a WCAG rule, reports RGAA 10.12.1 and joins its
   const own = rgaa.checksResults.find((r) => r.ruleId === 'text-spacing-content-loss');
   assert.deepEqual(own.rollupIds, ['rgaa-4.1.2-10.12']);
   assert.deepEqual(RGAA_RULE_TESTS['4.1.2']['text-spacing-content-loss'].tests, ['10.12.1']);
+});
+
+// Only a criterion whose rules check all it asks may pass on them alone; any
+// other is partial, as core's WCAG rollups are (mappings.js, COMPLETE_CHECK).
+test('only 2.1, 8.1, 8.3 and 8.5 pass on their rules alone; every other criterion is partial', () => {
+  const { rgaaComposites, COMPLETE_CHECK } = require('../mappings');
+  assert.deepEqual(COMPLETE_CHECK['4.1.2'], ['2.1', '8.1', '8.3', '8.5']);
+  for (const c of rgaaComposites()) {
+    const complete = COMPLETE_CHECK['4.1.2'].includes(c.meta.criterion);
+    assert.equal(c.meta.partial, complete ? undefined : true, c.id);
+    assert.ok(RGAA_CRITERIA['4.1.2'][c.meta.criterion], c.id);
+  }
+  const page =
+    '<!doctype html><html lang="fr"><head><title>Horaires – Médiathèque</title></head>' +
+    '<body><main><h1>Horaires</h1><p>Du lundi au vendredi.</p></main></body></html>';
+  const result = runa11yCoreOnHtml(page, { engineOptions: { profile: 'rgaa-4.1.2' } });
+  const r = (id) => rollup(result, id);
+  assert.equal(r('rgaa-4.1.2-8.5').outcome, 'pass');
+  assert.equal(r('rgaa-4.1.2-8.3').outcome, 'pass');
+  // The title is there; whether it is relevant (8.6) is for a person.
+  assert.equal(r('rgaa-4.1.2-8.6').outcome, 'cantTell');
+  // Every 9.1 rule passes, but they check only part of the heading hierarchy.
+  assert.equal(rollupOutcome(r('rgaa-4.1.2-9.1')), 'passedInPart');
+  assert.equal(r('rgaa-4.1.2-9.1').data.details.partial, true);
 });

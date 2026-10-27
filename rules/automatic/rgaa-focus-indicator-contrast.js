@@ -55,7 +55,7 @@
  *   rests on such a rule is asked about instead.
  * - Only the document's readable stylesheets and style attributes are
  *   read: cross-origin sheets and shadow-root styles are not.
- * - Colours are read from the declarations; `currentColor` is the color
+ * - Colors are read from the declarations; `currentColor` is the color
  *   of the focused element. Backgrounds are resolved by
  *   helpers.contrast.computeEffectiveBackground with the engine's
  *   contrast options.
@@ -93,7 +93,41 @@ const meta = {
   type: 'automatic',
   defaultConfidence: 'medium',
   coverage: {},
-  margin: { measure: 'contrast-ratio', unit: 'ratio', limit: 'min' }
+  margin: { measure: 'contrast-ratio', unit: 'ratio', limit: 'min' },
+  reasonCodes: ['lowContrast', 'oneSide', 'notComputable', 'notMeasured'],
+  review: {
+    oneSide: {
+      steps: [
+        'Find the element the report names, and move focus to it with the Tab key.',
+        'Look at its focus indicator (the outline, border or shadow the report names) against the background behind the element and against the element itself.',
+        "Measure the indicator's color against the side the report gives below 3:1, with a color picker and a contrast checker."
+      ],
+      passWhen:
+        'The indicator stands out clearly where it is drawn, at 3:1 or more against the colors that frame it, or another change on focus shows the element.',
+      failWhen:
+        'The indicator is hard to see against one of its sides and nothing else shows focus, so it is not sufficiently contrasted, which fails RGAA 10.7.1.'
+    },
+    notComputable: {
+      steps: [
+        'Find the element the report names, and move focus to it with the Tab key.',
+        'Look at the focus indicator the page draws: details.cause says why it could not be measured (a background image or gradient, a CSS variable, a blurred shadow, an animation, an @media condition, or rules the engine cannot order).',
+        "With a color picker, take the indicator's color and the colors next to it on both sides, and check their contrast ratio."
+      ],
+      passWhen:
+        'The focus indicator is visible, with a contrast ratio of 3:1 or more against the colors next to it.',
+      failWhen:
+        'The focus indicator is missing, or below 3:1 against the colors next to it, which fails RGAA 10.7.1.'
+    },
+    notMeasured: {
+      steps: [
+        'Find the element the report names, and move focus to it with the Tab key.',
+        'Look at what changes on focus: a background, a text color, an underline, a pseudo-element or another element.',
+        'Measure that change against what it is shown on: the colors before and after focus, or the indicator against the colors next to it.'
+      ],
+      passWhen: 'The change makes focus clearly visible, with a contrast ratio of 3:1 or more.',
+      failWhen: 'The change is too faint to see where focus is, below 3:1, which fails RGAA 10.7.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

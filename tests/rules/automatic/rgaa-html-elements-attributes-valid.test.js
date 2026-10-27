@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml } = require('../../helpers/run.js');
+const { runa11yCoreOnHtml, rollupOutcome } = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-html-elements-attributes-valid';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -346,8 +346,8 @@ test(`${RULE_ID}: RGAA 8.2 fails headers pointing to a td, which WCAG 1.3.1 acce
     RGAA
   );
   assert.equal(check(result, 'table-headers-attr-valid').outcome, 'pass');
-  assert.equal(rollup(result, 'wcag-1.3.1-info-and-relationships').outcome, 'pass');
-  assert.equal(rollup(result, 'rgaa-4.1.2-8.2').outcome, 'fail');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-1.3.1-info-and-relationships')), 'passedInPart');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-8.2')), 'fail');
   assert.ok(rollup(result, 'rgaa-4.1.2-8.2').data.details.checksIds.includes(RULE_ID));
 });
 
@@ -357,8 +357,8 @@ test(`${RULE_ID}: RGAA 8.2 fails an invalid autocomplete on a disabled field, wh
     RGAA
   );
   assert.equal(check(result, 'autocomplete-valid').outcome, 'notApplicable');
-  assert.equal(rollup(result, 'rgaa-4.1.2-8.2').outcome, 'fail');
-  assert.equal(rollup(result, 'rgaa-4.1.2-11.13').outcome, 'notApplicable');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-8.2')), 'fail');
+  assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-11.13')), 'noneFoundInPart');
 });
 
 // A valid token on a control it does not usually go with: since 1.8.1
@@ -370,19 +370,19 @@ test(`${RULE_ID}: WCAG 1.3.5 and RGAA 8.2 both accept street-address on a search
     RGAA
   );
   assert.equal(check(result, 'autocomplete-valid').outcome, 'pass');
-  assert.equal(rollup(result, 'wcag-1.3.5-identify-input-purpose').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-1.3.5-identify-input-purpose')), 'passedInPart');
   assert.equal(check(result, RULE_ID).outcome, 'pass');
-  assert.notEqual(rollup(result, 'rgaa-4.1.2-8.2').outcome, 'fail');
+  assert.notEqual(rollupOutcome(rollup(result, 'rgaa-4.1.2-8.2')), 'fail');
 });
 
 test(`${RULE_ID}: RGAA 8.2 and WCAG 1.3.5 agree on an invalid value and on a valid one`, () => {
   const bad = runa11yCoreOnHtml(page('<input autocomplete="nom" aria-label="n">'), RGAA);
-  assert.equal(rollup(bad, 'wcag-1.3.5-identify-input-purpose').outcome, 'fail');
-  assert.equal(rollup(bad, 'rgaa-4.1.2-8.2').outcome, 'fail');
+  assert.equal(rollupOutcome(rollup(bad, 'wcag-1.3.5-identify-input-purpose')), 'fail');
+  assert.equal(rollupOutcome(rollup(bad, 'rgaa-4.1.2-8.2')), 'fail');
   const good = runa11yCoreOnHtml(page('<input autocomplete="email" aria-label="n">'), RGAA);
-  assert.equal(rollup(good, 'wcag-1.3.5-identify-input-purpose').outcome, 'pass');
+  assert.equal(rollupOutcome(rollup(good, 'wcag-1.3.5-identify-input-purpose')), 'passedInPart');
   assert.equal(check(good, RULE_ID).outcome, 'pass');
-  assert.notEqual(rollup(good, 'rgaa-4.1.2-8.2').outcome, 'fail');
+  assert.notEqual(rollupOutcome(rollup(good, 'rgaa-4.1.2-8.2')), 'fail');
 });
 
 test(`${RULE_ID}: the WCAG attribute rules no longer carry 8.2.1`, () => {

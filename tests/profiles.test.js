@@ -14,7 +14,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const { runa11yCoreOnHtml, TEST_PROFILE } = require('./helpers/run.js');
+const { runa11yCoreOnHtml, TEST_PROFILE, rollupOutcome } = require('./helpers/run.js');
 const { CHECK_DEFS } = require('@surea11y/core');
 const rgaa = require('..');
 const { RGAA_RULE_TESTS } = require('../rule-map');
@@ -61,7 +61,10 @@ test('rgaa-4.1.2 is judged by WCAG 2.1, so a duplicate id fails RGAA 8.2.1', () 
   const result = scan('rgaa-4.1.2');
   assert.equal(result.engine.wcagVersion, '2.1');
   assert.equal(check(result, 'duplicate-id').outcome, 'fail');
-  assert.equal(result.rulesResults.find((r) => r.ruleId === 'rgaa-4.1.2-8.2').outcome, 'fail');
+  assert.equal(
+    rollupOutcome(result.rulesResults.find((r) => r.ruleId === 'rgaa-4.1.2-8.2')),
+    'fail'
+  );
 });
 
 test('the published pack has one profile, rgaa-4.1.2', () => {

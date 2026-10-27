@@ -6,7 +6,12 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
-const { runa11yCoreOnHtml, createDom, runa11yCoreOnDom } = require('../../helpers/run.js');
+const {
+  runa11yCoreOnHtml,
+  createDom,
+  runa11yCoreOnDom,
+  rollupOutcome
+} = require('../../helpers/run.js');
 
 const RULE_ID = 'rgaa-scripted-components-review';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
@@ -271,9 +276,9 @@ function rollup71(html) {
   return result.rulesResults.find((r) => r.ruleId === 'rgaa-4.1.2-7.1');
 }
 
-test(`${RULE_ID}: under the RGAA profile, 7.1 is notApplicable on a page with no script`, () => {
+test(`${RULE_ID}: under the RGAA profile, 7.1 finds nothing to check on a page with no script`, () => {
   const main = '<main><h1>Opening hours</h1><p>Monday to Friday.</p></main>';
-  assert.equal(rollup71(page(main)).outcome, 'notApplicable');
+  assert.equal(rollupOutcome(rollup71(page(main))), 'noneFoundInPart');
 });
 
 test(`${RULE_ID}: under the RGAA profile, 7.1 asks on a page with script and nothing failing`, () => {

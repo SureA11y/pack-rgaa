@@ -55,7 +55,22 @@ const meta = {
   category: 'understandable',
   type: 'manual',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['groupWithoutLegend'],
+  review: {
+    groupWithoutLegend: {
+      steps: [
+        'Find the group the report names (a <fieldset>, or an element with role="group" or role="radiogroup") and the fields in it.',
+        'Decide whether it gathers fields of the same kind that need a shared heading to be understood, such as the parts of an address or a set of radio buttons.',
+        'If it does, look for its legend: a <legend> in a fieldset, or an aria-label or aria-labelledby on an ARIA group.',
+        'Without one, check whether each field has a title, aria-label, aria-labelledby or aria-describedby that says which group it belongs to.'
+      ],
+      passWhen:
+        'The group only lays out unrelated fields, or each field says which group it belongs to.',
+      failWhen:
+        'Fields of the same kind are grouped with no legend and nothing on the fields names the group, which fails RGAA 11.6.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

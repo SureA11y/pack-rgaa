@@ -50,7 +50,20 @@ const meta = {
   category: 'perceivable',
   type: 'manual',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['zoomRestricted'],
+  review: {
+    zoomRestricted: {
+      steps: [
+        'Open the page in the audit’s browsers, desktop and mobile.',
+        'Enlarge the text to 200% with the browser’s text zoom, then with its page zoom, and on mobile try pinching to zoom.',
+        'Look also for a text size control the site provides, and check that the content stays readable and usable at 200%.'
+      ],
+      passWhen:
+        'One of the browser’s text zoom, its page zoom or a control of the site enlarges the text to 200% with nothing lost.',
+      failWhen: 'None of them reaches 200% in an environment of the audit, which fails RGAA 10.4.2.'
+    }
+  }
 };
 
 // Whole-document check, as meta-viewport-zoom-enabled.
