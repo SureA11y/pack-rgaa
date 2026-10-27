@@ -151,3 +151,28 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-complex-table-summary-al
     'cts_case_08'
   ]);
 });
+
+// aria-describedby is a summary only when it points to text in the table's
+// own tree: a missing id or an empty element is none.
+test(`${RULE_ID}: an aria-describedby that points to nothing is no summary`, () => {
+  const complex = (attrs, extra) =>
+    `<table ${attrs}><tr><td></td><th colspan="2">2025</th></tr><tr><td></td><th>Q1</th><th>Q2</th></tr><tr><th>Nord</th><td>1</td><td>2</td></tr></table>${extra}`;
+  assertRule(
+    runa11yCoreOnHtml(page(complex('aria-describedby="nope"', '')), RUN),
+    RULE_ID,
+    'cantTell'
+  );
+  assertRule(
+    runa11yCoreOnHtml(page(complex('aria-describedby="s"', '<p id="s"></p>')), RUN),
+    RULE_ID,
+    'cantTell'
+  );
+  assertRule(
+    runa11yCoreOnHtml(
+      page(complex('aria-describedby="s"', '<p id="s">Ventes par trimestre et par région</p>')),
+      RUN
+    ),
+    RULE_ID,
+    'pass'
+  );
+});

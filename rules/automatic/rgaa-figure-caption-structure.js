@@ -5,23 +5,35 @@
 /**
  * @check rgaa-figure-caption-structure
  * @atomic true
- * @summary An image with a caption must be structured as RGAA 1.9.1 describes
+ * @summary An image with a caption must be structured as RGAA 1.9 describes
  * @standard RGAA 4.1.2 (no WCAG Success Criterion)
  * @applicability
- *   Applies to <figure> elements that contain an image (<img>,
- *   <input type="image"> or an element with role="img") and a <figcaption>
- *   with text. A page with none is notApplicable.
+ *   Applies to <figure> elements that contain an image and a <figcaption>
+ *   with text. The images are those of RGAA 1.9's five tests: an <img>,
+ *   <input type="image"> or element with role="img" (1.9.1), an
+ *   <object type="image/…"> (1.9.2), an <embed> (1.9.3), an <svg> (1.9.4)
+ *   and a <canvas> (1.9.5). An <embed> whose type is not an image type is
+ *   not an image. A page with none is notApplicable.
  * @expectation
  *   The <figure> has role="figure" or role="group", and an aria-label whose
- *   text is the same as the caption's, whitespace collapsed (RGAA 1.9.1).
- *   The caption being inside a <figcaption> is what makes the figure
- *   applicable.
+ *   text is the same as the caption's, whitespace collapsed (conditions 2
+ *   and 3 of each 1.9 test). The caption being inside a <figcaption> is
+ *   what makes the figure applicable.
+ * @reports
+ *   - `reasonCode`: the first condition that fails, `missingRole`,
+ *     `missingAriaLabel` or `ariaLabelMismatch`; `reasons` lists all.
+ *   - `imageKind`: the figure's first image, in tree order, by the 1.9 test
+ *     it belongs to: `img` (1.9.1), `object` (1.9.2), `embed` (1.9.3),
+ *     `svg` (1.9.4) or `canvas` (1.9.5). An <svg> or <canvas> with
+ *     role="img" counts by its element.
+ *   - `caption`: the caption's text, whitespace collapsed.
  * @implementation-notes
  * - Opt-in (tag `rgaa`): WCAG requires neither the explicit role nor the
  *   repeated label, so the rule runs only under the rgaa-4.1.2 profile, the
  *   `rgaa` tag or its own id.
- * - One occurrence per figure. Its reasonCode is the first condition that
- *   fails, in the order role, label, label text; details.reasons lists all.
+ * - One occurrence per figure, whatever the number of images in it.
+ * - An element with role="img" inside an <svg> is part of that image, not
+ *   one of its own.
  * - An image with a caption that is not in a <figure> at all cannot be found
  *   by markup; that stays with a person.
  */
@@ -56,6 +68,27 @@ function runInPage(ctx) {
       .replace(/\s+/g, ' ')
       .trim();
 
+  // The 1.9 test an element belongs to as an image, or null if it is none.
+  // An <svg> or <canvas> counts by its element, whatever its role; inside an
+  // <svg>, an element is part of that image. An element with role img is one
+  // whose role resolves to img: role="link img" is a link.
+  function imageKind(el) {
+    const tag = String(dom.tagName(el) || '').toLowerCase();
+    const type = String(dom.getAttribute(el, 'type') || '')
+      .trim()
+      .toLowerCase();
+    if (tag === 'svg') {
+      const parent = dom.parentElement(el);
+      return parent && dom.closest(parent, 'svg') ? null : 'svg';
+    }
+    if (tag === 'canvas') return 'canvas';
+    if (tag === 'object') return type.startsWith('image/') ? 'object' : null;
+    if (tag === 'embed') return !type || type.startsWith('image/') ? 'embed' : null;
+    if (dom.closest(el, 'svg')) return null;
+    if (tag === 'img' || (tag === 'input' && type === 'image')) return 'img';
+    return helpers.aria.getExplicitRole(el) === 'img' ? 'img' : null;
+  }
+
   const figures = helpers.queryAllSmart
     ? helpers.queryAllSmart('figure')
     : helpers.queryAll('figure');
@@ -69,16 +102,13 @@ function runInPage(ctx) {
       (c) => String(dom.tagName(c)).toLowerCase() === 'figcaption'
     );
     const captionText = caption ? collapse(dom.textContent(caption)) : '';
-    // An element with role img is one whose role resolves to img: role="link img" is a link.
-    const image = Array.from(
-      dom.querySelectorAll(figure, 'img, input[type="image" i], [role~="img" i]')
-    ).find(
-      (el) =>
-        dom.closest(el, 'figure') === figure &&
-        (dom.matches(el, 'img, input[type="image" i]') ||
-          helpers.aria.getExplicitRole(el) === 'img')
+    // Every element, not a selector list: jsdom returns a list's matches out
+    // of tree order, and the first image decides the test.
+    const image = Array.from(dom.querySelectorAll(figure, '*')).find(
+      (el) => dom.closest(el, 'figure') === figure && imageKind(el)
     );
     if (!captionText || !image) continue;
+    const kind = imageKind(image);
     applicableCount += 1;
 
     const role = helpers.aria.getExplicitRole(figure);
@@ -116,7 +146,7 @@ function runInPage(ctx) {
           params: {}
         },
         data: {
-          details: { reasonCode, reasons, caption: captionText },
+          details: { reasonCode, reasons, imageKind: kind, caption: captionText },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })

@@ -17,16 +17,16 @@
  *   page with none is notApplicable.
  * @expectation
  *   The <svg> has role="img" (RGAA 1.1.5 step 3; step 4: "Si ce n'est pas
- *   le cas, le test est invalidé"), and its alternative comes from
- *   aria-labelledby or aria-label (step 5).
+ *   le cas, le test est invalidé"), and has an alternative from one of the
+ *   sources step 5 lists: the content of its <title>, aria-labelledby or
+ *   aria-label.
  *   An alternative without role="img" fails: the author has shown that the
  *   image carries information, and without the role it is not exposed as
  *   an image. If the image were in fact decorative, it would fail 1.2.4
  *   instead, which requires aria-hidden="true" and no alternative.
- *   An <svg role="img"> named only by its <title> is asked about
- *   (cantTell): RGAA contradicts itself there. 1.1.5 step 5 lists only
- *   aria-labelledby and aria-label, but 1.3.6 checks "le contenu de
- *   l'élément <title>" as the alternative of an SVG.
+ *   An <svg role="img"> named by its <title> alone passes: RGAA 4.1.2
+ *   added "Contenu de l'élément <title>" to step 5 (notes de révision 4.1
+ *   vers 4.1.2).
  * @implementation-notes
  * - The role is read from the first token of the role attribute.
  * - aria-labelledby counts when it resolves to text.
@@ -40,7 +40,7 @@ const id = 'rgaa-svg-role-img';
 const meta = {
   title: 'SVGs with a text alternative have role="img"',
   description:
-    'Checks that an <svg> named by aria-labelledby, aria-label or <title> has role="img", and that its name comes from aria-labelledby or aria-label.',
+    'Checks that an <svg> named by aria-labelledby, aria-label or <title> has role="img".',
   i18n: {
     titleKey: 'svgRoleImg_title',
     descriptionKey: 'svgRoleImg_description'
@@ -117,25 +117,7 @@ function runInPage(ctx) {
     applicableCount += 1;
 
     const isRoleImg = trim(attr(svg, 'role')).toLowerCase().split(' ')[0] === 'img';
-    if (isRoleImg && mechanism) continue;
-
-    if (isRoleImg) {
-      cantTells.push(
-        helpers.reportOccurrence(svg, {
-          summary: 'This <svg role="img"> is named only by its <title> element.',
-          hint: 'RGAA 1.1.5 lists aria-labelledby and aria-label as the sources for an <svg>. Check that assistive technologies render the <title>, or point aria-labelledby at it.',
-          i18n: {
-            summaryKey: 'svgRoleImg_summary_cantTell_titleOnly',
-            hintKey: 'svgRoleImg_hint_cantTell_titleOnly'
-          },
-          data: {
-            details: { reasonCode: 'titleOnly', title },
-            visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
-          }
-        })
-      );
-      continue;
-    }
+    if (isRoleImg) continue;
 
     const found = [];
     if (mechanism) found.push(mechanism);

@@ -161,9 +161,19 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
       const { rule: first } = await scan(page(''));
       const box = boxOf(first);
 
-      const moved = await scan(page(''), other({ ...box, y: box.y + 200 }));
+      const moved = await scan(page(''), other({ ...box, x: box.x + 200 }));
       assert.deepEqual(reasons(moved.rule), [['fail', 'SKIP_LINK_POSITION_DIFFERS']]);
       assert.equal(moved.rule.occurrences[0].i18n.params.pages, 'https://example.test/other');
+      const both = await scan(page(''), other({ ...box, x: box.x + 200, y: box.y + 200 }));
+      assert.deepEqual(reasons(both.rule), [['fail', 'SKIP_LINK_POSITION_DIFFERS']]);
+
+      // Only lower: a banner above it may have pushed it down.
+      const lower = await scan(page(''), other({ ...box, y: box.y + 200 }));
+      assert.deepEqual(reasons(lower.rule), [['cantTell', 'SKIP_LINK_POSITION_SHIFTED']]);
+      assert.equal(
+        lower.rule.occurrences[0].i18n.hintKey,
+        'skipLinkPlacement_hint_cantTell_positionShifted'
+      );
 
       const reordered = await scan(page(''), {
         probes: {

@@ -134,7 +134,9 @@ function verdicts(body) {
 test(`${RULE_ID}: RGAA profile, a PDF object with no alternative: neither WCAG nor RGAA 1.1 fails`, () => {
   const v = verdicts('<object type="application/pdf" data="d.pdf"></object>');
   assert.equal(v.wcagRule, 'notApplicable');
-  assert.equal(v.wcag, 'notApplicable');
+  // Nothing failed; core reads WCAG 1.1.1 with no applicable rule as partly
+  // checked (composite.rollup.cantTell.partialCoverage), not inapplicable.
+  assert.equal(v.wcag, 'cantTell');
   assert.equal(v.rule, 'notApplicable');
   assert.notEqual(v.rgaa, 'fail');
 });

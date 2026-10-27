@@ -33,6 +33,8 @@
  *   aria-label, aria-labelledby or title: the browser names it with a
  *   generic "Submit", which is not one of the label sources the glossary
  *   lists. The missing alt itself fails 1.1.3 through input-image-alt-present.
+ * - rgaa-button-name-present runs this same code for the buttons outside
+ *   any form (7.1.1), choosing which by ctx.rule.ruleId.
  * - Opt-in (tag `rgaa`): WCAG 4.1.2 requires a name on every button, which
  *   button-name-present checks; this rule reports only the buttons 11.9.1
  *   covers, so it runs only under the rgaa-4.1.2 profile, the `rgaa` tag or
@@ -155,7 +157,27 @@ function runInPage(ctx) {
     return { label: '', source: '' };
   }
 
-  const MESSAGES = {
+  // The same code runs as rgaa-button-name-present, for the buttons outside
+  // any form, which RGAA 7.1.1 covers as scripted interface components.
+  const outsideForms = rule.ruleId === 'rgaa-button-name-present';
+  const KEY = outsideForms ? 'buttonNamePresentRgaa' : 'formButtonNamePresent';
+
+  const MESSAGES_OUTSIDE = {
+    nameMissing: {
+      outcome: 'fail',
+      summary: 'This button has no accessible name.',
+      hint: 'Give the button visible text that describes its action, or an aria-label, aria-labelledby or title; for an image button, an alt.'
+    },
+    imageButtonNoAlt: {
+      outcome: 'cantTell',
+      summary:
+        'This image button has no alt, aria-label, aria-labelledby or title; the browser names it with a generic "Submit".',
+      hint: 'Give the image button an alt that describes its action, then check that its name is relevant.',
+      needed: "Whether the browser's generic name describes what the image button does."
+    }
+  };
+
+  const MESSAGES_IN_FORMS = {
     nameMissing: {
       outcome: 'fail',
       summary: 'This button in a form has no label.',
@@ -177,6 +199,7 @@ function runInPage(ctx) {
         'Whether a button joined to a form by its form attribute counts as a button of that form.'
     }
   };
+  const MESSAGES = outsideForms ? MESSAGES_OUTSIDE : MESSAGES_IN_FORMS;
 
   const failOccurrences = [];
   const cantTellOccurrences = [];
@@ -198,25 +221,26 @@ function runInPage(ctx) {
     if (!isButton(el)) continue;
     const inside = formAncestor(el);
     const joined = inside ? null : formByAttribute(el);
-    if (!inside && !joined) continue;
+    if (outsideForms ? inside || joined : !inside && !joined) continue;
     if (!inAccTree(el)) continue;
     applicableCount += 1;
 
     const { label, defaulted } = labelOf(el);
     if (label) continue;
 
-    const reasonCode = !inside
-      ? 'formAttributeOnly'
-      : defaulted
-        ? 'imageButtonNoAlt'
-        : 'nameMissing';
+    const reasonCode =
+      !outsideForms && !inside
+        ? 'formAttributeOnly'
+        : defaulted
+          ? 'imageButtonNoAlt'
+          : 'nameMissing';
     const msg = MESSAGES[reasonCode];
     const occurrence = helpers.reportOccurrence(el, {
       summary: msg.summary,
       hint: msg.hint,
       i18n: {
-        summaryKey: `formButtonNamePresent_summary_${msg.outcome}_${reasonCode}`,
-        hintKey: `formButtonNamePresent_hint_${msg.outcome}_${reasonCode}`,
+        summaryKey: `${KEY}_summary_${msg.outcome}_${reasonCode}`,
+        hintKey: `${KEY}_hint_${msg.outcome}_${reasonCode}`,
         params: {}
       },
       ...(msg.outcome === 'cantTell'

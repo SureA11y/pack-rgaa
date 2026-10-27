@@ -11,7 +11,7 @@
  *   Applies to any scan scope; whether an HTML element in it carries one of
  *   the attributes RGAA 10.1.2 lists is always an answerable question.
  * @expectation
- *   No HTML element carries align, alink, background, basefont, bgcolor, border,
+ *   No HTML element carries align, alink, background, bgcolor, border,
  *   cellpadding, cellspacing, char, charoff, clear, color, compact,
  *   frameborder, hspace, link, marginheight, marginwidth, text, valign,
  *   vlink or vspace; size is allowed only on <select>, and width and height
@@ -20,6 +20,10 @@
  *   <video>, and size on an <input>, are reported too. One occurrence per
  *   element, naming every such attribute it carries.
  * @implementation-notes
+ * - Metadata and script elements (<head>, <title>, <base>, <link>, <meta>,
+ *   <style>, <script>) are left out: they present no information, so a
+ *   color on <link rel="mask-icon">, which colours a browser's pinned tab,
+ *   is not presentation of the page's content.
  * - Opt-in (tag `rgaa`): WCAG does not forbid these attributes, so the rule
  *   runs only under the rgaa-4.1.2 profile, the `rgaa` tag or its own id.
  * - Only elements in the HTML namespace are checked: inside SVG and MathML,
@@ -61,7 +65,6 @@ function runInPage(ctx) {
     'align',
     'alink',
     'background',
-    'basefont',
     'bgcolor',
     'border',
     'cellpadding',
@@ -82,6 +85,10 @@ function runInPage(ctx) {
     'vspace'
   ];
   const SIZE_ALLOWED_ON = ['select'];
+  // Metadata and script elements present no information: a color on
+  // <link rel="mask-icon"> colours Safari's pinned tab, a text attribute
+  // on <script> is ignored by browsers.
+  const NOT_PRESENTED = ['head', 'title', 'base', 'link', 'meta', 'style', 'script'];
   const DIMENSIONS_ALLOWED_ON = ['img', 'object', 'embed', 'canvas', 'svg'];
 
   const selector = ALWAYS.concat(['size', 'width', 'height'])
@@ -97,6 +104,7 @@ function runInPage(ctx) {
     if (dom.namespaceURI(el) && dom.namespaceURI(el) !== HTML_NS) continue;
 
     const element = String(dom.tagName(el)).toLowerCase();
+    if (NOT_PRESENTED.includes(element)) continue;
     const found = ALWAYS.filter((a) => dom.hasAttribute(el, a));
     if (dom.hasAttribute(el, 'size') && !SIZE_ALLOWED_ON.includes(element)) found.push('size');
     if (!DIMENSIONS_ALLOWED_ON.includes(element)) {

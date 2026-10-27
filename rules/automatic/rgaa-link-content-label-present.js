@@ -31,6 +31,8 @@
  *   aria-labelledby or title. Hidden text with no such name leaves the link
  *   with no label at all, and fails.
  * @implementation-notes
+ * - The content is read in the flat tree (helpers.flatChildNodes): text in a
+ *   web component's shadow root, or slotted into it, is the link's content.
  * - Content inside hidden, display:none or visibility:hidden elements is not
  *   content: nobody sees or hears it.
  * - CSS-generated text is read from the computed ::before and ::after
@@ -218,9 +220,20 @@ function runInPage(ctx) {
     };
     if (hasGeneratedContent(root)) found.generated = true;
 
+    // Children as the page renders them: a shadow host's shadow root, a
+    // <slot>'s assigned nodes, so a label inside a web component counts.
+    function childrenOf(node) {
+      if (helpers && typeof helpers.flatChildNodes === 'function') {
+        try {
+          return Array.from(helpers.flatChildNodes(node) || []);
+        } catch {}
+      }
+      return Array.from(dom.childNodes(node) || []);
+    }
+
     function walk(node, atHidden, depth) {
       if (depth > 200) return;
-      for (const child of Array.from(dom.childNodes(node) || [])) {
+      for (const child of childrenOf(node)) {
         if (dom.nodeType(child) === 3) {
           if (!norm(child.data)) continue;
           if (isVisibilityHidden(dom.parentElement(child))) continue;

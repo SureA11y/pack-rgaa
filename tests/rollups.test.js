@@ -140,8 +140,16 @@ test('RGAA rollups group exactly the rules linked to their criterion, and carry 
     assert.deepEqual(c.meta.tags, ['rgaa'], c.id);
     assert.deepEqual(c.meta.wcagSc, [], c.id);
     const tests = RGAA_CRITERIA[version][criterion].tests;
+    // A row links its tests, those it asks about and those it routes findings to.
+    const linked = (row) => [
+      ...row.tests,
+      ...(row.asks || []),
+      ...[...Object.values(row.reasonCodes || {}), ...(row.findings || [])].flatMap(
+        (r) => r.tests || []
+      )
+    ];
     const expected = Object.entries(RGAA_RULE_TESTS[version])
-      .filter(([, row]) => row.tests.some((t) => tests.includes(t)))
+      .filter(([, row]) => linked(row).some((t) => tests.includes(t)))
       .map(([id]) => id)
       .sort();
     assert.deepEqual(c.checksIds, expected, c.id);

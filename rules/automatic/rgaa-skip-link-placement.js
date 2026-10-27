@@ -28,8 +28,12 @@
  *     Without a layout (jsdom) visibility is always asked about.
  *   - Place and order need the site's other pages, through the
  *     `crawl.skipLinks` probe. The link fails when another page measured at
- *     the same viewport width shows it more than 24 CSS pixels away
- *     (SKIP_LINK_POSITION_DIFFERS). It is asked about when its focus order
+ *     the same viewport width shows it more than 24 CSS pixels to the side
+ *     (SKIP_LINK_POSITION_DIFFERS). Moved only up or down, it is asked
+ *     about (SKIP_LINK_POSITION_SHIFTED): content above it on one page, a
+ *     cookie banner or a message, pushes it down without moving it in the
+ *     layout, which the measured boxes cannot tell from a link placed
+ *     elsewhere. It is asked about when its focus order
  *     differs (SKIP_LINK_ORDER_DIFFERS), since what the order is relative to
  *     is a person's call; when no other page was measured at the same width
  *     (SKIP_LINK_VIEWPORT_DIFFERS); and when the probe brings no other page
@@ -464,6 +468,7 @@ function runInPage(ctx) {
 
   const num = (v) => (typeof v === 'number' && Number.isFinite(v) ? v : null);
   const moved = [];
+  const shifted = [];
   const reordered = [];
   let measured = 0;
   let comparable = 0;
@@ -475,7 +480,8 @@ function runInPage(ctx) {
       comparable += 1;
       const dx = Math.abs(r.x - where.x);
       const dy = Math.abs(r.y - where.y);
-      if (dx > MAX_SHIFT || dy > MAX_SHIFT) moved.push({ url: String(p.url), x: r.x, y: r.y });
+      if (dx > MAX_SHIFT) moved.push({ url: String(p.url), x: r.x, y: r.y });
+      else if (dy > MAX_SHIFT) shifted.push({ url: String(p.url), x: r.x, y: r.y });
     }
     const o = num(p.skipLink.focusOrder);
     if (o != null && record.focusOrder != null && o !== record.focusOrder) {
@@ -497,6 +503,14 @@ function runInPage(ctx) {
         `This skip link is not at the same place on other pages of the site, measured at the same window width: ${p.pages}.`,
       hint: 'Place the skip link at the same position on every page, usually first in the page header (RGAA 12.7.2).',
       key: 'fail_positionDiffers'
+    },
+    SKIP_LINK_POSITION_SHIFTED: {
+      summary: (p) =>
+        `This skip link is higher or lower on other pages of the site, measured at the same window width: ${p.pages}.`,
+      hint: 'Check whether the skip link is at another place in the layout of those pages, or only pushed down by content above it, such as a cookie banner or a message (RGAA 12.7.2).',
+      key: 'cantTell_positionShifted',
+      needed:
+        'Whether the skip link is at the same place in the layout of every page, or only pushed down by content above it.'
     },
     SKIP_LINK_VISIBILITY_UNKNOWN: {
       summary: () =>
@@ -566,6 +580,9 @@ function runInPage(ctx) {
   }
 
   if (moved.length) report('SKIP_LINK_POSITION_DIFFERS', { x: where.x, y: where.y, pages: moved });
+  if (shifted.length) {
+    report('SKIP_LINK_POSITION_SHIFTED', { x: where.x, y: where.y, pages: shifted });
+  }
   if (reordered.length) {
     report('SKIP_LINK_ORDER_DIFFERS', { focusOrder: record.focusOrder, pages: reordered });
   }

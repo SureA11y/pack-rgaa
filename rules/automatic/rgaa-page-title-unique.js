@@ -20,8 +20,10 @@
  *   - another page, at another path, with the same title fails
  *     (TITLE_DUPLICATE);
  *   - another page whose URL differs from this one only by its query
- *     string, with the same title, is asked about, since it may be this
- *     same page (TITLE_DUPLICATE_SAME_PATH);
+ *     string, or by what usually names one page twice (http or https, a
+ *     leading www., a trailing /index.html or /index.php), with the same
+ *     title, is asked about, since it may be this same page
+ *     (TITLE_DUPLICATE_SAME_PATH);
  *   - with no other page to compare, the title is asked about
  *     (TITLE_SINGLE_PAGE).
  *   It passes when no other page shares the title.
@@ -71,16 +73,23 @@ function runInPage(ctx) {
       .replace(/\s+/g, ' ')
       .trim();
   }
-  // { key: origin + path without a trailing slash, full: key + query }
+  // { key: origin + path without a trailing slash, full: key + query,
+  // alias: key without what usually names the same page twice (the scheme,
+  // a leading www., a trailing index file) }
   function urlParts(u) {
     try {
       const url = new URL(String(u), dom.baseURI(document));
       const path = url.pathname.replace(/\/+$/, '') || '/';
       const key = url.origin + path;
-      return { key, full: key + url.search };
+      // eslint-disable-next-line safe-dom/use-safe-dom -- a URL object, not a DOM node
+      const host = url.host.toLowerCase().replace(/^www\./, '');
+      const aliasPath =
+        path.replace(/\/index\.(html?|php|aspx?|jsp)$/i, '').replace(/\/+$/, '') || '/';
+      return { key, full: key + url.search, alias: host + aliasPath };
     } catch {
       const s = String(u || '').replace(/#.*$/, '');
-      return { key: s.replace(/\?.*$/, ''), full: s };
+      const key = s.replace(/\?.*$/, '');
+      return { key, full: s, alias: key };
     }
   }
 
@@ -120,8 +129,8 @@ function runInPage(ctx) {
     .filter((p) => p.title && p.parts.full !== here.full);
 
   const same = others.filter((p) => p.title.toLowerCase() === title.toLowerCase());
-  const otherPath = same.filter((p) => p.parts.key !== here.key);
-  const samePath = same.filter((p) => p.parts.key === here.key);
+  const otherPath = same.filter((p) => p.parts.alias !== here.alias);
+  const samePath = same.filter((p) => p.parts.alias === here.alias);
 
   const selector =
     dom.parentElement(titleEl) && dom.localName(dom.parentElement(titleEl)) === 'head'

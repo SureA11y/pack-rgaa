@@ -188,3 +188,20 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-field-label-in-name-sour
     ['fins_case_05', 'cantTell', 'PARENTHESISED_TEXT_MISSING']
   ]);
 });
+
+// Visually hidden text (clipped, 1px with overflow hidden) is read by
+// assistive technologies but not seen, so it is not part of the visible label.
+test(`${RULE_ID}: visually hidden text is not part of the visible label`, () => {
+  for (const [body, outcome] of [
+    [
+      '<label for="f">Nom <span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">(obligatoire)</span></label><input id="f" title="Nom">',
+      'pass'
+    ],
+    [
+      '<label for="f" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Nom</label><input id="f" title="Votre nom complet">',
+      'notApplicable'
+    ]
+  ]) {
+    assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, outcome);
+  }
+});

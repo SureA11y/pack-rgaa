@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>rgaa-valid-lang — scenario fixture</title>
+</head>
+<body>
+  <h1>Scenario fixture: <code>rgaa-valid-lang</code></h1>
+
+  <div class="case-title" style="font-weight:700">01 — PASS: lang="fr", an ISO 639-1 code</div>
+  <p id="rvl_case_01" lang="fr">Bonjour</p>
+
+  <div class="case-title" style="font-weight:700">02 — PASS: lang="fra", an ISO 639-2 code the IANA registry leaves out (valid-lang fails it)</div>
+  <p id="rvl_case_02" lang="fra">Bonjour</p>
+
+  <div class="case-title" style="font-weight:700">03 — PASS: lang="ger-DE", an ISO 639-2 bibliographic code with a region</div>
+  <p id="rvl_case_03" lang="ger-DE">Guten Tag</p>
+
+  <div class="case-title" style="font-weight:700">04 — PASS: lang="qaa", the ISO 639-2 local-use range</div>
+  <p id="rvl_case_04" lang="qaa">Texte</p>
+
+  <div class="case-title" style="font-weight:700">05 — FAIL: lang="xx" is no ISO 639 code</div>
+  <p id="rvl_case_05" lang="xx">Texte</p>
+
+  <div class="case-title" style="font-weight:700">06 — FAIL: lang="en_US" is not a language tag</div>
+  <p id="rvl_case_06" lang="en_US">Hello</p>
+
+  <div class="case-title" style="font-weight:700">07 — NOT APPLICABLE: lang="xx" on an element with no text of its own</div>
+  <div id="rvl_case_07" lang="xx"><span lang="fr">Bonjour</span></div>
+</body>
+</html>

@@ -134,3 +134,21 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
   const rule = assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'cantTell', { maxOccurrences: 1 });
   assert.deepEqual(reasons(rule), [['cantTell', 'TITLE_SINGLE_PAGE']]);
 });
+
+// http and https, www and not, a trailing index file: usually one page
+// recorded twice by a crawl, so asked about rather than failed.
+test(`${RULE_ID}: an alias URL of this page with the same title is asked about, not failed`, () => {
+  for (const url of [
+    'http://example.test/horaires',
+    'https://www.example.test/horaires',
+    'https://example.test/horaires/index.html',
+    'https://example.test/horaires/index.php'
+  ]) {
+    const rule = assertRule(run('Horaires', [{ url, title: 'Horaires' }]), RULE_ID, 'cantTell');
+    assert.deepEqual(reasons(rule), [['cantTell', 'TITLE_DUPLICATE_SAME_PATH']], url);
+  }
+  // Another host or another path is another page.
+  for (const url of ['https://other.test/horaires', 'https://example.test/tarifs']) {
+    assertRule(run('Horaires', [{ url, title: 'Horaires' }]), RULE_ID, 'fail');
+  }
+});

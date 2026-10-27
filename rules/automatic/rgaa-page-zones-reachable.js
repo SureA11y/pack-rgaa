@@ -31,6 +31,12 @@
  *     or a same-page link leads to it (whether that link is visible,
  *     ZONE_QUICK_LINK); and when it has none of these (ZONE_NO_MECHANISM).
  *     A page with no main landmark is asked about too (MAIN_NOT_FOUND).
+ *   - It also asks about each block outside every area it found that holds
+ *     links to other pages or places (ZONE_UNIDENTIFIED): a header,
+ *     navigation or footer whose markup names it in no way the rule
+ *     recognises, which would otherwise leave the page passing unseen. The
+ *     block is the outermost element around those links that holds no
+ *     area. Same-page links are left out, since a skip link sits there.
  * @implementation-notes
  * - Landmarks are read with helpers.getLandmarkRole, as core's landmark
  *   rules read them: the role attribute's first token, else the element's
@@ -340,6 +346,12 @@ function runInPage(ctx) {
         `This area ("${p.hint}") has no landmark role, no heading opening it, and no link or button to reach, skip or hide it.`,
       needed: 'Whether this block is an area of the page, and if so how it can be reached.'
     },
+    ZONE_UNIDENTIFIED: {
+      key: 'unidentified',
+      summary: (p) =>
+        `This <${p.hint}>, outside the main content and outside every area found, holds links: check whether it is a header, a navigation or a footer, and if so how it can be reached.`,
+      needed: 'Whether this block is an area of the page, and if so how it can be reached.'
+    },
     MAIN_NOT_FOUND: {
       key: 'mainNotFound',
       summary: () =>
@@ -374,6 +386,28 @@ function runInPage(ctx) {
     );
   }
 
+  // Blocks outside every area found that hold links elsewhere.
+  const MAX_UNIDENTIFIED = 10;
+  const placed = [...Object.values(landmarks).flat(), ...candidates.map((c) => c.el)];
+  const inArea = (el) => placed.some((a) => a === el || dom.contains(a, el));
+  const holdsArea = (el) => placed.some((a) => dom.contains(el, a));
+  const body = dom.body(document);
+  const unidentified = [];
+  if (landmarks.main.length || candidates.some((c) => c.zone === 'main')) {
+    for (const link of query('a[href]')) {
+      if (unidentified.length >= MAX_UNIDENTIFIED) break;
+      const href = String(attr(link, 'href') || '').trim();
+      if (!href || href.charAt(0) === '#' || !isEligible(link) || inArea(link)) continue;
+      if (unidentified.some((b) => dom.contains(b, link))) continue;
+      let block = link;
+      for (let up = dom.parentElement(block); up && up !== body; up = dom.parentElement(up)) {
+        if (holdsArea(up)) break;
+        block = up;
+      }
+      unidentified.push(block);
+    }
+  }
+
   for (const c of candidates) {
     const reasonCode = headingOpens(c.el)
       ? 'ZONE_HEADING'
@@ -388,6 +422,9 @@ function runInPage(ctx) {
   }
   if (!landmarks.main.length && !candidates.some((c) => c.zone === 'main')) {
     ask('MAIN_NOT_FOUND', dom.body(document) || dom.documentElement(document), '', 'main');
+  }
+  for (const block of unidentified) {
+    ask('ZONE_UNIDENTIFIED', block, String(dom.localName(block) || '').toLowerCase(), '');
   }
 
   if (questions.length) {

@@ -145,9 +145,80 @@ test('validate: a row has only tests, note and outsideCorrespondence', () => {
   });
 });
 
+test('validate: asks, reasonCodes and findings must be routes it can use', () => {
+  const problemsOf = (row) =>
+    withRows({ 'probe-img': { tests: ['1.1.1'], note: 'n', ...row } }, () =>
+      validateRgaaRuleTests(RULES).filter((p) => p.includes('probe-'))
+    );
+  assert.deepEqual(
+    problemsOf({
+      asks: ['1.2.1'],
+      reasonCodes: { X: { tests: ['1.1.2'], outcome: 'cantTell' } },
+      findings: [{ when: { role: 'img' }, tests: [] }]
+    }),
+    []
+  );
+  assert.match(problemsOf({ asks: [] }).join('\n'), /asks must be a non-empty list/);
+  assert.match(problemsOf({ asks: ['1.1.1'] }).join('\n'), /asks names 1\.1\.1, which tests/);
+  assert.match(problemsOf({ reasonCodes: [] }).join('\n'), /reasonCodes must be an object/);
+  assert.match(
+    problemsOf({ reasonCodes: { X: { outcome: 'fail' } } }).join('\n'),
+    /reasonCodes\.X\.outcome can only be 'cantTell'/
+  );
+  assert.match(problemsOf({ findings: {} }).join('\n'), /findings must be a list/);
+  assert.match(
+    problemsOf({ findings: [{ when: {} }] }).join('\n'),
+    /findings\[0\]\.when must name/
+  );
+  assert.match(
+    problemsOf({ findings: [{ when: { a: [1] } }] }).join('\n'),
+    /when\.a must be a string, number, boolean or null/
+  );
+  assert.match(
+    problemsOf({ findings: [{ when: { a: 1 }, tests: ['99.9.9'] }] }).join('\n'),
+    /no such test 99\.9\.9/
+  );
+});
+
+test('a criterion rollup judges a routed rule by its findings, naming the tests they go to', () => {
+  withRows(
+    {
+      'img-alt-present': {
+        tests: ['1.1.1'],
+        asks: ['1.2.1'],
+        findings: [{ when: { reasonCode: 'X' }, tests: ['1.1.2'] }],
+        note: 'n'
+      }
+    },
+    () => {
+      const { rgaaComposites } = require('../mappings');
+      const byId = Object.fromEntries(rgaaComposites().map((c) => [c.id, c]));
+      assert.deepEqual(byId['rgaa-4.1.2-1.1'].meta.contributions['img-alt-present'], {
+        default: { act: 'count', requirements: ['1.1.1'] },
+        findings: [{ when: { reasonCode: 'X' }, act: { act: 'count', requirements: ['1.1.2'] } }]
+      });
+      assert.deepEqual(byId['rgaa-4.1.2-1.2'].meta.contributions['img-alt-present'], {
+        default: { act: 'cantTell', requirements: ['1.2.1'] },
+        findings: [{ when: { reasonCode: 'X' }, act: 'ignore' }]
+      });
+    }
+  );
+});
+
 test("the real table is sound against the engine's rules", () => {
   const rules = core.getChecksCatalog().map((r) => ({ ruleId: r.ruleId, wcagSc: r.wcagSc }));
   assert.deepEqual(validateRgaaRuleTests(rules), []);
+});
+
+// A new core rule must be a decision, not a silent gap: every rule core
+// runs has a row, with tests: [] and a note when it checks no RGAA test.
+test('every rule core runs has a row in the table', () => {
+  const map = RGAA_RULE_TESTS['4.1.2'];
+  const missing = core
+    .getChecksCatalog()
+    .map((r) => r.ruleId)
+    .filter((id) => !id.startsWith('wcag-') && !map[id]);
+  assert.deepEqual(missing, []);
 });
 
 test('the image button, the title-only field and the labelled decorative image name their RGAA tests', () => {
@@ -235,4 +306,36 @@ test('an exception on one rule does not carry over to another rule linked to the
       assert.deepEqual(rgaaMappingsFor({ id: 'probe-other', wcagSc: ['2.1.1'] }), []);
     }
   );
+});
+
+// 7.3.1 condition 2 passes an element whose action another keyboard-operable
+// control offers, so core's failure is a question under RGAA.
+test('click-handler-keyboard-operable fails WCAG 2.1.1 and asks under RGAA 7.3', () => {
+  const { runa11yCoreOnHtml } = require('./helpers/run.js');
+  const html =
+    '<!doctype html><html lang="fr"><head><title>t</title></head><body><main>' +
+    '<span role="button" onclick="go()">Envoyer</span>' +
+    '</main></body></html>';
+  const result = runa11yCoreOnHtml(html, { engineOptions: { profile: 'rgaa-4.1.2-with-wcag' } });
+  const check = result.checksResults.find((r) => r.ruleId === 'click-handler-keyboard-operable');
+  assert.equal(check.outcome, 'fail');
+  const rollup = (id) => result.rulesResults.find((r) => r.ruleId === id).outcome;
+  assert.equal(rollup('wcag-2.1.1-keyboard'), 'fail');
+  assert.equal(rollup('rgaa-4.1.2-7.3'), 'cantTell');
+});
+
+// RGAA 7.3.2: « Un script ne doit pas supprimer le focus d'un élément qui le
+// reçoit ». Core's rule only asks, so the test is asked about.
+test('focus-not-removed-by-script asks under RGAA 7.3', () => {
+  const { runa11yCoreOnHtml } = require('./helpers/run.js');
+  const html =
+    '<!doctype html><html lang="fr"><head><title>t</title></head><body><main>' +
+    '<a href="/offres" onfocus="this.blur()">Offres</a>' +
+    '</main></body></html>';
+  const result = runa11yCoreOnHtml(html, { engineOptions: { profile: 'rgaa-4.1.2-with-wcag' } });
+  const check = result.checksResults.find((r) => r.ruleId === 'focus-not-removed-by-script');
+  assert.equal(check.outcome, 'cantTell');
+  assert.ok(check.rollupIds.includes('rgaa-4.1.2-7.3'));
+  const rollup = result.rulesResults.find((r) => r.ruleId === 'rgaa-4.1.2-7.3');
+  assert.equal(rollup.outcome, 'cantTell');
 });

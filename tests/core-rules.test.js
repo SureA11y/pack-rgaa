@@ -29,8 +29,8 @@ const CASES = [
     'deprecated-elements-not-used',
     page('<marquee>News</marquee>'),
     'cantTell',
-    [],
-    '10.1.1 comes from rgaa-presentational-elements-absent and 8.2.1 from rgaa-html-elements-attributes-valid, so the element is counted once in each'
+    ['13.8.1'],
+    'a question for 13.8.1 (moving content started automatically); 10.1.1 comes from rgaa-presentational-elements-absent and 8.2.1 from rgaa-html-elements-attributes-valid, so the element is counted once in each'
   ],
   [
     'server-side-image-map-absent',

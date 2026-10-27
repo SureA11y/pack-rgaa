@@ -88,5 +88,40 @@
       <figcaption>Installing</figcaption>
     </figure>
   </div>
+
+  <h2>C. Other images (1.9.2 to 1.9.5)</h2>
+
+  <div class="case" id="case_09">
+    <div class="case-title">09 — FAIL: an object image with no role (1.9.2)</div>
+    <figure aria-label="Floor plan" id="fcs_case_09">
+      <object type="image/svg+xml" data="plan.svg" aria-label="Floor plan"></object>
+      <figcaption>Floor plan</figcaption>
+    </figure>
+  </div>
+
+  <div class="case" id="case_10">
+    <div class="case-title">10 — FAIL: an embedded image with no aria-label (1.9.3)</div>
+    <figure role="figure" id="fcs_case_10">
+      <embed type="image/png" src="map.png">
+      <figcaption>Map of the site</figcaption>
+    </figure>
+  </div>
+
+  <div class="case" id="case_11">
+    <div class="case-title">11 — FAIL: a canvas whose figure label differs from its caption (1.9.5)</div>
+    <figure role="group" aria-label="Chart" id="fcs_case_11">
+      <canvas width="20" height="20">Visits per month</canvas>
+      <figcaption>Visits per month</figcaption>
+    </figure>
+  </div>
+
+  <div class="case" id="case_12">
+    <div class="case-title">12 — NEUTRAL: an object or embed that is not an image</div>
+    <figure id="fcs_case_12">
+      <object type="text/html" data="widget.html"></object>
+      <embed type="video/mp4" src="clip.mp4">
+      <figcaption>A widget and a clip</figcaption>
+    </figure>
+  </div>
 </body>
 </html>

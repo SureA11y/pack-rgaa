@@ -24,6 +24,26 @@ function reasonOf(row) {
   return [row.note, ...extra].join(' ');
 }
 
+// Every test a row links: its tests, those it asks about, and those its
+// findings or reason codes are sent to.
+function linkedTests(row) {
+  if (!row) return [];
+  const routes = [...Object.values(row.reasonCodes || {}), ...(row.findings || [])];
+  const all = new Set([...row.tests, ...(row.asks || [])]);
+  for (const r of routes) for (const t of r.tests || []) all.add(t);
+  return [...all];
+}
+
+// How a row links a test: by its findings only, asked about, or outside RGAA's
+// correspondence.
+function testLabel(row, t) {
+  const marks = [];
+  if ((row.asks || []).includes(t)) marks.push('asks');
+  else if (!row.tests.includes(t)) marks.push('some findings');
+  if (t in (row.outsideCorrespondence || {})) marks.push('exception');
+  return marks.length ? `${t} (${marks.join(', ')})` : t;
+}
+
 function cell(text) {
   return String(text).replace(/\|/g, '\\|').replace(/\s+/g, ' ').trim();
 }
@@ -45,14 +65,14 @@ function renderDoc({ rules, versions, themes, criteria, tests, ruleTests }) {
   );
   out.push('');
   out.push(
-    'A rule maps to a test when its failure (or, for a manual rule, the question it raises) is direct evidence about what the test\'s methodology checks. A rule that fails is linked only when its usual failures really fail the test; where that is uncertain, the test is left off or the rule asks. A mapped rule covers the test in part at most: a `pass` never means an RGAA test is conforme, and most tests need a human. A test marked "(exception)" is linked although RGAA relates it to other WCAG criteria than the rule; the reason follows the note.'
+    'A rule maps to a test when its failure (or, for a manual rule, the question it raises) is direct evidence about what the test\'s methodology checks. A rule that fails is linked only when its usual failures really fail the test; where that is uncertain, the test is left off or the rule asks. A mapped rule covers the test in part at most: a `pass` never means an RGAA test is conforme, and most tests need a human. A test marked "(exception)" is linked although RGAA relates it to other WCAG criteria than the rule; the reason follows the note. Where a rule\'s findings fail different tests, each finding counts toward its own (by its text size, its list, its role…), and a criterion\'s result names only the tests of the findings that decided it; the note says how. A test marked "(asks)" is one where the rule\'s failures are only questions, and one marked "(some findings)" is one only some of its findings count toward.'
   );
 
   for (const { version } of versions) {
     const table = ruleTests[version] || {};
-    const mapped = rules.filter((r) => (table[r.ruleId] || { tests: [] }).tests.length);
+    const mapped = rules.filter((r) => linkedTests(table[r.ruleId]).length);
     const reached = new Set(
-      mapped.flatMap((r) => table[r.ruleId].tests.map((t) => tests[version][t].criterion))
+      mapped.flatMap((r) => linkedTests(table[r.ruleId]).map((t) => tests[version][t].criterion))
     );
     const allCriteria = Object.keys(criteria[version]);
 
@@ -70,11 +90,8 @@ function renderDoc({ rules, versions, themes, criteria, tests, ruleTests }) {
     out.push('|---|---|---|---|---|');
     for (const r of rules) {
       const row = table[r.ruleId];
-      const outside = (row && row.outsideCorrespondence) || {};
-      const testList =
-        row && row.tests.length
-          ? row.tests.map((t) => (t in outside ? `${t} (exception)` : t)).join(', ')
-          : '—';
+      const linked = linkedTests(row);
+      const testList = linked.length ? linked.map((t) => testLabel(row, t)).join(', ') : '—';
       const why = row ? reasonOf(row) : 'Not mapped yet.';
       out.push(
         `| \`${r.ruleId}\` | ${r.type} | ${r.wcagSc.join(', ') || '—'} | ${testList} | ${cell(why)} |`
@@ -93,7 +110,7 @@ function renderDoc({ rules, versions, themes, criteria, tests, ruleTests }) {
         if (c.theme !== theme.number) continue;
         const byTest = c.tests
           .map((t) => {
-            const who = mapped.filter((r) => table[r.ruleId].tests.includes(t));
+            const who = mapped.filter((r) => linkedTests(table[r.ruleId]).includes(t));
             return who.length ? `${t}: ${who.map((r) => `\`${r.ruleId}\``).join(', ')}` : null;
           })
           .filter(Boolean);

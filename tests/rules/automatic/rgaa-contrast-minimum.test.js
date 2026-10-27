@@ -144,6 +144,31 @@ test(`${RULE_ID}: WCAG 1.4.3 and RGAA 3.2 agree outside the 18.5px band`, () => 
 // order and under any profile, leaves its result as it was. The two share the
 // colour caches but not the font or result caches. Core's variant test checks
 // the same over contrast-minimum's own scenario page.
+// RGAA 3.2's particular cases: « Le texte fait partie d'un logo ou d'un nom
+// de marque d'un organisme ou d'une société ». Whether it does is found by a
+// heuristic, so the text is asked about rather than exempted.
+test(`${RULE_ID}: text that looks like part of a logo is asked about, not failed`, () => {
+  const logo = (style) =>
+    `<!doctype html><html lang="fr"><head><title>t</title><style>html,body{background:#fff;color:#000}</style></head><body><header><div class="site-logo"><span id="t" style="${style}">Mairie de Lyon</span></div></header><main><p>Texte</p></main></body></html>`;
+  const rule = assertRule(
+    runa11yCoreOnHtml(logo(`font-size:16px;${LIGHT}`), RUN),
+    RULE_ID,
+    'cantTell'
+  );
+  const occ = rule.occurrences.find((o) => o.html.includes('id="t"'));
+  assert.equal(occ.data.details.reasonCode, 'LOGO_TEXT_BELOW_THRESHOLD');
+  assert.equal(occ.occurrenceOutcome, 'cantTell');
+  assert.equal(occ.i18n.summaryKey, 'contrastMinimumRgaa_cantTell_logo');
+
+  // WCAG's rule still fails it, with a hint that logo text is exempt.
+  const result = runa11yCoreOnHtml(logo(`font-size:16px;${LIGHT}`), RGAA);
+  assert.equal(check(result, WCAG_RULE).outcome, 'fail');
+  assert.equal(rollup(result, 'rgaa-4.1.2-3.2').outcome, 'cantTell');
+
+  // Grey text that is not a logo still fails.
+  assertRule(runa11yCoreOnHtml(page(`font-size:16px;${LIGHT}`), RUN), RULE_ID, 'fail');
+});
+
 test(`${WCAG_RULE} gives the same result whether or not ${RULE_ID} runs in the same scan`, () => {
   const strip = (r) =>
     JSON.stringify({

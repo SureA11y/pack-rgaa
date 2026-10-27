@@ -96,6 +96,22 @@ Both roles are ones the W3C validator accepts, and allowed on their elements; th
 ```
 The validator reports the unknown token `bogus` even though `button` follows it as a fallback (WCAG's `aria-roles-valid` passes on one valid token), and `role="tab"` is not allowed on `<nav>`. Both fail RGAA 8.2.1. An `<img alt="" role="presentation">` is asked about instead: the validator reports it, but RGAA 1.2.1 names `role="presentation"` for decorative images.
 
+## rgaa-button-name-present
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Passed**
+```html
+<button type="button" aria-label="Fermer le menu">×</button>
+```
+The button outside any form has a name, its `aria-label`.
+
+**Failed**
+```html
+<button type="button"><img src="menu.svg" alt=""></button>
+```
+The button outside any form has no name: as a component driven by script, it fails RGAA 7.1.1. The same empty button inside a `<form>` is `rgaa-form-button-name-present`'s, under 11.9.1.
+
 ## rgaa-canvas-decorative-aria-hidden
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -205,6 +221,24 @@ Bold text of 18.5px is large for RGAA (3.2.4), so 3.54:1 is enough. WCAG makes b
 <p style="font-size:18px; font-weight:700; color:#888888; background:#ffffff">Opening hours</p>
 ```
 Bold text below 18.5px needs 4.5:1 (3.2.2); #888888 on white is 3.54:1.
+
+## rgaa-css-colors-paired
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Passed**
+```html
+<style>body { color: #222; background: #fff; } p { color: #555; }</style>
+<p>Opening hours</p>
+```
+The paragraph's text color is paired with the background color declared on `<body>`, which RGAA 10.5.1 accepts « au moins, héritée d'un parent ».
+
+**Failed**
+```html
+<style>p { color: #555; }</style>
+<p>Opening hours</p>
+```
+A text color is declared and no background color is, on the paragraph or any ancestor (10.5.1): a reader whose browser shows a dark background keeps the grey text on it.
 
 ## rgaa-data-table-headers-review
 
@@ -1315,13 +1349,13 @@ The SVG has `role="img"` and an `aria-label`.
 ```
 The SVG has a text alternative but no `role="img"`.
 
-**Flagged (cantTell)**
+**Passed**
 ```html
 <svg role="img" width="20" height="20">
   <title>Logo</title>
 </svg>
 ```
-Named only by `<title>`: RGAA 1.1.5 lists only the ARIA sources, while 1.3.6 treats `<title>` as the alternative.
+Named only by `<title>`, which RGAA 4.1.2 added to the sources 1.1.5 accepts.
 
 ## rgaa-th-scope-row-col
 
@@ -1362,6 +1396,22 @@ The title and the placeholder are identical.
 <input type="text" id="nom" title="Nom de famille" placeholder="Dupont">
 ```
 RGAA's glossary entry "Étiquette de champ de formulaire" says a placeholder may be read in place of the title, so the two must be identical when both are present.
+
+## rgaa-valid-lang
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Passed**
+```html
+<p lang="fra">Bonjour</p>
+```
+`fra` is an ISO 639-2 code, which RGAA 8.8.1 accepts, although the IANA registry lists only `fr`. `valid-lang` fails the same element under WCAG 3.1.2.
+
+**Failed**
+```html
+<p lang="xx">Bonjour</p>
+```
+`xx` is not an ISO 639 language code.
 
 ## rgaa-video-captions-track-kind
 

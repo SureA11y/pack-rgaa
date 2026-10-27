@@ -203,7 +203,8 @@ function runInPage(ctx) {
 
   // Blocks whose text link-name-quality counts as context. RGAA's glossary
   // "Contexte du lien" lists the <p>, the <li> and the table cells; the
-  // other four are not in its list.
+  // other four are not in its list. It names the <th> associated with the
+  // link's <td>; a <th> that contains the link is taken as context too.
   const RGAA_CONTEXT_TAGS = new Set(['p', 'td', 'th']);
   const OTHER_CONTEXT_TAGS = new Set(['dd', 'dt', 'blockquote', 'figcaption']);
 

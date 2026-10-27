@@ -23,12 +23,13 @@
  *   malformed region is a markup validity question. Whether the code names
  *   the page's main language (« pertinent ») is for a person.
  * @implementation-notes
- * - The IANA language subtag registry (helpers.isRegisteredLanguageSubtag)
- *   lists ISO 639-1 codes, and ISO 639-2, 639-3 and 639-5 codes that have
- *   no two-letter equivalent. RGAA also accepts the three-letter ISO 639-2
- *   codes of languages that do have one (eng, fra, fre, deu, ger…), which
- *   the registry leaves out, so the rule adds them, and the qaa to qtz
- *   range that ISO 639-2 reserves for local use.
+ * - The IANA language subtag registry lists ISO 639-1 codes, and ISO
+ *   639-2, 639-3 and 639-5 codes that have no two-letter equivalent. RGAA
+ *   also accepts the three-letter ISO 639-2 codes of languages that do have
+ *   one (eng, fra, fre, deu, ger…), which the registry leaves out, and the
+ *   qaa to qtz range that ISO 639-2 reserves for local use: core's
+ *   helpers.isIso639LanguageCode accepts them all, as rgaa-valid-lang does
+ *   for 8.8.1.
  * - html-lang-attr-present (WCAG 3.1.1) judges lang on <html> against the
  *   registry alone, so it fails lang="fra", and it ignores xml:lang.
  * - Opt-in (tag `rgaa`): the rule runs only under the rgaa-4.1.2 profile,
@@ -66,31 +67,6 @@ function runInPage(ctx) {
 
   const XML_NS = 'http://www.w3.org/XML/1998/namespace';
 
-  // Three-letter ISO 639-2 codes (terminology and bibliographic) of the
-  // languages that have an ISO 639-1 code, which the IANA registry omits.
-  const ISO_639_2_WITH_639_1 = new Set(
-    (
-      'aar abk afr aka alb amh ara arg arm asm ava ave aym aze bak bam baq bel ben bih bis bod ' +
-      'bos bre bul bur cat ces cha che chi chu chv cor cos cre cym cze dan deu div dut dzo ell ' +
-      'eng epo est eus ewe fao fas fij fin fra fre fry ful geo ger gla gle glg glv gre grn guj ' +
-      'hat hau hbs heb her hin hmo hrv hun hye ibo ice ido iii iku ile ina ind ipk isl ita jav ' +
-      'jpn kal kan kas kat kau kaz khm kik kin kir kom kon kor kua kur lao lat lav lim lin lit ' +
-      'ltz lub lug mac mah mal mao mar may mkd mlg mlt mon mri msa mya nau nav nbl nde ndo nep ' +
-      'nld nno nob nor nya oci oji ori orm oss pan per pli pol por pus que roh ron rum run rus ' +
-      'sag san sin slk slo slv sme smo sna snd som sot spa sqi srd srp ssw sun swa swe tah tam ' +
-      'tat tel tgk tgl tha tib tir ton tsn tso tuk tur twi uig ukr urd uzb ven vie vol wel wln ' +
-      'wol xho yid yor zha zho zul'
-    ).split(' ')
-  );
-
-  function isIsoLanguageCode(code) {
-    const c = String(code || '').toLowerCase();
-    if (!/^[a-z]{2,3}$/.test(c)) return false;
-    if (/^q[a-t][a-z]$/.test(c)) return true;
-    if (ISO_639_2_WITH_639_1.has(c)) return true;
-    return helpers.isRegisteredLanguageSubtag ? helpers.isRegisteredLanguageSubtag(c) : true;
-  }
-
   const html = document && dom.documentElement(document);
   if (!html || String(dom.tagName(html) || '').toLowerCase() !== 'html') {
     return { ruleId: rule.ruleId, outcome: 'notApplicable', severity: 'minor', occurrences: [] };
@@ -114,7 +90,9 @@ function runInPage(ctx) {
   const occurrences = [];
   for (const [attribute, value] of declared) {
     const code = value.split('-')[0];
-    if (isIsoLanguageCode(code)) continue;
+    // Any ISO 639 code: the registry's, plus the three-letter ISO 639-2 and
+    // 639-3 codes it leaves out and the qaa to qtz local-use range.
+    if (helpers.isIso639LanguageCode(code)) continue;
     occurrences.push(
       helpers.reportOccurrence(html, {
         summary: `The page's default language is given as ${attribute}="${value}", and "${code}" is not an ISO 639 language code.`,

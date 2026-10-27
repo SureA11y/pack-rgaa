@@ -26,7 +26,8 @@
  *   passes: whether that summary is good is rgaa-complex-table-summary-quality's
  *   question.
  * @expectation
- *   A complex table without aria-describedby, and without a summary
+ *   A complex table without an aria-describedby that points to text (an
+ *   id that names nothing, or an empty element, is no summary), and without a summary
  *   attribute where one still counts, is flagged for a person to check that
  *   a summary is available, as RGAA 5.1.1 asks: in the <caption>, or in a
  *   passage near the table. The summary attribute counts only on a <table>
@@ -85,6 +86,22 @@ function runInPage(ctx) {
 
   // The resolved explicit role: the first token of the role fallback list
   // that names a known role, lower-cased, or '' when none does.
+  // The text aria-describedby points to, in the table's own tree. An id
+  // that names nothing, or only an empty element, is no summary.
+  function describedByText(table) {
+    const ids = dom.getAttribute(table, 'aria-describedby');
+    if (!hasText(ids)) return '';
+    if (helpers && typeof helpers.getTextFromIdRefs === 'function') {
+      try {
+        const r = helpers.getTextFromIdRefs(ids, ctx, {}, table);
+        return r && hasText(r.text) ? String(r.text) : '';
+      } catch {
+        return '';
+      }
+    }
+    return String(ids);
+  }
+
   function explicitRole(el) {
     try {
       return el && helpers.aria && typeof helpers.aria.getExplicitRole === 'function'
@@ -198,7 +215,7 @@ function runInPage(ctx) {
     const reasons = complexity(table);
     if (!reasons.length) continue;
     applicableCount += 1;
-    if (hasText(dom.getAttribute(table, 'aria-describedby'))) continue;
+    if (describedByText(table)) continue;
     // summary is a résumé only on a <table> before HTML5 (5.1.1 step 2).
     const hasSummaryAttr = isNative && hasText(dom.getAttribute(table, 'summary'));
     if (hasSummaryAttr && !isHtml5) continue;

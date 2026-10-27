@@ -154,7 +154,8 @@ test(`${RULE_ID}: WCAG fails a replaced name outside a form, RGAA 11.9 does not 
   const r = rollups('<button aria-label="Fermer la fenêtre">Valider</button>');
   assert.equal(r.wcag, 'fail');
   assert.equal(r.rgaa, 'notApplicable');
-  assert.deepEqual(r.others, ['notApplicable', 'notApplicable', 'notApplicable']);
+  // 7.1 now judges the button's name (rgaa-button-name-present), which it has.
+  assert.deepEqual(r.others, ['notApplicable', 'notApplicable', 'pass']);
 });
 
 test(`${RULE_ID}: a title without the label is outside WCAG 2.5.3, RGAA 11.9 asks`, () => {
@@ -195,4 +196,17 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-form-button-label-in-nam
     ['fblins_case_04', 'cantTell', 'SOURCE_LACKS_VISIBLE_LABEL'],
     ['fblins_case_05', 'cantTell', 'SOURCE_LACKS_VISIBLE_LABEL']
   ]);
+});
+
+// Visually hidden text (clipped, 1px with overflow hidden) is read by
+// assistive technologies but not seen, so it is not part of the visible label.
+test(`${RULE_ID}: visually hidden text is not part of the visible label`, () => {
+  for (const [body, outcome] of [
+    [
+      '<form action="/send"><button aria-label="Envoyer">Envoyer <span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">le formulaire de contact</span></button></form>',
+      'pass'
+    ]
+  ]) {
+    assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, outcome);
+  }
 });

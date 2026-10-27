@@ -24,10 +24,9 @@
  *   (image)" lists title for <img>, <input type="image">, <object> and
  *   <embed> only.
  *   An element in the SVG namespace (a <g role="img">, for example) named
- *   only by a <title> child is asked about (cantTell): RGAA contradicts
- *   itself on <title> as an SVG alternative (1.1.5 step 5 lists only
- *   aria-labelledby and aria-label, while 1.3.6 checks the content of
- *   <title>).
+ *   by a <title> child passes: since RGAA 4.1.2 the glossary entry
+ *   "Alternative textuelle (image)" counts an SVG's <title> as its
+ *   alternative, and 1.1.5 step 5 lists it.
  * @implementation-notes
  * - The graphics-* roles are not checked: no RGAA test names them.
  * - aria-labelledby counts when it resolves to text; one that points to
@@ -127,25 +126,7 @@ function runInPage(ctx) {
     if (ariaName(el)) continue;
 
     const element = tagOf(el);
-    const titleChild = svgTitleChildText(el);
-    if (titleChild) {
-      cantTells.push(
-        helpers.reportOccurrence(el, {
-          summary: `This <${element}> with role="img" is named only by a <title> child.`,
-          hint: 'RGAA 1.1.1 accepts only aria-labelledby or aria-label for role="img". Check that assistive technologies render the <title>, or point aria-labelledby at it.',
-          i18n: {
-            summaryKey: 'roleImgAriaName_summary_cantTell_svgTitle',
-            hintKey: 'roleImgAriaName_hint_cantTell_svgTitle',
-            params: { element }
-          },
-          data: {
-            details: { reasonCode: 'svgTitleOnly', title: titleChild },
-            visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
-          }
-        })
-      );
-      continue;
-    }
+    if (svgTitleChildText(el)) continue;
 
     const titleOnly = !!trim(attr(el, 'title'));
     fails.push(

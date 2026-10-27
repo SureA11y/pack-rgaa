@@ -28,10 +28,12 @@ const scan = (profile, html = PAGE) => runa11yCoreOnHtml(html, { engineOptions: 
 const ran = (result) => result.checksResults.map((c) => c.ruleId).sort();
 const check = (result, id) => result.checksResults.find((c) => c.ruleId === id);
 
-// The core rules rule-map.js gives at least one RGAA 4.1.2 test.
-const MAPPED_CORE = CHECK_DEFS.map((d) => d.ruleId).filter(
-  (id) => ((RGAA_RULE_TESTS['4.1.2'][id] || {}).tests || []).length > 0
-);
+// The core rules rule-map.js gives at least one RGAA 4.1.2 test, as one its
+// findings fail or one they only ask about.
+const MAPPED_CORE = CHECK_DEFS.map((d) => d.ruleId).filter((id) => {
+  const row = RGAA_RULE_TESTS['4.1.2'][id] || {};
+  return (row.tests || []).length > 0 || (row.asks || []).length > 0;
+});
 const OWN = rgaa.rules.map((r) => r.id);
 
 test('rgaa-4.1.2 runs the pack’s rules and the core rules mapped to an RGAA test, nothing else', () => {

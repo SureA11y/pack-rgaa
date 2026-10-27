@@ -50,13 +50,9 @@ test(`${RULE_ID}: an alternative without role="img" fails and names the alternat
   }
 });
 
-test(`${RULE_ID}: role="img" named only by <title> is asked about (D1: RGAA contradicts itself)`, () => {
-  const rule = assertRule(run('<svg role="img"><title>Logo</title></svg>'), RULE_ID, 'cantTell', {
-    minOccurrences: 1,
-    maxOccurrences: 1
-  });
-  assert.equal(rule.occurrences[0].data.details.reasonCode, 'titleOnly');
-  assert.equal(rule.occurrences[0].i18n.summaryKey, 'svgRoleImg_summary_cantTell_titleOnly');
+// RGAA 4.1.2 added the content of <title> to 1.1.5 step 5's sources.
+test(`${RULE_ID}: role="img" named only by <title> passes`, () => {
+  assertRule(run('<svg role="img"><title>Logo</title></svg>'), RULE_ID, 'pass');
 });
 
 test(`${RULE_ID}: hidden, unnamed, nested and desc-only SVGs are not applicable`, () => {
@@ -118,10 +114,10 @@ test(`${RULE_ID}: RGAA profile, a named SVG without role="img": WCAG passes it, 
   }
 });
 
-test(`${RULE_ID}: RGAA profile, role="img" named only by <title>: WCAG passes it, RGAA 1.1 asks`, () => {
+test(`${RULE_ID}: RGAA profile, role="img" named only by <title>: WCAG and RGAA 1.1 both pass it`, () => {
   assert.deepEqual(verdicts('<svg role="img"><title>Logo</title></svg>'), {
-    rule: 'cantTell',
-    rgaa: 'cantTell',
+    rule: 'pass',
+    rgaa: 'pass',
     wcagRule: 'pass'
   });
 });
@@ -143,14 +139,13 @@ test(`${RULE_ID}: RGAA profile, the two standards agree on aria-label with role=
 test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-svg-role-img-all-scenarios.html)`, () => {
   const fixturePath = path.join(__dirname, '../..', 'fixtures', `${RULE_ID}-all-scenarios.html`);
   const result = runa11yCoreOnHtml(fs.readFileSync(fixturePath, 'utf8'), RUN);
-  const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 4, maxOccurrences: 4 });
+  const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 3, maxOccurrences: 3 });
   assert.deepEqual(
     rule.occurrences.map((o) => [(o.html.match(/id="([^"]+)"/) || [])[1], o.occurrenceOutcome]),
     [
       ['sri_case_01', 'fail'],
       ['sri_case_02', 'fail'],
-      ['sri_case_03', 'fail'],
-      ['sri_case_04', 'cantTell']
+      ['sri_case_03', 'fail']
     ]
   );
 });

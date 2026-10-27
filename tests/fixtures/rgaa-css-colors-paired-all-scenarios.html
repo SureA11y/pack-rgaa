@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>rgaa-css-colors-paired — scenario fixture</title>
+  <style>
+    .case { border: 1px solid #ddd; padding: 12px; margin: 10px 0; }
+    .case-title { font-weight: 700; }
+    #ccp_case_01 { color: #555; }
+    #ccp_case_02 { background-color: #f5f5f5; }
+    #ccp_case_03 { background-image: url(motif.png); }
+    #ccp_case_04 { color: #222; background-color: #fff; }
+    #ccp_case_04 p { color: #555; }
+    #ccp_case_05 { background: #fff url(motif.png); color: #000; }
+  </style>
+</head>
+<body>
+  <h1>Scenario fixture: <code>rgaa-css-colors-paired</code></h1>
+
+  <div class="case" id="case_01">
+    <div class="case-title">01 — FAIL: a text color with no background color anywhere (10.5.1)</div>
+    <div id="ccp_case_01"><p>Texte gris</p></div>
+  </div>
+
+  <div class="case" id="case_02">
+    <div class="case-title">02 — FAIL: a background color with no text color anywhere (10.5.2)</div>
+    <div id="ccp_case_02"><p>Texte sur fond gris</p></div>
+  </div>
+
+  <div class="case" id="case_03">
+    <div class="case-title">03 — FAIL: a background image with no background color anywhere (10.5.3)</div>
+    <div id="ccp_case_03"><p>Texte sur motif</p></div>
+  </div>
+
+  <div class="case" id="case_04">
+    <div class="case-title">04 — PASS: the paragraph's color is paired with its ancestor's background</div>
+    <div id="ccp_case_04"><p>Texte</p></div>
+  </div>
+
+  <div class="case" id="case_05">
+    <div class="case-title">05 — PASS: a background image with a background color and a text color</div>
+    <div id="ccp_case_05"><p>Texte sur motif</p></div>
+  </div>
+
+  <div class="case" id="case_06">
+    <div class="case-title">06 — NOT APPLICABLE: text no author color reaches (the case titles, by browser defaults)</div>
+    <p id="ccp_case_06">Texte aux couleurs du navigateur</p>
+  </div>
+</body>
+</html>

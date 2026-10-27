@@ -27,7 +27,7 @@ test(`${RULE_ID}: ISO 639-1 codes pass, with any option after the hyphen`, () =>
 
 // 8.4.1: « conforme à la norme ISO 639-1 ou ISO 639-2 et suivantes ».
 test(`${RULE_ID}: ISO 639-2 codes pass, including those the IANA registry leaves out`, () => {
-  for (const lang of ['fra', 'fre', 'ger', 'eng-GB', 'gsw', 'qaa']) {
+  for (const lang of ['fra', 'fre', 'ger', 'eng-GB', 'gsw', 'qaa', 'hbs']) {
     assertRule(run(page(` lang="${lang}"`)), RULE_ID, 'pass', { maxOccurrences: 0 });
   }
 });
