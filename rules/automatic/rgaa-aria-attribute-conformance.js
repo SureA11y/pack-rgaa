@@ -24,8 +24,9 @@
  *     (aria-labeledby, aria-foo);
  *   - `invalidValue`: a value that does not fit the attribute: an empty or
  *     misspelt token (aria-expanded="", aria-hidden="TRUE"), an integer out
- *     of range (aria-level="0", aria-setsize="-2"), an empty ID reference,
- *     or an aria-activedescendant that points to no element;
+ *     of range (aria-level="0", aria-setsize="-2"), an ID reference made
+ *     only of whitespace, or an aria-activedescendant that points to no
+ *     element of the page;
  *   - `attributeNotAllowed`: an attribute the element's role does not
  *     support: aria-pressed on a link, aria-sort on a <td>, aria-expanded
  *     on the <summary> of a <details>, any aria-* on <input type="hidden">;
@@ -45,11 +46,30 @@
  *     aria-expanded, role="checkbox", "radio", "switch", "menuitemcheckbox"
  *     or "menuitemradio" without aria-checked, role="slider", "scrollbar"
  *     or "meter" without aria-valuenow.
+ *   It asks (cantTell) in two cases:
+ *   - `emptyIdReference`: an ID-reference attribute (aria-labelledby,
+ *     aria-describedby, aria-controls, aria-owns, aria-flowto,
+ *     aria-details, aria-errormessage, aria-activedescendant) whose value
+ *     is the empty string. The validator reports it, but ARIA element
+ *     reflection (el.ariaLabelledByElements = [...] and the like) writes
+ *     exactly that: an empty attribute, with the reference kept in the DOM
+ *     property, which can point across a shadow boundary. Chromium does so.
+ *     Whether the relation is exposed is read in the accessibility tree;
+ *   - `idReferenceOtherTree`: an
+ *   aria-activedescendant whose id names no element in its own tree (the
+ *   document, or the shadow root the element sits in) but names one in
+ *   another tree of the page: the document from inside a shadow root, or a
+ *   shadow root from the document. ID references do not cross a shadow
+ *   boundary, yet the validator asks only that the attribute « refer to an
+ *   element in the same document », which that element is; whether the id
+ *   is meant for it is for a person. An id found in no tree of the page
+ *   fails (invalidValue).
  * @implementation-notes
- * - Markup inside a shadow root is asked about (cantTell) instead of failed:
- *   it is part of the page's generated source, which 8.2.1 judges, but
- *   the W3C validator its methodology runs does not see it in the
- *   serialization, so a person confirms the markup in the inspector.
+ * - Markup inside an open shadow root fails like markup outside it, with
+ *   the same reason codes: a shadow root is part of the page's generated
+ *   source (« code source généré »), which 8.2.1 judges. The checks read
+ *   the element's own attributes and its own tree, except the id that
+ *   aria-activedescendant names (see idReferenceOtherTree above).
  * - Expected outcomes follow the W3C validator version 26.9.27. The value
  *   types, the attributes each role supports and the attributes each
  *   element allows were read from that version's reports; re-check them
@@ -82,20 +102,6 @@
 
 const id = 'rgaa-aria-attribute-conformance';
 
-// Markup in a shadow root is asked about instead of failed, whatever is wrong
-// with it, since the W3C validator does not see it: a person confirms it in the
-// inspector. Each code gets these steps.
-const SHADOW_REVIEW = {
-  steps: [
-    'Find the element the report names: it sits inside a shadow root, which the browser inspector shows under its host element (#shadow-root).',
-    'Read what the report says is wrong with its markup, and check it on the element in the inspector. The W3C validator cannot do this, because a shadow root is not in the serialized source it reads.'
-  ],
-  passWhen:
-    'The markup is not as the report says: the element, attribute, value or nesting is allowed by the HTML specification.',
-  failWhen:
-    "The markup is as the report says, which fails RGAA 8.2.1: a shadow root is part of the page's generated source."
-};
-
 const meta = {
   title: 'aria-* attributes are valid for the W3C validator',
   description:
@@ -120,16 +126,36 @@ const meta = {
     'namingProhibited',
     'nativeCheckedConflict',
     'nativeAttributeConflict',
-    'missingRequired'
+    'missingRequired',
+    'idReferenceOtherTree',
+    'emptyIdReference'
   ],
+  // How a person answers each question the rule asks, per reason code: a few
+  // steps from the element the finding names, then what they see if it
+  // passes and if it fails. In English; reports show it as "How to check".
   review: {
-    unknownAttribute: SHADOW_REVIEW,
-    invalidValue: SHADOW_REVIEW,
-    attributeNotAllowed: SHADOW_REVIEW,
-    namingProhibited: SHADOW_REVIEW,
-    nativeCheckedConflict: SHADOW_REVIEW,
-    nativeAttributeConflict: SHADOW_REVIEW,
-    missingRequired: SHADOW_REVIEW
+    emptyIdReference: {
+      steps: [
+        'Find the element the report names, and its empty ID-reference attribute (aria-labelledby, aria-describedby, aria-controls, aria-activedescendant…).',
+        'A script may have set the reference through ARIA element reflection (for example el.ariaLabelledByElements = [label]), which leaves the attribute empty and keeps the reference in the DOM property. Open the browser’s accessibility tree (the Accessibility pane of the inspector) on this element.',
+        'Check whether the relation the attribute names is exposed there: the name or description computed from the referenced element, the controlled or owned elements, the active descendant.'
+      ],
+      passWhen:
+        'The accessibility tree exposes the relation, set by element reflection: the empty attribute is what the browser writes for it, not an empty reference, so it does not fail RGAA 8.2.1.',
+      failWhen:
+        'The accessibility tree exposes no such relation: the attribute is an empty ID reference, which the W3C validator reports, and fails RGAA 8.2.1.'
+    },
+    idReferenceOtherTree: {
+      steps: [
+        'Find the element the report names, and the id its aria-activedescendant attribute holds.',
+        'In the browser inspector, find the element with that id: it is not in the same tree as the element the report names, but on the other side of a shadow boundary (in the document while the element sits in a shadow root under #shadow-root, or the reverse).',
+        'Check whether that element is the one the widget means as its active descendant, for example the current option of the list it controls.'
+      ],
+      passWhen:
+        'The id names the element the widget means as its active descendant, an element of the same document: aria-activedescendant refers to an element of the document, as the W3C validator asks, so this attribute does not fail RGAA 8.2.1.',
+      failWhen:
+        'The id is not meant for the element that has it in the other tree (a stale or mistaken id that happens to match it): aria-activedescendant refers to no element it is meant for, which fails RGAA 8.2.1.'
+    }
   }
 };
 
@@ -553,6 +579,21 @@ function runInPage(ctx) {
       summary: 'aria-hidden="true" is not allowed on the <body> element.',
       hint: 'Remove aria-hidden from <body>: it would hide the whole page from assistive technologies.'
     },
+    emptyIdReference: {
+      outcome: 'cantTell',
+      summary: '{{attr}} on this <{{element}}> is empty.',
+      hint: 'If a script sets the reference through ARIA element reflection, check that the accessibility tree exposes it; otherwise give the attribute the id of the element it refers to, or remove it.',
+      needed:
+        'Whether the accessibility tree exposes the relation this empty attribute names, set by ARIA element reflection.'
+    },
+    idReferenceOtherTree: {
+      outcome: 'cantTell',
+      summary:
+        '{{attr}}="{{value}}" on this <{{element}}> names an element on the other side of a shadow boundary, not in its own tree.',
+      hint: 'If the id is meant for that element, the value refers to an element of the document; otherwise correct it. ID references do not cross a shadow boundary, so keep the element and its active descendant in the same tree where you can.',
+      needed:
+        'Whether the element this aria-activedescendant names, across a shadow boundary, is the one the widget means as its active descendant.'
+    },
     missingRequired: {
       summary:
         'This <{{element}}> has role="{{role}}" but no {{attr}} attribute, which the role requires.',
@@ -599,6 +640,32 @@ function runInPage(ctx) {
     } catch {
       return true;
     }
+  }
+
+  // Whether `idValue` names an element in a tree of the page other than the
+  // one `el` is in: the document or any open shadow root.
+  function inOtherTree(el, idValue) {
+    let own = null;
+    try {
+      own = dom.get(el, 'getRootNode') ? dom.getRootNode(el) : null;
+    } catch {
+      own = null;
+    }
+    const doc = dom.ownerDocument(el) || ctx.document;
+    const roots = [doc];
+    for (let i = 0; i < roots.length; i++) {
+      const root = roots[i];
+      try {
+        if (root !== own && dom.getElementById(root, idValue)) return true;
+        for (const n of dom.querySelectorAll(root, '*')) {
+          const sr = dom.shadowRoot(n);
+          if (sr) roots.push(sr);
+        }
+      } catch {
+        // A tree that cannot be read is not searched.
+      }
+    }
+    return false;
   }
 
   const POSITIVE = /^[0-9]+$/;
@@ -657,7 +724,7 @@ function runInPage(ctx) {
   function isFirstSummaryOfDetails(el) {
     const p = parentEl(el);
     if (!p || localName(p) !== 'details') return false;
-    for (const c of dom.querySelectorAll(p, ':scope > *')) {
+    for (const c of [...(dom.children(p) || [])]) {
       if (localName(c) === 'summary') return c === el;
     }
     return false;
@@ -726,44 +793,29 @@ function runInPage(ctx) {
   const nodes = query('*');
 
   const failOccurrences = [];
+  const cantTellOccurrences = [];
   let applicableCount = 0;
-
-  // Inside a shadow root: the W3C validator, which RGAA 8.2.1's methodology
-  // runs on the generated source, does not see it in the serialized page.
-  function inShadow(el) {
-    try {
-      const r = dom.get(el, 'getRootNode') ? dom.getRootNode(el) : null;
-      return !!r && r !== ctx.document && dom.nodeType(r) === 11;
-    } catch {
-      return false;
-    }
-  }
-  const SHADOW_NEEDED =
-    'Whether the markup in this shadow root, which the W3C validator does not see, is as the report says.';
-  const SHADOW_HINT =
-    "This markup is in a shadow root, part of the page's generated source that the W3C validator does not see. Check it in the browser inspector: if it is as the report says, it fails 8.2.1.";
-  const shadowAsked = [];
 
   function report(el, reasonCode, params, messageId) {
     const key = messageId || reasonCode;
     const msg = MESSAGES[key];
+    const outcome = msg.outcome || 'fail';
     let summary = msg.summary;
     for (const k of Object.keys(params)) summary = summary.split(`{{${k}}}`).join(params[k]);
-    const shadow = inShadow(el);
-    (shadow ? shadowAsked : failOccurrences).push(
+    (outcome === 'fail' ? failOccurrences : cantTellOccurrences).push(
       helpers.reportOccurrence(el, {
         summary,
-        hint: shadow ? SHADOW_HINT : msg.hint,
+        hint: msg.hint,
         i18n: {
-          summaryKey: `ariaAttributeConformance_summary_fail_${key}`,
-          hintKey: shadow
-            ? 'markupShadowRoot_hint_cantTell'
-            : `ariaAttributeConformance_hint_fail_${key}`,
+          summaryKey: `ariaAttributeConformance_summary_${outcome}_${key}`,
+          hintKey: `ariaAttributeConformance_hint_${outcome}_${key}`,
           params
         },
-        ...(shadow ? { uncertainty: { code: 'judgement-required', needed: SHADOW_NEEDED } } : {}),
+        ...(outcome === 'cantTell'
+          ? { uncertainty: { code: 'judgement-required', needed: msg.needed } }
+          : {}),
         data: {
-          details: { reasonCode, ...params, ...(shadow ? { inShadowRoot: true } : {}) },
+          details: { reasonCode, ...params },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })
@@ -800,7 +852,22 @@ function runInPage(ctx) {
         continue;
       }
       if (!valueIsValid(el, a, value)) {
-        report(el, 'invalidValue', { element, attr: a, value });
+        // ARIA element reflection writes an empty attribute and keeps the
+        // reference in the DOM property, so an empty one is asked about.
+        if (value === '' && /^idref/.test(TYPES[a])) {
+          report(el, 'emptyIdReference', { element, attr: a });
+          continue;
+        }
+        if (
+          TYPES[a] === 'idrefExisting' &&
+          value !== '' &&
+          !WS.test(value) &&
+          inOtherTree(el, value)
+        ) {
+          report(el, 'idReferenceOtherTree', { element, attr: a, value });
+        } else {
+          report(el, 'invalidValue', { element, attr: a, value });
+        }
         continue;
       }
       if (
@@ -861,12 +928,12 @@ function runInPage(ctx) {
   if (applicableCount === 0) {
     return { ruleId: rule.ruleId, outcome: 'notApplicable', severity: 'minor', occurrences: [] };
   }
-  if (failOccurrences.length || shadowAsked.length) {
+  if (failOccurrences.length || cantTellOccurrences.length) {
     return {
       ruleId: rule.ruleId,
       ...helpers.resolveTieredOutcome(
         failOccurrences,
-        shadowAsked,
+        cantTellOccurrences,
         rule.defaultSeverity || 'moderate'
       )
     };

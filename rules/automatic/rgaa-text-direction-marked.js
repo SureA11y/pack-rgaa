@@ -21,17 +21,28 @@
  *   RGAA 8.10.1: « chaque texte dont le sens de lecture est différent du
  *   sens de lecture par défaut est contenu dans une balise possédant un
  *   attribut dir ».
- *   - It fails (directionNotMarked) when a text of three words or more
- *     reads in the other direction, as a whole element or a run inside
- *     other text, with no dir between it and its context.
- *   - A text of one or two words is asked about (cantTell): a whole
- *     element (shortText), such as « العربية » in a language menu, or a
- *     run inside other text (shortRun), such as a word quoted in a
- *     sentence, so that a person confirms they are words of a language
- *     read in the other direction. If they are, they fail 8.10.1 without
- *     dir, whatever their length: the test has no exception for it. So
- *     is text in a <bdi> with no dir (bdiWithoutDir): browsers isolate it,
- *     but RGAA asks for a dir attribute, which a <bdi> does not replace.
+ *   The test has no exception for short text, and its methodology names
+ *   the passages « qui utilisent une langue qui se lit dans le sens
+ *   inverse de la langue du document (comme l'arabe ou l'hébreu pour le
+ *   français) ». It fails, with no dir between the text and its context:
+ *   - directionNotMarked: a run of right-to-left script (Hebrew, Arabic,
+ *     Syriac, Thaana, NKo…) with two letters or more in a left-to-right
+ *     context, as a whole element or inside other text, whatever its
+ *     length (« العربية » in a language menu, « شكرا » quoted in a
+ *     sentence): those scripts write only languages read right to left,
+ *     so such a run is words of one. Also a text of three words or more
+ *     that reads left to right in a right-to-left context;
+ *   - bdiWithoutDir: the same text inside a <bdi> with no dir: browsers
+ *     isolate it, but RGAA asks for a dir attribute, which a <bdi> does
+ *     not replace.
+ *   It asks (cantTell) where the characters may not be words of such a
+ *   language, as a whole element (shortText) or a run inside other text
+ *   (shortRun): a right-to-left run with fewer than two letters (a single
+ *   letter, Arabic-Indic digits, a sign of those blocks such as ﷼),
+ *   Arabic Mathematical Alphabetic Symbols (U+1EE00 to U+1EEFF), or a
+ *   left-to-right run of one or two words in a right-to-left context (a
+ *   brand name, an acronym). Text with no letter at all (Western digits,
+ *   punctuation) is not looked at.
  * @implementation-notes
  * - One occurrence per element: the highest element whose text all reads
  *   in the other direction, or the parent of a shorter run.
@@ -43,7 +54,7 @@ const id = 'rgaa-text-direction-marked';
 const meta = {
   title: 'Text in the other reading direction is marked with dir',
   description:
-    'Fails text of three words or more that reads right to left in a left-to-right context, or the reverse, with no dir attribute around it; asks about shorter texts.',
+    'Fails Hebrew, Arabic or other right-to-left script of two letters or more in a left-to-right context, and left-to-right text of three words or more in a right-to-left context, with no dir attribute around it, a <bdi> included; asks about a single letter and shorter left-to-right text.',
   i18n: {
     titleKey: 'textDirectionMarked_title',
     descriptionKey: 'textDirectionMarked_description'
@@ -61,34 +72,25 @@ const meta = {
   review: {
     shortText: {
       steps: [
-        'Find the text the report names: one or two words written in a script that reads in the other direction from the text around them, such as Arabic or Hebrew in a French page.',
-        'Check that they are words of a language read in that direction, not a symbol or a number.',
+        'Find the text the report names: a single letter, a mathematical symbol, or one or two words, written in a script that reads in the other direction from the text around them, such as a Hebrew letter in a French page or a Latin brand name in an Arabic page.',
+        'Check whether they are words of a language read in that direction, not a symbol, a letter used as a label, or a name or acronym of the surrounding language.',
         'Inspect them: check whether an element around them has a dir attribute.'
       ],
       passWhen:
-        'The words are not text in a language read in the other direction, or an element around them has a dir attribute.',
+        'The characters are not text in a language read in the other direction, or an element around them has a dir attribute.',
       failWhen:
-        'The words are in a language read in the other direction and no element around them has a dir attribute, which fails RGAA 8.10.1, whatever their length.'
+        'The characters are words of a language read in the other direction and no element around them has a dir attribute, which fails RGAA 8.10.1, whatever their length.'
     },
     shortRun: {
       steps: [
-        'Find the element the report names, and in it the one or two words written in a script that reads in the other direction from the text around them, such as Arabic or Hebrew in a French page.',
-        'Check that they are words of a language read in that direction, not a symbol or a number.',
+        'Find the element the report names, and in it the single letter, mathematical symbol, or one or two words written in a script that reads in the other direction from the text around them, such as a Hebrew letter in a French sentence or a Latin brand name in an Arabic one.',
+        'Check whether they are words of a language read in that direction, not a symbol, a letter used as a label, or a name or acronym of the surrounding language.',
         'Inspect them: check whether an element around them has a dir attribute.'
       ],
       passWhen:
-        'The words are not text in a language read in the other direction, or an element around them has a dir attribute.',
+        'The characters are not text in a language read in the other direction, or an element around them has a dir attribute.',
       failWhen:
-        'The words are in a language read in the other direction and no element around them has a dir attribute, which fails RGAA 8.10.1, whatever their length.'
-    },
-    bdiWithoutDir: {
-      steps: [
-        'Find the text the report names: it reads in the other direction, inside a <bdi> with no dir attribute.',
-        'Inspect it: check whether the <bdi>, or an element inside it around the text, has a dir attribute.'
-      ],
-      passWhen: 'The <bdi>, or an element around the text inside it, has a dir attribute.',
-      failWhen:
-        'The text is contained only by a <bdi> with no dir attribute; RGAA asks for a dir attribute, which a <bdi> does not replace, so this fails RGAA 8.10.1.'
+        'The characters are words of a language read in the other direction and no element around them has a dir attribute, which fails RGAA 8.10.1, whatever their length.'
     }
   }
 };
@@ -175,8 +177,16 @@ function runInPage(ctx) {
     return c;
   }
 
+  // Arabic Mathematical Alphabetic Symbols: letters by Unicode, but math
+  // symbols, not words.
+  const MATH_ARABIC = /[\u{1EE00}-\u{1EEFF}]/u;
+  // Letters of a right-to-left script in `run` (not marks, digits or
+  // punctuation of those blocks, nor its mathematical symbols).
+  const rtlLetters = (run) =>
+    [...run].filter((ch) => RTL_CHAR.test(ch) && LETTER.test(ch) && !MATH_ARABIC.test(ch)).length;
+
   // Runs of `dir` letters, neutral characters between them allowed, broken
-  // by a strong letter of the other direction; their word counts.
+  // by a strong letter of the other direction.
   function runs(text, dir) {
     const out = [];
     let cur = '';
@@ -193,8 +203,9 @@ function runInPage(ctx) {
       } else if (cur) pending += ch;
     }
     if (cur) out.push(cur);
-    return out.map((r) => norm(r).split(' ').length);
+    return out;
   }
+  const wordsOf = (run) => norm(run).split(' ').length;
 
   const body = dom.body(document);
   if (!body) {
@@ -245,10 +256,19 @@ function runInPage(ctx) {
       }
     }
     if (!targets.has(target)) {
-      targets.set(target, { whole: whole(target), maxRun: 0, bdi: c.dir === 'bdi', other });
+      targets.set(target, {
+        whole: whole(target),
+        maxRun: 0,
+        maxLetters: 0,
+        bdi: c.dir === 'bdi',
+        other
+      });
     }
     const t = targets.get(target);
-    t.maxRun = Math.max(t.maxRun, ...runs(text, other));
+    for (const r of runs(text, other)) {
+      t.maxRun = Math.max(t.maxRun, wordsOf(r));
+      t.maxLetters = Math.max(t.maxLetters, rtlLetters(r));
+    }
   }
 
   const fails = [];
@@ -257,10 +277,19 @@ function runInPage(ctx) {
   const NAME = { ltr: 'left to right', rtl: 'right to left' };
   for (const [el, t] of targets) {
     const words = t.whole ? norm(dom.textContent(el)).split(' ').length : t.maxRun;
-    // A text of one or two words (a language menu's « العربية », a name)
-    // displays the same with or without dir: it is asked about.
-    const certain = !t.bdi && (t.maxRun >= 3 || words >= 3);
-    const kind = t.bdi ? 'bdi' : t.whole ? 'short' : 'run';
+    // Right-to-left script: two letters or more in one run are words of a
+    // language read right to left (« العربية » in a language menu), whatever
+    // their length; a whole element is read as one run, so a word split
+    // by markup counts whole. A single letter or a mathematical symbol may
+    // not be a word, and is asked about. Left-to-right text in a
+    // right-to-left context fails from three words: one or two may be a
+    // brand name or an acronym.
+    const letters = t.whole
+      ? Math.max(0, ...runs(dom.textContent(el), 'rtl').map(rtlLetters))
+      : t.maxLetters;
+    const certain =
+      t.other === 'rtl' ? Math.max(letters, t.maxLetters) >= 2 : t.maxRun >= 3 || words >= 3;
+    const kind = certain ? (t.bdi ? 'bdi' : 'text') : t.whole ? 'short' : 'run';
     const params = {
       direction: t.other,
       text: norm(dom.textContent(el)).slice(0, 60)
@@ -268,28 +297,44 @@ function runInPage(ctx) {
     if (certain) {
       fails.push(
         helpers.reportOccurrence(el, {
-          summary: `This text reads ${NAME[t.other]}, unlike its context, and no element around it has a dir attribute.`,
-          hint: `Put the text in an element with dir="${t.other}" (RGAA 8.10.1).`,
+          summary:
+            kind === 'bdi'
+              ? `This text reads ${NAME[t.other]}, unlike its context, inside a <bdi> with no dir attribute.`
+              : `This text reads ${NAME[t.other]}, unlike its context, and no element around it has a dir attribute.`,
+          hint:
+            kind === 'bdi'
+              ? `Give the <bdi>, or an element around the text, dir="${t.other}": a <bdi> does not replace the dir attribute (RGAA 8.10.1).`
+              : `Put the text in an element with dir="${t.other}" (RGAA 8.10.1).`,
           i18n: {
-            summaryKey: `textDirectionMarked_summary_fail_${t.other}`,
-            hintKey: 'textDirectionMarked_hint_fail',
+            summaryKey:
+              kind === 'bdi'
+                ? `textDirectionMarked_summary_fail_bdi_${t.other}`
+                : `textDirectionMarked_summary_fail_${t.other}`,
+            hintKey:
+              kind === 'bdi'
+                ? 'textDirectionMarked_hint_fail_bdi'
+                : 'textDirectionMarked_hint_fail',
             params
           },
-          data: { details: { reasonCode: 'directionNotMarked', ...params }, visibilityFilter: VF }
+          data: {
+            details: {
+              reasonCode: kind === 'bdi' ? 'bdiWithoutDir' : 'directionNotMarked',
+              ...params
+            },
+            visibilityFilter: VF
+          }
         })
       );
     } else {
       cantTells.push(
         helpers.reportOccurrence(el, {
           summary: {
-            bdi: `This text reads ${NAME[t.other]}, unlike its context, inside a <bdi> with no dir attribute.`,
             short: `This short text reads ${NAME[t.other]}, unlike its context, with no dir attribute around it.`,
             run: `This text holds a short run that reads ${NAME[t.other]}, unlike its context, with no dir attribute around it.`
           }[kind],
           hint: `If the text reads in that direction, put it in an element with dir="${t.other}" (RGAA 8.10.1).`,
           i18n: {
             summaryKey: {
-              bdi: `textDirectionMarked_summary_cantTell_bdi_${t.other}`,
               short: `textDirectionMarked_summary_cantTell_short_${t.other}`,
               run: `textDirectionMarked_summary_cantTell_${t.other}`
             }[kind],
@@ -303,7 +348,7 @@ function runInPage(ctx) {
           },
           data: {
             details: {
-              reasonCode: { bdi: 'bdiWithoutDir', short: 'shortText', run: 'shortRun' }[kind],
+              reasonCode: { short: 'shortText', run: 'shortRun' }[kind],
               ...params
             },
             visibilityFilter: VF

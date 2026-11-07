@@ -102,15 +102,16 @@ The items are `<li>` elements without `role="listitem"`, so the list is neither 
 ```html
 <div role="button" tabindex="0">Open</div>
 <img src="play.png" alt="Play" role="button">
+<img src="rule.png" alt="" role="presentation">
 ```
-Both roles are ones the W3C validator accepts, and allowed on their elements; the image carrying a role has a text alternative.
+Both roles are ones the W3C validator accepts, and allowed on their elements; the image carrying a role has a text alternative. The validator reports `<img alt="" role="presentation">`, but it passes RGAA 8.2.1: RGAA 1.2.1 names that markup for decorative images, and ARIA in HTML allows it.
 
 **Failed**
 ```html
 <div role="bogus button" tabindex="0">Open</div>
 <nav role="tab">Products</nav>
 ```
-The validator reports the unknown token `bogus` even though `button` follows it as a fallback (WCAG's `aria-roles-valid` passes on one valid token), and `role="tab"` is not allowed on `<nav>`. Both fail RGAA 8.2.1. An `<img alt="" role="presentation">` is asked about instead: the validator reports it, but RGAA 1.2.1 names `role="presentation"` for decorative images.
+The validator reports the unknown token `bogus` even though `button` follows it as a fallback (WCAG's `aria-roles-valid` passes on one valid token), and `role="tab"` is not allowed on `<nav>`. Both fail RGAA 8.2.1. So does an `<img role="presentation">` with no alt: HTML requires alt on an `<img>`, and the role does not replace it.
 
 ## rgaa-autocomplete-user-field
 
@@ -2061,14 +2062,15 @@ The title is in a `<caption>`.
 **Failed**
 ```html
 <p>مرحبا بكم في موقعنا</p>
+<p>Le mot شكرا veut dire merci.</p>
 ```
-The Arabic text reads right to left in a page that reads left to right, and no element around it has a `dir` attribute (RGAA 8.10.1).
+The Arabic text reads right to left in a page that reads left to right, and no element around it has a `dir` attribute (RGAA 8.10.1). One word fails too: the test has no exception for short text, and Arabic letters write only languages read right to left. So does a `<bdi>` with no `dir`, which RGAA does not accept in its place.
 
 **Flagged (cantTell)**
 ```html
-<p>Le mot شكرا veut dire merci.</p>
+<p>Le cardinal א désigne un infini.</p>
 ```
-One word reads right to left inside a French sentence: a person checks whether it needs `dir="rtl"`. So is a link of one or two words, such as « العربية » in a language menu, which a browser shows the same with or without `dir`.
+A single Hebrew letter may be a symbol rather than a word: a person checks whether it is text in a language read right to left. So is a Latin brand name of one or two words in an Arabic page.
 
 **Not applicable**
 ```html

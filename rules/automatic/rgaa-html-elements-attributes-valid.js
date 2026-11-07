@@ -53,10 +53,11 @@
  *   - autocompleteType: autocomplete on an input type that does not take
  *     it (checkbox, radio, file, submit, image, reset, button).
  * @implementation-notes
- * - Markup inside a shadow root is asked about (cantTell) instead of failed:
- *   it is part of the page's generated source, which 8.2.1 judges, but
- *   the W3C validator its methodology runs does not see it in the
- *   serialization, so a person confirms the markup in the inspector.
+ * - Markup inside an open shadow root fails like markup outside it, with
+ *   the same reason codes: a shadow root is part of the page's generated
+ *   source (« code source généré »), which 8.2.1 judges. Every check here
+ *   reads only the element's own tree (its parent, its table, its
+ *   descendants), so it is as certain inside a shadow root as outside.
  * - The WCAG rules on these attributes (deprecated-elements-not-used,
  *   rgaa-dir-attribute-valid, scope-attr-valid, table-headers-attr-valid,
  *   html-xml-lang-mismatch, autocomplete-valid, rgaa-optgroup-label-present,
@@ -79,20 +80,6 @@
  */
 
 const id = 'rgaa-html-elements-attributes-valid';
-
-// Markup in a shadow root is asked about instead of failed, whatever is wrong
-// with it, since the W3C validator does not see it: a person confirms it in the
-// inspector. Each code gets these steps.
-const SHADOW_REVIEW = {
-  steps: [
-    'Find the element the report names: it sits inside a shadow root, which the browser inspector shows under its host element (#shadow-root).',
-    'Read what the report says is wrong with its markup, and check it on the element in the inspector. The W3C validator cannot do this, because a shadow root is not in the serialized source it reads.'
-  ],
-  passWhen:
-    'The markup is not as the report says: the element, attribute, value or nesting is allowed by the HTML specification.',
-  failWhen:
-    "The markup is as the report says, which fails RGAA 8.2.1: a shadow root is part of the page's generated source."
-};
 
 const meta = {
   title: 'HTML elements and attribute values are valid',
@@ -146,23 +133,7 @@ const meta = {
         'The validator reports no error about elements, attributes or their values for the declared document type.',
       failWhen:
         'The validator reports an element, attribute or value that the declared document type does not allow, which fails RGAA 8.2.1.'
-    },
-    obsoleteElement: SHADOW_REVIEW,
-    unknownElement: SHADOW_REVIEW,
-    dirValue: SHADOW_REVIEW,
-    idValue: SHADOW_REVIEW,
-    langValue: SHADOW_REVIEW,
-    xmlLangMismatch: SHADOW_REVIEW,
-    scopeValue: SHADOW_REVIEW,
-    scopeElement: SHADOW_REVIEW,
-    headersTarget: SHADOW_REVIEW,
-    headersEmpty: SHADOW_REVIEW,
-    optgroupLabel: SHADOW_REVIEW,
-    inputImageAlt: SHADOW_REVIEW,
-    autocompleteValue: SHADOW_REVIEW,
-    autocompleteControl: SHADOW_REVIEW,
-    autocompleteType: SHADOW_REVIEW,
-    typeValue: SHADOW_REVIEW
+    }
   }
 };
 
@@ -418,46 +389,27 @@ function runInPage(ctx) {
     ]
   };
 
-  // Inside a shadow root: the W3C validator, which RGAA 8.2.1's methodology
-  // runs on the generated source, does not see it in the serialized page.
-  function inShadow(el) {
-    try {
-      const r = dom.get(el, 'getRootNode') ? dom.getRootNode(el) : null;
-      return !!r && r !== ctx.document && dom.nodeType(r) === 11;
-    } catch {
-      return false;
-    }
-  }
-  const SHADOW_NEEDED =
-    'Whether the markup in this shadow root, which the W3C validator does not see, is as the report says.';
-  const SHADOW_HINT =
-    "This markup is in a shadow root, part of the page's generated source that the W3C validator does not see. Check it in the browser inspector: if it is as the report says, it fails 8.2.1.";
-  const shadowAsked = [];
   const occurrences = [];
   function report(el, reasonCode, params, outcome) {
     const key = outcome === 'cantTell' ? 'cantTell' : 'fail';
-    const shadow = key === 'fail' && inShadow(el);
-    (shadow ? shadowAsked : occurrences).push(
+    occurrences.push(
       helpers.reportOccurrence(el, {
         summary: TEXTS[reasonCode][0](params || {}),
-        hint: shadow ? SHADOW_HINT : TEXTS[reasonCode][1],
+        hint: TEXTS[reasonCode][1],
         i18n: {
           summaryKey: `htmlElementsAttributesValid_summary_${key}_${reasonCode}`,
-          hintKey: shadow
-            ? 'markupShadowRoot_hint_cantTell'
-            : `htmlElementsAttributesValid_hint_${key}_${reasonCode}`,
+          hintKey: `htmlElementsAttributesValid_hint_${key}_${reasonCode}`,
           params: params || {}
         },
-        uncertainty: shadow
-          ? { code: 'judgement-required', needed: SHADOW_NEEDED }
-          : outcome === 'cantTell'
+        uncertainty:
+          outcome === 'cantTell'
             ? {
                 code: 'out-of-scope',
                 needed: 'Whether elements and attribute values are valid for the declared doctype.'
               }
             : undefined,
         data: {
-          details: { reasonCode, ...(params || {}), ...(shadow ? { inShadowRoot: true } : {}) },
+          details: { reasonCode, ...(params || {}) },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })
@@ -551,7 +503,7 @@ function runInPage(ctx) {
     }
 
     if (tag === 'optgroup' && !dom.hasAttribute(el, 'label')) {
-      const legend = [...dom.querySelectorAll(el, ':scope > *')].some((c) => tagOf(c) === 'legend');
+      const legend = [...(dom.children(el) || [])].some((c) => tagOf(c) === 'legend');
       if (!legend) report(el, 'optgroupLabel', {});
     }
 
@@ -614,12 +566,12 @@ function runInPage(ctx) {
     }
   }
 
-  if (!occurrences.length && !shadowAsked.length) {
+  if (!occurrences.length) {
     return { ruleId: rule.ruleId, outcome: 'pass', severity: 'minor', occurrences: [] };
   }
   return {
     ruleId: rule.ruleId,
-    ...helpers.resolveTieredOutcome(occurrences, shadowAsked, rule.defaultSeverity || 'moderate')
+    ...helpers.resolveTieredOutcome(occurrences, [], rule.defaultSeverity || 'moderate')
   };
 }
 

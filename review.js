@@ -625,7 +625,7 @@ const REVIEW = {
       DUPLICATE_ID_IN_SHADOW_TREE: {
         steps: [
           'Inspectez les éléments indiqués par le rapport, dans la même racine fantôme (shadow root), et notez l’id qu’ils partagent.',
-          'Vérifiez dans l’inspecteur que cet id figure plusieurs fois dans cette racine : le validateur du W3C ne voit pas les racines fantômes dans le code sérialisé qu’il lit.'
+          'Vérifiez dans l’inspecteur que cet id figure plusieurs fois dans cette racine, qui fait partie du code source généré de la page.'
         ],
         passWhen: 'Chaque valeur d’attribut id est unique dans la racine fantôme.',
         failWhen:

@@ -31,11 +31,11 @@
       "testFile": "tests/rules/automatic/rgaa-aria-attribute-conformance.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-aria-attribute-conformance-all-scenarios.html",
-      "totalCases": 19,
+      "totalCases": 20,
       "caseCounts": {
         "PASS": 5,
         "FAIL": 14,
-        "CANTTELL": 0,
+        "CANTTELL": 1,
         "OTHER": 0
       }
     },
@@ -82,11 +82,11 @@
       "testFile": "tests/rules/automatic/rgaa-aria-role-conformance.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-aria-role-conformance-all-scenarios.html",
-      "totalCases": 20,
+      "totalCases": 22,
       "caseCounts": {
-        "PASS": 5,
-        "FAIL": 14,
-        "CANTTELL": 1,
+        "PASS": 7,
+        "FAIL": 15,
+        "CANTTELL": 0,
         "OTHER": 0
       }
     },
@@ -1102,10 +1102,10 @@
       "testFile": "tests/rules/automatic/rgaa-main-element-structure.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-main-element-structure-all-scenarios.html",
-      "totalCases": 1,
+      "totalCases": 3,
       "caseCounts": {
-        "PASS": 0,
-        "FAIL": 1,
+        "PASS": 1,
+        "FAIL": 2,
         "CANTTELL": 0,
         "OTHER": 0
       }
@@ -1731,10 +1731,10 @@
       "testFile": "tests/rules/automatic/rgaa-text-direction-marked.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-text-direction-marked-all-scenarios.html",
-      "totalCases": 3,
+      "totalCases": 5,
       "caseCounts": {
         "PASS": 0,
-        "FAIL": 1,
+        "FAIL": 3,
         "CANTTELL": 1,
         "OTHER": 1
       }

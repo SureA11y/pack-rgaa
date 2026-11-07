@@ -27,13 +27,23 @@
   </div>
 
   <div class="case" id="case_02">
-    <div class="case-title">02 — CANTTELL: one Arabic word in a French sentence</div>
+    <div class="case-title">02 — FAIL: one Arabic word in a French sentence (no exception for short text)</div>
     <p id="tdm_case_02">Le mot شكرا veut dire merci.</p>
   </div>
 
   <div class="case" id="case_03">
     <div class="case-title">03 — NOT APPLICABLE: the paragraph has dir="rtl"</div>
     <p dir="rtl" lang="ar" id="tdm_case_03">مرحبا بكم في موقعنا</p>
+  </div>
+
+  <div class="case" id="case_04">
+    <div class="case-title">04 — CANTTELL: a single Hebrew letter, which may be a symbol</div>
+    <p id="tdm_case_04">Le cardinal א désigne un infini.</p>
+  </div>
+
+  <div class="case" id="case_05">
+    <div class="case-title">05 — FAIL: an Arabic name in a &lt;bdi&gt; with no dir, which does not replace dir</div>
+    <p>Utilisateur <bdi id="tdm_case_05">إيان</bdi> : 3 messages</p>
   </div>
 </body>
 </html>

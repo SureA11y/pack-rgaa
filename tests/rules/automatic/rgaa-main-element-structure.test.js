@@ -102,11 +102,31 @@ test(`${RULE_ID}: a page with no text of its own and no <main> is asked about`, 
   }
 });
 
-test(`${RULE_ID}: a <main> hidden only by an ancestor is asked about`, () => {
+// 9.2.1: « une balise <main> visible unique », « en permanence » (technical
+// note). A closed <details> opens with a click, and hidden="until-found"
+// with the browser's find-in-page, with no script: two <main> elements are
+// then visible at once.
+test(`${RULE_ID}: a second <main> the user can reveal without a script fails`, () => {
+  for (const second of [
+    '<details><summary>More</summary><main><p>b</p></main></details>',
+    '<div hidden="until-found"><main><p>b</p></main></div>',
+    '<details><summary>More</summary><div hidden="until-found"><main><p>b</p></main></div></details>'
+  ]) {
+    const rule = assertRule(run(page('<main><p>a</p></main>' + second)), RULE_ID, 'fail', {
+      minOccurrences: 1,
+      maxOccurrences: 1
+    });
+    assert.deepEqual(reasons(rule), ['revealableMain'], second);
+    assert.equal(rule.occurrences[0].uncertainty, undefined);
+  }
+});
+
+test(`${RULE_ID}: a <main> only a script can show is asked about`, () => {
   for (const second of [
     '<div hidden><main><p>b</p></main></div>',
-    '<details><summary>More</summary><main><p>b</p></main></details>',
-    '<dialog><main><p>b</p></main></dialog>'
+    '<dialog><main><p>b</p></main></dialog>',
+    // A closed <details> inside a hidden ancestor: only a script shows it.
+    '<div hidden><details><summary>More</summary><main><p>b</p></main></details></div>'
   ]) {
     const rule = assertRule(run(page('<main><p>a</p></main>' + second)), RULE_ID, 'cantTell', {
       minOccurrences: 1,
@@ -114,6 +134,22 @@ test(`${RULE_ID}: a <main> hidden only by an ancestor is asked about`, () => {
     });
     assert.deepEqual(reasons(rule), ['hiddenByAncestor']);
   }
+});
+
+test(`${RULE_ID}: a <main> in an exclusive <details> group with the shown one is asked about`, () => {
+  // Opening the second <details> closes the first, so both <main> are never
+  // shown at once.
+  const rule = assertRule(
+    run(
+      page(
+        '<details name="g" open><summary>A</summary><main><p>a</p></main></details>' +
+          '<details name="g"><summary>B</summary><main><p>b</p></main></details>'
+      )
+    ),
+    RULE_ID,
+    'cantTell'
+  );
+  assert.deepEqual(reasons(rule), ['hiddenByAncestor']);
 });
 
 test(`${RULE_ID}: a page whose every <main> carries hidden is asked about`, () => {
@@ -231,6 +267,13 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
     maxOccurrences: 1
   });
   assert.match(rule.occurrences[0].html, /id="mes_main_2"/);
+  // Without the CSS-hidden one, the <main> in the closed <details> fails.
+  const html = fs
+    .readFileSync(fixturePath, 'utf8')
+    .replace(/<main id="mes_main_2"[\s\S]*?<\/main>/, '');
+  const revealed = assertRule(run(html), RULE_ID, 'fail', { minOccurrences: 1, maxOccurrences: 1 });
+  assert.match(revealed.occurrences[0].html, /id="mes_main_3"/);
+  assert.equal(revealed.occurrences[0].data.details.reasonCode, 'revealableMain');
 });
 
 // Steps 1, 2 and 6 of 9.2.1 name <header>, <nav> and <footer>, as step 4
