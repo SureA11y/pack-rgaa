@@ -616,22 +616,6 @@ A person checks that both labels clearly ask for the same email address (RGAA 11
 ```
 The labels are the same once punctuation is ignored.
 
-## rgaa-field-label-empty
-
-*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
-
-**Failed**
-```html
-<label for="nom"></label><input id="nom">
-```
-The field's only label is empty, so it cannot « permettre de connaître la fonction exacte du champ » (RGAA 11.2.1).
-
-**Passed**
-```html
-<label for="nom">Nom</label><input id="nom">
-```
-The label says what to enter; whether it is exact is for a person.
-
 ## rgaa-field-label-in-name-sources
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -666,6 +650,12 @@ A `<label>` with a `for` attribute that matches the field's `id`, one of the fou
 <input type="text" placeholder="Nom">
 ```
 A placeholder is not one of the sources 11.1.1 lists, so the field has no label under RGAA, although browsers use the placeholder as its accessible name. A field named only by a `<label>` that wraps it, without `for`, is asked about (cantTell) instead.
+
+**Failed**
+```html
+<input type="text" title="" placeholder="Mot-clé">
+```
+The `title` is there but empty. RGAA's glossary makes an étiquette a « texte », so an empty source gives the field no label, and it fails 11.1.1 like a field with no source.
 
 ## rgaa-figure-caption-structure
 

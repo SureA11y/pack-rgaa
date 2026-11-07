@@ -11,8 +11,6 @@
   "fieldLabelListedSource_hint_cantTell_wrappingLabel": "RGAA 11.1.1 names a <label> with a for attribute; check whether the audit accepts the wrapping label, or add for and a matching id.",
   "fieldLabelListedSource_summary_cantTell_labelForNotLabelable": "A <label for> points at this field, but this element cannot be labelled by a <label>.",
   "fieldLabelListedSource_hint_cantTell_labelForNotLabelable": "The label gives the field no accessible name. Use aria-labelledby pointing to the label text, or a native form field.",
-  "fieldLabelListedSource_summary_cantTell_emptySource": "This form field has a {{source}} label source, but it is empty.",
-  "fieldLabelListedSource_hint_cantTell_emptySource": "Check whether the field has a label; if not, put the label text in that source.",
   "pageLanguagePresent_title": "Page gives a default language",
   "pageLanguagePresent_description": "Checks that the page gives its default language with lang or xml:lang, on <html> or on an ancestor of every text.",
   "pageLanguagePresent_summary_fail_missingLanguage": "The page gives no default language: no element has a lang or xml:lang attribute.",
@@ -721,13 +719,6 @@
   "focusNotRemoved_hint_fail": "Remove the blur() call: a keyboard user must be able to reach and use the element, and see where focus is (RGAA 7.3.2).",
   "focusNotRemoved_summary_cantTell": "This element's {{attribute}} handler (\"{{code}}\") moves focus to another element when it receives it.",
   "focusNotRemoved_hint_cantTell": "Check that the element keeps focus, or that focus moves on purpose to a part of the same component, such as its active item (RGAA 7.3.2).",
-  "fieldLabelEmpty_title": "A field's label sources are not all empty",
-  "fieldLabelEmpty_description": "Fails a form field whose only label sources (<label>, title, aria-label, aria-labelledby) are all empty.",
-  "fieldLabelEmpty_summary_emptyLabel": "This field has a <label>, but it is empty, and the field has no other label.",
-  "fieldLabelEmpty_summary_emptyTitle": "This field has a title attribute, but it is empty, and the field has no other label.",
-  "fieldLabelEmpty_summary_emptyAriaLabel": "This field has an aria-label, but it is empty, and the field has no other label.",
-  "fieldLabelEmpty_summary_emptyLabelledby": "This field has an aria-labelledby, but it points to no text, and the field has no other label.",
-  "fieldLabelEmpty_hint": "Give the field a label that says what to enter, in its <label> or another source (RGAA {{test}}).",
   "fieldHiddenLabelReview_title": "A field with a visually hidden label is understandable from the screen",
   "fieldHiddenLabelReview_description": "Flags each form field whose <label> is visually hidden, for a person to check that a title or visible text next to it makes the expected input understandable.",
   "fieldHiddenLabelReview_summary_cantTell": "This field's label (\"{{label}}\") is visually hidden.",
@@ -891,5 +882,7 @@
   "consequentialFormReview_summary_cantTell_testAnswers": "This form sends the answers to a test or an exam (\"{{label}}\").",
   "consequentialFormReview_hint_cantTell": "Check that the user can review and correct the data before submitting, confirm explicitly (a checkbox or an extra step), or change, cancel or recover them afterwards (RGAA 11.12).",
   "pageLanguagePresent_summary_cantTell_langOnlyOnXhtml": "The page gives its language with lang alone, on an XHTML page that needs xml:lang.",
-  "pageLanguagePresent_hint_cantTell_langOnlyOnXhtml": "Add xml:lang with the same value, for example <html lang=\"fr\" xml:lang=\"fr\">."
+  "pageLanguagePresent_hint_cantTell_langOnlyOnXhtml": "Add xml:lang with the same value, for example <html lang=\"fr\" xml:lang=\"fr\">.",
+  "fieldLabelListedSource_summary_fail_emptySource": "This form field has a {{source}} label source, but it is empty, so it has no label.",
+  "fieldLabelListedSource_hint_fail_emptySource": "Put the text that says what to enter in that source, or give the field a <label for>."
 }
