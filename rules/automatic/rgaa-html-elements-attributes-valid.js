@@ -439,6 +439,24 @@ function runInPage(ctx) {
     return null;
   }
 
+  // The ids of a table's own th cells (not those of a nested table), read
+  // once per table: a table with headers on every cell would otherwise query
+  // all its th[id] for each cell.
+  const headerIdsByTable = new Map();
+  function headerIds(table) {
+    if (!table) return new Set();
+    let ids = headerIdsByTable.get(table);
+    if (!ids) {
+      ids = new Set(
+        [...dom.querySelectorAll(table, 'th[id]')]
+          .filter((th) => nearestTable(th) === table)
+          .map((th) => dom.getAttribute(th, 'id'))
+      );
+      headerIdsByTable.set(table, ids);
+    }
+    return ids;
+  }
+
   for (const el of all) {
     const tag = tagOf(el);
 
@@ -492,11 +510,7 @@ function runInPage(ctx) {
       if (!tokens.length) {
         report(el, 'headersEmpty', {});
       } else {
-        const table = nearestTable(el);
-        const ths = table
-          ? [...dom.querySelectorAll(table, 'th[id]')].filter((th) => nearestTable(th) === table)
-          : [];
-        const ids = new Set(ths.map((th) => dom.getAttribute(th, 'id')));
+        const ids = headerIds(nearestTable(el));
         const missing = tokens.find((t) => !ids.has(t));
         if (missing !== undefined) report(el, 'headersTarget', { target: missing });
       }
