@@ -133,3 +133,21 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
   // One question for the whole page: only the menu of case 01 counts.
   assert.equal(rule.occurrences[0].data.details.found, 'menu');
 });
+
+// A page-level question cannot be asked of part of a page: a scan with a
+// contextSelector or a fragment leaves it alone, as the pack's other
+// page-level rules do.
+test(`${RULE_ID}: notApplicable on a scoped run or a fragment`, () => {
+  const html = page(MAIN);
+  assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'cantTell');
+  assertRule(
+    runa11yCoreOnHtml(html, { ...RUN, contextSelector: 'body' }),
+    RULE_ID,
+    'notApplicable'
+  );
+  assertRule(
+    runa11yCoreOnHtml(html, { ...RUN, engineOptions: { fragment: true } }),
+    RULE_ID,
+    'notApplicable'
+  );
+});

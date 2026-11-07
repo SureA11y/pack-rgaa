@@ -891,7 +891,7 @@ manual · no formal WCAG SC mapping · confidence high · default severity moder
 
 Flags a page with 30 words or more of text and no heading at all, for a person to check whether some passages act as headings and need &lt;hx&gt; markup.
 
-**Applies to.** Applies to a page with no heading at all (no &lt;h1&gt;-&lt;h6&gt; and no role="heading", hidden ones included) whose visible text holds 30 words or more. A page with a heading, or with less text, is notApplicable.
+**Applies to.** Applies to a page with no heading at all (no &lt;h1&gt;-&lt;h6&gt; and no role="heading", hidden ones included) whose visible text holds 30 words or more. A page with a heading, or with less text, is notApplicable, and so is a scan of part of a page (a contextSelector or a fragment), which cannot see the whole page.
 
 **Expectation.** RGAA 9.1.3: « chaque passage de texte constituant un titre est-il structuré à l'aide d'une balise &lt;hx&gt; » or role="heading" with aria-level. A page of some length with no heading at all usually has passages that act as headings, but a short page may have none: the page is asked about (noHeading), for a person to look for them.
 
@@ -1335,7 +1335,7 @@ Looks on the page for three of the « systèmes de navigation » of RGAA 12.1.1:
 - a site map (glossary « Page plan du site »): a link whose text, label or address says « plan du site », « sitemap » or « site map »;
 - a search engine (glossary « Moteur de recherche (interne à un site web) »: « zone donnant accès directement (formulaire) ou indirectement (élément d’interface donnant accès au formulaire) »): a form or role="search" with a search field, or a link or button « Rechercher » / to a search page.
 
-Elements count whether or not they are shown, since a menu or search form is often hidden at one screen width and opened by a button. A page that is a step of a process (a form with payment card fields, or a title that says « étape ») is notApplicable (particular case: « le critère est également non applicable pour les pages […] qui sont le résultat ou une partie d’un processus »). A page with two or more of these is notApplicable too: one page cannot pass 12.1, which is about a whole « ensemble de pages ».
+Elements count whether or not they are shown, since a menu or search form is often hidden at one screen width and opened by a button. A page that is a step of a process (a form with payment card fields, or a title that says « étape ») is notApplicable (particular case: « le critère est également non applicable pour les pages […] qui sont le résultat ou une partie d’un processus »). A page with two or more of these is notApplicable too: one page cannot pass 12.1, which is about a whole « ensemble de pages ». A scan of part of a page (a contextSelector or a fragment) is notApplicable, as it cannot see the whole page.
 
 **Expectation.** RGAA 12.1.1: « chaque ensemble de pages vérifie-t-il une de ces conditions » : a menu and a site map, a menu and a search engine, or a search engine and a site map. A page that shows fewer than two may still belong to a set that offers them, or to a site of « un nombre très limité de pages », where the criterion does not apply: it is asked about once (fewerThanTwoSystems, with what was found).
 

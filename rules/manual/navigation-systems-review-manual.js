@@ -32,7 +32,8 @@
  *   critère est également non applicable pour les pages […] qui sont le
  *   résultat ou une partie d’un processus »). A page with two or more of
  *   these is notApplicable too: one page cannot pass 12.1, which is about a
- *   whole « ensemble de pages ».
+ *   whole « ensemble de pages ». A scan of part of a page (a contextSelector
+ *   or a fragment) is notApplicable, as it cannot see the whole page.
  * @expectation
  *   RGAA 12.1.1: « chaque ensemble de pages vérifie-t-il une de ces
  *   conditions » : a menu and a site map, a menu and a search engine, or a
@@ -83,10 +84,13 @@ const meta = {
   }
 };
 
-// A document shown in a frame is no web page of its own (RGAA's « page web »).
+// A document shown in a frame is no web page of its own (RGAA's « page web »),
+// and a scan of part of a page (a contextSelector or a fragment) cannot say
+// what the whole page holds.
 function applicability(ctx) {
-  if (ctx.helpers.isTopLevelDocument && !ctx.helpers.isTopLevelDocument()) return false;
-  return true;
+  const { helpers } = ctx;
+  if (helpers.isTopLevelDocument && !helpers.isTopLevelDocument()) return false;
+  return helpers.isWholeDocumentScope ? helpers.isWholeDocumentScope() : true;
 }
 
 function runInPage(ctx) {
