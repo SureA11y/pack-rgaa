@@ -78,7 +78,6 @@ const TECHNIQUES = /\s*\((?:(?:ARIA|SCR|F|G|H|C)\d+(?:, )?)+\)/g;
 // Core's text with what fails named as the tests.
 function inRgaaTerms(text, tests) {
   return text
-    .replace(/ pour WCAG 1\.4\.3, et à 7:1 \([^)]*\) pour 1\.4\.6/g, '')
     .replace(/18[.,]66/g, '18,5')
     .replace(
       new RegExp(
