@@ -139,7 +139,7 @@ const partlyChecked = criteria.filter(
 
 Each finding a rule can't decide comes with the steps to answer it: `howToCheck` on the occurrence, with a few `steps` from the element it names, then `passWhen` and `failWhen`. The pack's rules give them in the scan's locale. Core's rules give theirs in French under the RGAA profile alone, naming the RGAA test the finding bears on (`standard.review`); beside a WCAG profile they keep core's, which name WCAG. Some of core's undecided findings also `lean` toward pass or fail, with the evidence; the outcome stays `cantTell`. The HTML report groups them as "Likely fails", "Likely passes" and "Needs a person".
 
-`rgaaCriteriaStatus(result)` from `@surea11y/pack-rgaa/public` reads a scan as an audit grid does, with a row for each of the 106 criteria: `C`, `NC`, `NA`, or `NT` for what a person still has to assess and what no rule checks.
+`rgaaCriteriaStatus(result)` from `@surea11y/pack-rgaa/public` reads a scan as an audit grid does, with a row for each of the 106 criteria: `C`, `NC`, `NA`, or `NT` for what a person still has to assess and what no rule checks. Non applicable is said of a page, so a scan of part of one (a `contextSelector`, or `engineOptions.fragment` with `{ fragment: true }` passed here) gives `NT` where it would give `NA`.
 
 ```js
 const { rgaaCriteriaStatus, rgaaConformityRate } = require('@surea11y/pack-rgaa/public');
