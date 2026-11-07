@@ -82,10 +82,25 @@ test('the tests’ own profile adds every WCAG 2.1 A and AA rule, and WCAG’s c
   assert.ok(both.rulesResults.some((r) => r.ruleId === 'wcag-1.4.3-contrast-minimum'));
 });
 
-test('rgaa-4.1.2 and the tests’ profile give the same RGAA results on every scenario page', () => {
+// Scanning every scenario page with both profiles takes most of a minute,
+// so by default a fixed sample of about 20 is scanned: every nth page in
+// name order, and the pages of the rules that rewrite a core rule
+// (variants), where the two profiles are likeliest to part. RGAA_FULL_TESTS=1
+// scans them all.
+test('rgaa-4.1.2 and the tests’ profile give the same RGAA results on scenario pages', () => {
   const dir = path.join(__dirname, 'fixtures');
-  const pages = fs.readdirSync(dir).filter((f) => f.endsWith('-all-scenarios.html'));
-  assert.ok(pages.length > 60);
+  const all = fs
+    .readdirSync(dir)
+    .filter((f) => f.endsWith('-all-scenarios.html'))
+    .sort();
+  assert.ok(all.length > 60);
+  const variants = require('..')
+    .rules.filter((r) => r.from)
+    .map((r) => `${r.id}-all-scenarios.html`);
+  const step = Math.ceil(all.length / 20);
+  const pages = process.env.RGAA_FULL_TESTS
+    ? all
+    : all.filter((f, i) => i % step === 0 || variants.includes(f));
   const rgaaOf = (result) => ({
     criteria: result.rulesResults
       .filter((r) => r.ruleId.startsWith('rgaa-4.1.2-'))

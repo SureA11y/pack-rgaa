@@ -50,7 +50,12 @@ test('on every scenario page, each undecided finding of a pack rule comes with i
   for (const file of files) {
     const html = fs.readFileSync(path.join(FIXTURES, file), 'utf8');
     const result = addHowToCheck(
-      runa11yCoreOnHtml(html, { engineOptions: { profile: 'rgaa-4.1.2' } }),
+      // Only the pack's rules: core's other rules give no steps checked here,
+      // and running them on every page doubled the test's time.
+      runa11yCoreOnHtml(html, {
+        runOnly: { includeRuleIds: ids },
+        engineOptions: { profile: 'rgaa-4.1.2' }
+      }),
       { packs: [rgaa] }
     );
     for (const check of result.checksResults.filter((c) => ids.includes(c.ruleId))) {
