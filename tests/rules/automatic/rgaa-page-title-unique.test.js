@@ -152,3 +152,22 @@ test(`${RULE_ID}: an alias URL of this page with the same title is asked about, 
     assertRule(run('Horaires', [{ url, title: 'Horaires' }]), RULE_ID, 'fail');
   }
 });
+
+test(`${RULE_ID}: a long title is quoted cut to 80 characters, and compared whole`, () => {
+  const long = 'Horaires '.repeat(30).trim();
+  const rule = assertRule(
+    run(long, [
+      { url: 'https://example.test/contact', title: long },
+      { url: 'https://example.test/autre', title: `${long} x` }
+    ]),
+    RULE_ID,
+    'fail',
+    { minOccurrences: 1, maxOccurrences: 1 }
+  );
+  const occ = rule.occurrences[0];
+  const quoted = `${long.slice(0, 77)}...`;
+  assert.equal(occ.i18n.params.title, quoted);
+  assert.equal(occ.data.details.title, quoted);
+  assert.deepEqual(occ.data.details.pages, ['https://example.test/contact']);
+  assert.ok(occ.summary.length < 300, String(occ.summary.length));
+});
