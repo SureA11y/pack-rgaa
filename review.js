@@ -22,7 +22,7 @@ const REVIEW = {
         passWhen:
           'L’équivalent textuel indique à l’utilisateur où mène le lien, avec des mots qui correspondent à la zone.',
         failWhen:
-          'L’équivalent textuel est faux, générique, est un nom de fichier ou n’indique pas où mène le lien, ce qui ne respecte pas le test 1.3.2 du RGAA (H24).'
+          'L’équivalent textuel est faux, générique, est un nom de fichier ou n’indique pas où mène le lien, ce qui ne respecte pas le test 1.3.2 du RGAA.'
       }
     },
     'aria-expanded-state-mismatch': {
@@ -35,7 +35,7 @@ const REVIEW = {
         passWhen:
           'Le contenu est réduit ou seulement en aperçu tant que le bouton indique « réduit », et l’état change quand le contenu s’ouvre.',
         failWhen:
-          'Le contenu est entièrement affiché alors que le bouton de bascule indique aux utilisateurs de lecteur d’écran qu’il est réduit, ce qui ne respecte pas le test 7.1.1 du RGAA'
+          'Le contenu est entièrement affiché alors que le bouton de bascule indique aux utilisateurs de lecteur d’écran qu’il est réduit, ce qui ne respecte pas le test 7.1.1 du RGAA.'
       },
       EXPANDED_TRUE_CONTROLLED_HIDDEN: {
         steps: [
@@ -46,7 +46,7 @@ const REVIEW = {
         passWhen:
           'Le contenu est affiché tant que le bouton indique « développé », une fois toute transition terminée.',
         failWhen:
-          'Le contenu reste masqué alors que le bouton de bascule indique aux utilisateurs de lecteur d’écran qu’il est développé, ce qui ne respecte pas le test 7.1.1 du RGAA'
+          'Le contenu reste masqué alors que le bouton de bascule indique aux utilisateurs de lecteur d’écran qu’il est développé, ce qui ne respecte pas le test 7.1.1 du RGAA.'
       }
     },
     'aria-hidden-focus': {
@@ -59,7 +59,7 @@ const REVIEW = {
         passWhen:
           'Le focus reste dans la boîte de dialogue ouverte et n’atteint jamais le contenu masqué derrière elle.',
         failWhen:
-          'Le focus atteint du contenu derrière la boîte de dialogue, à l’intérieur d’aria-hidden="true", où un lecteur d’écran n’annonce rien, ce qui ne respecte pas le test 10.8.1 du RGAA'
+          'Le focus atteint du contenu derrière la boîte de dialogue, à l’intérieur d’aria-hidden="true", où un lecteur d’écran n’annonce rien, ce qui ne respecte pas le test 10.8.1 du RGAA.'
       },
       ariaHiddenFocusable_runtimeRedirect_needsReview: {
         steps: [
@@ -70,10 +70,21 @@ const REVIEW = {
         passWhen:
           'Le focus ne reste jamais sur l’élément masqué : il passe directement à un contrôle visible, comme le fait la sentinelle d’un piège à focus.',
         failWhen:
-          'Le focus peut rester sur l’élément à l’intérieur d’aria-hidden="true", où un lecteur d’écran n’annonce rien, ce qui ne respecte pas le test 10.8.1 du RGAA'
+          'Le focus peut rester sur l’élément à l’intérieur d’aria-hidden="true", où un lecteur d’écran n’annonce rien, ce qui ne respecte pas le test 10.8.1 du RGAA.'
       }
     },
     'aria-role-name-present': {
+      name_internals: {
+        steps: [
+          'Inspectez l’élément personnalisé indiqué par le rapport et notez son rôle.',
+          'Ouvrez le panneau Accessibilité des outils de développement du navigateur et lisez le nom accessible de l’élément.',
+          'Avec un lecteur d’écran, placez-vous sur l’élément et écoutez le nom annoncé.'
+        ],
+        passWhen:
+          'L’élément a un nom explicite, ou un composant d’interface ou une alternative accessible donne accès aux mêmes fonctionnalités.',
+        failWhen:
+          'L’élément n’a pas de nom explicite et aucun composant ni alternative accessible ne donne accès aux mêmes fonctionnalités, ce qui ne respecte pas les tests 7.1.1, 11.6.1 du RGAA.'
+      },
       name_missing: {
         steps: [
           'Inspectez l’élément indiqué par le rapport et notez son rôle (grid, tree, radiogroup, meter ou progressbar).',
@@ -81,9 +92,47 @@ const REVIEW = {
           'Si c’est le cas, vérifiez qu’il est relié à l’élément, par aria-labelledby ou par l’étiquette HTML propre de l’élément (legend ou caption).'
         ],
         passWhen:
-          'Rien de visible ne nomme l’élément ni ne pose de question à son sujet : aucune information affichée ne manque dans l’arbre d’accessibilité. Donnez-lui tout de même un nom : WAI-ARIA l’exige.',
+          'L’élément a un nom explicite, ou un composant d’interface ou une alternative accessible donne accès aux mêmes fonctionnalités.',
         failWhen:
-          'La page affiche pour l’élément un titre ou une question qui ne lui est pas relié : cette relation n’est donc pas déterminable par programmation (les tests 7.1.1, 11.6.1 du RGAA).'
+          'L’élément n’a pas de nom explicite et aucun composant ni alternative accessible ne donne accès aux mêmes fonctionnalités, ce qui ne respecte pas les tests 7.1.1, 11.6.1 du RGAA.'
+      }
+    },
+    'avoid-inline-spacing': {
+      INLINE_SPACING_NOT_RESOLVABLE: {
+        steps: [
+          'Inspectez l’élément indiqué par le rapport et lisez la valeur d’espacement !important dans son attribut style.',
+          'Dans l’onglet Calculé des outils de développement, lisez la valeur résultante de line-height, letter-spacing ou word-spacing en pixels et comparez-la à 1,5 fois, 0,12 fois ou 0,16 fois la taille de police.',
+          'Appliquez l’espacement du texte du test 10.12.1 du RGAA (line-height 1.5, letter-spacing 0.12em, word-spacing 0.16em, espacement des paragraphes 2em) avec !important, par exemple au moyen d’une feuille de style utilisateur ou d’un bookmarklet ; comme le style en ligne !important de l’élément l’emporte, notez aussi les valeurs qu’il conserve.',
+          'Réduisez à 320 pixels CSS et vérifiez si le texte est coupé ou se chevauche.'
+        ],
+        passWhen:
+          'La valeur imposée atteint celle du test, ou le texte ne revient pas à la ligne, ou rien n’est perdu une fois l’espacement appliqué.',
+        failWhen:
+          'La valeur imposée est inférieure à la mesure sur un texte qui revient à la ligne, et le texte ne supporte pas l’espacement de l’utilisateur sans perte, ce qui ne respecte pas le test 10.12.1 du RGAA.'
+      },
+      INLINE_SPACING_NO_SOFT_WRAP: {
+        steps: [
+          'Inspectez l’élément indiqué par le rapport et notez quelle propriété d’espacement son attribut style impose avec !important.',
+          'Réduisez la fenêtre à 320 pixels CSS de large (ou zoomez à 400 %) et vérifiez si le texte passe parfois sur une deuxième ligne.',
+          'Appliquez l’espacement du texte du test 10.12.1 du RGAA (line-height 1.5, letter-spacing 0.12em, word-spacing 0.16em, espacement des paragraphes 2em) avec !important, par exemple au moyen d’une feuille de style utilisateur ou d’un bookmarklet ; comme le style en ligne !important de l’élément l’emporte, notez aussi les valeurs qu’il conserve.',
+          'Vérifiez si du texte est coupé, se chevauche ou est masqué.'
+        ],
+        passWhen:
+          'Le texte ne peut pas revenir à la ligne (il reste sur une ligne ou défile) et rien n’est coupé ni ne se chevauche : le critère ne s’applique donc pas.',
+        failWhen:
+          'Le texte revient bien à la ligne et, avec l’espacement imposé, les lignes se chevauchent ou le texte est rogné, ce qui ne respecte pas le test 10.12.1 du RGAA.'
+      },
+      INLINE_SPACING_SHORT_TEXT: {
+        steps: [
+          'Inspectez l’élément indiqué par le rapport et notez quelle propriété d’espacement son attribut style impose avec !important.',
+          'Réduisez la fenêtre à 320 pixels CSS de large (ou zoomez à 400 %) et vérifiez si le texte court passe sur deux lignes.',
+          'Appliquez l’espacement du texte du test 10.12.1 du RGAA (line-height 1.5, letter-spacing 0.12em, word-spacing 0.16em, espacement des paragraphes 2em) avec !important, par exemple au moyen d’une feuille de style utilisateur ou d’un bookmarklet ; comme le style en ligne !important de l’élément l’emporte, notez aussi les valeurs qu’il conserve.',
+          'Vérifiez si le texte est coupé, se chevauche ou est masqué.'
+        ],
+        passWhen:
+          'Le texte reste sur une ligne à toutes les largeurs, ou revient à la ligne sans que les lignes se chevauchent ni que du texte soit perdu.',
+        failWhen:
+          'Le texte revient à la ligne et l’espacement imposé fait se chevaucher les lignes ou rogne le texte, ce qui ne respecte pas le test 10.12.1 du RGAA.'
       }
     },
     'canvas-text-alternative-quality': {
@@ -97,7 +146,7 @@ const REVIEW = {
         passWhen:
           'L’équivalent textuel, seul ou avec une description qu’un utilisateur de lecteur d’écran atteint depuis lui, donne la même information ou fonction que ce que montre le canevas.',
         failWhen:
-          'Ni l’équivalent textuel ni une description atteignable depuis lui ne donnent l’information que montre le canevas, ou le texte est vague ou faux, ce qui ne respecte pas les tests 1.3.7, 1.3.8 du RGAA'
+          'Ni l’équivalent textuel ni une description atteignable depuis lui ne donnent l’information que montre le canevas, ou le texte est vague ou faux, ce qui ne respecte pas les tests 1.3.7, 1.3.8 du RGAA.'
       }
     },
     'click-handler-keyboard-operable': {
@@ -111,7 +160,7 @@ const REVIEW = {
         passWhen:
           'Entrée (et Espace pour les contrôles de type bouton) fait ce que fait un clic, ou, pour un onglet, y déplacer le focus affiche déjà son panneau, ou ce que fait le clic peut être fait autrement au clavier seul.',
         failWhen:
-          'Appuyer sur Entrée ou Espace ne fait rien même une fois le focus arrivé, et ce que fait le clic ne peut pas être fait autrement au clavier, ce qui ne respecte pas le test 7.3.1 du RGAA (F54).'
+          'Appuyer sur Entrée ou Espace ne fait rien même une fois le focus arrivé, et ce que fait le clic ne peut pas être fait autrement au clavier, ce qui ne respecte pas le test 7.3.1 du RGAA.'
       },
       CLICK_HANDLER_KEY_LISTENER_ABOVE: {
         steps: [
@@ -123,7 +172,7 @@ const REVIEW = {
         passWhen:
           'Entrée (et Espace pour les contrôles de type bouton) fait ce que fait un clic, ou ce que fait le clic peut être fait autrement au clavier seul.',
         failWhen:
-          'Appuyer sur Entrée ou Espace ne fait rien sur l’élément, donc l’écouteur au-dessus ne le gère pas, et ce que fait le clic ne peut pas être fait autrement au clavier, ce qui ne respecte pas le test 7.3.1 du RGAA'
+          'Appuyer sur Entrée ou Espace ne fait rien sur l’élément, donc l’écouteur au-dessus ne le gère pas, et ce que fait le clic ne peut pas être fait autrement au clavier, ce qui ne respecte pas le test 7.3.1 du RGAA.'
       },
       CLICK_HANDLER_NOT_FOCUSABLE: {
         steps: [
@@ -148,7 +197,7 @@ const REVIEW = {
         passWhen:
           'L’élément peut être atteint au clavier (Tab ou touches fléchées dans son groupe) et Entrée ou Espace fait ce que fait un clic, ou ce que fait le clic peut être fait autrement au clavier seul.',
         failWhen:
-          'Aucune touche n’amène le focus sur l’élément et ce que fait le clic ne peut pas être fait autrement au clavier : son action ne fonctionne qu’à la souris, ce qui ne respecte pas le test 7.3.1 du RGAA'
+          'Aucune touche n’amène le focus sur l’élément et ce que fait le clic ne peut pas être fait autrement au clavier : son action ne fonctionne qu’à la souris, ce qui ne respecte pas le test 7.3.1 du RGAA.'
       },
       CLICK_HANDLER_NO_KEY_HANDLER: {
         steps: [
@@ -160,7 +209,205 @@ const REVIEW = {
         passWhen:
           'Entrée (et Espace pour les contrôles de type bouton) fait ce que fait un clic, ou ce que fait le clic peut être fait autrement au clavier seul.',
         failWhen:
-          'Appuyer sur Entrée ou Espace ne fait rien, ou moins qu’un clic, et ce que fait le clic ne peut pas être fait autrement au clavier, ce qui ne respecte pas le test 7.3.1 du RGAA (F54).'
+          'Appuyer sur Entrée ou Espace ne fait rien, ou moins qu’un clic, et ce que fait le clic ne peut pas être fait autrement au clavier, ce qui ne respecte pas le test 7.3.1 du RGAA.'
+      }
+    },
+    'contrast-computable': {
+      ANCESTOR_OPACITY: {
+        steps: [
+          'Repérez le texte indiqué par le rapport et notez l’ancêtre dont l’opacity est inférieure à 1.',
+          'Avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez le texte et l’arrière-plan tels qu’ils apparaissent à l’écran (atténués), avec la pipette sur la page rendue.',
+          'Comparez le ratio à 4,5:1 (3:1 pour le texte de grande taille).'
+        ],
+        passWhen:
+          'Les couleurs atténuées à l’écran atteignent le seuil, ou le texte atténué est un contrôle inactif (désactivé), qui est exempté.',
+        failWhen:
+          'Les couleurs atténuées à l’écran donnent un ratio inférieur au seuil, ce qui ne respecte pas les tests 3.2.1, 3.2.2, 3.2.3, 3.2.4 du RGAA, sauf si le texte fait partie d’un contrôle inactif.'
+      },
+      BACKGROUND_FILTER_OR_BACKDROP_FILTER: {
+        steps: [
+          'Repérez le texte indiqué par le rapport et notez le filter ou le backdrop-filter appliqué au texte ou à un ancêtre (dans le panneau Styles des outils de développement).',
+          'Avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez les couleurs du texte et de l’arrière-plan telles qu’elles apparaissent à l’écran avec le filtre appliqué, en utilisant la pipette sur la page rendue plutôt que les valeurs déclarées.',
+          'Pour un flou ou un backdrop-filter au-dessus d’un contenu qui change, faites défiler la page ou attendez que différents contenus passent derrière, et vérifiez le pire cas.',
+          'Comparez le ratio à 4,5:1 (3:1 pour le texte de grande taille).'
+        ],
+        passWhen: 'Avec le filtre appliqué, le ratio à l’écran atteint le seuil.',
+        failWhen:
+          'Avec le filtre appliqué, le ratio à l’écran passe sous le seuil, ce qui ne respecte pas les tests 3.2.1, 3.2.2, 3.2.3, 3.2.4 du RGAA.'
+      },
+      BACKGROUND_IMAGE_OR_GRADIENT: {
+        steps: [
+          'Repérez le texte indiqué par le rapport et regardez l’image ou le dégradé situé derrière.',
+          'Avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez la couleur du texte par rapport aux zones les plus claires et les plus sombres de l’arrière-plan situé juste derrière les lettres.',
+          'Si l’image change (diaporama, vidéo, images adaptatives), vérifiez chaque version, et ce à plusieurs largeurs de fenêtre.',
+          'Comparez le ratio à 4,5:1 (3:1 pour le texte de grande taille).'
+        ],
+        passWhen:
+          'Chaque partie de l’arrière-plan derrière les lettres donne au moins le ratio requis.',
+        failWhen:
+          'Une partie de l’arrière-plan derrière le texte donne un ratio inférieur au seuil, ce qui ne respecte pas les tests 3.2.1, 3.2.2, 3.2.3, 3.2.4 du RGAA.'
+      },
+      BACKGROUND_NOT_COMPUTABLE: {
+        steps: [
+          'Repérez sur la page le texte indiqué par le rapport.',
+          'Avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez la couleur du texte par rapport à la couleur visible juste derrière les lettres, en retenant les points le plus sombre et le plus clair si elle varie.',
+          'Comparez le ratio à 4,5:1 (3:1 pour le texte de grande taille).'
+        ],
+        passWhen: 'Le ratio atteint le seuil partout derrière le texte.',
+        failWhen:
+          'Le ratio est inférieur au seuil à un endroit derrière le texte, ce qui ne respecte pas les tests 3.2.1, 3.2.2, 3.2.3, 3.2.4 du RGAA.'
+      },
+      BACKGROUND_NOT_OPAQUE_AT_ROOT: {
+        steps: [
+          'Repérez le texte indiqué par le rapport ; la page ne définit aucun arrière-plan opaque derrière lui : ce qui s’y affiche est le canevas que peint le navigateur ou, dans un cadre, la page qui l’entoure.',
+          'Affichez la page là où elle apparaît : dans la page qui l’intègre, sans couleurs forcées, et dans chaque jeu de couleurs qu’elle prend en charge (clair et sombre).',
+          'Avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez le texte par rapport à l’arrière-plan réellement visible dans chaque contexte.',
+          'Comparez le ratio à 4,5:1 (3:1 pour le texte de grande taille).'
+        ],
+        passWhen: 'Le ratio atteint le seuil dans tous les contextes où la page s’affiche.',
+        failWhen:
+          'Dans un des contextes où la page s’affiche, le ratio est inférieur au seuil, ce qui ne respecte pas les tests 3.2.1, 3.2.2, 3.2.3, 3.2.4 du RGAA.'
+      },
+      BACKGROUND_OVERLAP: {
+        steps: [
+          'Repérez le texte indiqué par le rapport et vérifiez quel élément est réellement peint derrière lui (inspectez-le et masquez puis réaffichez l’élément qui le recouvre).',
+          'Avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez la couleur du texte par rapport à la couleur réellement visible derrière les lettres.',
+          'Comparez le ratio à 4,5:1 (3:1 pour le texte de grande taille).'
+        ],
+        passWhen:
+          'La couleur réellement présente derrière le texte donne au moins le ratio requis.',
+        failWhen:
+          'La couleur réellement présente derrière le texte donne un ratio inférieur au seuil, ce qui ne respecte pas les tests 3.2.1, 3.2.2, 3.2.3, 3.2.4 du RGAA.'
+      },
+      BACKGROUND_UNPARSABLE: {
+        steps: [
+          'Repérez le texte indiqué par le rapport et inspectez la valeur de la couleur d’arrière-plan dans les outils de développement (souvent une syntaxe récente comme oklch(), lab() ou color()).',
+          'Avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez la couleur du texte par rapport à l’arrière-plan tel qu’il est rendu à l’écran.',
+          'Comparez le ratio à 4,5:1 (3:1 pour le texte de grande taille).'
+        ],
+        passWhen: 'Le ratio atteint le seuil.',
+        failWhen:
+          'Le ratio est inférieur au seuil, ce qui ne respecte pas les tests 3.2.1, 3.2.2, 3.2.3, 3.2.4 du RGAA.'
+      },
+      COLOR_SCHEME_NOT_RENDERED: {
+        steps: [
+          'Ouvrez la page dans un navigateur réglé sur le jeu de couleurs indiqué par le rapport (blockerValue : light ou dark), ou émulez-le dans les outils de développement (Rendu, prefers-color-scheme).',
+          'Repérez le texte indiqué par le rapport et, avec la pipette de couleur des outils de développement du navigateur ou un calculateur de contraste dont les couleurs sont prélevées à la pipette, mesurez-le par rapport à l’arrière-plan qui se trouve derrière lui.',
+          'Comparez le ratio à 4,5:1 (3:1 pour le texte de grande taille).'
+        ],
+        passWhen: 'Dans ce jeu de couleurs, le ratio atteint le seuil.',
+        failWhen:
+          'Dans ce jeu de couleurs, le ratio est inférieur au seuil, ce qui ne respecte pas les tests 3.2.1, 3.2.2, 3.2.3, 3.2.4 du RGAA.'
+      },
+      ELEMENT_OPACITY: {
+        steps: [
+          'Repérez le texte indiqué par le rapport et notez l’opacity inférieure à 1 sur son élément.',
+          'Avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez le texte et l’arrière-plan tels qu’ils apparaissent à l’écran (atténués), avec la pipette sur la page rendue.',
+          'Comparez le ratio à 4,5:1 (3:1 pour le texte de grande taille).'
+        ],
+        passWhen:
+          'Les couleurs atténuées à l’écran atteignent le seuil, ou le texte atténué est un contrôle inactif (désactivé), qui est exempté.',
+        failWhen:
+          'Les couleurs atténuées à l’écran donnent un ratio inférieur au seuil, ce qui ne respecte pas les tests 3.2.1, 3.2.2, 3.2.3, 3.2.4 du RGAA, sauf si le texte fait partie d’un contrôle inactif.'
+      },
+      ENGINE_EXCEPTION: {
+        steps: [
+          'Repérez le texte indiqué par le rapport (la vérification s’est arrêtée tôt, donc rien n’a été mesuré).',
+          'Avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez la couleur du texte par rapport à l’arrière-plan situé juste derrière les lettres.',
+          'Notez la taille et la graisse du texte pour savoir s’il compte comme texte de grande taille (au moins 24px, ou 18,5px en gras).',
+          'Comparez le ratio à 4,5:1 (3:1 pour le texte de grande taille).'
+        ],
+        passWhen: 'Le ratio atteint le seuil correspondant à sa taille.',
+        failWhen:
+          'Le ratio est inférieur au seuil correspondant à sa taille, ce qui ne respecte pas les tests 3.2.1, 3.2.2, 3.2.3, 3.2.4 du RGAA.'
+      },
+      FOREGROUND_UNPARSABLE: {
+        steps: [
+          'Repérez le texte indiqué par le rapport et inspectez la valeur de sa couleur dans les outils de développement (souvent une syntaxe récente comme oklch(), lab() ou color()).',
+          'Avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez la couleur du texte telle qu’elle est rendue par rapport à son arrière-plan.',
+          'Comparez le ratio à 4,5:1 (3:1 pour le texte de grande taille).'
+        ],
+        passWhen: 'Le ratio atteint le seuil.',
+        failWhen:
+          'Le ratio est inférieur au seuil, ce qui ne respecte pas les tests 3.2.1, 3.2.2, 3.2.3, 3.2.4 du RGAA.'
+      },
+      GENERATED_TEXT_POSITIONED: {
+        steps: [
+          'Repérez l’élément indiqué par le rapport et localisez à l’écran le texte que dessine son ::before ou son ::after (il est positionné à l’écart de son élément).',
+          'Avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez la couleur de ce texte par rapport à ce qui s’affiche derrière lui à sa position réelle.',
+          'Redimensionnez la fenêtre et faites défiler la page pour vérifier d’autres positions où il pourrait se trouver sur un autre arrière-plan.',
+          'Comparez le ratio à 4,5:1 (3:1 pour le texte de grande taille).'
+        ],
+        passWhen: 'Où qu’il se trouve, le texte généré atteint le seuil.',
+        failWhen:
+          'Là où se trouve le texte généré, le ratio est inférieur au seuil, ce qui ne respecte pas les tests 3.2.1, 3.2.2, 3.2.3, 3.2.4 du RGAA.'
+      },
+      GENERATED_TEXT_UNREADABLE: {
+        steps: [
+          'Repérez l’élément indiqué par le rapport et regardez le texte que dessine son ::before, son ::after ou son marqueur de liste (un numéro, une puce ou un libellé).',
+          'Déterminez s’il s’agit d’un texte que les utilisateurs doivent lire (un numéro, un mot ou un libellé) ou d’une forme purement décorative.',
+          'S’il s’agit de texte, avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez sa couleur par rapport à l’arrière-plan situé derrière.',
+          'Comparez le ratio à 4,5:1 (3:1 pour le texte de grande taille).'
+        ],
+        passWhen: 'Le texte généré atteint le seuil, ou il est purement décoratif.',
+        failWhen:
+          'Le texte généré est un contenu à lire et son ratio est inférieur au seuil, ce qui ne respecte pas les tests 3.2.1, 3.2.2, 3.2.3, 3.2.4 du RGAA.'
+      },
+      MIX_BLEND_MODE: {
+        steps: [
+          'Repérez le texte indiqué par le rapport et notez le mix-blend-mode appliqué au texte ou à son conteneur.',
+          'Avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez les couleurs fusionnées du texte et de l’arrière-plan telles qu’elles apparaissent à l’écran, avec la pipette sur la page rendue.',
+          'Si différents contenus peuvent se trouver derrière (défilement, carrousels), vérifiez le pire cas.',
+          'Comparez le ratio à 4,5:1 (3:1 pour le texte de grande taille).'
+        ],
+        passWhen: 'Les couleurs fusionnées à l’écran atteignent le seuil.',
+        failWhen:
+          'Les couleurs fusionnées à l’écran donnent un ratio inférieur au seuil, ce qui ne respecte pas les tests 3.2.1, 3.2.2, 3.2.3, 3.2.4 du RGAA.'
+      },
+      PSEUDO_ELEMENT_COLOR: {
+        steps: [
+          'Repérez le texte indiqué par le rapport et notez la couleur de ::first-line ou ::first-letter dans le panneau Styles.',
+          'Avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez à la fois la couleur du texte de l’élément et la couleur de la première ligne ou de la première lettre par rapport à l’arrière-plan.',
+          'Redimensionnez la fenêtre pour constater que la couleur de la première ligne s’applique à des mots différents selon la largeur.',
+          'Comparez le ratio à 4,5:1 (3:1 pour le texte de grande taille).'
+        ],
+        passWhen: 'Les deux couleurs atteignent le seuil.',
+        failWhen:
+          'L’une des couleurs donne un ratio inférieur au seuil, ce qui ne respecte pas les tests 3.2.1, 3.2.2, 3.2.3, 3.2.4 du RGAA.'
+      },
+      SELECT_OPTION_COLOR: {
+        steps: [
+          'Repérez la liste déroulante indiquée par le rapport et ouvrez-la à la souris et avec Alt+Flèche bas.',
+          'Avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez le texte de chaque option par rapport à son arrière-plan dans la liste ouverte, y compris l’option en surbrillance, dans chaque navigateur pris en charge par la page.',
+          'Comparez le ratio à 4,5:1 (3:1 pour le texte de grande taille).'
+        ],
+        passWhen: 'Chaque option de la liste ouverte atteint le seuil.',
+        failWhen:
+          'Une option de la liste ouverte donne un ratio inférieur au seuil, ce qui ne respecte pas les tests 3.2.1, 3.2.2, 3.2.3, 3.2.4 du RGAA.'
+      },
+      TEXT_SHADOW: {
+        steps: [
+          'Repérez le texte indiqué par le rapport et notez son text-shadow.',
+          'Avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez la couleur de remplissage du texte par rapport à l’arrière-plan.',
+          'Si le remplissage échoue, zoomez et vérifiez si l’ombre forme un contour plein ou un halo autour de chaque lettre ; si c’est le cas, mesurez la couleur de l’ombre par rapport à l’arrière-plan et le remplissage par rapport à l’ombre.',
+          'Comparez le ratio à 4,5:1 (3:1 pour le texte de grande taille).'
+        ],
+        passWhen:
+          'Le remplissage atteint le seuil par rapport à l’arrière-plan, ou un halo plein entoure chaque lettre et donne le ratio requis.',
+        failWhen:
+          'Ni le remplissage par rapport à l’arrière-plan, ni un halo plein autour des lettres n’atteint le seuil, ce qui ne respecte pas les tests 3.2.1, 3.2.2, 3.2.3, 3.2.4 du RGAA.'
+      },
+      TEXT_STROKE: {
+        steps: [
+          'Repérez le texte indiqué par le rapport et notez l’épaisseur et la couleur de son -webkit-text-stroke.',
+          'Avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez la couleur de remplissage par rapport à l’arrière-plan, ainsi que la couleur du contour par rapport à l’arrière-plan.',
+          'Zoomez pour voir quelle couleur forme l’essentiel de chaque lettre (un contour fin compte moins que le remplissage).',
+          'Comparez le ratio à 4,5:1 (3:1 pour le texte de grande taille).'
+        ],
+        passWhen:
+          'Le remplissage et le contour atteignent tous deux le seuil, ou bien la couleur qui forme clairement les lettres l’atteint.',
+        failWhen:
+          'La couleur qui forme les lettres donne un ratio inférieur au seuil, ce qui ne respecte pas les tests 3.2.1, 3.2.2, 3.2.3, 3.2.4 du RGAA.'
       }
     },
     'css-focus-indicator-suppressed': {
@@ -168,12 +415,13 @@ const REVIEW = {
         steps: [
           'Cliquez juste avant l’élément indiqué par le rapport, puis appuyez sur Tab jusqu’à ce qu’il ait le focus.',
           'Cherchez sur l’élément, et autour de lui, tout changement visible lorsqu’il reçoit le focus.',
-          'Appuyez sur Tab et Maj+Tab pour retirer puis remettre le focus, en comparant les deux états.'
+          'Appuyez sur Tab et Maj+Tab pour retirer puis remettre le focus, en comparant les deux états.',
+          'Mesurez le rapport de contraste de cette indication : il doit être d’au moins 3:1.'
         ],
         passWhen:
-          'Un indicateur visible, comme un contour, une bordure, un soulignement, un changement de couleur ou d’arrière-plan, montre quand l’élément a le focus.',
+          'Une indication visible agit sur le contour ou le fond de l’élément quand il a le focus, avec un rapport de contraste d’au moins 3:1.',
         failWhen:
-          'Rien de visible ne change lorsque l’élément reçoit le focus, ce qui ne respecte pas le test 10.7.1 du RGAA (F78).'
+          'Rien de visible ne change à la prise de focus, ou l’indication a un rapport de contraste inférieur à 3:1, ce qui ne respecte pas le test 10.7.1 du RGAA.'
       }
     },
     'css-hidden-focus': {
@@ -185,7 +433,7 @@ const REVIEW = {
         ],
         passWhen: 'L’élément apparaît avec un indicateur de focus visible tant qu’il a le focus.',
         failWhen:
-          'Le focus arrive sur l’élément alors qu’il reste masqué : l’utilisateur du clavier ne voit pas où est le focus, ce qui ne respecte pas les tests 10.7.1, 12.8.1 du RGAA'
+          'Le focus arrive sur l’élément alors qu’il reste masqué : l’utilisateur du clavier ne voit pas où est le focus, ce qui ne respecte pas les tests 10.7.1, 12.8.1 du RGAA.'
       },
       cssHiddenTabbable_runtimeRedirect_needsReview: {
         steps: [
@@ -196,7 +444,7 @@ const REVIEW = {
         passWhen:
           'Le focus ne reste jamais sur l’élément masqué : il passe directement à un contrôle visible, comme le fait la sentinelle d’un piège à focus.',
         failWhen:
-          'Le focus peut rester sur l’élément masqué : l’utilisateur du clavier ne voit pas où est le focus, ce qui ne respecte pas les tests 10.7.1, 12.8.1 du RGAA'
+          'Le focus peut rester sur l’élément masqué : l’utilisateur du clavier ne voit pas où est le focus, ce qui ne respecte pas les tests 10.7.1, 12.8.1 du RGAA.'
       }
     },
     'css-orientation-lock': {
@@ -210,7 +458,7 @@ const REVIEW = {
         passWhen:
           'Le contenu reste disponible dans les deux orientations, ou une seule orientation est essentielle.',
         failWhen:
-          'Le contenu est masqué et, par exemple, un message « tournez votre appareil » s’affiche : la page est inutilisable dans cette orientation, ce qui ne respecte pas le test 13.9.1 du RGAA (F100).'
+          'Le contenu est masqué et, par exemple, un message « tournez votre appareil » s’affiche : la page est inutilisable dans cette orientation, ce qui ne respecte pas le test 13.9.1 du RGAA.'
       },
       ORIENTATION_MEDIA_ROTATES_ELEMENT: {
         steps: [
@@ -232,7 +480,7 @@ const REVIEW = {
         passWhen:
           'La page affiche son contenu à l’endroit et fonctionne dans les deux orientations.',
         failWhen:
-          'La page est bloquée dans une orientation (contenu masqué, pivoté sur le côté ou remplacé par un message), ce qui ne respecte pas le test 13.9.1 du RGAA'
+          'La page est bloquée dans une orientation (contenu masqué, pivoté sur le côté ou remplacé par un message), ce qui ne respecte pas le test 13.9.1 du RGAA.'
       }
     },
     'definition-list-children-valid': {
@@ -271,6 +519,17 @@ const REVIEW = {
       }
     },
     'dialog-name-present': {
+      name_internals: {
+        steps: [
+          'Inspectez la boîte de dialogue indiquée par le rapport, un élément personnalisé, et notez son rôle.',
+          'Ouvrez le panneau Accessibilité des outils de développement du navigateur et lisez le nom accessible de l’élément.',
+          'Avec un lecteur d’écran, placez-vous sur l’élément et écoutez le nom annoncé.'
+        ],
+        passWhen:
+          'L’élément a un nom explicite, ou un composant d’interface ou une alternative accessible donne accès aux mêmes fonctionnalités.',
+        failWhen:
+          'L’élément n’a pas de nom explicite et aucun composant ni alternative accessible ne donne accès aux mêmes fonctionnalités, ce qui ne respecte pas le test 7.1.1 du RGAA.'
+      },
       name_missing: {
         steps: [
           'Inspectez la boîte de dialogue indiquée par le rapport et notez son rôle (dialog ou alertdialog).',
@@ -278,9 +537,9 @@ const REVIEW = {
           'S’il y en a un, vérifiez que la boîte de dialogue y renvoie avec aria-labelledby.'
         ],
         passWhen:
-          'La boîte de dialogue n’affiche aucun titre : rien de visible ne manque dans l’arbre d’accessibilité. Donnez-lui tout de même un nom : WAI-ARIA l’exige.',
+          'L’élément a un nom explicite, ou un composant d’interface ou une alternative accessible donne accès aux mêmes fonctionnalités.',
         failWhen:
-          'La boîte de dialogue affiche un titre qui ne lui est pas relié : la relation entre la boîte de dialogue et son titre n’est donc pas déterminable par programmation (le test 7.1.1 du RGAA).'
+          'L’élément n’a pas de nom explicite et aucun composant ni alternative accessible ne donne accès aux mêmes fonctionnalités, ce qui ne respecte pas le test 7.1.1 du RGAA.'
       }
     },
     'dlitem-parent-valid': {
@@ -296,6 +555,29 @@ const REVIEW = {
           'La page montre une définition comme appartenant à un terme auquel le balisage ne l’associe pas : cette relation n’est donc pas déterminable par programmation (le test 9.3.3 du RGAA).'
       }
     },
+    'duplicate-id': {
+      DUPLICATE_ID: {
+        steps: [
+          'Inspectez les éléments indiqués par le rapport et notez l’id qu’ils partagent.',
+          'Vérifiez dans le code source généré que cet id y figure plusieurs fois.'
+        ],
+        passWhen: 'Chaque valeur d’attribut id est unique dans la page.',
+        failWhen:
+          'Les valeurs d’attribut id ne sont pas uniques dans la page, ce qui ne respecte pas le test 8.2.1 du RGAA.'
+      },
+      DUPLICATE_ID_IN_SHADOW_TREE: {
+        steps: [
+          'Inspectez les éléments indiqués par le rapport, dans la même racine shadow, et notez l’id qu’ils partagent.',
+          'Vérifiez si quelque chose fait référence à cet id : l’attribut for d’un label, un attribut aria-* comme aria-labelledby, ou un lien vers #the-id.',
+          'Si quelque chose y fait référence, suivez la référence et vérifiez qu’elle atteint l’élément voulu.',
+          'Vérifiez si l’audit juge le code des racines shadow : le validateur du W3C ne les voit pas dans le code source généré.'
+        ],
+        passWhen:
+          'Rien ne casse à cause du doublon, et l’audit laisse les racines shadow hors du test 8.2.1.',
+        failWhen:
+          'Une référence atteint le mauvais élément, ou l’audit juge ce code : les valeurs d’attribut id ne sont pas uniques dans la page, ce qui ne respecte pas le test 8.2.1 du RGAA.'
+      }
+    },
     'embed-text-alternative-quality': {
       TEXT_ALTERNATIVE_REVIEW: {
         steps: [
@@ -305,7 +587,7 @@ const REVIEW = {
         ],
         passWhen: 'L’équivalent textuel identifie ou décrit fidèlement le contenu intégré.',
         failWhen:
-          'L’équivalent textuel est générique, faux ou ne décrit pas le contenu intégré, ce qui ne respecte pas le test 1.3.5 du RGAA'
+          'L’équivalent textuel est générique, faux ou ne décrit pas le contenu intégré, ce qui ne respecte pas le test 1.3.5 du RGAA.'
       }
     },
     'focus-not-removed-by-script': {
@@ -318,7 +600,7 @@ const REVIEW = {
         passWhen:
           'Le focus reste sur l’élément, son indicateur de focus s’affiche, et la touche Tab suivante passe au contrôle suivant.',
         failWhen:
-          'Le focus disparaît de l’élément dès qu’il y arrive : il ne peut donc pas être atteint ni actionné au clavier, ce qui ne respecte pas le test 7.3.2 du RGAA (F55).'
+          'Le focus disparaît de l’élément dès qu’il y arrive : il ne peut donc pas être atteint ni actionné au clavier, ce qui ne respecte pas le test 7.3.2 du RGAA.'
       },
       FOCUS_HANDLER_CALLS_BLUR: {
         steps: [
@@ -330,7 +612,7 @@ const REVIEW = {
         passWhen:
           'Dans chaque état, le focus reste sur l’élément, son indicateur de focus s’affiche et il peut être actionné au clavier.',
         failWhen:
-          'Dans un des états, le focus est retiré au moment où l’élément le reçoit : il ne peut donc pas être actionné au clavier ou le focus disparaît de la vue, ce qui ne respecte pas le test 7.3.2 du RGAA (F55).'
+          'Dans un des états, le focus est retiré au moment où l’élément le reçoit : il ne peut donc pas être actionné au clavier ou le focus disparaît de la vue, ce qui ne respecte pas le test 7.3.2 du RGAA.'
       },
       FOCUS_HANDLER_MOVES_FOCUS: {
         steps: [
@@ -342,7 +624,7 @@ const REVIEW = {
         passWhen:
           'Le focus va à un endroit logique (le bouclage du focus d’une boîte de dialogue) ou reste sur l’élément, et chaque contrôle peut toujours être atteint et actionné au clavier.',
         failWhen:
-          'Un contrôle visible envoie le focus ailleurs dès qu’il y arrive : il ne peut donc pas être atteint ni actionné au clavier, ce qui ne respecte pas le test 7.3.2 du RGAA (F55).'
+          'Un contrôle visible envoie le focus ailleurs dès qu’il y arrive : il ne peut donc pas être atteint ni actionné au clavier, ce qui ne respecte pas le test 7.3.2 du RGAA.'
       }
     },
     'form-control-label-quality': {
@@ -355,7 +637,7 @@ const REVIEW = {
         passWhen:
           'Les champs servent le même objectif, ou un élément visible près de chacun indique clairement lequel est lequel.',
         failWhen:
-          'Des champs différents partagent une étiquette et rien de visible ne les distingue : l’utilisateur ne peut pas savoir lequel remplir, ce qui ne respecte pas les tests 11.2.1, 11.2.4 du RGAA (G131).'
+          'Des champs différents partagent une étiquette et rien de visible ne les distingue : l’utilisateur ne peut pas savoir lequel remplir, ce qui ne respecte pas les tests 11.2.1, 11.2.4 du RGAA.'
       },
       PARTIALLY_HIDDEN_LABEL: {
         steps: [
@@ -378,7 +660,7 @@ const REVIEW = {
         passWhen:
           'L’étiquette est un vrai nom pour ce que demande le champ dans ce contexte (par exemple « Valeur » dans un éditeur clé/valeur).',
         failWhen:
-          'L’étiquette est un texte de remplacement qui ne dit pas à quoi sert le champ, ce qui ne respecte pas les tests 11.2.1, 11.2.4 du RGAA (G131).'
+          'L’étiquette est un texte de remplacement qui ne dit pas à quoi sert le champ, ce qui ne respecte pas les tests 11.2.1, 11.2.4 du RGAA.'
       }
     },
     'form-control-programmatic-label-quality': {
@@ -388,42 +670,41 @@ const REVIEW = {
           'Cherchez un texte affiché à côté du champ (un label visible, un titre ou une légende) qui dit quoi saisir.'
         ],
         passWhen:
-          'Un texte affiché à côté du champ, ou une icône au sens évident comme une loupe sur un champ de recherche, dit quoi saisir.',
+          'Un attribut title, ou un passage de texte accolé au champ, visible ou qui le devient à la prise de focus, permet de comprendre la nature de la saisie attendue.',
         failWhen:
-          'Rien à l’écran ne dit quoi saisir dans le champ, ce qui ne respecte pas les tests 11.1.3, 11.2.2, 11.2.3, 11.2.4 du RGAA'
+          'Rien de tout cela ne permet de comprendre la nature de la saisie attendue, ce qui ne respecte pas les tests 11.1.3, 11.2.3 du RGAA.'
       },
       label_from_hidden_labelledby: {
         steps: [
           'Repérez le champ indiqué par le rapport et, dans les outils de développement, suivez ses id aria-labelledby jusqu’aux éléments qu’ils désignent.',
           'Vérifiez si ces éléments sont affichés à l’écran quand le champ l’est.',
-          'Cherchez un autre texte affiché à côté du champ qui dit quoi saisir. Un bouton juste après le champ qui dit ce qu’il fait, comme Rechercher après un champ de recherche, compte aussi.'
+          'Déterminez si ce passage de texte permet de connaître la fonction exacte du champ, et cherchez un title ou un texte accolé au champ qui dit quoi saisir.'
         ],
         passWhen:
-          'Le texte d’étiquette est affiché avec le champ, ou un autre texte à côté, ou un bouton juste après comme Rechercher, dit quoi saisir.',
+          'Un attribut title, ou un passage de texte accolé au champ, visible ou qui le devient à la prise de focus, permet de comprendre la nature de la saisie attendue.',
         failWhen:
-          'Le label ne se trouve que dans des éléments masqués et rien à l’écran ne dit quoi saisir, ce qui ne respecte pas les tests 11.1.3, 11.2.2, 11.2.3, 11.2.4 du RGAA'
+          'Rien de tout cela ne permet de comprendre la nature de la saisie attendue, ce qui ne respecte pas les tests 11.1.3, 11.2.4 du RGAA.'
       },
       label_from_placeholder_primary: {
         steps: [
           'Repérez le champ indiqué par le rapport et lisez son placeholder.',
           'Saisissez quelque chose dans le champ.',
-          'Vérifiez si quelque chose encore affiché à l’écran dit à quoi sert le champ : une étiquette ou un texte à côté. Un bouton juste après le champ qui dit ce qu’il fait, comme Rechercher après un champ de recherche, compte aussi.'
+          'Vérifiez si un attribut title, ou un texte accolé au champ, dit encore à quoi il sert.'
         ],
         passWhen:
-          'Une étiquette, un texte à côté du champ ou un bouton juste après comme Rechercher reste affiché une fois le champ rempli et dit quoi saisir.',
+          'Un attribut title, ou un passage de texte accolé au champ, visible ou qui le devient à la prise de focus, permet de comprendre la nature de la saisie attendue.',
         failWhen:
-          'Une fois le champ rempli, rien à l’écran ne dit à quoi il sert, ce qui ne respecte pas les tests 11.1.3, 11.2.2, 11.2.3, 11.2.4 du RGAA'
+          'Rien de tout cela ne permet de comprendre la nature de la saisie attendue, ce qui ne respecte pas le test 11.1.3 du RGAA.'
       },
       label_from_title_primary: {
         steps: [
-          'Regardez le champ indiqué par le rapport sans le survoler.',
-          'Cherchez un texte affiché à côté qui dit quoi saisir. Un bouton juste après le champ qui dit ce qu’il fait, comme Rechercher après un champ de recherche, compte aussi.',
-          'Atteignez le champ au clavier avec Tab et notez que l’info-bulle du title n’apparaît pas.'
+          'Repérez le champ indiqué par le rapport et lisez son attribut title.',
+          'Déterminez si ce title permet de connaître la fonction exacte du champ et le type de données attendu.'
         ],
         passWhen:
-          'Sans survol, un texte à côté du champ, ou un bouton juste après comme Rechercher, dit quoi saisir.',
+          'Le title permet de connaître la fonction exacte du champ : RGAA accepte cette étiquette.',
         failWhen:
-          'Seul le title, affiché au survol de la souris, dit quoi saisir : les utilisateurs du clavier et du tactile ne le voient jamais, ce qui ne respecte pas les tests 11.1.3, 11.2.2, 11.2.3, 11.2.4 du RGAA'
+          'Le title ne permet pas de connaître la fonction exacte du champ, ce qui ne respecte pas le test 11.2.2 du RGAA.'
       }
     },
     'heading-order': {
@@ -431,12 +712,12 @@ const REVIEW = {
         steps: [
           'Repérez le titre indiqué par le rapport et notez son niveau ainsi que celui du titre précédent (d’après le rapport ou le panneau Accessibilité).',
           'Listez les titres de la page dans l’ordre, avec la liste des titres d’un lecteur d’écran ou en les inspectant, et regardez la section autour du saut.',
-          'Déterminez si le titre se situe un niveau en dessous du titre précédent, ou s’il manque un niveau.'
+          'Déterminez si la hiérarchie des titres reste pertinente et cohérente à cet endroit.'
         ],
         passWhen:
-          'Chaque titre est au plus d’un niveau plus profond que le titre précédent : la structure n’a donc pas de trou.',
+          'La hiérarchie reste pertinente et cohérente : un saut de niveau seul n’invalide pas le critère.',
         failWhen:
-          'Le titre descend de plus d’un niveau par rapport au précédent (un h2 suivi d’un h4), ce qui laisse un trou dans la structure, un manquement aux bonnes pratiques (G141).'
+          'Le saut de niveau rend la hiérarchie incohérente ou trompeuse, ce qui ne respecte pas le test 9.1.1 du RGAA.'
       }
     },
     'heading-quality': {
@@ -449,7 +730,7 @@ const REVIEW = {
         passWhen:
           'Le nom de fichier est le vrai sujet de la section, comme le document qu’elle propose.',
         failWhen:
-          'Le titre est un nom de fichier resté par erreur (comme IMG_1234.jpg) qui ne décrit pas le contenu qui le suit, ce qui ne respecte pas le test 9.1.2 du RGAA (G130).'
+          'Le titre est un nom de fichier resté par erreur (comme IMG_1234.jpg) qui ne décrit pas le contenu qui le suit, ce qui ne respecte pas le test 9.1.2 du RGAA.'
       },
       PLACEHOLDER_HEADING_TEXT: {
         steps: [
@@ -460,7 +741,7 @@ const REVIEW = {
         passWhen:
           'Le titre nomme le sujet du contenu qui le suit (un « Étape 1 » numéroté au-dessus de la première étape convient).',
         failWhen:
-          'Le titre est un texte de remplacement qui ne décrit pas le contenu qui le suit, ce qui ne respecte pas le test 9.1.2 du RGAA (G130).'
+          'Le titre est un texte de remplacement qui ne décrit pas le contenu qui le suit, ce qui ne respecte pas le test 9.1.2 du RGAA.'
       },
       URL_LIKE_HEADING: {
         steps: [
@@ -470,21 +751,21 @@ const REVIEW = {
         ],
         passWhen: 'L’adresse est le sujet de la section : elle décrit donc le contenu qui la suit.',
         failWhen:
-          'L’adresse ne décrit pas le contenu qui la suit, ce qui ne respecte pas le test 9.1.2 du RGAA (G130).'
+          'L’adresse ne décrit pas le contenu qui la suit, ce qui ne respecte pas le test 9.1.2 du RGAA.'
       }
     },
     'identical-links-same-purpose': {
       SAME_NAME_DIFFERENT_DESTINATION: {
         steps: [
-          'Repérez tous les liens portant le nom indiqué par le rapport (la liste des liens d’un lecteur d’écran aide) et notez où chacun mène.',
+          'Repérez tous les liens portant le nom indiqué par le rapport et notez où chacun mène.',
+          'Lisez le contexte de chaque lien : la phrase, le paragraphe, l’élément de liste, le titre précédent ou l’en-tête de tableau.',
           'Ouvrez chaque lien et comparez les pages atteintes.',
-          'Déterminez si les pages servent le même objectif (la même page avec des paramètres de suivi, ou des pages équivalentes) ou des objectifs différents.',
-          'S’ils mènent à des pages de natures différentes, vérifiez si la page propose un moyen de rendre les noms des liens plus explicites, comme un réglage qui affiche le texte complet des liens. Cela ne compte que s’il peut être activé au clavier et que, une fois activé, chaque nom de lien dit où il mène.'
+          'Déterminez si le contexte de chaque lien permet d’en comprendre la fonction et la destination.'
         ],
         passWhen:
-          'Chaque lien portant ce nom mène à la même page ou à des pages qui ont la même fonction, ou un réglage activable au clavier fait que chaque nom de lien dit où il mène.',
+          'Chaque lien mène à la même page ou à des pages de même fonction, ou son intitulé additionné à son contexte permet d’en comprendre la fonction et la destination.',
         failWhen:
-          'Des liens de même nom, comme « Lire la suite », mènent à des pages aux fonctions différentes et rien dans la page ne permet de les distinguer par leur nom, ce qui ne respecte pas les tests 6.1.1, 6.1.2, 6.1.3, 6.1.4 du RGAA (ACT b20e66).'
+          'Des liens de même nom mènent à des pages aux fonctions différentes et leur contexte ne permet pas de les distinguer, ce qui ne respecte pas les tests 6.1.1, 6.1.2, 6.1.3, 6.1.4 du RGAA.'
       }
     },
     'image-of-text': {
@@ -497,7 +778,7 @@ const REVIEW = {
         passWhen:
           'L’image ne contient pas de texte, seulement une icône ou une illustration, ou le texte est un logo ou est essentiel pour une autre raison.',
         failWhen:
-          'Le bouton affiche son libellé sous forme de texte dans une image alors qu’il pourrait s’agir d’un vrai texte, ce qui ne respecte pas le test 1.8.2 du RGAA'
+          'Le bouton affiche son libellé sous forme de texte dans une image alors qu’il pourrait s’agir d’un vrai texte, ce qui ne respecte pas le test 1.8.2 du RGAA.'
       },
       SVG_IMAGE_TEXT_REVIEW: {
         steps: [
@@ -508,7 +789,7 @@ const REVIEW = {
         passWhen:
           'Le texte est un logo ou son apparence est essentielle (ou il n’est qu’accessoire, comme les nombres des axes d’un graphique).',
         failWhen:
-          'L’image dessine un texte qui pourrait être un vrai texte et n’est pas un logo, ce qui ne respecte pas le test 1.8.1 du RGAA'
+          'L’image dessine un texte qui pourrait être un vrai texte et n’est pas un logo, ce qui ne respecte pas le test 1.8.1 du RGAA.'
       }
     },
     'image-redundant-alt': {
@@ -521,7 +802,7 @@ const REVIEW = {
         passWhen:
           'Les mots sont lus une seule fois : l’image est masquée ou a alt="", ou son alt ajoute quelque chose que le texte ne dit pas.',
         failWhen:
-          'L’alt de l’image répète le texte à côté : les mêmes mots sont lus deux fois, un manquement aux bonnes pratiques (H2).'
+          'L’alternative répète le texte à côté sans rien apporter de pertinent : les mêmes mots sont lus deux fois, ce qui ne respecte pas le test 1.3.1 du RGAA.'
       }
     },
     'img-alt-decorative': {
@@ -534,7 +815,7 @@ const REVIEW = {
         passWhen:
           'L’image est purement décorative (un espaceur, un séparateur, un ornement ou une illustration dont le texte donne déjà le contenu) : la masquer ne fait rien perdre.',
         failWhen:
-          'L’image transmet une information que rien d’autre sur la page ne donne, et pourtant elle est masquée aux technologies d’assistance, ce qui ne respecte pas les tests 1.1.1, 1.1.5, 1.1.8 du RGAA'
+          'L’image transmet une information que rien d’autre sur la page ne donne, et pourtant elle est masquée aux technologies d’assistance, ce qui ne respecte pas les tests 1.1.1, 1.1.5, 1.1.8 du RGAA.'
       }
     },
     'img-alt-quality': {
@@ -548,7 +829,7 @@ const REVIEW = {
         passWhen:
           'Le texte alt transmet ce que montre l’image et dont l’utilisateur a besoin, ou il nomme l’image et une description qu’un utilisateur de lecteur d’écran atteint depuis elle donne le reste.',
         failWhen:
-          'Ni le texte alt ni une description atteignable depuis l’image ne transmettent son contenu (par exemple, l’alt est un nom de fichier, une adresse ou un mot générique), ce qui ne respecte pas le test 1.3.1 du RGAA (F30).'
+          'Ni le texte alt ni une description atteignable depuis l’image ne transmettent son contenu (par exemple, l’alt est un nom de fichier, une adresse ou un mot générique), ce qui ne respecte pas le test 1.3.1 du RGAA.'
       }
     },
     'input-image-alt-decorative': {
@@ -574,7 +855,7 @@ const REVIEW = {
         passWhen:
           'Le nom dit ce que fait le bouton, comme « Submit » sur un bouton qui envoie un formulaire.',
         failWhen:
-          'Le nom ne dit pas ce que fait le bouton (comme « Submit Query » sur un bouton de recherche), ce qui ne respecte pas le test 1.1.3 du RGAA'
+          'Le nom ne dit pas ce que fait le bouton (comme « Submit Query » sur un bouton de recherche), ce qui ne respecte pas le test 1.3.3 du RGAA.'
       }
     },
     'input-image-alt-quality': {
@@ -601,7 +882,7 @@ const REVIEW = {
         passWhen:
           'L’utilisateur de lecteur d’écran reçoit le même texte d’erreur que celui affiché à l’écran, par exemple par la description ou le label du champ.',
         failWhen:
-          'L’erreur est visible mais masquée aux technologies d’assistance : les utilisateurs de lecteur d’écran n’apprennent pas ce qui ne va pas, ce qui ne respecte pas les tests 11.10.4, 11.10.7 du RGAA'
+          'L’erreur est visible mais masquée aux technologies d’assistance : les utilisateurs de lecteur d’écran n’apprennent pas ce qui ne va pas, ce qui ne respecte pas les tests 11.10.4, 11.10.7 du RGAA.'
       },
       ERROR_MESSAGE_EMPTY: {
         steps: [
@@ -613,7 +894,7 @@ const REVIEW = {
         passWhen:
           'Un texte de la page, comme le label ou un message à côté du champ, indique quel champ est en erreur et ce qui ne va pas.',
         failWhen:
-          'Aucun texte n’indique à l’utilisateur quel champ est en erreur ni ce qui ne va pas, ce qui ne respecte pas les tests 11.10.4, 11.10.7 du RGAA'
+          'Aucun texte n’indique à l’utilisateur quel champ est en erreur ni ce qui ne va pas, ce qui ne respecte pas les tests 11.10.4, 11.10.7 du RGAA.'
       },
       ERROR_MESSAGE_HIDDEN: {
         steps: [
@@ -625,7 +906,7 @@ const REVIEW = {
         passWhen:
           'L’erreur est indiquée par un texte, et annoncée, à un endroit rattaché au champ, même si ce n’est pas dans le message que désigne aria-errormessage.',
         failWhen:
-          'Aucun texte n’indique quel champ est erroné ni pourquoi, ou l’utilisateur de lecteur d’écran n’en est pas informé, ce qui ne respecte pas les tests 11.10.4, 11.10.7 du RGAA'
+          'Aucun texte n’indique quel champ est erroné ni pourquoi, ou l’utilisateur de lecteur d’écran n’en est pas informé, ce qui ne respecte pas les tests 11.10.4, 11.10.7 du RGAA.'
       },
       ERROR_MESSAGE_NOT_SHOWN_DESCRIBED: {
         steps: [
@@ -637,7 +918,7 @@ const REVIEW = {
         passWhen:
           'La description du champ, ou un autre texte visible, énonce l’erreur en toutes lettres : les utilisateurs voyants comme ceux de lecteur d’écran apprennent ce qui ne va pas.',
         failWhen:
-          'La description n’est qu’un texte d’aide et aucun texte visible ne décrit l’erreur, ce qui ne respecte pas les tests 11.10.4, 11.10.7 du RGAA'
+          'La description n’est qu’un texte d’aide et aucun texte visible ne décrit l’erreur, ce qui ne respecte pas les tests 11.10.4, 11.10.7 du RGAA.'
       },
       ERROR_MESSAGE_TARGET_MISSING: {
         steps: [
@@ -649,7 +930,7 @@ const REVIEW = {
         passWhen:
           'Une fois le champ en erreur, un message affiché portant cet id, ou un autre texte visible, décrit l’erreur.',
         failWhen:
-          'Le champ est marqué comme non valide mais aucun texte ne décrit l’erreur, ce qui ne respecte pas les tests 11.10.4, 11.10.7 du RGAA'
+          'Le champ est marqué comme non valide mais aucun texte ne décrit l’erreur, ce qui ne respecte pas les tests 11.10.4, 11.10.7 du RGAA.'
       },
       NO_ERROR_MESSAGE: {
         steps: [
@@ -661,7 +942,7 @@ const REVIEW = {
         passWhen:
           'Un texte visible identifie le champ en erreur et décrit ce qui ne va pas, ou le champ n’est pas réellement en erreur.',
         failWhen:
-          'Le champ est en erreur mais aucun texte ne l’identifie ni ne décrit le problème, ce qui ne respecte pas les tests 11.10.4, 11.10.7 du RGAA'
+          'Le champ est en erreur mais aucun texte ne l’identifie ni ne décrit le problème, ce qui ne respecte pas les tests 11.10.4, 11.10.7 du RGAA.'
       }
     },
     'link-in-text-block': {
@@ -675,7 +956,7 @@ const REVIEW = {
         passWhen:
           'Le lien a un indice non lié à la couleur, comme un soulignement, du gras ou une bordure, ou sa couleur contraste avec le texte d’au moins 3:1 et le survol et le focus ajoutent un indice non lié à la couleur.',
         failWhen:
-          'Le lien n’a aucun indice non lié à la couleur et ne se distingue du texte que par la couleur, avec moins de 3:1 ou sans indice non lié à la couleur au survol et au focus, ce qui ne respecte pas le test 10.6.1 du RGAA (F73).'
+          'Le lien n’a aucun indice non lié à la couleur et ne se distingue du texte que par la couleur, avec moins de 3:1 ou sans indice non lié à la couleur au survol et au focus, ce qui ne respecte pas le test 10.6.1 du RGAA.'
       },
       BACKGROUND_FILTER_OR_BACKDROP_FILTER: {
         steps: [
@@ -687,7 +968,7 @@ const REVIEW = {
         passWhen:
           'Le lien a un indice non lié à la couleur, comme un soulignement, du gras ou une bordure, ou sa couleur contraste avec le texte d’au moins 3:1 et le survol et le focus ajoutent un indice non lié à la couleur.',
         failWhen:
-          'Le lien n’a aucun indice non lié à la couleur et ne se distingue du texte que par la couleur, avec moins de 3:1 ou sans indice non lié à la couleur au survol et au focus, ce qui ne respecte pas le test 10.6.1 du RGAA (F73).'
+          'Le lien n’a aucun indice non lié à la couleur et ne se distingue du texte que par la couleur, avec moins de 3:1 ou sans indice non lié à la couleur au survol et au focus, ce qui ne respecte pas le test 10.6.1 du RGAA.'
       },
       BACKGROUND_IMAGE_OR_GRADIENT: {
         steps: [
@@ -699,7 +980,7 @@ const REVIEW = {
         passWhen:
           'Le lien a un indice non lié à la couleur, comme un soulignement, du gras ou une bordure, ou sa couleur contraste avec le texte d’au moins 3:1 et le survol et le focus ajoutent un indice non lié à la couleur.',
         failWhen:
-          'Le lien n’a aucun indice non lié à la couleur et ne se distingue du texte que par la couleur, avec moins de 3:1 ou sans indice non lié à la couleur au survol et au focus, ce qui ne respecte pas le test 10.6.1 du RGAA (F73).'
+          'Le lien n’a aucun indice non lié à la couleur et ne se distingue du texte que par la couleur, avec moins de 3:1 ou sans indice non lié à la couleur au survol et au focus, ce qui ne respecte pas le test 10.6.1 du RGAA.'
       },
       BACKGROUND_NOT_OPAQUE_AT_ROOT: {
         steps: [
@@ -710,7 +991,7 @@ const REVIEW = {
         passWhen:
           'Dans tous les contextes où la page s’affiche, l’arrière-plan du lien se distingue de celui qui l’entoure, ou une autre marque non liée à la couleur distingue le lien.',
         failWhen:
-          'Dans un des contextes, l’arrière-plan du lien se confond avec celui qui l’entoure et seule une différence de couleur de moins de 3:1 distingue le lien, ce qui ne respecte pas le test 10.6.1 du RGAA (F73).'
+          'Dans un des contextes, l’arrière-plan du lien se confond avec celui qui l’entoure et seule une différence de couleur de moins de 3:1 distingue le lien, ce qui ne respecte pas le test 10.6.1 du RGAA.'
       },
       BACKGROUND_OVERLAP: {
         steps: [
@@ -722,7 +1003,7 @@ const REVIEW = {
         passWhen:
           'Le lien a un indice non lié à la couleur, comme un soulignement, du gras ou une bordure, ou sa couleur contraste avec le texte d’au moins 3:1 et le survol et le focus ajoutent un indice non lié à la couleur.',
         failWhen:
-          'Le lien n’a aucun indice non lié à la couleur et ne se distingue du texte que par la couleur, avec moins de 3:1 ou sans indice non lié à la couleur au survol et au focus, ce qui ne respecte pas le test 10.6.1 du RGAA (F73).'
+          'Le lien n’a aucun indice non lié à la couleur et ne se distingue du texte que par la couleur, avec moins de 3:1 ou sans indice non lié à la couleur au survol et au focus, ce qui ne respecte pas le test 10.6.1 du RGAA.'
       },
       COLOR_NOT_COMPUTABLE: {
         steps: [
@@ -734,7 +1015,7 @@ const REVIEW = {
         passWhen:
           'Le lien a un indice non lié à la couleur, comme un soulignement, du gras ou une bordure, ou sa couleur contraste avec le texte d’au moins 3:1 et le survol et le focus ajoutent un indice non lié à la couleur.',
         failWhen:
-          'Le lien n’a aucun indice non lié à la couleur et ne se distingue du texte que par la couleur, avec moins de 3:1 ou sans indice non lié à la couleur au survol et au focus, ce qui ne respecte pas le test 10.6.1 du RGAA (F73).'
+          'Le lien n’a aucun indice non lié à la couleur et ne se distingue du texte que par la couleur, avec moins de 3:1 ou sans indice non lié à la couleur au survol et au focus, ce qui ne respecte pas le test 10.6.1 du RGAA.'
       },
       CONTRAST_HELPERS_UNAVAILABLE: {
         steps: [
@@ -746,7 +1027,7 @@ const REVIEW = {
         passWhen:
           'Le lien a un indice non lié à la couleur, comme un soulignement, du gras ou une bordure, ou sa couleur contraste avec le texte d’au moins 3:1 et le survol et le focus ajoutent un indice non lié à la couleur.',
         failWhen:
-          'Le lien n’a aucun indice non lié à la couleur et ne se distingue du texte que par la couleur, avec moins de 3:1 ou sans indice non lié à la couleur au survol et au focus, ce qui ne respecte pas le test 10.6.1 du RGAA (F73).'
+          'Le lien n’a aucun indice non lié à la couleur et ne se distingue du texte que par la couleur, avec moins de 3:1 ou sans indice non lié à la couleur au survol et au focus, ce qui ne respecte pas le test 10.6.1 du RGAA.'
       },
       ELEMENT_OPACITY: {
         steps: [
@@ -758,7 +1039,7 @@ const REVIEW = {
         passWhen:
           'Le lien a un indice non lié à la couleur, comme un soulignement, du gras ou une bordure, ou sa couleur contraste avec le texte d’au moins 3:1 et le survol et le focus ajoutent un indice non lié à la couleur.',
         failWhen:
-          'Le lien n’a aucun indice non lié à la couleur et ne se distingue du texte que par la couleur, avec moins de 3:1 ou sans indice non lié à la couleur au survol et au focus, ce qui ne respecte pas le test 10.6.1 du RGAA (F73).'
+          'Le lien n’a aucun indice non lié à la couleur et ne se distingue du texte que par la couleur, avec moins de 3:1 ou sans indice non lié à la couleur au survol et au focus, ce qui ne respecte pas le test 10.6.1 du RGAA.'
       },
       ENGINE_EXCEPTION: {
         steps: [
@@ -770,7 +1051,7 @@ const REVIEW = {
         passWhen:
           'Le lien a un indice non lié à la couleur, comme un soulignement, du gras ou une bordure, ou sa couleur contraste avec le texte d’au moins 3:1 et le survol et le focus ajoutent un indice non lié à la couleur.',
         failWhen:
-          'Le lien n’a aucun indice non lié à la couleur et ne se distingue du texte que par la couleur, avec moins de 3:1 ou sans indice non lié à la couleur au survol et au focus, ce qui ne respecte pas le test 10.6.1 du RGAA (F73).'
+          'Le lien n’a aucun indice non lié à la couleur et ne se distingue du texte que par la couleur, avec moins de 3:1 ou sans indice non lié à la couleur au survol et au focus, ce qui ne respecte pas le test 10.6.1 du RGAA.'
       },
       LINK_COLOR_CONTRAST_ONLY: {
         steps: [
@@ -793,7 +1074,7 @@ const REVIEW = {
         passWhen:
           'Le lien a un indice non lié à la couleur, comme un soulignement, du gras ou une bordure, ou sa couleur contraste avec le texte d’au moins 3:1 et le survol et le focus ajoutent un indice non lié à la couleur.',
         failWhen:
-          'Le lien n’a aucun indice non lié à la couleur et ne se distingue du texte que par la couleur, avec moins de 3:1 ou sans indice non lié à la couleur au survol et au focus, ce qui ne respecte pas le test 10.6.1 du RGAA (F73).'
+          'Le lien n’a aucun indice non lié à la couleur et ne se distingue du texte que par la couleur, avec moins de 3:1 ou sans indice non lié à la couleur au survol et au focus, ce qui ne respecte pas le test 10.6.1 du RGAA.'
       },
       PSEUDO_ELEMENT_COLOR: {
         steps: [
@@ -805,18 +1086,7 @@ const REVIEW = {
         passWhen:
           'Le lien a un indice non lié à la couleur, comme un soulignement, du gras ou une bordure, ou sa couleur contraste avec le texte d’au moins 3:1 et le survol et le focus ajoutent un indice non lié à la couleur.',
         failWhen:
-          'Le lien n’a aucun indice non lié à la couleur et ne se distingue du texte que par la couleur, avec moins de 3:1 ou sans indice non lié à la couleur au survol et au focus, ce qui ne respecte pas le test 10.6.1 du RGAA (F73).'
-      },
-      SELECT_OPTION_COLOR: {
-        steps: [
-          'Repérez la liste déroulante indiquée par le rapport et ouvrez sa liste d’options.',
-          'Regardez l’option indiquée par le rapport à côté du texte des autres options.',
-          'Vérifiez si elle se distingue par autre chose que la couleur (un soulignement, du gras, une marque) ; si seule la couleur diffère, lisez les deux couleurs avec la pipette du sélecteur de couleur et vérifiez que le contraste est d’au moins 3:1.'
-        ],
-        passWhen:
-          'L’option se distingue par un indice non lié à la couleur, ou sa couleur contraste avec le reste du texte d’au moins 3:1, avec un indice non lié à la couleur au focus.',
-        failWhen:
-          'Seule la couleur distingue l’option, avec moins de 3:1 ou sans autre indice, ce qui ne respecte pas le test 10.6.1 du RGAA (F73).'
+          'Le lien n’a aucun indice non lié à la couleur et ne se distingue du texte que par la couleur, avec moins de 3:1 ou sans indice non lié à la couleur au survol et au focus, ce qui ne respecte pas le test 10.6.1 du RGAA.'
       },
       TEXT_DECORATION_NOT_RESOLVABLE: {
         steps: [
@@ -828,7 +1098,7 @@ const REVIEW = {
         passWhen:
           'Le lien a un indice non lié à la couleur, comme un soulignement, du gras ou une bordure, ou sa couleur contraste avec le texte d’au moins 3:1 et le survol et le focus ajoutent un indice non lié à la couleur.',
         failWhen:
-          'Le lien n’a aucun indice non lié à la couleur et ne se distingue du texte que par la couleur, avec moins de 3:1 ou sans indice non lié à la couleur au survol et au focus, ce qui ne respecte pas le test 10.6.1 du RGAA (F73).'
+          'Le lien n’a aucun indice non lié à la couleur et ne se distingue du texte que par la couleur, avec moins de 3:1 ou sans indice non lié à la couleur au survol et au focus, ce qui ne respecte pas le test 10.6.1 du RGAA.'
       },
       TEXT_SHADOW: {
         steps: [
@@ -840,7 +1110,7 @@ const REVIEW = {
         passWhen:
           'Le lien a un indice non lié à la couleur, comme un soulignement, du gras ou une bordure, ou sa couleur contraste avec le texte d’au moins 3:1 et le survol et le focus ajoutent un indice non lié à la couleur.',
         failWhen:
-          'Le lien n’a aucun indice non lié à la couleur et ne se distingue du texte que par la couleur, avec moins de 3:1 ou sans indice non lié à la couleur au survol et au focus, ce qui ne respecte pas le test 10.6.1 du RGAA (F73).'
+          'Le lien n’a aucun indice non lié à la couleur et ne se distingue du texte que par la couleur, avec moins de 3:1 ou sans indice non lié à la couleur au survol et au focus, ce qui ne respecte pas le test 10.6.1 du RGAA.'
       },
       TEXT_STROKE: {
         steps: [
@@ -852,7 +1122,7 @@ const REVIEW = {
         passWhen:
           'Le lien a un indice non lié à la couleur, comme un soulignement, du gras ou une bordure, ou sa couleur contraste avec le texte d’au moins 3:1 et le survol et le focus ajoutent un indice non lié à la couleur.',
         failWhen:
-          'Le lien n’a aucun indice non lié à la couleur et ne se distingue du texte que par la couleur, avec moins de 3:1 ou sans indice non lié à la couleur au survol et au focus, ce qui ne respecte pas le test 10.6.1 du RGAA (F73).'
+          'Le lien n’a aucun indice non lié à la couleur et ne se distingue du texte que par la couleur, avec moins de 3:1 ou sans indice non lié à la couleur au survol et au focus, ce qui ne respecte pas le test 10.6.1 du RGAA.'
       }
     },
     'link-name-quality': {
@@ -865,19 +1135,19 @@ const REVIEW = {
         passWhen:
           'La phrase, l’élément de liste, la ligne ou le titre qui l’entoure nomme le document : le lien se comprend alors, par exemple, comme le rapport annuel en PDF.',
         failWhen:
-          'Rien près du lien n’indique de quel document il s’agit : la destination n’est pas claire, ce qui ne respecte pas les tests 6.1.1, 6.1.2, 6.1.3, 6.1.4 du RGAA ; un texte de lien peu clair à lui seul ne respecte pas le critère 2.4.9.'
+          'Rien près du lien n’indique de quel document il s’agit : ni l’intitulé ni le contexte du lien ne permettent d’en comprendre la fonction et la destination, ce qui ne respecte pas les tests 6.1.1, 6.1.2, 6.1.3, 6.1.4 du RGAA.'
       },
       GENERIC_LINK_TEXT: {
         steps: [
           'Repérez le lien indiqué par le rapport et lisez son texte, comme « lire la suite » ou « cliquez ici ».',
-          'Lisez la phrase, l’élément de liste, la cellule de tableau ou le titre qui l’entoure directement, comme le ferait une personne qui utilise le lien.',
-          'Demandez-vous si le texte du lien, avec ce contexte, indique clairement où mène le lien ; vérifiez ensuite si une liste de liens (le texte du lien seul) le ferait.',
+          'Lisez le contexte du lien : la phrase, le paragraphe, l’élément de liste, le titre précédent ou l’en-tête de tableau.',
+          'Demandez-vous si l’intitulé, additionné à ce contexte, indique clairement la fonction et la destination du lien.',
           'Suivez le lien et confirmez qu’il mène là où le contexte l’indique.'
         ],
         passWhen:
-          'Le texte du lien, avec la phrase, l’élément de liste, la cellule ou le titre qui l’entoure, rend la destination claire ; pour le niveau AAA, le texte du lien seul y suffit.',
+          'L’intitulé du lien, additionné au contexte du lien, permet d’en comprendre la fonction et la destination.',
         failWhen:
-          'Ni le texte du lien ni son contexte n’indiquent où il mène, ce qui ne respecte pas les tests 6.1.1, 6.1.2, 6.1.3, 6.1.4 du RGAA (F84) ; un texte de lien peu clair à lui seul ne respecte pas le critère 2.4.9.'
+          'Ni l’intitulé ni le contexte du lien ne permettent d’en comprendre la fonction et la destination, ce qui ne respecte pas les tests 6.1.1, 6.1.2, 6.1.3, 6.1.4 du RGAA.'
       }
     },
     'list-children-valid': {
@@ -939,7 +1209,7 @@ const REVIEW = {
         passWhen:
           'Le lecteur d’écran annonce le message sans déplacement du focus, car aria-busy est retiré à la fin de la mise à jour ou car la page annonce le même message autrement.',
         failWhen:
-          'aria-busy reste à true, le lecteur d’écran retient ou saute le message et la page ne l’annonce d’aucune autre façon, ce qui ne respecte pas les tests 7.5.1, 7.5.2, 7.5.3 du RGAA'
+          'aria-busy reste à true, le lecteur d’écran retient ou saute le message et la page ne l’annonce d’aucune autre façon, ce qui ne respecte pas les tests 7.5.1, 7.5.2, 7.5.3 du RGAA.'
       },
       LIVE_REGION_HIDDEN: {
         steps: [
@@ -951,7 +1221,7 @@ const REVIEW = {
         passWhen:
           'Le lecteur d’écran annonce le message sans déplacement du focus, car la zone n’est pas masquée quand son texte change (ou ne sert jamais aux messages), ou car une autre zone d’état non masquée porte le même message.',
         failWhen:
-          'La zone est encore masquée par aria-hidden, inert ou une boîte de dialogue modale ouverte quand le message arrive, et rien d’autre ne l’annonce : le lecteur d’écran ne dit rien, ce qui ne respecte pas les tests 7.5.1, 7.5.2, 7.5.3 du RGAA'
+          'La zone est encore masquée par aria-hidden, inert ou une boîte de dialogue modale ouverte quand le message arrive, et rien d’autre ne l’annonce : le lecteur d’écran ne dit rien, ce qui ne respecte pas les tests 7.5.1, 7.5.2, 7.5.3 du RGAA.'
       },
       LIVE_REGION_INSERTED_WITH_CONTENT: {
         steps: [
@@ -990,7 +1260,7 @@ const REVIEW = {
         passWhen:
           'Tout fonctionne au clavier, directement ou par un autre moyen qui fait la même chose, le focus suit un ordre logique, reste toujours visible et ne se bloque jamais.',
         failWhen:
-          'Quelque chose ne peut être atteint ou utilisé au clavier d’aucune façon, le focus piège l’utilisateur, l’ordre est déroutant ou le focus est invisible, ce qui ne respecte pas les tests 12.8.1, 12.9.1, 10.7.1 du RGAA'
+          'Quelque chose ne peut être atteint ou utilisé au clavier d’aucune façon, le focus piège l’utilisateur, l’ordre est déroutant ou le focus est invisible, ce qui ne respecte pas les tests 12.8.1, 12.9.1, 10.7.1 du RGAA.'
       }
     },
     'menuitem-name-present': {
@@ -1003,7 +1273,7 @@ const REVIEW = {
         passWhen:
           'L’arbre d’accessibilité montre un nom pour l’élément de menu, tiré de son contenu, et le lecteur d’écran l’annonce.',
         failWhen:
-          'L’élément de menu n’a pas de nom dans l’arbre d’accessibilité, car son contenu n’en donne aucun, ce qui ne respecte pas le test 7.1.1 du RGAA'
+          'L’élément de menu n’a pas de nom dans l’arbre d’accessibilité, car son contenu n’en donne aucun, ce qui ne respecte pas le test 7.1.1 du RGAA.'
       },
       name_contentTooDeep: {
         steps: [
@@ -1014,7 +1284,7 @@ const REVIEW = {
         passWhen:
           'L’arbre d’accessibilité montre un nom pour l’élément de menu, tiré de son contenu imbriqué, et le lecteur d’écran l’annonce.',
         failWhen:
-          'L’élément de menu n’a pas de nom dans l’arbre d’accessibilité, car son contenu n’en donne aucun, ce qui ne respecte pas le test 7.1.1 du RGAA'
+          'L’élément de menu n’a pas de nom dans l’arbre d’accessibilité, car son contenu n’en donne aucun, ce qui ne respecte pas le test 7.1.1 du RGAA.'
       },
       name_internals: {
         steps: [
@@ -1025,7 +1295,7 @@ const REVIEW = {
         passWhen:
           'L’arbre d’accessibilité montre un nom pour l’élément de menu, défini par ses internals ou autrement, et le lecteur d’écran l’annonce.',
         failWhen:
-          'L’élément de menu n’a pas de nom dans l’arbre d’accessibilité et le lecteur d’écran n’annonce que son rôle, ce qui ne respecte pas le test 7.1.1 du RGAA'
+          'L’élément de menu n’a pas de nom dans l’arbre d’accessibilité et le lecteur d’écran n’annonce que son rôle, ce qui ne respecte pas le test 7.1.1 du RGAA.'
       }
     },
     'mouse-only-event-handlers': {
@@ -1039,7 +1309,7 @@ const REVIEW = {
         passWhen:
           'L’élément (ou un élément qu’il contient) reçoit le focus clavier et ses gestionnaires de clavier ou de focus donnent le même résultat que la souris, ou ce que fait la souris peut être fait autrement au clavier seul, ou l’action de la souris est seulement visuelle.',
         failWhen:
-          'Le focus n’atteint jamais l’élément et ce que fait la souris ne peut pas être fait autrement au clavier, ce qui ne respecte pas le test 7.3.1 du RGAA (F54).'
+          'Le focus n’atteint jamais l’élément et ce que fait la souris ne peut pas être fait autrement au clavier, ce qui ne respecte pas le test 7.3.1 du RGAA.'
       },
       MOUSE_ONLY_HANDLER_NO_KEYBOARD_EQUIVALENT: {
         steps: [
@@ -1051,7 +1321,7 @@ const REVIEW = {
         passWhen:
           'L’action à la souris n’ajoute qu’un effet visuel, ou le clavier obtient le même résultat au focus ou avec une touche.',
         failWhen:
-          'Une chose que fait la souris (ouvrir un menu, afficher une information, déplacer un élément) ne peut pas être faite au clavier, ce qui ne respecte pas le test 7.3.1 du RGAA (F54).'
+          'Une chose que fait la souris (ouvrir un menu, afficher une information, déplacer un élément) ne peut pas être faite au clavier, ce qui ne respecte pas le test 7.3.1 du RGAA.'
       }
     },
     'no-autoplay-audio': {
@@ -1064,7 +1334,7 @@ const REVIEW = {
         passWhen:
           'Aucun son ne dure plus de 3 secondes, ou un contrôle visible et accessible au clavier l’arrête ou le coupe.',
         failWhen:
-          'Le son provient d’un lecteur masqué dont les contrôles sont inaccessibles, et rien d’autre ne l’arrête, ce qui ne respecte pas le test 4.10.1 du RGAA (F23).'
+          'Le son provient d’un lecteur masqué dont les contrôles sont inaccessibles, et rien d’autre ne l’arrête, ce qui ne respecte pas le test 4.10.1 du RGAA.'
       },
       AUTOPLAY_NO_CONTROLS_MECHANISM: {
         steps: [
@@ -1075,7 +1345,7 @@ const REVIEW = {
         passWhen:
           'Aucun son ne joue plus de 3 secondes, ou un contrôle de la page utilisable au clavier et avec un lecteur d’écran le met en pause, l’arrête ou le coupe.',
         failWhen:
-          'Un son se lance tout seul pendant plus de 3 secondes sans moyen de le mettre en pause, de l’arrêter ou de le baisser indépendamment du volume du système, ce qui ne respecte pas le test 4.10.1 du RGAA (F23).'
+          'Un son se lance tout seul pendant plus de 3 secondes sans moyen de le mettre en pause, de l’arrêter ou de le baisser indépendamment du volume du système, ce qui ne respecte pas le test 4.10.1 du RGAA.'
       },
       EMBEDDED_SOUND_SOURCE: {
         steps: [
@@ -1086,7 +1356,7 @@ const REVIEW = {
         passWhen:
           'Rien ne se lance automatiquement pendant plus de 3 secondes, ou un contrôle accessible le met en pause, l’arrête ou le coupe.',
         failWhen:
-          'Un son se lance tout seul pendant plus de 3 secondes sans moyen accessible de l’arrêter ou de le baisser, ce qui ne respecte pas le test 4.10.1 du RGAA (F23).'
+          'Un son se lance tout seul pendant plus de 3 secondes sans moyen accessible de l’arrêter ou de le baisser, ce qui ne respecte pas le test 4.10.1 du RGAA.'
       }
     },
     'object-text-alternative-quality': {
@@ -1100,7 +1370,7 @@ const REVIEW = {
         passWhen:
           'L’équivalent textuel, seul ou avec une description qu’un utilisateur de lecteur d’écran atteint depuis lui, décrit avec exactitude le contenu ou la fonction de l’objet.',
         failWhen:
-          'L’équivalent textuel est faux ou vague (comme « objet » ou un nom de fichier), ou omet ce que transmet l’objet et aucune description atteignable depuis lui ne le donne, ce qui ne respecte pas le test 1.3.4 du RGAA'
+          'L’équivalent textuel est faux ou vague (comme « objet » ou un nom de fichier), ou omet ce que transmet l’objet et aucune description atteignable depuis lui ne le donne, ce qui ne respecte pas le test 1.3.4 du RGAA.'
       }
     },
     'option-name-present': {
@@ -1113,7 +1383,7 @@ const REVIEW = {
         passWhen:
           'L’arbre d’accessibilité montre un nom pour l’option, tiré de son contenu, et le lecteur d’écran l’annonce.',
         failWhen:
-          'L’option n’a pas de nom dans l’arbre d’accessibilité, car son contenu n’en donne aucun, ce qui ne respecte pas le test 11.1.1 du RGAA'
+          'L’option n’a pas de nom dans l’arbre d’accessibilité, car son contenu n’en donne aucun, ce qui ne respecte pas le test 11.1.1 du RGAA.'
       },
       name_contentTooDeep: {
         steps: [
@@ -1124,7 +1394,7 @@ const REVIEW = {
         passWhen:
           'L’arbre d’accessibilité montre un nom pour l’option, tiré de son contenu imbriqué, et le lecteur d’écran l’annonce.',
         failWhen:
-          'L’option n’a pas de nom dans l’arbre d’accessibilité, car son contenu n’en donne aucun, ce qui ne respecte pas le test 11.1.1 du RGAA'
+          'L’option n’a pas de nom dans l’arbre d’accessibilité, car son contenu n’en donne aucun, ce qui ne respecte pas le test 11.1.1 du RGAA.'
       },
       name_internals: {
         steps: [
@@ -1135,7 +1405,7 @@ const REVIEW = {
         passWhen:
           'L’arbre d’accessibilité montre un nom pour l’option, défini par ses internals ou autrement, et le lecteur d’écran l’annonce.',
         failWhen:
-          'L’option n’a pas de nom dans l’arbre d’accessibilité et le lecteur d’écran n’annonce que son rôle, ce qui ne respecte pas le test 11.1.1 du RGAA'
+          'L’option n’a pas de nom dans l’arbre d’accessibilité et le lecteur d’écran n’annonce que son rôle, ce qui ne respecte pas le test 11.1.1 du RGAA.'
       }
     },
     'p-as-heading': {
@@ -1148,7 +1418,7 @@ const REVIEW = {
         passWhen:
           'Le texte n’est pas un titre de section (mise en valeur, citation, prix ou statistique), ou il est balisé comme un titre (h1 à h6 ou role="heading").',
         failWhen:
-          'Le texte sert visuellement de titre à une section mais n’est pas un titre : sa structure n’est indiquée que par le style, ce qui ne respecte pas le test 9.1.3 du RGAA (F2).'
+          'Le texte sert visuellement de titre à une section mais n’est pas un titre : sa structure n’est indiquée que par le style, ce qui ne respecte pas le test 9.1.3 du RGAA.'
       },
       BOLD_LARGE_PARAGRAPH: {
         steps: [
@@ -1159,7 +1429,7 @@ const REVIEW = {
         passWhen:
           'Le texte n’est pas un titre de section (mise en valeur, citation, prix ou statistique), ou il est balisé comme un titre (h1 à h6 ou role="heading").',
         failWhen:
-          'Le texte sert visuellement de titre à une section mais n’est pas un titre : sa structure n’est indiquée que par le style, ce qui ne respecte pas le test 9.1.3 du RGAA (F2).'
+          'Le texte sert visuellement de titre à une section mais n’est pas un titre : sa structure n’est indiquée que par le style, ce qui ne respecte pas le test 9.1.3 du RGAA.'
       },
       HEADING_LIKE_LINK: {
         steps: [
@@ -1170,7 +1440,7 @@ const REVIEW = {
         passWhen:
           'Le texte n’est pas un titre de section (mise en valeur, citation, prix ou statistique), ou il est balisé comme un titre (h1 à h6 ou role="heading").',
         failWhen:
-          'Le texte sert visuellement de titre à une section mais n’est pas un titre : sa structure n’est indiquée que par le style, ce qui ne respecte pas le test 9.1.3 du RGAA (F2).'
+          'Le texte sert visuellement de titre à une section mais n’est pas un titre : sa structure n’est indiquée que par le style, ce qui ne respecte pas le test 9.1.3 du RGAA.'
       }
     },
     'page-title-patterns': {
@@ -1183,7 +1453,7 @@ const REVIEW = {
         passWhen:
           'Les pages qui partagent le titre sont le même contenu à des URL différentes, ou le titre convient à chacune.',
         failWhen:
-          'Des pages différentes partagent un même titre, qui ne dit pas de quoi parle chacune ni ne permet de les distinguer, ce qui ne respecte pas le test 8.6.1 du RGAA (F25).'
+          'Des pages différentes partagent un même titre, qui ne dit pas de quoi parle chacune ni ne permet de les distinguer, ce qui ne respecte pas le test 8.6.1 du RGAA.'
       },
       genericTitle: {
         steps: [
@@ -1193,7 +1463,7 @@ const REVIEW = {
         ],
         passWhen: 'Le titre dit de quoi parle la page, même s’il s’agit d’un mot courant.',
         failWhen:
-          'Le titre est un mot générique qui ne dit pas de quoi parle la page, ce qui ne respecte pas le test 8.6.1 du RGAA (F25).'
+          'Le titre est un mot générique qui ne dit pas de quoi parle la page, ce qui ne respecte pas le test 8.6.1 du RGAA.'
       },
       templateLikeTitle: {
         steps: [
@@ -1204,7 +1474,7 @@ const REVIEW = {
         passWhen:
           'La page est la page d’accueil du site, que le titre nomme, ou le titre dit de quoi parle la page.',
         failWhen:
-          'Le titre ne fait qu’associer le nom du site à un mot générique et ne dit pas de quoi parle la page, ce qui ne respecte pas le test 8.6.1 du RGAA (F25).'
+          'Le titre ne fait qu’associer le nom du site à un mot générique et ne dit pas de quoi parle la page, ce qui ne respecte pas le test 8.6.1 du RGAA.'
       },
       templatedTitlesAcrossPages: {
         steps: [
@@ -1214,7 +1484,7 @@ const REVIEW = {
         ],
         passWhen: 'Chaque titre a une partie propre qui dit de quoi parle sa page.',
         failWhen:
-          'Au-delà de la partie partagée, les titres disent peu ou rien de ce dont parle chaque page, ce qui ne respecte pas le test 8.6.1 du RGAA'
+          'Au-delà de la partie partagée, les titres disent peu ou rien de ce dont parle chaque page, ce qui ne respecte pas le test 8.6.1 du RGAA.'
       },
       titleReview: {
         steps: [
@@ -1224,7 +1494,7 @@ const REVIEW = {
         ],
         passWhen: 'Le titre dit de quoi parle la page ou à quoi elle sert.',
         failWhen:
-          'Le titre ne dit pas de quoi parle la page ni à quoi elle sert, ce qui ne respecte pas le test 8.6.1 du RGAA'
+          'Le titre ne dit pas de quoi parle la page ni à quoi elle sert, ce qui ne respecte pas le test 8.6.1 du RGAA.'
       },
       veryShortTitle: {
         steps: [
@@ -1235,7 +1505,7 @@ const REVIEW = {
         passWhen:
           'Le titre court dit de quoi parle la page, par exemple le nom du produit ou du lieu qu’elle présente.',
         failWhen:
-          'Le titre est trop court pour dire de quoi parle la page, ce qui ne respecte pas le test 8.6.1 du RGAA'
+          'Le titre est trop court pour dire de quoi parle la page, ce qui ne respecte pas le test 8.6.1 du RGAA.'
       }
     },
     'server-side-image-map-absent': {
@@ -1248,7 +1518,7 @@ const REVIEW = {
         passWhen:
           'Chaque destination de l’image map est aussi proposée sous forme de lien utilisable au clavier.',
         failWhen:
-          'Une destination ne peut être atteinte qu’en cliquant sur un point de l’image, ce qui ne respecte pas le test 1.1.4 du RGAA'
+          'Une destination ne peut être atteinte qu’en cliquant sur un point de l’image, ce qui ne respecte pas le test 1.1.4 du RGAA.'
       }
     },
     'skip-link': {
@@ -1261,7 +1531,7 @@ const REVIEW = {
         passWhen:
           'Suivre le lien amène au contenu principal, et la touche Tab suivante va au premier contrôle qu’il contient.',
         failWhen:
-          'Rien ne se passe ou le focus reste en haut, car aucun élément ne correspond à la cible du lien : le lien ne permet donc pas de contourner le contenu répété (bonne pratique, G1).'
+          'Rien ne se passe ou le focus reste en haut, car aucun élément ne correspond à la cible du lien : le lien n’est pas fonctionnel, ce qui ne respecte pas les tests 12.7.1, 12.7.2 du RGAA.'
       },
       SKIP_LINK_TARGET_UNUSABLE: {
         steps: [
@@ -1272,7 +1542,7 @@ const REVIEW = {
         passWhen:
           'La page se déplace vers le contenu principal visible, et la touche Tab suivante va au premier contrôle qu’il contient.',
         failWhen:
-          'La cible est masquée, non affichée ou sans dimension : le focus ne dépasse donc pas le contenu répété (bonne pratique, G1).'
+          'La cible est masquée, non affichée ou sans dimension : le lien n’est pas fonctionnel, ce qui ne respecte pas les tests 12.7.1, 12.7.2 du RGAA.'
       }
     },
     'svg-text-alternative-quality': {
@@ -1286,7 +1556,7 @@ const REVIEW = {
         passWhen:
           'L’équivalent textuel transmet ce que montre le graphique, ou le nomme et une description qu’un utilisateur de lecteur d’écran atteint depuis lui donne le reste, ou le graphique décoratif est masqué aux technologies d’assistance.',
         failWhen:
-          'L’équivalent textuel est faux, vague (comme « image » ou « icône ») ou omet ce que transmet le graphique, et aucune description atteignable depuis lui ne le donne, ce qui ne respecte pas le test 1.3.6 du RGAA'
+          'L’équivalent textuel est faux, vague (comme « image » ou « icône ») ou omet ce que transmet le graphique, et aucune description atteignable depuis lui ne le donne, ce qui ne respecte pas le test 1.3.6 du RGAA.'
       }
     },
     'tab-name-present': {
@@ -1299,7 +1569,7 @@ const REVIEW = {
         passWhen:
           'L’arbre d’accessibilité montre un nom pour l’onglet, tiré de son contenu, et le lecteur d’écran l’annonce.',
         failWhen:
-          'L’onglet n’a pas de nom dans l’arbre d’accessibilité, car son contenu n’en donne aucun, ce qui ne respecte pas le test 7.1.1 du RGAA'
+          'L’onglet n’a pas de nom dans l’arbre d’accessibilité, car son contenu n’en donne aucun, ce qui ne respecte pas le test 7.1.1 du RGAA.'
       },
       name_contentTooDeep: {
         steps: [
@@ -1310,7 +1580,7 @@ const REVIEW = {
         passWhen:
           'L’arbre d’accessibilité montre un nom pour l’onglet, tiré de son contenu imbriqué, et le lecteur d’écran l’annonce.',
         failWhen:
-          'L’onglet n’a pas de nom dans l’arbre d’accessibilité, car son contenu n’en donne aucun, ce qui ne respecte pas le test 7.1.1 du RGAA'
+          'L’onglet n’a pas de nom dans l’arbre d’accessibilité, car son contenu n’en donne aucun, ce qui ne respecte pas le test 7.1.1 du RGAA.'
       },
       name_internals: {
         steps: [
@@ -1321,7 +1591,20 @@ const REVIEW = {
         passWhen:
           'L’arbre d’accessibilité montre un nom pour l’onglet, défini par ses internals ou autrement, et le lecteur d’écran l’annonce.',
         failWhen:
-          'L’onglet n’a pas de nom dans l’arbre d’accessibilité et le lecteur d’écran n’annonce que son rôle, ce qui ne respecte pas le test 7.1.1 du RGAA'
+          'L’onglet n’a pas de nom dans l’arbre d’accessibilité et le lecteur d’écran n’annonce que son rôle, ce qui ne respecte pas le test 7.1.1 du RGAA.'
+      }
+    },
+    tabindex: {
+      TABINDEX_POSITIVE: {
+        steps: [
+          'Cliquez juste avant le début de la page, puis appuyez plusieurs fois sur Tab en observant le contour de focus.',
+          'Notez à quel moment l’élément indiqué par le rapport reçoit le focus, par rapport à sa position à l’écran.',
+          'Vérifiez si l’ordre du focus suit toujours l’ordre visuel et l’ordre de lecture de la page.'
+        ],
+        passWhen:
+          'Le focus parcourt la page dans un ordre qui correspond à sa mise en page et à son sens.',
+        failWhen:
+          'Le tabindex positif fait sauter le focus hors de l’ordre de lecture : l’ordre de tabulation n’est pas cohérent, ce qui ne respecte pas le test 12.8.1 du RGAA.'
       }
     },
     'table-fake-caption': {
@@ -1334,7 +1617,7 @@ const REVIEW = {
         passWhen:
           'La cellule de la première ligne est une vraie donnée du tableau ou un en-tête, ou le titre du tableau est dans un caption qui donne son nom au tableau.',
         failWhen:
-          'Le titre du tableau n’apparaît que comme une cellule de la première ligne, sans être rattaché au tableau en tant que caption, ce qui ne respecte pas le test 5.4.1 du RGAA'
+          'Le titre du tableau n’apparaît que comme une cellule de la première ligne, sans être rattaché au tableau en tant que caption, ce qui ne respecte pas le test 5.4.1 du RGAA.'
       }
     },
     'text-spacing-content-loss': {
@@ -1348,7 +1631,7 @@ const REVIEW = {
         passWhen:
           'Tout le texte reste visible et lisible, ou le texte coupé peut être affiché en entier au clavier, et rien ne cesse de fonctionner avec l’espacement appliqué.',
         failWhen:
-          'Avec l’espacement appliqué, du texte est coupé, se chevauche ou est perdu et ne peut pas être affiché en entier autrement, ce qui ne respecte pas le test 10.12.1 du RGAA'
+          'Avec l’espacement appliqué, du texte est coupé, se chevauche ou est perdu et ne peut pas être affiché en entier autrement, ce qui ne respecte pas le test 10.12.1 du RGAA.'
       },
       STYLESHEET_IMPORTANT: {
         steps: [
@@ -1360,7 +1643,7 @@ const REVIEW = {
         passWhen:
           'L’espacement de l’utilisateur s’applique toujours à l’élément, ou le contenu se lit bien sans lui.',
         failWhen:
-          'La règle !important de la page empêche l’espacement de l’utilisateur de s’appliquer, ce qui ne respecte pas le test 10.12.1 du RGAA'
+          'La règle !important de la page empêche l’espacement de l’utilisateur de s’appliquer, ce qui ne respecte pas le test 10.12.1 du RGAA.'
       },
       TEXT_CLIPPED_FURTHER: {
         steps: [
@@ -1371,7 +1654,7 @@ const REVIEW = {
         passWhen:
           'L’extrait remplit toujours son rôle, et le texte complet est accessible d’une autre manière.',
         failWhen:
-          'L’espacement coupe du contenu qui n’est accessible d’aucune autre manière, ce qui ne respecte pas le test 10.12.1 du RGAA'
+          'L’espacement coupe du contenu qui n’est accessible d’aucune autre manière, ce qui ne respecte pas le test 10.12.1 du RGAA.'
       },
       TEXT_CLIPPED_MOVING: {
         steps: [
@@ -1381,7 +1664,7 @@ const REVIEW = {
         ],
         passWhen: 'Chaque partie du texte en mouvement reste lisible pendant son cycle.',
         failWhen:
-          'Une partie du texte n’apparaît jamais en entier une fois l’espacement appliqué, ce qui ne respecte pas le test 10.12.1 du RGAA'
+          'Une partie du texte n’apparaît jamais en entier une fois l’espacement appliqué, ce qui ne respecte pas le test 10.12.1 du RGAA.'
       },
       TEXT_CLIPPED_PARTLY: {
         steps: [
@@ -1393,7 +1676,7 @@ const REVIEW = {
         passWhen:
           'Seule une fine bande au bord est coupée et tout le texte reste lisible, ou le texte entier peut être affiché autrement au clavier, avec l’espacement toujours appliqué.',
         failWhen:
-          'Une partie du texte est coupée et ne peut plus être lue, et elle ne peut pas être affichée en entier autrement, ce qui ne respecte pas le test 10.12.1 du RGAA (F104).'
+          'Une partie du texte est coupée et ne peut plus être lue, et elle ne peut pas être affichée en entier autrement, ce qui ne respecte pas le test 10.12.1 du RGAA.'
       },
       TEXT_CLIPPED_SCRIPT_SIZED: {
         steps: [
@@ -1405,7 +1688,7 @@ const REVIEW = {
         passWhen:
           'Une fois que la page a réagi, la zone s’ajuste au texte et tout peut être lu avec l’espacement appliqué.',
         failWhen:
-          'Le texte reste coupé avec l’espacement appliqué, même après avoir laissé à la page le temps de réagir, ce qui ne respecte pas le test 10.12.1 du RGAA'
+          'Le texte reste coupé avec l’espacement appliqué, même après avoir laissé à la page le temps de réagir, ce qui ne respecte pas le test 10.12.1 du RGAA.'
       },
       TEXT_OVERLAPS: {
         steps: [
@@ -1416,7 +1699,7 @@ const REVIEW = {
         passWhen:
           'Le chevauchement se limite à une mince bande sur les bords et les deux textes restent lisibles.',
         failWhen:
-          'Du texte est dessiné par-dessus un autre texte au point que l’un des deux devient illisible, ce qui ne respecte pas le test 10.12.1 du RGAA (F104).'
+          'Du texte est dessiné par-dessus un autre texte au point que l’un des deux devient illisible, ce qui ne respecte pas le test 10.12.1 du RGAA.'
       },
       VIEWPORT_SCROLL_LOCKED: {
         steps: [
@@ -1427,7 +1710,7 @@ const REVIEW = {
         passWhen:
           'Une fois la superposition fermée, la page défile et tout le texte peut être atteint et lu.',
         failWhen:
-          'Le texte reste hors d’atteinte une fois l’espacement appliqué, ce qui ne respecte pas le test 10.12.1 du RGAA'
+          'Le texte reste hors d’atteinte une fois l’espacement appliqué, ce qui ne respecte pas le test 10.12.1 du RGAA.'
       }
     },
     'treeitem-name-present': {
@@ -1440,7 +1723,7 @@ const REVIEW = {
         passWhen:
           'L’arbre d’accessibilité montre un nom pour l’élément d’arborescence, tiré de son contenu, et le lecteur d’écran l’annonce.',
         failWhen:
-          'L’élément d’arborescence n’a pas de nom dans l’arbre d’accessibilité, car son contenu n’en donne aucun, ce qui ne respecte pas le test 7.1.1 du RGAA'
+          'L’élément d’arborescence n’a pas de nom dans l’arbre d’accessibilité, car son contenu n’en donne aucun, ce qui ne respecte pas le test 7.1.1 du RGAA.'
       },
       name_contentTooDeep: {
         steps: [
@@ -1451,7 +1734,7 @@ const REVIEW = {
         passWhen:
           'L’arbre d’accessibilité montre un nom pour l’élément d’arborescence, tiré de son contenu imbriqué, et le lecteur d’écran l’annonce.',
         failWhen:
-          'L’élément d’arborescence n’a pas de nom dans l’arbre d’accessibilité, car son contenu n’en donne aucun, ce qui ne respecte pas le test 7.1.1 du RGAA'
+          'L’élément d’arborescence n’a pas de nom dans l’arbre d’accessibilité, car son contenu n’en donne aucun, ce qui ne respecte pas le test 7.1.1 du RGAA.'
       },
       name_internals: {
         steps: [
@@ -1462,7 +1745,7 @@ const REVIEW = {
         passWhen:
           'L’arbre d’accessibilité montre un nom pour l’élément d’arborescence, défini par ses internals ou autrement, et le lecteur d’écran l’annonce.',
         failWhen:
-          'L’élément d’arborescence n’a pas de nom dans l’arbre d’accessibilité et le lecteur d’écran n’annonce que son rôle, ce qui ne respecte pas le test 7.1.1 du RGAA'
+          'L’élément d’arborescence n’a pas de nom dans l’arbre d’accessibilité et le lecteur d’écran n’annonce que son rôle, ce qui ne respecte pas le test 7.1.1 du RGAA.'
       }
     },
     'video-caption': {
@@ -1475,7 +1758,7 @@ const REVIEW = {
         passWhen:
           'Les sous-titres reprennent tous les dialogues et les sons importants, en synchronisation avec la vidéo.',
         failWhen:
-          'Il manque aux sous-titres une partie des dialogues ou des sons importants, ou ils sont désynchronisés, ce qui ne respecte pas le test 4.4.1 du RGAA (F8).'
+          'Il manque aux sous-titres une partie des dialogues ou des sons importants, ou ils sont désynchronisés, ce qui ne respecte pas le test 4.4.1 du RGAA.'
       },
       CAPTIONS_TRACK_NOT_DETECTED: {
         steps: [
@@ -1486,7 +1769,7 @@ const REVIEW = {
         passWhen:
           'La vidéo n’a pas de son porteur de sens, des sous-titres (dans cette vidéo ou dans une version sous-titrée liée à côté) couvrent les dialogues et les sons, ou c’est une alternative média étiquetée d’un texte de la page.',
         failWhen:
-          'La vidéo a des dialogues ou des sons importants et pas de sous-titres, ni ici ni dans une version sous-titrée liée, même si une transcription est proposée, ce qui ne respecte pas le test 4.3.1 du RGAA'
+          'La vidéo a des dialogues ou des sons importants et pas de sous-titres, ni ici ni dans une version sous-titrée liée, même si une transcription est proposée, ce qui ne respecte pas le test 4.3.1 du RGAA.'
       },
       SUBTITLES_TRACK_ONLY: {
         steps: [
@@ -1497,7 +1780,7 @@ const REVIEW = {
         passWhen:
           'La piste reprend les dialogues ainsi que les informations sur les locuteurs et les sons : elle fonctionne donc comme des sous-titres, ou la vidéo n’a pas d’audio qui nécessite des sous-titres.',
         failWhen:
-          'La piste ne donne que les paroles, sans les informations importantes sur les locuteurs ou les sons, ce qui ne respecte pas le test 4.3.1 du RGAA'
+          'La piste ne donne que les paroles, sans les informations importantes sur les locuteurs ou les sons, ce qui ne respecte pas le test 4.3.1 du RGAA.'
       }
     },
     'widget-keyboard-focusable': {
@@ -1511,7 +1794,7 @@ const REVIEW = {
         passWhen:
           'L’élément reçoit le focus et le lecteur d’écran annonce chaque élément actif quand les touches fléchées se déplacent, ou les mêmes choix peuvent être faits autrement au clavier seul et le lecteur d’écran les annonce.',
         failWhen:
-          'L’élément ne peut pas recevoir le focus : parcourir les éléments n’annonce rien ou ils ne peuvent pas être atteints, et les choix ne peuvent pas être faits autrement au clavier, ce qui ne respecte pas le test 7.3.1 du RGAA'
+          'L’élément ne peut pas recevoir le focus : parcourir les éléments n’annonce rien ou ils ne peuvent pas être atteints, et les choix ne peuvent pas être faits autrement au clavier, ce qui ne respecte pas le test 7.3.1 du RGAA.'
       },
       COMPOSITE_NO_TAB_STOP: {
         steps: [
@@ -1524,7 +1807,7 @@ const REVIEW = {
         passWhen:
           'Tab (ou le bouton qui l’ouvre) place le focus dans le composant et les touches fléchées passent d’un élément à l’autre, ou tout ce que font ses éléments peut être fait autrement au clavier seul.',
         failWhen:
-          'Le focus n’entre jamais dans le composant ni dans ses éléments au clavier, et ce qu’ils font ne peut pas être fait autrement au clavier, ce qui ne respecte pas le test 7.3.1 du RGAA'
+          'Le focus n’entre jamais dans le composant ni dans ses éléments au clavier, et ce qu’ils font ne peut pas être fait autrement au clavier, ce qui ne respecte pas le test 7.3.1 du RGAA.'
       },
       WIDGET_NOT_FOCUSABLE: {
         steps: [
@@ -1536,7 +1819,7 @@ const REVIEW = {
         passWhen:
           'Le widget reçoit le focus clavier et fonctionne au clavier, ou la même fonction est proposée par un autre contrôle accessible au clavier.',
         failWhen:
-          'Le widget ne peut pas être atteint ni utilisé au clavier et sa fonction n’est proposée nulle part ailleurs, ce qui ne respecte pas le test 7.3.1 du RGAA (F42).'
+          'Le widget ne peut pas être atteint ni utilisé au clavier et sa fonction n’est proposée nulle part ailleurs, ce qui ne respecte pas le test 7.3.1 du RGAA.'
       },
       WIDGET_NOT_IN_TAB_ORDER: {
         steps: [
@@ -1547,7 +1830,7 @@ const REVIEW = {
         passWhen:
           'Le focus est déplacé sur le widget par un script ou par les touches fléchées quand c’est nécessaire, ou sa fonction est proposée ailleurs.',
         failWhen:
-          'Ni Tab ni les touches fléchées n’atteignent jamais le widget et rien d’autre ne propose sa fonction, ce qui ne respecte pas le test 7.3.1 du RGAA'
+          'Ni Tab ni les touches fléchées n’atteignent jamais le widget et rien d’autre ne propose sa fonction, ce qui ne respecte pas le test 7.3.1 du RGAA.'
       }
     }
   }
@@ -1564,8 +1847,7 @@ const VARIANT_REVIEW = {
           "Find the text the report names and use the color picker in the browser's developer tools, or a contrast calculator with colors picked by an eyedropper, to measure it against its background, comparing with 4.5:1 (3:1 for large text: at least 24px, or 18.5px and bold).",
           'Move to another page and check that the setting holds.'
         ],
-        passWhen:
-          'The switch is easy to find and use, and with it on the text reaches its ratio (G174).',
+        passWhen: 'The switch is easy to find and use, and with it on the text reaches its ratio.',
         failWhen:
           'The switch is hard to find or does not raise this text to its ratio, so the text fails RGAA 3.2.'
       },
@@ -1589,18 +1871,6 @@ const VARIANT_REVIEW = {
         failWhen:
           'The text is not part of a logo or brand name and is below its ratio, which fails RGAA 3.2.'
       },
-      PLACEHOLDER_BELOW_THRESHOLD: {
-        steps: [
-          'Find the field the report names and empty it so the placeholder shows.',
-          "In the Styles pane, check whether the page's CSS sets the ::placeholder color or opacity, or the field's background.",
-          "Use the color picker in the browser's developer tools, or a contrast calculator with colors picked by an eyedropper, to measure the placeholder text against the field background and compare with 4.5:1 (3:1 for large text: at least 24px, or 18.5px and bold).",
-          'Check whether the placeholder holds information needed to fill the field (a format or instruction), rather than just an example.'
-        ],
-        passWhen:
-          "The placeholder reaches 4.5:1 (or 3:1 if large), or it is drawn entirely in the browser's own default colors.",
-        failWhen:
-          'The page sets the placeholder or field colors and the ratio is below the threshold, which fails RGAA 3.2.'
-      },
       PSEUDO_ELEMENT_COLOR: {
         steps: [
           'Find the text the report names and note the ::first-line or ::first-letter color in the Styles pane.',
@@ -1609,7 +1879,7 @@ const VARIANT_REVIEW = {
           'Compare each ratio with the one the report gives as needed for that color: 4.5:1 for most text, or 3:1 for large text (at least 24px, or 18.5px and bold).'
         ],
         passWhen: 'Both colors reach the ratio they need.',
-        failWhen: 'Either color gives a ratio below the one it needs, so the text fails the check.'
+        failWhen: 'Either color gives a ratio below the one it needs, so the text fails RGAA 3.2.'
       },
       SEMIBOLD_BELOW_THRESHOLD: {
         steps: [
@@ -1630,7 +1900,7 @@ const VARIANT_REVIEW = {
         ],
         passWhen: 'The color that forms the letters reaches the ratio needed.',
         failWhen:
-          'The color that forms the letters gives a ratio below the one needed, so the text fails the check.'
+          'The color that forms the letters gives a ratio below the one needed, so the text fails RGAA 3.2.'
       },
       TEXT_STROKE: {
         steps: [
@@ -1641,7 +1911,7 @@ const VARIANT_REVIEW = {
         ],
         passWhen: 'The color that forms the letters reaches the ratio needed.',
         failWhen:
-          'The color that forms the letters gives a ratio below the one needed, so the text fails the check.'
+          'The color that forms the letters gives a ratio below the one needed, so the text fails RGAA 3.2.'
       }
     },
     dictionaries: {
@@ -1649,7 +1919,7 @@ const VARIANT_REVIEW = {
         contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_fail:
           'Le sélecteur est difficile à trouver ou n’amène pas ce texte à son ratio : le texte ne respecte donc pas le critère RGAA 3.2.',
         contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_pass:
-          'Le sélecteur est facile à trouver et à utiliser, et une fois activé, le texte atteint son ratio (G174).',
+          'Le sélecteur est facile à trouver et à utiliser, et une fois activé, le texte atteint son ratio.',
         contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_step1:
           'Repérez le sélecteur de contraste indiqué par le rapport et vérifiez qu’il est facile à trouver, en haut de la page ou sur chaque page, et accessible au clavier.',
         contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_step2: 'Activez le sélecteur.',
@@ -1677,18 +1947,6 @@ const VARIANT_REVIEW = {
           'Déterminez s’il fait partie d’un logo ou d’un nom de marque, comme le nom du site dans son traitement de logo, plutôt que d’un slogan, d’un élément de menu ou d’un autre texte.',
         contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_step3:
           'S’il ne s’agit pas du texte d’un logo, avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez le texte par rapport à son arrière-plan et comparez à 4,5:1 (3:1 pour le texte de grande taille : au moins 24px, ou 18.5px en gras).',
-        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_fail:
-          'La page définit les couleurs du placeholder ou du champ et le ratio est inférieur au seuil, ce qui ne respecte pas le critère RGAA 3.2.',
-        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_pass:
-          'Le placeholder atteint 4,5:1 (ou 3:1 s’il est de grande taille), ou il est entièrement dessiné avec les couleurs par défaut du navigateur.',
-        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step1:
-          'Repérez le champ indiqué par le rapport et videz-le pour que le placeholder s’affiche.',
-        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step2:
-          'Dans le panneau Styles, vérifiez si le CSS de la page définit la couleur ou l’opacité de ::placeholder, ou l’arrière-plan du champ.',
-        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step3:
-          'Avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez le texte du placeholder par rapport à l’arrière-plan du champ et comparez à 4,5:1 (3:1 pour le texte de grande taille : au moins 24px, ou 18.5px en gras).',
-        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step4:
-          'Vérifiez si le placeholder contient une information nécessaire pour remplir le champ (un format ou une consigne), plutôt qu’un simple exemple.',
         contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_fail:
           'L’une des couleurs donne un ratio inférieur à celui qui lui est requis : le texte ne satisfait pas à la vérification.',
         contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_pass:
@@ -1740,7 +1998,7 @@ const VARIANT_REVIEW = {
         contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_fail:
           'Der Schalter ist schwer zu finden oder hebt diesen Text nicht auf sein Verhältnis an, sodass der Text gegen RGAA 3.2 verstößt.',
         contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_pass:
-          'Der Schalter ist leicht zu finden und zu bedienen, und wenn er eingeschaltet ist, erreicht der Text sein Verhältnis (G174).',
+          'Der Schalter ist leicht zu finden und zu bedienen, und wenn er eingeschaltet ist, erreicht der Text sein Verhältnis.',
         contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_step1:
           'Suchen Sie den im Bericht genannten Kontrastschalter und prüfen Sie, ob er leicht zu finden ist, oben auf der Seite oder auf jeder Seite, und per Tastatur erreichbar ist.',
         contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_step2: 'Schalten Sie den Schalter ein.',
@@ -1768,18 +2026,6 @@ const VARIANT_REVIEW = {
           'Entscheiden Sie, ob er Teil eines Logos oder Markennamens ist, etwa der Name der Website in ihrer Logogestaltung, und nicht ein Slogan, Menüeintrag oder anderer Text.',
         contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_step3:
           'Ist es kein Logotext, messen Sie ihn mit dem Farbwähler in den Entwicklertools des Browsers oder mit einem Kontrastrechner und per Pipette aufgenommenen Farben gegen seinen Hintergrund und vergleichen Sie mit 4,5:1 (3:1 für großen Text: mindestens 24px oder 18.5px und fett).',
-        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_fail:
-          'Die Seite setzt die Farben von Platzhalter oder Feld und das Verhältnis liegt unter dem Schwellenwert; das verstößt gegen RGAA 3.2.',
-        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_pass:
-          'Der Platzhalter erreicht 4,5:1 (oder 3:1, wenn groß), oder er wird vollständig in den eigenen Standardfarben des Browsers gezeichnet.',
-        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step1:
-          'Suchen Sie das im Bericht genannte Feld und leeren Sie es, damit der Platzhalter erscheint.',
-        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step2:
-          'Prüfen Sie im Bereich „Stile“, ob das CSS der Seite Farbe oder Deckkraft von ::placeholder oder den Hintergrund des Feldes setzt.',
-        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step3:
-          'Messen Sie mit dem Farbwähler in den Entwicklertools des Browsers oder mit einem Kontrastrechner und per Pipette aufgenommenen Farben den Platzhaltertext gegen den Feldhintergrund und vergleichen Sie mit 4,5:1 (3:1 für großen Text: mindestens 24px oder 18.5px und fett).',
-        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step4:
-          'Prüfen Sie, ob der Platzhalter Informationen enthält, die zum Ausfüllen des Feldes nötig sind (ein Format oder eine Anweisung), statt nur eines Beispiels.',
         contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_fail:
           'Eine der Farben ergibt ein Verhältnis unter dem für sie erforderlichen; der Text besteht die Prüfung nicht.',
         contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_pass:
@@ -1831,7 +2077,7 @@ const VARIANT_REVIEW = {
         contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_fail:
           'El conmutador es difícil de encontrar o no eleva este texto hasta su relación, así que el texto incumple RGAA 3.2.',
         contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_pass:
-          'El conmutador es fácil de encontrar y de usar, y con él activado el texto alcanza su relación (G174).',
+          'El conmutador es fácil de encontrar y de usar, y con él activado el texto alcanza su relación.',
         contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_step1:
           'Localizar el conmutador de contraste que indica el informe y comprobar que es fácil de encontrar, cerca de la parte superior de la página o en todas las páginas, y que se puede alcanzar con el teclado.',
         contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_step2: 'Activar el conmutador.',
@@ -1859,18 +2105,6 @@ const VARIANT_REVIEW = {
           'Decidir si forma parte de un logotipo o nombre de marca, como el nombre del sitio en su tratamiento de logotipo, y no de un eslogan, un elemento de menú u otro texto.',
         contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_step3:
           'Si no es texto de logotipo, medirlo frente a su fondo con el selector de color de las herramientas para desarrolladores del navegador, o con una calculadora de contraste y colores tomados con un cuentagotas, y compararlo con 4.5:1 (3:1 para texto grande: al menos 24px, o 18.5px y en negrita).',
-        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_fail:
-          'La página define los colores del texto provisional o del campo y la relación es inferior al umbral, lo que incumple RGAA 3.2.',
-        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_pass:
-          'El texto provisional alcanza 4.5:1 (o 3:1 si es grande), o se dibuja enteramente con los colores predeterminados del propio navegador.',
-        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step1:
-          'Localizar el campo que indica el informe y vaciarlo para que se muestre el texto provisional.',
-        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step2:
-          'En el panel Styles, comprobar si el CSS de la página define el color o la opacidad de ::placeholder, o el fondo del campo.',
-        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step3:
-          'Con el selector de color de las herramientas para desarrolladores del navegador, o con una calculadora de contraste y colores tomados con un cuentagotas, medir el texto provisional frente al fondo del campo y compararlo con 4.5:1 (3:1 para texto grande: al menos 24px, o 18.5px y en negrita).',
-        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step4:
-          'Comprobar si el texto provisional contiene información necesaria para rellenar el campo (un formato o una instrucción), y no solo un ejemplo.',
         contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_fail:
           'Alguno de los colores da una relación inferior a la que necesita, por lo que el texto no supera la comprobación.',
         contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_pass:
@@ -1922,7 +2156,7 @@ const VARIANT_REVIEW = {
         contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_fail:
           '切り替えが見つけにくいか、このテキストを基準のコントラスト比まで引き上げないため、テキストは RGAA 3.2 を満たしません。',
         contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_pass:
-          '切り替えは見つけやすく使いやすく、オンにするとテキストが基準のコントラスト比に達します (G174)。',
+          '切り替えは見つけやすく使いやすく、オンにするとテキストが基準のコントラスト比に達します。',
         contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_step1:
           'レポートに示されたコントラスト切り替えを見つけ、ページの上部またはすべてのページにあって見つけやすく、キーボードで到達できることを確認してください。',
         contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_step2: '切り替えをオンにしてください。',
@@ -1950,18 +2184,6 @@ const VARIANT_REVIEW = {
           'それがスローガン、メニュー項目、その他のテキストではなく、ロゴのデザインで表されたサイト名のように、ロゴやブランド名の一部であるかを判断してください。',
         contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_step3:
           'ロゴのテキストでなければ、ブラウザーの開発者ツールのカラーピッカー、またはスポイトで色を取得したコントラスト計算ツールを使って背景に対して測定し、4.5:1 (大きなテキスト、つまり 24px 以上または 18.5px 以上の太字では 3:1) と比べてください。',
-        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_fail:
-          'ページがプレースホルダーまたはフィールドの色を指定しており、コントラスト比が基準値を下回るため、RGAA 3.2 を満たしません。',
-        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_pass:
-          'プレースホルダーが 4.5:1 (大きなテキストなら 3:1) に達しているか、すべてブラウザー自身の既定の色で描画されています。',
-        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step1:
-          'レポートに示されたフィールドを見つけ、中身を空にしてプレースホルダーが表示されるようにしてください。',
-        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step2:
-          '[Styles] ペインで、ページの CSS が ::placeholder の色や opacity、またはフィールドの背景を指定しているか確認してください。',
-        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step3:
-          'ブラウザーの開発者ツールのカラーピッカー、またはスポイトで色を取得したコントラスト計算ツールを使い、フィールドの背景に対してプレースホルダーのテキストを測定し、4.5:1 (大きなテキスト、つまり 24px 以上または 18.5px 以上の太字では 3:1) と比べてください。',
-        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step4:
-          'プレースホルダーが単なる例ではなく、フィールドの入力に必要な情報 (形式や指示) を含んでいるか確認してください。',
         contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_fail:
           'いずれかの色のコントラスト比が必要な比を下回るため、テキストはこのチェックを満たしません。',
         contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_pass:
@@ -2017,4 +2239,67 @@ const VARIANT_REVIEW = {
   }
 };
 
-module.exports = { REVIEW, VARIANT_REVIEW };
+// Core's rules that only ask, so decide no test.
+const CORE_MANUAL_RULES = [
+  'accesskeys',
+  'area-alt-quality',
+  'aria-checked-state-mismatch',
+  'aria-expanded-state-mismatch',
+  'aria-text',
+  'bypass-blocks-present',
+  'canvas-text-alternative-quality',
+  'control-name-title-only',
+  'css-focus-indicator-suppressed',
+  'css-hidden-focus',
+  'embed-text-alternative-quality',
+  'empty-table-header',
+  'focus-order-semantics',
+  'form-control-label-quality',
+  'form-control-programmatic-label-quality',
+  'heading-order',
+  'heading-quality',
+  'identical-links-same-purpose',
+  'image-of-text',
+  'image-redundant-alt',
+  'img-alt-decorative',
+  'img-alt-quality',
+  'input-image-alt-decorative',
+  'input-image-alt-quality',
+  'label-for-valid',
+  'label-title-only',
+  'landmark-banner-is-top-level',
+  'landmark-complementary-is-top-level',
+  'landmark-contentinfo-is-top-level',
+  'landmark-main-is-top-level',
+  'landmark-no-duplicate-banner',
+  'landmark-no-duplicate-contentinfo',
+  'landmark-no-duplicate-main',
+  'landmark-one-main',
+  'landmark-unique',
+  'link-name-quality',
+  'live-region-announcements',
+  'manual-review',
+  'media-alternative-transcript-evidence',
+  'meta-viewport-large',
+  'mouse-only-event-handlers',
+  'moving-content-pausable',
+  'no-autoplay-audio',
+  'object-text-alternative-quality',
+  'p-as-heading',
+  'page-has-heading-one',
+  'page-title-patterns',
+  'password-paste-enabled',
+  'presentation-role-conflict',
+  'region',
+  'scope-attr-valid',
+  'scrollable-region-focusable',
+  'skip-link',
+  'svg-text-alternative-quality',
+  'tabindex',
+  'table-duplicate-name',
+  'table-fake-caption',
+  'video-caption',
+  'widget-keyboard-focusable'
+];
+
+module.exports = { REVIEW, VARIANT_REVIEW, CORE_MANUAL_RULES };

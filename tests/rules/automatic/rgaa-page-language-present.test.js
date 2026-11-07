@@ -28,11 +28,20 @@ const run = (html, opts = RUN) => runa11yCoreOnHtml(html, opts);
 const rollup = (result, id) => result.rulesResults.find((r) => r.ruleId === id);
 const reason = (rule) => rule.occurrences[0].data.details.reasonCode;
 
-test(`${RULE_ID}: lang on <html> passes, whatever the doctype`, () => {
-  for (const doctype of ['<!doctype html>', XHTML10, XHTML11, '']) {
+test(`${RULE_ID}: lang on <html> passes on HTML`, () => {
+  for (const doctype of ['<!doctype html>', '']) {
     assertRule(run(page('<p>Hello</p>', ' lang="en"', doctype)), RULE_ID, 'pass', {
       maxOccurrences: 0
     });
+  }
+});
+
+// 8.3.1 step 2: lang and xml:lang on XHTML 1.0, xml:lang on XHTML 1.1.
+test(`${RULE_ID}: lang alone on XHTML is asked about, and with xml:lang passes`, () => {
+  for (const doctype of [XHTML10, XHTML11]) {
+    const rule = assertRule(run(page('<p>Hello</p>', ' lang="en"', doctype)), RULE_ID, 'cantTell');
+    assert.equal(reason(rule), 'langOnlyOnXhtml');
+    assertRule(run(page('<p>Hello</p>', ' lang="en" xml:lang="en"', doctype)), RULE_ID, 'pass');
   }
 });
 

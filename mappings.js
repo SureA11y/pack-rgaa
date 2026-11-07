@@ -334,7 +334,23 @@ function testsWithRules(version) {
   );
 }
 
+// The tests of a version some automatic rule can decide: a finding counts
+// toward them as a failure. A test a rule only asks about, or only a manual
+// rule looks at, is left to a person.
+function testsRulesDecide(version, isManual) {
+  const out = new Set();
+  for (const [ruleId, row] of Object.entries(RGAA_RULE_TESTS[version] || {})) {
+    if (isManual(ruleId)) continue;
+    for (const t of listOf(row.tests)) out.add(t);
+    for (const route of routesOf(row)) {
+      if (route.outcome !== 'cantTell') for (const t of listOf(route.tests)) out.add(t);
+    }
+  }
+  return out;
+}
+
 module.exports = {
+  testsRulesDecide,
   rgaaMappingsFor,
   rgaaComposites,
   validateRgaaRuleTests,

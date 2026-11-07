@@ -43,7 +43,7 @@ const CASES = [
     'input-image-alt-present',
     page('<form><input type="image" src="a.png" alt="Submit"></form>'),
     'cantTell',
-    ['1.1.3'],
+    ['1.1.3', '1.3.3'],
     'RGAA 1.1.3 accepts any alt; whether it says what the button does is asked'
   ],
   [

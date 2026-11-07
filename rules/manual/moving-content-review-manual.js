@@ -67,7 +67,7 @@ const meta = {
         'Find the <marquee> the report names: its text scrolls by itself.',
         'Load the page, and time the movement: note whether it stops by itself within 5 seconds.',
         'If it goes on, look for a control, such as a pause button, on it or near it, and use it.',
-        'Check that the control stops and restarts the movement, hides and shows the content again, or shows all of its content without the movement.'
+        'Check that the control stops and restarts the movement, hides and shows the content again, or shows all of its content without the movement. It must work with the keyboard and the mouse at least; pausing only while the pointer or the focus is on the content does not count.'
       ],
       passWhen:
         'The movement lasts 5 seconds or less, or a control stops and restarts it, hides the content, or shows it all without the movement.',
@@ -77,21 +77,21 @@ const meta = {
     autoplayVideo: {
       steps: [
         'Find the video the report names: it plays by itself and has no browser controls.',
-        'Load the page, and time the movement: note whether it stops by itself within 5 seconds.',
-        'If it goes on, look for a control, such as a pause button, on it or near it, and use it.',
-        'Check that the control stops and restarts the movement, hides and shows the content again, or shows all of its content without the movement.'
+        'Decide whether it carries information: then it is a temporal medium, which the multimedia theme judges. A video that only decorates is judged as moving content.',
+        'If it carries information, check that its reading can be controlled, at least with the keyboard: play, pause, and the sound if it has any.',
+        'If it only decorates, time the movement and look for a control that stops it, hides it or shows the content without it, which works with the keyboard and the mouse at least.'
       ],
       passWhen:
-        'The movement lasts 5 seconds or less, or a control stops and restarts it, hides the content, or shows it all without the movement.',
+        'A video with information has its controls, or a video that only decorates moves for 5 seconds or less, or has such a control.',
       failWhen:
-        'The movement lasts more than 5 seconds and no control does any of these, which fails RGAA 13.8.1.'
+        'A video with information has no controls, which fails RGAA 4.11.1; or a video that only decorates moves for more than 5 seconds with no such control, which fails RGAA 13.8.1.'
     },
     svgAnimation: {
       steps: [
         'Find the <svg> the report names: it has an animation that repeats without end.',
         'Load the page, and time the movement: note whether it stops by itself within 5 seconds.',
         'If it goes on, look for a control, such as a pause button, on it or near it, and use it.',
-        'Check that the control stops and restarts the movement, hides and shows the content again, or shows all of its content without the movement.'
+        'Check that the control stops and restarts the movement, hides and shows the content again, or shows all of its content without the movement. It must work with the keyboard and the mouse at least; pausing only while the pointer or the focus is on the content does not count.'
       ],
       passWhen:
         'The movement lasts 5 seconds or less, or a control stops and restarts it, hides the content, or shows it all without the movement.',
@@ -103,7 +103,7 @@ const meta = {
         'Find the element the report names: an animation runs on it by itself.',
         'Load the page, and time the movement: note whether it stops by itself within 5 seconds.',
         'If it goes on, look for a control, such as a pause button, on it or near it, and use it.',
-        'Check that the control stops and restarts the movement, hides and shows the content again, or shows all of its content without the movement.'
+        'Check that the control stops and restarts the movement, hides and shows the content again, or shows all of its content without the movement. It must work with the keyboard and the mouse at least; pausing only while the pointer or the focus is on the content does not count.'
       ],
       passWhen:
         'The movement lasts 5 seconds or less, or a control stops and restarts it, hides the content, or shows it all without the movement.',
@@ -115,7 +115,7 @@ const meta = {
         'Find the element the report names: an animation makes it blink by itself.',
         'Load the page, and time the blinking: note whether it stops by itself within 5 seconds.',
         'If it goes on, look for a control, such as a pause button, on it or near it, and use it.',
-        'Check that the control stops and restarts the blinking, hides and shows the content again, or shows all of its content without the blinking.'
+        'Check that the control stops and restarts the blinking, hides and shows the content again, or shows all of its content without the blinking. It must work with the keyboard and the mouse at least; pausing only while the pointer or the focus is on the content does not count.'
       ],
       passWhen:
         'The blinking lasts 5 seconds or less, or a control stops and restarts it, hides the content, or shows it all without the blinking.',

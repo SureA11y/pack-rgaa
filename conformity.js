@@ -40,41 +40,72 @@ function rgaaCriteriaStatus(result, { version = LATEST } = {}) {
   });
 }
 
+const STATUSES = ['C', 'NC', 'NA', 'NT'];
+
 function rateOf(validated, applicable) {
   return applicable ? validated / applicable : null;
 }
 
+// A page's rows by criterion, refusing what can't be read: an unknown status,
+// or a criterion given twice, would change the rate without a word.
+function statusesOf(rows) {
+  const statuses = new Map();
+  for (const { criterion, status } of rows) {
+    if (!STATUSES.includes(status)) {
+      throw new RangeError(`criterion ${criterion}: unknown status ${status}`);
+    }
+    if (statuses.has(criterion)) throw new RangeError(`criterion ${criterion} is given twice`);
+    statuses.set(criterion, status);
+  }
+  return statuses;
+}
+
 /**
- * The rates of a sample of pages, each page a list of { criterion, status }
- * (rgaaCriteriaStatus's, completed by the auditor). A criterion is validated
- * if it is on every page of the sample, and applicable if it is on one; the
- * rate is validated over applicable. `average` is the mean of the pages'
- * rates. `complete` is false while a criterion is NT on some page, and the
- * rates then count only what was assessed, so they are no conformity claim.
+ * The rates of a sample of pages (DINUM's « Taux de conformité »), as shares
+ * from 0 to 1. Each page is a list of { criterion, status }, rgaaCriteriaStatus's
+ * completed by the auditor, or { rows, process } for a page of a process
+ * (making a declaration, say): a criterion is validated on a page of a process
+ * only if it is on all the pages of that process.
+ *
+ * A criterion is validated if it is on every page of the sample, and
+ * applicable if it is on one; `rate` is validated over applicable, and
+ * `average` the mean of the pages' rates. `complete` is true only where every
+ * page gives C, NC or NA for every criterion of the version: until then the
+ * rates count what was assessed, and are no conformity claim.
  */
-function rgaaConformityRate(pages) {
-  const byCriterion = new Map();
-  let complete = true;
-  const pageRates = pages.map((rows) => {
+function rgaaConformityRate(pages, { version = LATEST } = {}) {
+  const criteria = Object.keys(RGAA_CRITERIA[version] || {});
+  if (!criteria.length) throw new RangeError(`RGAA has no version ${version}`);
+  const sample = pages.map((page) => {
+    const process = Array.isArray(page) ? null : page.process || null;
+    return { process, statuses: statusesOf(Array.isArray(page) ? page : page.rows) };
+  });
+  const failedIn = new Map();
+  for (const { process, statuses } of sample) {
+    if (!process) continue;
+    const failed = failedIn.get(process) || new Set();
+    for (const [criterion, status] of statuses) if (status === 'NC') failed.add(criterion);
+    failedIn.set(process, failed);
+  }
+  const overall = new Map();
+  const pageRates = sample.map(({ process, statuses }) => {
     let validated = 0;
     let applicable = 0;
-    for (const { criterion, status } of rows) {
-      if (status === 'NT') {
-        complete = false;
-        continue;
-      }
-      const seen = byCriterion.get(criterion) || { applicable: false, failed: false };
+    for (const [criterion, status] of statuses) {
+      if (status === 'NT') continue;
+      const seen = overall.get(criterion) || { applicable: false, failed: false };
       if (status === 'C' || status === 'NC') {
         seen.applicable = true;
         applicable += 1;
       }
-      if (status === 'C') validated += 1;
+      const failed = status === 'NC' || (process && failedIn.get(process).has(criterion));
+      if (status === 'C' && !failed) validated += 1;
       if (status === 'NC') seen.failed = true;
-      byCriterion.set(criterion, seen);
+      overall.set(criterion, seen);
     }
     return rateOf(validated, applicable);
   });
-  const rows = [...byCriterion.values()];
+  const rows = [...overall.values()];
   const applicable = rows.filter((c) => c.applicable).length;
   const validated = rows.filter((c) => c.applicable && !c.failed).length;
   const rated = pageRates.filter((r) => r !== null);
@@ -84,7 +115,11 @@ function rgaaConformityRate(pages) {
     rate: rateOf(validated, applicable),
     pageRates,
     average: rated.length ? rated.reduce((a, b) => a + b, 0) / rated.length : null,
-    complete
+    complete:
+      sample.length > 0 &&
+      sample.every(({ statuses }) =>
+        criteria.every((c) => statuses.has(c) && statuses.get(c) !== 'NT')
+      )
   };
 }
 

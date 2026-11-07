@@ -258,7 +258,12 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-captcha-review': {
       tests: ['1.4.1', '1.4.2', '1.4.3', '1.4.4', '1.4.5', '1.4.6', '1.4.7', '1.5.1', '1.5.2'],
-      note: 'Asks about visible CAPTCHAs: an image (img, area, input type=image, svg, canvas, image object or embed, role=img) whose alternative, file name, id, class or name says captcha, and a reCAPTCHA or hCaptcha widget. 1.4 asks that the alternative of an image used as a CAPTCHA « permet d’identifier la nature et la fonction de l’image », and 1.5 that « il existe une autre forme de CAPTCHA non graphique, au moins » or « une autre solution d’accès à la fonctionnalité »: both are for a person. A widget, whose images come from another site, is asked about under 1.5 only in its message; the map links every finding to both criteria. A CAPTCHA that names itself nowhere is not found.'
+      note: 'Asks about visible CAPTCHAs: an image (img, area, input type=image, svg, canvas, image object or embed, role=img) whose alternative, file name, id, class or name says captcha, and a reCAPTCHA or hCaptcha widget. 1.4 asks that the alternative of an image used as a CAPTCHA « permet d’identifier la nature et la fonction de l’image », and 1.5 that « il existe une autre forme de CAPTCHA non graphique, au moins » or « une autre solution d’accès à la fonctionnalité »: both are for a person. A widget, whose images come from another site, is asked about under 1.5 only in its message; the map links every finding to both criteria. A CAPTCHA that names itself nowhere is not found.',
+      reasonCodes: {
+        captchaWidget: {
+          tests: ['1.5.1', '1.5.2']
+        }
+      }
     },
     'click-handler-keyboard-operable': {
       tests: [],
@@ -381,7 +386,12 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-data-table-headers-review': {
       tests: ['5.3.1', '5.6.1', '5.6.2'],
-      note: 'Asks about a table of at least two rows and two columns that has no header cell at all (no <th>, no columnheader or rowheader role), and is not role="presentation" or "none". If it is a data table, its headers over a whole column or row fail 5.6.1 or 5.6.2 unless marked with <th> or those roles; only a person can say whether it is a data table and which cells are headers. If it is a layout table, 5.3.1 asks it for role="presentation", which it lacks; the question covers that test too. In a table with headers and no spans, a first row or first column (two cells or more) of bold data cells is asked about too: headers marked up as <td> fail 5.6.1 or 5.6.2.'
+      note: 'Asks about a table of at least two rows and two columns that has no header cell at all (no <th>, no columnheader or rowheader role), and is not role="presentation" or "none". If it is a data table, its headers over a whole column or row fail 5.6.1 or 5.6.2 unless marked with <th> or those roles; only a person can say whether it is a data table and which cells are headers. If it is a layout table, 5.3.1 asks it for role="presentation", which it lacks; the question covers that test too. In a table with headers and no spans, a first row or first column (two cells or more) of bold data cells is asked about too: headers marked up as <td> fail 5.6.1 or 5.6.2.',
+      reasonCodes: {
+        BOLD_CELLS_MAY_BE_HEADERS: {
+          tests: ['5.6.1', '5.6.2']
+        }
+      }
     },
     'rgaa-default-language-review': {
       tests: ['8.4.1'],
@@ -508,7 +518,15 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-fake-list': {
       tests: ['9.3.1', '9.3.2'],
-      note: 'Asks whether lines or consecutive paragraphs that start with the same bullet (9.3.1) or with consecutive numbers (9.3.2) are a list, which those tests want marked up with <ul>/<ol> and <li>, or role="list" and role="listitem". Lists drawn with images or CSS alone are not found.'
+      note: 'Asks whether lines or consecutive paragraphs that start with the same bullet (9.3.1) or with consecutive numbers (9.3.2) are a list, which those tests want marked up with <ul>/<ol> and <li>, or role="list" and role="listitem". Lists drawn with images or CSS alone are not found.',
+      reasonCodes: {
+        unorderedListAsText: {
+          tests: ['9.3.1']
+        },
+        orderedListAsText: {
+          tests: ['9.3.2']
+        }
+      }
     },
     'rgaa-field-group-legend': {
       tests: ['11.6.1'],
@@ -600,7 +618,21 @@ const RGAA_RULE_TESTS = {
     },
     'form-control-programmatic-label-quality': {
       tests: ['11.1.3', '11.2.2', '11.2.3', '11.2.4'],
-      note: "Asks about native input/select/textarea controls whose only name is a placeholder, a title, an aria-label, or aria-labelledby pointing only at hidden text; a control not drawn on screen (transparent or clipped away) is left out. Those are the labels 11.1.3 covers, a label that is not visible (masqué, aria-label): its step asks whether a title, or text next to the field, makes the expected input understandable, which only a person can tell. 11.2.2 asks whether a title is relevant. Not mapped to 11.1.1: a placeholder-only field meets none of the 11.1.1 conditions, and rgaa-field-label-listed-source fails it there. The rule is filed under WCAG 3.3.2, which RGAA relates to 11.2. Also linked to 11.2.3 and 11.2.4, which ask whether a label given by aria-label, or by a passage linked with aria-labelledby, tells the field's exact function: the rule asks that about fields named only by aria-label or by aria-labelledby, and a question is never a false failure."
+      note: "Asks about native input/select/textarea controls whose only name is a placeholder, a title, an aria-label, or aria-labelledby pointing only at hidden text; a control not drawn on screen (transparent or clipped away) is left out. Those are the labels 11.1.3 covers, a label that is not visible (masqué, aria-label): its step asks whether a title, or text next to the field, makes the expected input understandable, which only a person can tell. 11.2.2 asks whether a title is relevant. Not mapped to 11.1.1: a placeholder-only field meets none of the 11.1.1 conditions, and rgaa-field-label-listed-source fails it there. The rule is filed under WCAG 3.3.2, which RGAA relates to 11.2. Also linked to 11.2.3 and 11.2.4, which ask whether a label given by aria-label, or by a passage linked with aria-labelledby, tells the field's exact function: the rule asks that about fields named only by aria-label or by aria-labelledby, and a question is never a false failure.",
+      reasonCodes: {
+        label_from_title_primary: {
+          tests: ['11.2.2']
+        },
+        label_from_aria_label_only: {
+          tests: ['11.1.3', '11.2.3']
+        },
+        label_from_hidden_labelledby: {
+          tests: ['11.1.3', '11.2.4']
+        },
+        label_from_placeholder_primary: {
+          tests: ['11.1.3']
+        }
+      }
     },
     'form-control-single-label': {
       tests: [],
@@ -746,7 +778,12 @@ const RGAA_RULE_TESTS = {
     },
     'input-image-alt-present': {
       tests: ['1.1.3'],
-      note: 'Fails an image button with no ARIA name, no non-empty alt and no title, which is the presence check of 1.1.3 step 3. An author name equal to the browser\'s default ("Submit", "Submit Query") is a text alternative, so 1.1.3 is met; the rule only asks about it, since its relevance is 1.3.3\'s question.'
+      note: 'Fails an image button with no ARIA name, no non-empty alt and no title, which is the presence check of 1.1.3 step 3. An author name equal to the browser\'s default ("Submit", "Submit Query") is a text alternative, so 1.1.3 is met; the rule only asks about it, since its relevance is 1.3.3\'s question.',
+      reasonCodes: {
+        default_name: {
+          tests: ['1.3.3']
+        }
+      }
     },
     'input-image-alt-quality': {
       tests: ['1.3.3'],
@@ -861,7 +898,12 @@ const RGAA_RULE_TESTS = {
     },
     'link-in-text-block': {
       tests: ['10.6.1'],
-      note: 'Fails inline links in running text (a[href] and role=link) that have no underline, no weight or style difference and no other mark (border, shadow, background, icon, generated content), and whose color contrast with the surrounding text is below 3:1. That is 10.6.1 step 2 (3:1 between link and surrounding text for links shown only by color). A link shown only by a color at 3:1 or more is asked about, since step 2 also needs a non-color cue on hover and focus. It checks only the default state; rgaa-link-state-colors-review asks about the visited, active, hover and focus colors of step 3.'
+      note: 'Fails inline links in running text (a[href] and role=link) that have no underline, no weight or style difference and no other mark (border, shadow, background, icon, generated content), and whose color contrast with the surrounding text is below 3:1. That is 10.6.1 step 2 (3:1 between link and surrounding text for links shown only by color). A link shown only by a color at 3:1 or more is asked about, since step 2 also needs a non-color cue on hover and focus. It checks only the default state; rgaa-link-state-colors-review asks about the visited, active, hover and focus colors of step 3.',
+      reasonCodes: {
+        SELECT_OPTION_COLOR: {
+          tests: []
+        }
+      }
     },
     'rgaa-link-label-in-name-sources': {
       tests: ['6.1.5'],
@@ -881,7 +923,15 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-link-title-content-name': {
       tests: ['6.1.2', '6.1.3'],
-      note: 'Fails an image link (6.1.2) whose title does not contain the text alternative of its images, and asks about a composite link (6.1.3) whose title contains its text but not its images\' alternative, or an image link whose one-character alternative may be a symbol. Glossary « Intitulé (ou nom accessible) de lien », note 2: a link is « non-explicite » when it « possède un attribut title dont la valeur ne reprendrait pas au moins le "nom accessible" issu du contenu du lien », since assistive technologies can be set to read the title. Punctuation and capital letters are ignored, as 6.1.5\'s particular cases allow. Text links are left to rgaa-link-label-in-name-sources (6.1.5), and links whose content holds hidden, generated or embedded content are left out.'
+      note: 'Fails an image link (6.1.2) whose title does not contain the text alternative of its images, and asks about a composite link (6.1.3) whose title contains its text but not its images\' alternative, or an image link whose one-character alternative may be a symbol. Glossary « Intitulé (ou nom accessible) de lien », note 2: a link is « non-explicite » when it « possède un attribut title dont la valeur ne reprendrait pas au moins le "nom accessible" issu du contenu du lien », since assistive technologies can be set to read the title. Punctuation and capital letters are ignored, as 6.1.5\'s particular cases allow. Text links are left to rgaa-link-label-in-name-sources (6.1.5), and links whose content holds hidden, generated or embedded content are left out.',
+      reasonCodes: {
+        compositeLinkTitle: {
+          tests: ['6.1.3']
+        },
+        symbolAlternative: {
+          tests: ['6.1.2']
+        }
+      }
     },
     'list-children-valid': {
       tests: ['9.3.1', '9.3.2'],
@@ -1040,7 +1090,24 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-moving-content-review': {
       tests: ['13.8.1', '13.8.2'],
-      note: 'Asks about content that moves or blinks by itself for more than 5 seconds: a <marquee>, a <video> with autoplay and no controls, an SVG animation repeated indefinitely, and, where the page has a layout, an animation running when the scan starts (CSS animation, CSS transition or one a script started) that never ends or lasts more than 5 seconds, read from helpers.animationsAtScanStart since the engine settles finite animations while rules run (blinking when it animates only opacity, visibility or colours). 13.8.1 and 13.8.2 accept it when the user can stop and restart it, hide it, or see all its information without the movement, which a script may give and only a person can try. Animated images are not found.'
+      note: 'Asks about content that moves or blinks by itself for more than 5 seconds: a <marquee>, a <video> with autoplay and no controls, an SVG animation repeated indefinitely, and, where the page has a layout, an animation running when the scan starts (CSS animation, CSS transition or one a script started) that never ends or lasts more than 5 seconds, read from helpers.animationsAtScanStart since the engine settles finite animations while rules run (blinking when it animates only opacity, visibility or colours). 13.8.1 and 13.8.2 accept it when the user can stop and restart it, hide it, or see all its information without the movement, which a script may give and only a person can try. Animated images are not found. A video with information is a temporal medium, which the glossary « Contrôle (contenu en mouvement ou clignotant) » leaves to the multimedia theme, so autoplayVideo is asked about under 4.11.1, and under 13.8.1 only for a video with no information of its own.',
+      reasonCodes: {
+        marquee: {
+          tests: ['13.8.1']
+        },
+        autoplayVideo: {
+          tests: ['4.11.1', '13.8.1']
+        },
+        svgAnimation: {
+          tests: ['13.8.1']
+        },
+        movingAnimation: {
+          tests: ['13.8.1']
+        },
+        blinkingAnimation: {
+          tests: ['13.8.2']
+        }
+      }
     },
     'rgaa-navigation-systems-review': {
       tests: ['12.1.1'],
@@ -1153,7 +1220,15 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-quotation-review': {
       tests: ['9.4.1', '9.4.2'],
-      note: 'Asks about visible text that looks like an unmarked quotation, outside <q>, <blockquote>, <cite>, links, headings, code and form controls: a paragraph or other block whose whole text is in quotation marks (« … », “…”, "…", „…“), as a possible « bloc de citation » that 9.4.2 asks to use « une balise <blockquote> » (reason code quotedBlock), and a passage of running text in « … » or “…”, as a possible « citation courte » that 9.4.1 asks to use « une balise <q> » (reason code quotedPassage), each of 8 words or more. Whether the text quotes someone is for a person; the map links every finding to both tests and the message names the one it concerns. French uses « » for titles, terms and names too, so shorter passages are not asked about, and a quotation without quotation marks is not found.'
+      note: 'Asks about visible text that looks like an unmarked quotation, outside <q>, <blockquote>, <cite>, links, headings, code and form controls: a paragraph or other block whose whole text is in quotation marks (« … », “…”, "…", „…“), as a possible « bloc de citation » that 9.4.2 asks to use « une balise <blockquote> » (reason code quotedBlock), and a passage of running text in « … » or “…”, as a possible « citation courte » that 9.4.1 asks to use « une balise <q> » (reason code quotedPassage), each of 8 words or more. Whether the text quotes someone is for a person; the map links every finding to both tests and the message names the one it concerns. French uses « » for titles, terms and names too, so shorter passages are not asked about, and a quotation without quotation marks is not found.',
+      reasonCodes: {
+        quotedBlock: {
+          tests: ['9.4.2']
+        },
+        quotedPassage: {
+          tests: ['9.4.1']
+        }
+      }
     },
     'rgaa-radio-group-present': {
       tests: ['11.5.1'],
@@ -1165,7 +1240,30 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-required-field-indication': {
       tests: ['11.10.1', '11.10.2'],
-      note: 'Checks the required fields of each form with two or more fields that does not mark its optional ones (the 11.10 particular case). Fails a field with required or aria-required="true" whose visible label and linked passages show no indication (11.10.2), with none next to it, no image, icon or generated content that could be one, and no « tous les champs sont obligatoires » sentence; asks in those cases. Fails a field whose « * » the page explains only after its first use, or never when the field has required or aria-required (glossary « Indication de champ obligatoire »: the explanation comes « avant la première utilisation »); asks when such a field has neither, since the sign may mean something else.'
+      note: 'Checks the required fields of each form with two or more fields that does not mark its optional ones (the 11.10 particular case). Fails a field with required or aria-required="true" whose visible label and linked passages show no indication (11.10.2), with none next to it, no image, icon or generated content that could be one, and no « tous les champs sont obligatoires » sentence; asks in those cases. Fails a field whose « * » the page explains only after its first use, or never when the field has required or aria-required (glossary « Indication de champ obligatoire »: the explanation comes « avant la première utilisation »); asks when such a field has neither, since the sign may mean something else.',
+      reasonCodes: {
+        indicationInLegend: {
+          tests: ['11.10.2']
+        },
+        indicationOutsideLabel: {
+          tests: ['11.10.2']
+        },
+        noVisibleLabel: {
+          tests: ['11.10.2']
+        },
+        indicationMayBeImage: {
+          tests: ['11.10.2']
+        },
+        allFieldsRequiredSentence: {
+          tests: ['11.10.2']
+        },
+        stylesNotRead: {
+          tests: ['11.10.2']
+        },
+        signMayMeanOther: {
+          tests: ['11.10.1']
+        }
+      }
     },
     'rgaa-role-img-aria-name': {
       tests: ['1.1.1'],
@@ -1193,7 +1291,21 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-scripted-components-review': {
       tests: ['7.1.1', '7.1.2', '7.1.3'],
-      note: 'Asks on every page with script (an executable <script>, an inline event handler, a javascript: URL or a custom element) for a person to check each scripted component against 7.1.1 to 7.1.3. It always asks, because the engine cannot see behaviour attached from script files. It lists candidate elements from the markup (widget roles, tabindex, inline handlers, links whose href is "#" or javascript:, which usually act as buttons whose role 7.1.3 asks to be relevant, contenteditable, aria-expanded and similar states) as a starting point, not a complete list. A page with no script is notApplicable, since 7.1 applies to scripts.'
+      note: 'Asks on every page with script (an executable <script>, an inline event handler, a javascript: URL or a custom element) for a person to check each scripted component against 7.1.1 to 7.1.3. It always asks, because the engine cannot see behaviour attached from script files. It lists candidate elements from the markup (widget roles, tabindex, inline handlers, links whose href is "#" or javascript:, which usually act as buttons whose role 7.1.3 asks to be relevant, contenteditable, aria-expanded and similar states) as a starting point, not a complete list. A page with no script is notApplicable, since 7.1 applies to scripts.',
+      reasonCodes: {
+        focusableNonNative: {
+          tests: ['7.1.1', '7.1.3']
+        },
+        inlineHandler: {
+          tests: ['7.1.1', '7.1.3']
+        },
+        stateAttribute: {
+          tests: ['7.1.1']
+        },
+        linkWithoutDestination: {
+          tests: ['7.1.3']
+        }
+      }
     },
     'scrollable-region-focusable': {
       tests: [],
@@ -1237,7 +1349,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-status-message-review': {
       tests: ['7.5.1', '7.5.2', '7.5.3'],
-      note: 'Asks about visible elements that look like status messages with none of the roles 7.5 names (status, alert, log, progressbar): one with aria-live, and one whose class or id names a message (alert, message, notification, notice, toast, flash, success, error, warning, feedback) holding 40 words or less. 7.5.1 to 7.5.3 name the role attribute, and their methodology also accepts aria-live with aria-atomic=\"true\" for some kinds of message; whether the element is a status message (glossary « Message de statut », a change of content without a change of context) is for a person.'
+      note: 'Asks about visible elements that look like status messages with none of the roles 7.5 names (status, alert, log, progressbar): one with aria-live, and one whose class or id names a message (alert, message, notification, notice, toast, flash, success, error, warning, feedback) holding 40 words or less. 7.5.1 to 7.5.3 name the role attribute, and their methodology also accepts aria-live with aria-atomic="true" for some kinds of message; whether the element is a status message (glossary « Message de statut », a change of content without a change of context) is for a person.'
     },
     'summary-name-present': {
       tests: [],
@@ -1315,7 +1427,18 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-text-image-review': {
       tests: ['1.8.1', '1.8.2'],
-      note: 'Asks about visible informative images likely to show text (glossary « Image texte »): an image button (input type=image, 1.8.2), an image inside a heading, and an <img> or role="img" whose file name, class or id names text, a title, a banner or a button (1.8.1). 1.8.1 and 1.8.2 ask that each informative image of text, « en l’absence d’un mécanisme de remplacement, doit si possible être remplacée par du texte stylé »; whether the image holds text, a replacement mechanism exists or its rendering is essential is for a person. Logos and brand names, which 1.8\'s particular case exempts, are left out: an image whose alternative, file name, class or id, or an ancestor\'s, says logo, marque or brand. Images of <object>, <embed>, <canvas> and <svg> (1.8.3 to 1.8.6) are not looked at.'
+      note: 'Asks about visible informative images likely to show text (glossary « Image texte »): an image button (input type=image, 1.8.2), an image inside a heading, and an <img> or role="img" whose file name, class or id names text, a title, a banner or a button (1.8.1). 1.8.1 and 1.8.2 ask that each informative image of text, « en l’absence d’un mécanisme de remplacement, doit si possible être remplacée par du texte stylé »; whether the image holds text, a replacement mechanism exists or its rendering is essential is for a person. Logos and brand names, which 1.8\'s particular case exempts, are left out: an image whose alternative, file name, class or id, or an ancestor\'s, says logo, marque or brand. Images of <object>, <embed>, <canvas> and <svg> (1.8.3 to 1.8.6) are not looked at.',
+      reasonCodes: {
+        imageButton: {
+          tests: ['1.8.2']
+        },
+        imageInHeading: {
+          tests: ['1.8.1']
+        },
+        textImageName: {
+          tests: ['1.8.1']
+        }
+      }
     },
     'text-spacing-content-loss': {
       tests: ['10.12.1'],

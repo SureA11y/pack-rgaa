@@ -8,8 +8,10 @@
  * profile asks about reads them (core's standard.review), in French, the
  * language the standard declares.
  *
- * A code that counts toward no RGAA test, or whose text can't say what fails
- * without WCAG, is left out, and reads core's steps.
+ * A code that counts toward no RGAA test is left out, and reads core's steps.
+ * Where core's steps are WCAG's logic rather than its name,
+ * data/review-overrides.js says it in RGAA's terms, and the build fails on a
+ * code left speaking of WCAG.
  *
  * Usage:
  *   node scripts/generate-review.js           write the module
@@ -21,6 +23,7 @@ const path = require('path');
 
 const core = require('@surea11y/core');
 const { RGAA_RULE_TESTS } = require('../rule-map');
+const OVERRIDES = require('./data/review-overrides');
 
 const OUTPUT_FILE = path.join(__dirname, '..', 'review.js');
 const VERSION = '4.1.2';
@@ -41,21 +44,59 @@ function testsOfCode(row, code) {
 
 const named = (tests) =>
   tests.length > 1 ? `les tests ${tests.join(', ')} du RGAA` : `le test ${tests[0]} du RGAA`;
+const ofNamed = (tests) =>
+  tests.length > 1 ? `des tests ${tests.join(', ')} du RGAA` : `du test ${tests[0]} du RGAA`;
 
-// Core's text with what fails named as the tests, or null where WCAG is still
-// named: a passage that says more of WCAG than which criterion fails.
+const NUMBER = String.raw`\d+(?:\.\d+)*`;
+const LIST = String.raw`${NUMBER}(?:(?:,| et| ou) ${NUMBER})*(?: \(ou ${NUMBER}\))?`;
+
+// What RGAA doesn't have: WCAG, its levels, its criteria by number, and
+// best practice.
+const WCAG_WORDS = /WCAG|\bAAA?\b|niveau A|critères? \d|bonnes? pratiques?|18[.,]66|7:1/;
+
+// Core's text with what fails named as the tests.
 function inRgaaTerms(text, tests) {
-  const out = text
+  return text
+    .replace(/ pour WCAG 1\.4\.3, et à 7:1 \([^)]*\) pour 1\.4\.6/g, '')
+    .replace(/18[.,]66/g, '18,5')
     .replace(
-      /ne respecte pas (?:le critère|les critères) WCAG [\d.]+(?:(?:,| et| ou) [\d.]+)*/g,
+      new RegExp(
+        String.raw`ne (?:respecte|satisfait) pas (?:à )?(?:(?:le|les) critères? )?WCAG ${LIST}`,
+        'g'
+      ),
       `ne respecte pas ${named(tests)}`
     )
-    .replace(/ne satisfait pas (?:à )?WCAG [\d.]+/g, `ne respecte pas ${named(tests)}`)
-    .replace(/\s*\((?:critères? )?WCAG [\d.]+(?:(?:,| et| ou) [\d.]+)*\)/g, ` (${named(tests)})`);
-  return /WCAG/.test(out) ? null : out;
+    .replace(new RegExp(String.raw`\bde WCAG ${LIST}`, 'g'), ofNamed(tests))
+    .replace(new RegExp(String.raw`\s*\((?:critères? )?WCAG ${LIST}\)`, 'g'), ` (${named(tests)})`)
+    .replace(/\s*\((?:F|G|H)\d+\)/g, '');
 }
 
-function buildReview(dictionary = french(), table = RGAA_RULE_TESTS[VERSION]) {
+function entryOf(ruleId, code, entry, tests, overrides, problems) {
+  const override = (overrides[ruleId] && overrides[ruleId][code]) || {};
+  const stepKeys = Object.keys(entry)
+    .filter((k) => k.startsWith('step'))
+    .sort((a, b) => Number(a.slice(4)) - Number(b.slice(4)));
+  const ours = (text) => text.replace(/@TESTS@/g, named(tests));
+  const steps = override.steps
+    ? override.steps.map(ours)
+    : stepKeys.map((k) => inRgaaTerms(entry[k], tests));
+  const passWhen = ours(override.passWhen || inRgaaTerms(entry.pass, tests));
+  let failWhen = ours(override.failWhen || inRgaaTerms(entry.fail, tests));
+  if (!/RGAA/.test(failWhen)) {
+    failWhen = `${failWhen.replace(/\.$/, '')}, ce qui ne respecte pas ${named(tests)}.`;
+  }
+  const texts = [...steps, passWhen, failWhen];
+  for (const text of texts) {
+    if (WCAG_WORDS.test(text)) problems.push(`${ruleId} ${code}: ${text}`);
+  }
+  return { steps, passWhen, failWhen };
+}
+
+function buildReview(
+  dictionary = french(),
+  table = RGAA_RULE_TESTS[VERSION],
+  overrides = OVERRIDES
+) {
   const prefixes = new Map();
   for (const check of core.getChecksCatalog()) {
     const key = check.i18n && check.i18n.titleKey;
@@ -69,24 +110,23 @@ function buildReview(dictionary = french(), table = RGAA_RULE_TESTS[VERSION]) {
     ((found[ruleId] = found[ruleId] || {})[m[2]] = found[ruleId][m[2]] || {})[m[3]] = text;
   }
   const out = {};
+  const problems = [];
   for (const ruleId of Object.keys(found).sort()) {
     for (const code of Object.keys(found[ruleId]).sort()) {
       const tests = testsOfCode(table[ruleId], code);
       if (!tests.length) continue;
-      const entry = found[ruleId][code];
-      const stepKeys = Object.keys(entry)
-        .filter((k) => k.startsWith('step'))
-        .sort((a, b) => Number(a.slice(4)) - Number(b.slice(4)));
-      const texts = [...stepKeys.map((k) => entry[k]), entry.pass, entry.fail].map((t) =>
-        inRgaaTerms(t, tests)
+      (out[ruleId] = out[ruleId] || {})[code] = entryOf(
+        ruleId,
+        code,
+        found[ruleId][code],
+        tests,
+        overrides,
+        problems
       );
-      if (texts.some((t) => t === null)) continue;
-      (out[ruleId] = out[ruleId] || {})[code] = {
-        steps: texts.slice(0, -2),
-        passWhen: texts.at(-2),
-        failWhen: texts.at(-1)
-      };
     }
+  }
+  if (problems.length) {
+    throw new Error(`still in WCAG's terms:\n${problems.join('\n')}`);
   }
   return out;
 }
@@ -108,11 +148,21 @@ const VARIANTS = {
 const LOCALES = ['en', 'fr', 'de', 'es', 'ja'];
 const dictionaryOf = (locale) => require(`@surea11y/core/procedures/${locale}`);
 
+// What a variant's steps say of WCAG beyond its name.
+const VARIANT_DROPS = {
+  'rgaa-contrast-minimum': {
+    // 3.2 has no exception for the browser's own colors, which 3.3 has.
+    PLACEHOLDER_BELOW_THRESHOLD: true
+  }
+};
+
 function inVariantTerms(text, sc) {
   // RGAA's bold text is large from 18.5px, where WCAG's is from 14pt.
   const out = String(text)
     .replace(/WCAG (\d+\.\d+\.\d+)/g, (m, id) => sc[id] || m)
-    .replace(/18([.,])66/g, '18$15');
+    .replace(/18([.,])66/g, '18$15')
+    .replace(/fails the check/g, `fails ${Object.values(sc)[0]}`)
+    .replace(/\s*\(G\d+\)/g, '');
   return /WCAG/.test(out) ? null : out;
 }
 
@@ -131,6 +181,7 @@ function buildVariants() {
     const review = {};
     const dictionaries = {};
     for (const code of codes) {
+      if ((VARIANT_DROPS[ruleId] || {})[code]) continue;
       const keys = Object.keys(en).filter((k) =>
         new RegExp(`^${base}_review_${code}_(?:step\\d+|pass|fail)$`).test(k)
       );
@@ -166,6 +217,13 @@ function buildVariants() {
   return out;
 }
 
+const manualRules = () =>
+  core
+    .getChecksCatalog()
+    .filter((check) => check.type === 'manual')
+    .map((check) => check.ruleId)
+    .sort();
+
 function renderModule(review, variants = buildVariants()) {
   return `/* SPDX-License-Identifier: MPL-2.0 */
 
@@ -184,7 +242,10 @@ const REVIEW = { '${VERSION}': ${JSON.stringify(review, null, 2)} };
 // The pack's variants of core's rules: { [ruleId]: { review, dictionaries } }.
 const VARIANT_REVIEW = ${JSON.stringify(variants, null, 2)};
 
-module.exports = { REVIEW, VARIANT_REVIEW };
+// Core's rules that only ask, so decide no test.
+const CORE_MANUAL_RULES = ${JSON.stringify(manualRules())};
+
+module.exports = { REVIEW, VARIANT_REVIEW, CORE_MANUAL_RULES };
 `;
 }
 

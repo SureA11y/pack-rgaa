@@ -148,7 +148,7 @@ rgaaCriteriaStatus(result).find((row) => row.criterion === '8.5');
 // { criterion: '8.5', title: 'Chaque page web a-t-elle un titre de page ?', status: 'C', outcome: 'pass' }
 ```
 
-`rgaaConformityRate(pages)` works out DINUM's rate from a sample of pages once an auditor has completed them: a criterion is validated if it is on every page, and applicable if it is on one. `complete` is `false` while any row is `NT`, and the rate is then no claim of conformity.
+`rgaaConformityRate(pages)` works out DINUM's rate from a sample of pages once an auditor has completed them: a criterion is validated if it is on every page, and applicable if it is on one, and a page of a process (`{ rows, process }`) fails what any page of that process fails. `complete` is `true` only when every page gives `C`, `NC` or `NA` for all 106 criteria; until then the rate is no claim of conformity.
 
 Without the profile, a scan that targets WCAG runs none of the pack's rules: add `engineOptions.optInRules: ['rgaa']` to run them, or `engineOptions.mappings: ['rgaa']` for RGAA's tests to be named on core's rules.
 
@@ -184,7 +184,7 @@ require('fs').writeFileSync(
 );
 ```
 
-Each test says how much of it the rules decide (`automation`: `manual` for the 91 tests no rule looks at, `partial` or `full`) and which tools it needs. The HTML report's "What's left for a person" section reads them too. `relatedRequirements('1.4.3', { packs: [rgaa] })` gives the criteria RGAA relates to a WCAG criterion. The steps are RGAA's words; only `failWhen`, which RGAA doesn't state, is the pack's.
+Each test says how much of it the rules decide (`automation`: `manual` for the 169 tests no rule decides, which a rule may still ask about, `partial` for the 83 they decide in part, `full` for the 6 they decide) and which tools it needs. Facets list the pack's own rules; core's are in [`docs/RGAA_MAPPING.md`](./docs/RGAA_MAPPING.md). The HTML report's "What's left for a person" section reads them too. `relatedRequirements('1.4.3', { packs: [rgaa] })` gives the criteria RGAA relates to a WCAG criterion. The steps are RGAA's words; only `failWhen`, which RGAA doesn't state, is the pack's.
 
 What RGAA's words mean is in its glossary:
 

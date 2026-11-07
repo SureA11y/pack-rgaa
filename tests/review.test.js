@@ -68,7 +68,7 @@ test('on every scenario page, each undecided finding of a pack rule comes with i
   assert.ok(checked > 100, `${checked} undecided findings checked`);
 });
 
-test('the steps are given in English whatever the locale, as core gives a pack’s', () => {
+test('the steps are given in the scan’s locale, with what fails named the same way', () => {
   const html =
     '<!doctype html><html lang="fr"><head><title>t</title></head><body><main>' +
     '<p>• Pain<br>• Lait<br>• Œufs</p></main></body></html>';
@@ -78,7 +78,51 @@ test('the steps are given in English whatever the locale, as core gives a pack�
     }).checksResults.find((c) => c.ruleId === 'rgaa-fake-list').occurrences[0].howToCheck;
   const en = run('en');
   assert.match(en.failWhen, /RGAA 9\.3\.1/);
-  assert.deepEqual(run('fr'), en);
+  const fr = run('fr');
+  assert.notEqual(fr.failWhen, en.failWhen);
+  assert.match(fr.failWhen, /RGAA 9\.3\.1/);
+  assert.equal(fr.steps.length, en.steps.length);
+});
+
+test("every step of the pack's rules is translated, in every language", () => {
+  const en = require('../index').rules.flatMap((rule) => {
+    if (rule.from) return [];
+    const prefix = rule.meta.i18n.titleKey.replace(/_title$/, '');
+    return Object.entries(rule.meta.review || {}).flatMap(([code, entry]) => [
+      `${prefix}_review_${code}_pass`,
+      `${prefix}_review_${code}_fail`,
+      ...entry.steps.map((_, i) => `${prefix}_review_${code}_step${i + 1}`)
+    ]);
+  });
+  for (const locale of ['fr', 'de', 'es', 'ja']) {
+    const dictionary = pack.dictionaries[locale];
+    assert.deepEqual(
+      en.filter((key) => !dictionary[key]),
+      [],
+      locale
+    );
+  }
+});
+
+test('a finding of a rule linked to several tests reads under the test it fails', () => {
+  const { RGAA_RULE_TESTS } = require('../rule-map');
+  const { RGAA_CRITERIA } = require('../map');
+  const facet = (test) => `test-${test.replace(/\./g, '-')}`;
+  for (const rule of pack.rules) {
+    if (rule.from) continue;
+    const row = RGAA_RULE_TESTS['4.1.2'][rule.id];
+    for (const [code, entry] of Object.entries(rule.meta.review || {})) {
+      const named = (entry.failWhen.match(/\d+\.\d+(?:\.\d+)?/g) || []).flatMap((id) =>
+        id.split('.').length === 2 ? (RGAA_CRITERIA['4.1.2'][id] || {}).tests || [] : [id]
+      );
+      const linked = named.filter((t) => row.tests.includes(t) || (row.asks || []).includes(t));
+      if (!linked.length || !entry.facet) continue;
+      assert.ok(
+        named.map(facet).includes(entry.facet),
+        `${rule.id} ${code} is under ${entry.facet}, and fails ${named.join(', ')}`
+      );
+    }
+  }
 });
 
 test("core's steps in RGAA's terms are as generated, and name no WCAG", async () => {
@@ -90,7 +134,24 @@ test("core's steps in RGAA's terms are as generated, and name no WCAG", async ()
     expected,
     'run npm run review'
   );
-  assert.doesNotMatch(JSON.stringify(REVIEW), /WCAG/);
+  assert.doesNotMatch(JSON.stringify(REVIEW), /WCAG|\bAAA?\b|bonnes? pratiques?|18[.,]66|7:1/);
+  // A failure names what it fails, whatever core's words were.
+  for (const [ruleId, codes] of Object.entries(REVIEW['4.1.2'])) {
+    for (const [code, entry] of Object.entries(codes)) {
+      assert.match(entry.failWhen, /RGAA/, `${ruleId} ${code}`);
+    }
+  }
+});
+
+test("the generator refuses a code left in WCAG's terms", () => {
+  const { buildReview } = require('../scripts/generate-review');
+  const dictionary = {
+    pageTitlePresent_review_X_step1: 'Regardez.',
+    pageTitlePresent_review_X_pass: 'Selon WCAG 2.2, cela va.',
+    pageTitlePresent_review_X_fail: 'Niveau AAA.'
+  };
+  const table = { 'page-title-present': { tests: ['8.5.1'] } };
+  assert.throws(() => buildReview(dictionary, table, {}), /still in WCAG's terms/);
 });
 
 test("the variants' steps use RGAA's thresholds, in every language", () => {

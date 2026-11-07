@@ -133,7 +133,7 @@ const meta = {
         'Check whether the site has other pages with the same header or menu.'
       ],
       passWhen:
-        'The site is a single page, or nothing repeated comes before the main content, so no skip link is needed (the particular case of RGAA 12.7).',
+        'The site is a single page, the particular case of RGAA 12.7, so no skip link is needed.',
       failWhen:
         'Repeated content, such as a header or a menu not marked as navigation, comes before the main content with no link to skip it, which fails RGAA 12.7.1.'
     },

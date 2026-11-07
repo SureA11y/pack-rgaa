@@ -38,6 +38,7 @@ const SOURCES = [
 
 function plainText(markdown) {
   return String(markdown)
+    .replace(/<(a|span)\s[^>]*>(.*?)<\/\1>/g, '$2')
     .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
     .replace(/`([^`]*)`/g, '$1')
     .replace(/\s+/g, ' ')
@@ -50,7 +51,7 @@ function noteLines(value) {
   for (const item of Array.isArray(value) ? value : value ? [value] : []) {
     if (typeof item === 'string') out.push(plainText(item));
     else if (item && Array.isArray(item.ul)) {
-      out.push(...item.ul.map((li) => plainText(String(li).replace(/^-\s*/, ''))));
+      out.push(...item.ul.map((li) => `- ${plainText(String(li).replace(/^-\s*/, ''))}`));
     }
   }
   return out.filter(Boolean);
@@ -84,9 +85,11 @@ function methodologyOf(id, methodologies) {
   if (!steps.length) throw new Error(`[generate-rgaa-map] no methodology for test ${id}`);
   // The last step says when the test is passed, in all but one test (11.1.3).
   const last = steps.at(-1);
-  return steps.length > 1 && /test est validé/.test(last)
-    ? { steps: steps.slice(0, -1), passWhen: last }
-    : { steps };
+  if (steps.length < 2 || !/test est validé/.test(last)) return { steps };
+  // What follows the verdict is a note on the test, not part of the verdict.
+  const verdict = /^.*?test est validé\s*\.?/.exec(last)[0];
+  const note = last.slice(verdict.length).trim();
+  return { steps: steps.slice(0, -1), passWhen: verdict, ...(note ? { note } : {}) };
 }
 
 // "1.1.1 Non-text Content (A)" -> "1.1.1"
@@ -124,7 +127,12 @@ function buildVersionTables(source, methodologies = {}) {
         ...(criterium.particularCases
           ? { particularCases: noteLines(criterium.particularCases) }
           : {}),
-        ...(criterium.technicalNote ? { technicalNotes: noteLines(criterium.technicalNote) } : {})
+        ...(criterium.technicalNote ? { technicalNotes: noteLines(criterium.technicalNote) } : {}),
+        glossary: glossaryLinks([
+          criterium.title,
+          ...Object.values(criterium.tests).flat(),
+          JSON.stringify([criterium.particularCases, criterium.technicalNote])
+        ])
       };
       for (const testId of testIds) {
         const lines = criterium.tests[testId.slice(id.length + 1)];
@@ -187,6 +195,10 @@ function buildTables(readSource = (file) => fs.readFileSync(path.join(DATA_DIR, 
     out.criteria[version] = t.criteria;
     out.tests[version] = t.tests;
     out.glossary[version] = glossaryOf(JSON.parse(readSource(glossary)));
+    // A note may link to an anchor of another page of RGAA's site.
+    for (const row of Object.values(t.criteria)) {
+      row.glossary = row.glossary.filter((anchor) => out.glossary[version][anchor]);
+    }
   }
   return out;
 }
@@ -213,14 +225,16 @@ function renderModule(tables) {
  * - RGAA_VERSIONS: [{ version, published, wcagVersion }], oldest first.
  * - RGAA_THEMES[version]: [{ number, title }], the 13 themes in order.
  * - RGAA_CRITERIA[version]["1.1"]: { theme, title, wcagSc, techniques, tests,
- *   particularCases?, technicalNotes? }. \`wcagSc\` is RGAA's own
+ *   particularCases?, technicalNotes?, glossary }. \`wcagSc\` is RGAA's own
  *   correspondence to WCAG; \`techniques\` the WCAG techniques and failures it
  *   cites; \`tests\` the ids of its tests; \`particularCases\` and
- *   \`technicalNotes\` its « cas particuliers » and « notes techniques ».
+ *   \`technicalNotes\` its « cas particuliers » and « notes techniques »;
+ *   \`glossary\` the glossary terms all of these link to.
  * - RGAA_TESTS[version]["1.1.1"]: { criterion, title, conditions?,
  *   methodology, glossary? }. \`conditions\` lists what a test enumerates
  *   ("vérifie-t-il une de ces conditions ?"); \`methodology\` is RGAA's own
- *   { steps, passWhen }, the last step being when the test is passed;
+ *   { steps, passWhen, note? }, the last step being when the test is passed
+ *   and \`note\` what RGAA writes after it;
  *   \`glossary\` the glossary terms it links to, keys of RGAA_GLOSSARY.
  *
  * Like the EN 301 549 table, this states what a published document says,

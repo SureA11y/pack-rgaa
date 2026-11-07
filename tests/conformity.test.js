@@ -33,21 +33,14 @@ test('a scan is read as an audit grid: a status per criterion, all of them', () 
   assert.throws(() => rgaaCriteriaStatus({}, { version: '3' }), RangeError);
 });
 
+const ALL = Object.keys(RGAA_CRITERIA['4.1.2']);
+const complete = (statuses) =>
+  ALL.map((criterion) => ({ criterion, status: statuses[criterion] || 'NA' }));
+
 test('a criterion counts as validated only if it is on every page of the sample', () => {
-  const rate = rgaaConformityRate([
-    [
-      { criterion: '1.1', status: 'C' },
-      { criterion: '1.2', status: 'C' },
-      { criterion: '1.3', status: 'NA' }
-    ],
-    [
-      { criterion: '1.1', status: 'NC' },
-      { criterion: '1.2', status: 'NA' },
-      { criterion: '1.3', status: 'NA' }
-    ]
-  ]);
+  const rate = rgaaConformityRate([complete({ 1.1: 'C', 1.2: 'C' }), complete({ 1.1: 'NC' })]);
   // 1.1 fails on one page; 1.2 is applicable on one page and validated there;
-  // 1.3 is not applicable anywhere.
+  // the others are not applicable anywhere.
   assert.deepEqual(
     [rate.validated, rate.applicable, rate.rate, rate.pageRates],
     [1, 2, 0.5, [1, 0]]
@@ -59,6 +52,30 @@ test('a criterion counts as validated only if it is on every page of the sample'
 test('a sample with criteria still to assess is no conformity claim', () => {
   const rate = rgaaConformityRate([[{ criterion: '1.1', status: 'NT' }]]);
   assert.deepEqual([rate.rate, rate.average, rate.complete], [null, null, false]);
+  assert.equal(rgaaConformityRate([[{ criterion: '1.1', status: 'C' }]]).complete, false);
+  assert.equal(rgaaConformityRate([]).complete, false);
+});
+
+test('a page of a process fails a criterion any page of the process fails', () => {
+  const first = { process: 'rendez-vous', rows: complete({ 1.1: 'C', 1.2: 'C' }) };
+  const second = { process: 'rendez-vous', rows: complete({ 1.1: 'NC', 1.2: 'C' }) };
+  assert.deepEqual(rgaaConformityRate([first, second]).pageRates, [0.5, 0.5]);
+  const alone = rgaaConformityRate([first.rows, second.rows]);
+  assert.deepEqual(alone.pageRates, [1, 0.5]);
+});
+
+test("what can't be read is refused rather than counted", () => {
+  assert.throws(() => rgaaConformityRate([[{ criterion: '1.1', status: 'c' }]]), RangeError);
+  assert.throws(
+    () =>
+      rgaaConformityRate([
+        [
+          { criterion: '1.1', status: 'C' },
+          { criterion: '1.1', status: 'NC' }
+        ]
+      ]),
+    RangeError
+  );
 });
 
 test("a test's or a criterion's words have their definitions", () => {

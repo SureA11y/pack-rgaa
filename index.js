@@ -27,49 +27,13 @@ const {
   validateRgaaRuleTests,
   testsOfRule
 } = require('./mappings');
-const { procedures, groups, notes, facetOf } = require('./procedures');
-const { REVIEW, VARIANT_REVIEW } = require('./review');
+const { proceduresOf, facetOf } = require('./procedures');
+const { REVIEW, VARIANT_REVIEW, CORE_MANUAL_RULES } = require('./review');
 const { RGAA_TESTS } = require('./map');
 const { RGAA_RULE_TESTS } = require('./rule-map');
 
 // The WCAG version an RGAA version is built on.
 const wcagVersionOf = (version) => RGAA_VERSIONS.find((v) => v.version === version).wcagVersion;
-
-const standard = {
-  key: 'rgaa',
-  standard: 'RGAA',
-  versions: RGAA_VERSIONS.map((v) => v.version),
-  profiles: {
-    // RGAA alone: the pack's own rules (the rgaa tag) and the core rules
-    // rule-map.js gives an RGAA test (mappedRules), and nothing else, so
-    // results hold RGAA's criteria and no WCAG ones. With no WCAG tag to
-    // imply it, the profile names the WCAG version RGAA is built on. RGAA
-    // 8.2 requires valid code as written, which the 2023 errata to WCAG 2.1
-    // no longer count under 4.1.1 Parsing: keepsParsing keeps a duplicate id
-    // a failure of 8.2.1.
-    'rgaa-4.1.2': {
-      version: '4.1.2',
-      tags: ['rgaa'],
-      mappedRules: true,
-      wcagVersion: wcagVersionOf('4.1.2'),
-      keepsParsing: true
-    }
-  },
-  ruleTag: 'rgaa',
-  ruleMapped: true,
-  mappingsFor: rgaaMappingsFor,
-  composites: rgaaComposites,
-  validate: validateRgaaRuleTests,
-  report: { noteKey: 'report_rgaaRollup_note', titleLang: 'fr' },
-  // How a person assesses it, in RGAA's own words (procedures.js), and how
-  // they answer core's findings in RGAA's terms (review.js). The standard is
-  // French, so it is read in French in every locale.
-  lang: 'fr',
-  procedures,
-  groups,
-  notes,
-  review: REVIEW['4.1.2']
-};
 
 const LATEST = RGAA_VERSIONS.at(-1).version;
 
@@ -147,6 +111,44 @@ const dictionaries = Object.fromEntries(
       )
     ])
 );
+
+const standard = {
+  key: 'rgaa',
+  standard: 'RGAA',
+  versions: RGAA_VERSIONS.map((v) => v.version),
+  profiles: {
+    // RGAA alone: the pack's own rules (the rgaa tag) and the core rules
+    // rule-map.js gives an RGAA test (mappedRules), and nothing else, so
+    // results hold RGAA's criteria and no WCAG ones. With no WCAG tag to
+    // imply it, the profile names the WCAG version RGAA is built on. RGAA
+    // 8.2 requires valid code as written, which the 2023 errata to WCAG 2.1
+    // no longer count under 4.1.1 Parsing: keepsParsing keeps a duplicate id
+    // a failure of 8.2.1.
+    'rgaa-4.1.2': {
+      version: '4.1.2',
+      tags: ['rgaa'],
+      mappedRules: true,
+      wcagVersion: wcagVersionOf('4.1.2'),
+      keepsParsing: true
+    }
+  },
+  ruleTag: 'rgaa',
+  ruleMapped: true,
+  mappingsFor: rgaaMappingsFor,
+  composites: rgaaComposites,
+  validate: validateRgaaRuleTests,
+  report: { noteKey: 'report_rgaaRollup_note', titleLang: 'fr' },
+  // How a person assesses it, in RGAA's own words (procedures.js), and how
+  // they answer core's findings in RGAA's terms (review.js). The standard is
+  // French, so it is read in French in every locale.
+  lang: 'fr',
+  ...proceduresOf(
+    (ruleId) =>
+      CORE_MANUAL_RULES.includes(ruleId) ||
+      rules.some((rule) => rule.id === ruleId && rule.meta.type === 'manual')
+  ),
+  review: REVIEW['4.1.2']
+};
 
 module.exports = definePack({
   name,

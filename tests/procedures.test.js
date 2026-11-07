@@ -12,7 +12,8 @@ const core = require('@surea11y/core');
 const pack = require('..');
 const { RGAA_CRITERIA, RGAA_TESTS, RGAA_THEMES } = require('../map');
 const { RGAA_GLOSSARY } = require('../glossary');
-const { COMPLETE_CHECK, testsWithRules } = require('../mappings');
+const { COMPLETE_CHECK, testsRulesDecide } = require('../mappings');
+const { CORE_MANUAL_RULES } = require('../review');
 
 const V = '4.1.2';
 const options = { packs: [pack], standard: 'rgaa' };
@@ -54,12 +55,15 @@ test('a test copying another takes its steps', () => {
   assert.deepEqual(RGAA_TESTS[V]['7.5.2'].methodology, RGAA_TESTS[V]['7.5.1'].methodology);
 });
 
-test('how much the rules decide follows the mapping', () => {
-  const ruled = testsWithRules(V);
+test('how much the rules decide follows the mapping, and a rule that only asks decides nothing', () => {
+  const manual = (id) =>
+    CORE_MANUAL_RULES.includes(id) ||
+    pack.rules.some((r) => r.id === id && r.meta.type === 'manual');
+  const decided = testsRulesDecide(V, manual);
   for (const r of listed.requirements) {
     for (const f of r.facets) {
       const id = f.label.split(' ')[1];
-      const expected = !ruled.has(id)
+      const expected = !decided.has(id)
         ? 'manual'
         : COMPLETE_CHECK[V].includes(r.id)
           ? 'full'
@@ -67,6 +71,36 @@ test('how much the rules decide follows the mapping', () => {
       assert.equal(f.automation, expected, id);
     }
   }
+  assert.equal(core.proceduresFor('1.4', options).facets[0].automation, 'manual');
+});
+
+test("a facet gives the test's own conditions", () => {
+  const [first] = core.proceduresFor('10.6', options).facets;
+  assert.match(first.label, /au survol autre qu’un changement de couleur/);
+  assert.doesNotMatch(core.proceduresFor('13.8', options).facets[0].label, /^$/);
+});
+
+test("what RGAA writes after a test's verdict is a note, not part of passing", () => {
+  const r = core.proceduresFor('13.8', options);
+  assert.match(r.facets[1].procedure.passWhen, /le test est validé\.?$/);
+  assert.match(r.note, /Note du test 13\.8\.2 : .*prise de focus/);
+});
+
+test('a test with nothing to check is not applicable, and nothing else reads as failing it', () => {
+  assert.ok(
+    listed.notes.some((n) => /première étape ne trouve rien est donc non applicable/.test(n))
+  );
+  assert.match(core.proceduresFor('1.1', options).facets[0].procedure.failWhen, /élément concerné/);
+});
+
+test('the tools come from what a test asks, not from a word that looks like it', () => {
+  const tools = (requirement, i = 0) =>
+    core.proceduresFor(requirement, options).facets[i].tools.map((t) => t.id);
+  assert.ok(!tools('3.2').includes('screen-reader'));
+  assert.ok(!tools('13.10').includes('keyboard'));
+  assert.ok(tools('7.1').includes('screen-reader'));
+  assert.ok(tools('7.3', 1).includes('keyboard'));
+  assert.ok(tools('10.11').includes('zoom'));
 });
 
 test('a pack rule is listed under the facets of the tests it checks', () => {

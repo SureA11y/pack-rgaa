@@ -18,14 +18,16 @@
  * - RGAA_VERSIONS: [{ version, published, wcagVersion }], oldest first.
  * - RGAA_THEMES[version]: [{ number, title }], the 13 themes in order.
  * - RGAA_CRITERIA[version]["1.1"]: { theme, title, wcagSc, techniques, tests,
- *   particularCases?, technicalNotes? }. `wcagSc` is RGAA's own
+ *   particularCases?, technicalNotes?, glossary }. `wcagSc` is RGAA's own
  *   correspondence to WCAG; `techniques` the WCAG techniques and failures it
  *   cites; `tests` the ids of its tests; `particularCases` and
- *   `technicalNotes` its « cas particuliers » and « notes techniques ».
+ *   `technicalNotes` its « cas particuliers » and « notes techniques »;
+ *   `glossary` the glossary terms all of these link to.
  * - RGAA_TESTS[version]["1.1.1"]: { criterion, title, conditions?,
  *   methodology, glossary? }. `conditions` lists what a test enumerates
  *   ("vérifie-t-il une de ces conditions ?"); `methodology` is RGAA's own
- *   { steps, passWhen }, the last step being when the test is passed;
+ *   { steps, passWhen, note? }, the last step being when the test is passed
+ *   and `note` what RGAA writes after it;
  *   `glossary` the glossary terms it links to, keys of RGAA_GLOSSARY.
  *
  * Like the EN 301 549 table, this states what a published document says,
@@ -104,7 +106,17 @@ const RGAA_CRITERIA = {
       title: 'Chaque image porteuse d’information a-t-elle une alternative textuelle ?',
       wcagSc: ['1.1.1'],
       techniques: ['H36', 'H37', 'H53', 'F65', 'H24'],
-      tests: ['1.1.1', '1.1.2', '1.1.3', '1.1.4', '1.1.5', '1.1.6', '1.1.7', '1.1.8']
+      tests: ['1.1.1', '1.1.2', '1.1.3', '1.1.4', '1.1.5', '1.1.6', '1.1.7', '1.1.8'],
+      glossary: [
+        'image-porteuse-d-information',
+        'alternative-textuelle-image',
+        'zone-d-une-image-reactive',
+        'image-reactive',
+        'zone-cliquable',
+        'image-objet',
+        'lien-ou-bouton-adjacent',
+        'contenu-alternatif'
+      ]
     },
     1.2: {
       theme: 1,
@@ -117,6 +129,13 @@ const RGAA_CRITERIA = {
         "Lorsqu'une image est associée à une légende, la note technique WCAG recommande de prévoir systématiquement une alternative textuelle (cf. critère 1.9). Dans ce cas le critère 1.2 est non applicable.",
         "Dans le cas d'une image vectorielle (balise <svg>) de décoration qui serait affichée au travers d'un élément <use href=\"…\"> enfant de l'élément <svg>, le test 1.2.4 s'appliquera également à l'élément <svg> associée par le biais de l'élément <use>.",
         'Un attribut WAI-ARIA role="presentation" peut être utilisé sur les images de décoration et les zones non cliquables de décoration. Le rôle "none" introduit en ARIA 1.1 et synonyme du rôle "presentation" peut être aussi utilisé. Il reste préférable cependant d\'utiliser le rôle "presentation" en attendant un support satisfaisant du rôle "none".'
+      ],
+      glossary: [
+        'image-de-decoration',
+        'legende-d-image',
+        'alternative-textuelle-image',
+        'zone-non-cliquable',
+        'image-objet'
       ]
     },
     1.3: {
@@ -129,6 +148,20 @@ const RGAA_CRITERIA = {
       particularCases: [
         'Il existe une gestion de cas particuliers lorsque l’image est utilisée comme CAPTCHA ou comme image-test. Dans cette situation, où il n’est pas possible de donner une alternative pertinente sans détruire l’objet du CAPTCHA ou du test, le critère est non applicable.',
         'Note : le cas des CAPTCHA et des images-test est traité de manière spécifique par le critère 1.4.'
+      ],
+      glossary: [
+        'image-porteuse-d-information',
+        'alternative-textuelle-image',
+        'passage-de-texte-lie-par-aria-labelledby-ou-aria-describedby',
+        'zone-d-une-image-reactive',
+        'image-reactive',
+        'bouton-formulaire',
+        'image-objet',
+        'contenu-alternatif',
+        'correctement-restitue-par-les-technologies-d-assistance',
+        'alternative-courte-et-concise',
+        'captcha',
+        'image-test'
       ]
     },
     1.4: {
@@ -137,7 +170,16 @@ const RGAA_CRITERIA = {
         'Pour chaque image utilisée comme CAPTCHA ou comme image-test, ayant une alternative textuelle, cette alternative permet-elle d’identifier la nature et la fonction de l’image ?',
       wcagSc: ['1.1.1'],
       techniques: ['G100', 'G143'],
-      tests: ['1.4.1', '1.4.2', '1.4.3', '1.4.4', '1.4.5', '1.4.6', '1.4.7']
+      tests: ['1.4.1', '1.4.2', '1.4.3', '1.4.4', '1.4.5', '1.4.6', '1.4.7'],
+      glossary: [
+        'captcha',
+        'image-test',
+        'alternative-textuelle-image',
+        'passage-de-texte-lie-par-aria-labelledby-ou-aria-describedby',
+        'bouton-formulaire',
+        'image-objet',
+        'contenu-alternatif'
+      ]
     },
     1.5: {
       theme: 1,
@@ -145,7 +187,8 @@ const RGAA_CRITERIA = {
         'Pour chaque image utilisée comme CAPTCHA, une solution d’accès alternatif au contenu ou à la fonction du CAPTCHA est-elle présente ?',
       wcagSc: ['1.1.1'],
       techniques: ['G144'],
-      tests: ['1.5.1', '1.5.2']
+      tests: ['1.5.1', '1.5.2'],
+      glossary: ['captcha']
     },
     1.6: {
       theme: 1,
@@ -170,6 +213,15 @@ const RGAA_CRITERIA = {
         'L’utilisation de l’attribut WAI-ARIA aria-describedby n’est pas recommandée pour lier une image (<img>, <object>, <embed>, <canvas>) à sa description détaillée, par manque de support des technologies d’assistance. Néanmoins, lorsqu’il est utilisé, l’attribut devra nécessairement faire référence à l’id de la zone contenant la description détaillée.',
         'La description détaillée adjacente peut être implémentée via une balise <figcaption>, dans ce cas le critère 1.9 doit être vérifié (utilisation de <figure> et des attributs WAI-ARIA role="figure" et aria-label, notamment).',
         "L'attribut longdesc qui constitue une des conditions du test 1.6.1 (et dont la pertinence est vérifiée avec le test 1.7.1) est désormais considéré comme obsolète par la spécification HTML en cours. La vérification de cet attribut ne sera donc requise que pour les versions de la spécification HTML antérieure à HTML 5."
+      ],
+      glossary: [
+        'image-porteuse-d-information',
+        'description-detaillee-image',
+        'alternative-textuelle-image',
+        'lien-ou-bouton-adjacent',
+        'image-objet',
+        'bouton-formulaire',
+        'passage-de-texte-lie-par-aria-labelledby-ou-aria-describedby'
       ]
     },
     1.7: {
@@ -178,7 +230,15 @@ const RGAA_CRITERIA = {
         'Pour chaque image porteuse d’information ayant une description détaillée, cette description est-elle pertinente ?',
       wcagSc: ['1.1.1'],
       techniques: ['G92', 'F67'],
-      tests: ['1.7.1', '1.7.2', '1.7.3', '1.7.4', '1.7.5', '1.7.6']
+      tests: ['1.7.1', '1.7.2', '1.7.3', '1.7.4', '1.7.5', '1.7.6'],
+      glossary: [
+        'image-porteuse-d-information',
+        'description-detaillee-image',
+        'alternative-textuelle-image',
+        'lien-ou-bouton-adjacent',
+        'bouton-formulaire',
+        'image-objet'
+      ]
     },
     1.8: {
       theme: 1,
@@ -192,6 +252,14 @@ const RGAA_CRITERIA = {
       ],
       technicalNotes: [
         'Le texte dans les images vectorielles étant du texte réel, il n’est pas concerné par ce critère.'
+      ],
+      glossary: [
+        'image-texte',
+        'image-porteuse-d-information',
+        'mecanisme-de-remplacement',
+        'texte-style',
+        'captcha',
+        'image-test'
       ]
     },
     1.9: {
@@ -206,21 +274,24 @@ const RGAA_CRITERIA = {
         '<img src="image.png" alt="Photo : soleil couchant" /><figcaption>Photo : crédit xxx</figcaption>',
         'Les attributs WAI-ARIA aria-labelledby et aria-describedby ne peuvent pas être utilisés actuellement par manque de support par les technologies d’assistance.',
         'Note : les images légendées doivent par ailleurs respecter le critère 1.1 et le critère 1.3 relatifs aux images porteuses d’information.'
-      ]
+      ],
+      glossary: ['legende-d-image', 'image-objet', 'alternative-textuelle-image']
     },
     2.1: {
       theme: 2,
       title: 'Chaque cadre a-t-il un titre de cadre ?',
       wcagSc: ['4.1.2'],
       techniques: ['H64'],
-      tests: ['2.1.1']
+      tests: ['2.1.1'],
+      glossary: ['cadre', 'titre-de-cadre']
     },
     2.2: {
       theme: 2,
       title: 'Pour chaque cadre ayant un titre de cadre, ce titre de cadre est-il pertinent ?',
       wcagSc: ['4.1.2'],
       techniques: ['H64'],
-      tests: ['2.2.1']
+      tests: ['2.2.1'],
+      glossary: ['cadre', 'titre-de-cadre']
     },
     3.1: {
       theme: 3,
@@ -228,7 +299,14 @@ const RGAA_CRITERIA = {
         'Dans chaque page web, l’information ne doit pas être donnée uniquement par la couleur. Cette règle est-elle respectée ?',
       wcagSc: ['1.3.1', '1.4.1'],
       techniques: ['G14', 'G182', 'G111', 'G117', 'G138', 'G205'],
-      tests: ['3.1.1', '3.1.2', '3.1.3', '3.1.4', '3.1.5', '3.1.6']
+      tests: ['3.1.1', '3.1.2', '3.1.3', '3.1.4', '3.1.5', '3.1.6'],
+      glossary: [
+        'information-donnee-par-la-couleur',
+        'image-vehiculant-une-information-donnee-par-la-couleur',
+        'propriete-css-determinant-une-couleur',
+        'media-temporel-type-son-video-et-synchronise',
+        'media-non-temporel'
+      ]
     },
     3.2: {
       theme: 3,
@@ -239,11 +317,12 @@ const RGAA_CRITERIA = {
       tests: ['3.2.1', '3.2.2', '3.2.3', '3.2.4', '3.2.5'],
       particularCases: [
         'Dans ces situations, les critères sont non applicables pour ces éléments :',
-        'Le texte fait partie d’un logo ou d’un nom de marque d’un organisme ou d’une société ;',
-        'Le texte ou l’image de texte est purement décoratif ;',
-        'Le texte fait partie d’une image véhiculant une information mais le texte lui-même n’apporte aucune information essentielle ;',
-        'Le texte ou l’image de texte fait partie d’un élément d’interface sur lequel aucune action n’est possible (par exemple un bouton avec l’attribut disabled).'
-      ]
+        '- Le texte fait partie d’un logo ou d’un nom de marque d’un organisme ou d’une société ;',
+        '- Le texte ou l’image de texte est purement décoratif ;',
+        '- Le texte fait partie d’une image véhiculant une information mais le texte lui-même n’apporte aucune information essentielle ;',
+        '- Le texte ou l’image de texte fait partie d’un élément d’interface sur lequel aucune action n’est possible (par exemple un bouton avec l’attribut disabled).'
+      ],
+      glossary: ['contraste', 'mecanisme-qui-permet-d-afficher-un-rapport-de-contraste-conforme']
     },
     3.3: {
       theme: 3,
@@ -254,13 +333,20 @@ const RGAA_CRITERIA = {
       tests: ['3.3.1', '3.3.2', '3.3.3', '3.3.4'],
       particularCases: [
         'Les cas suivants sont non applicables pour ce critère :',
-        'Composant d’interface inactif (par exemple, un bouton avec un attribut disabled) sur lequel aucune action n’est possible ;',
-        'Composant d’interface pour lequel l’apparence est gérée par les styles natifs du navigateur sans aucune modification par l’auteur (par exemple, le style au focus natif dans Chrome ou Firefox) ;',
-        'Composant d’interface pour lequel la couleur n’est pas nécessaire pour identifier le composant ou son état (par exemple, un groupe de liens faisant office de navigation dont la position dans la page, la taille et la couleur du texte permettent de comprendre qu’il s’agit de liens même si la couleur du soulignement des liens avec le fond blanc n’a pas un ratio de 3:1 et que le texte lui a un ratio de 4.5:1) ;',
-        'Élément graphique ou parties d’élément graphique non porteur d’information ou ayant une alternative (description longue, informations identiques visibles dans la page) ;',
-        'Élément graphique ou parties d’élément graphique faisant partie d’un logo ou du nom de marque d’un organisme ou d’une société ;',
-        'Élément graphique ou parties d’élément graphique dont la présentation est essentielle à l’information véhiculée (par exemple, drapeaux, logotypes, photos de personnes ou de scènes, captures d’écran, diagrammes médicaux, carte de chaleurs) ;',
-        'Élément graphique ou parties d’élément graphique dynamiques dont le contraste au survol / focus est suffisant.'
+        '- Composant d’interface inactif (par exemple, un bouton avec un attribut disabled) sur lequel aucune action n’est possible ;',
+        '- Composant d’interface pour lequel l’apparence est gérée par les styles natifs du navigateur sans aucune modification par l’auteur (par exemple, le style au focus natif dans Chrome ou Firefox) ;',
+        '- Composant d’interface pour lequel la couleur n’est pas nécessaire pour identifier le composant ou son état (par exemple, un groupe de liens faisant office de navigation dont la position dans la page, la taille et la couleur du texte permettent de comprendre qu’il s’agit de liens même si la couleur du soulignement des liens avec le fond blanc n’a pas un ratio de 3:1 et que le texte lui a un ratio de 4.5:1) ;',
+        '- Élément graphique ou parties d’élément graphique non porteur d’information ou ayant une alternative (description longue, informations identiques visibles dans la page) ;',
+        '- Élément graphique ou parties d’élément graphique faisant partie d’un logo ou du nom de marque d’un organisme ou d’une société ;',
+        '- Élément graphique ou parties d’élément graphique dont la présentation est essentielle à l’information véhiculée (par exemple, drapeaux, logotypes, photos de personnes ou de scènes, captures d’écran, diagrammes médicaux, carte de chaleurs) ;',
+        '- Élément graphique ou parties d’élément graphique dynamiques dont le contraste au survol / focus est suffisant.'
+      ],
+      glossary: [
+        'composant-d-interface',
+        'contraste',
+        'couleur-d-arriere-plan-contigue-et-couleur-contigue',
+        'mecanisme-qui-permet-d-afficher-un-rapport-de-contraste-conforme',
+        'element-graphique'
       ]
     },
     4.1: {
@@ -272,15 +358,24 @@ const RGAA_CRITERIA = {
       tests: ['4.1.1', '4.1.2', '4.1.3'],
       particularCases: [
         'Il existe une gestion de cas particulier lorsque :',
-        'Le média temporel est utilisé à des fins décoratives (c’est-à-dire qu’il n’apporte aucune information) ;',
-        'Le média temporel est lui-même une alternative à un contenu de la page (une vidéo en langue des signes ou la vocalisation d’un texte, par exemple) ;',
-        'Le média temporel est utilisé pour accéder à une version agrandie ;',
-        'Le média temporel est utilisé comme un CAPTCHA ;',
-        'Le média temporel fait partie d’un test qui deviendrait inutile si la transcription textuelle, les sous-titres synchronisés ou l’audiodescription étaient communiqués ;',
-        'Pour les services de l’État, les collectivités territoriales et leurs établissements : si le média temporel a été publié entre le 23 septembre 2019 et le 23 septembre 2020 sur un site internet, intranet ou extranet créé depuis le 23 septembre 2018, il est exempté de l’obligation d’accessibilité ;',
-        'Pour les personnes de droit privé mentionnées aux 2° à 4° du I de l’article 47 de la loi du 11 février 2005 : si le média temporel a été publié avant le 23 septembre 2020, il est exempté de l’obligation d’accessibilité.',
+        '- Le média temporel est utilisé à des fins décoratives (c’est-à-dire qu’il n’apporte aucune information) ;',
+        '- Le média temporel est lui-même une alternative à un contenu de la page (une vidéo en langue des signes ou la vocalisation d’un texte, par exemple) ;',
+        '- Le média temporel est utilisé pour accéder à une version agrandie ;',
+        '- Le média temporel est utilisé comme un CAPTCHA ;',
+        '- Le média temporel fait partie d’un test qui deviendrait inutile si la transcription textuelle, les sous-titres synchronisés ou l’audiodescription étaient communiqués ;',
+        '- Pour les services de l’État, les collectivités territoriales et leurs établissements : si le média temporel a été publié entre le 23 septembre 2019 et le 23 septembre 2020 sur un site internet, intranet ou extranet créé depuis le 23 septembre 2018, il est exempté de l’obligation d’accessibilité ;',
+        '- Pour les personnes de droit privé mentionnées aux 2° à 4° du I de l’article 47 de la loi du 11 février 2005 : si le média temporel a été publié avant le 23 septembre 2020, il est exempté de l’obligation d’accessibilité.',
         'Dans ces situations, le critère est non applicable.',
         'Ce cas particulier s’applique également aux critères 4.2, 4.3, 4.5.'
+      ],
+      glossary: [
+        'media-temporel-type-son-video-et-synchronise',
+        'transcription-textuelle-media-temporel',
+        'audiodescription-synchronisee-media-temporel',
+        'lien-ou-bouton-adjacent',
+        'version-alternative-audio-seulement',
+        'captcha',
+        'sous-titres-synchronises-objet-multimedia'
       ]
     },
     4.2: {
@@ -290,7 +385,12 @@ const RGAA_CRITERIA = {
       wcagSc: ['1.2.1', '1.2.3'],
       techniques: ['F30', 'F67', 'SM6', 'SM7'],
       tests: ['4.2.1', '4.2.2', '4.2.3'],
-      particularCases: ['Voir cas particuliers critère 4.1.']
+      particularCases: ['Voir cas particuliers critère 4.1.'],
+      glossary: [
+        'media-temporel-type-son-video-et-synchronise',
+        'transcription-textuelle-media-temporel',
+        'audiodescription-synchronisee-media-temporel'
+      ]
     },
     4.3: {
       theme: 4,
@@ -299,7 +399,12 @@ const RGAA_CRITERIA = {
       wcagSc: ['1.2.2'],
       techniques: ['G58', 'G93', 'G87', 'H95', 'SM11', 'SM12', 'F74', 'F75'],
       tests: ['4.3.1', '4.3.2'],
-      particularCases: ['Voir cas particuliers critère 4.1.']
+      particularCases: ['Voir cas particuliers critère 4.1.'],
+      glossary: [
+        'media-temporel-type-son-video-et-synchronise',
+        'sous-titres-synchronises-objet-multimedia',
+        'lien-ou-bouton-adjacent'
+      ]
     },
     4.4: {
       theme: 4,
@@ -307,7 +412,11 @@ const RGAA_CRITERIA = {
         'Pour chaque média temporel synchronisé pré-enregistré ayant des sous-titres synchronisés, ces sous-titres sont-ils pertinents ?',
       wcagSc: ['1.2.2'],
       techniques: ['G93', 'G87', 'SM11', 'SM12', 'F8', 'F74', 'F75'],
-      tests: ['4.4.1']
+      tests: ['4.4.1'],
+      glossary: [
+        'media-temporel-type-son-video-et-synchronise',
+        'sous-titres-synchronises-objet-multimedia'
+      ]
     },
     4.5: {
       theme: 4,
@@ -316,7 +425,11 @@ const RGAA_CRITERIA = {
       wcagSc: ['1.2.5'],
       techniques: ['G8', 'G58', 'G78', 'G173', 'H96', 'SM1', 'SM2', 'SM6', 'SM7'],
       tests: ['4.5.1', '4.5.2'],
-      particularCases: ['Voir cas particuliers critère 4.1.']
+      particularCases: ['Voir cas particuliers critère 4.1.'],
+      glossary: [
+        'media-temporel-type-son-video-et-synchronise',
+        'audiodescription-synchronisee-media-temporel'
+      ]
     },
     4.6: {
       theme: 4,
@@ -324,7 +437,11 @@ const RGAA_CRITERIA = {
         'Pour chaque média temporel pré-enregistré ayant une audiodescription synchronisée, celle-ci est-elle pertinente ?',
       wcagSc: ['1.2.5'],
       techniques: ['SM1', 'SM2', 'SM6', 'SM7'],
-      tests: ['4.6.1', '4.6.2']
+      tests: ['4.6.1', '4.6.2'],
+      glossary: [
+        'media-temporel-type-son-video-et-synchronise',
+        'audiodescription-synchronisee-media-temporel'
+      ]
     },
     4.7: {
       theme: 4,
@@ -334,7 +451,8 @@ const RGAA_CRITERIA = {
       tests: ['4.7.1'],
       particularCases: [
         'Il existe une gestion de cas particulier lorsque le média temporel est utilisé à des fins décoratives (c’est-à-dire qu’il n’apporte aucune information). Dans cette situation, le critère est non applicable.'
-      ]
+      ],
+      glossary: ['media-temporel-type-son-video-et-synchronise']
     },
     4.8: {
       theme: 4,
@@ -345,10 +463,16 @@ const RGAA_CRITERIA = {
       tests: ['4.8.1', '4.8.2'],
       particularCases: [
         'Il existe une gestion de cas particulier lorsque :',
-        'Le média non temporel est utilisé à des fins décoratives (c’est-à-dire qu’il n’apporte aucune information) ;',
-        'Le média non temporel est diffusé dans un environnement maîtrisé ;',
-        'Le média non temporel est inséré via JavaScript en vérifiant la présence et la version du plug-in, en remplacement d’un contenu alternatif déjà présent.',
+        '- Le média non temporel est utilisé à des fins décoratives (c’est-à-dire qu’il n’apporte aucune information) ;',
+        '- Le média non temporel est diffusé dans un environnement maîtrisé ;',
+        '- Le média non temporel est inséré via JavaScript en vérifiant la présence et la version du plug-in, en remplacement d’un contenu alternatif déjà présent.',
         'Dans ces situations, le critère est non applicable.'
+      ],
+      glossary: [
+        'media-non-temporel',
+        'lien-ou-bouton-adjacent',
+        'environnement-maitrise',
+        'contenu-alternatif'
       ]
     },
     4.9: {
@@ -357,14 +481,16 @@ const RGAA_CRITERIA = {
         'Pour chaque média non temporel ayant une alternative, cette alternative est-elle pertinente ?',
       wcagSc: ['1.1.1'],
       techniques: ['H46', 'F30'],
-      tests: ['4.9.1']
+      tests: ['4.9.1'],
+      glossary: ['media-non-temporel']
     },
     '4.10': {
       theme: 4,
       title: 'Chaque son déclenché automatiquement est-il contrôlable par l’utilisateur ?',
       wcagSc: ['1.4.2'],
       techniques: ['G60', 'G170', 'G171', 'F23', 'F93'],
-      tests: ['4.10.1']
+      tests: ['4.10.1'],
+      glossary: ['controle-son-declenche-automatiquement']
     },
     4.11: {
       theme: 4,
@@ -372,7 +498,12 @@ const RGAA_CRITERIA = {
         'La consultation de chaque média temporel est-elle, si nécessaire, contrôlable par le clavier et tout dispositif de pointage ?',
       wcagSc: ['2.1.1', '2.1.2'],
       techniques: ['G4', 'G90', 'G202'],
-      tests: ['4.11.1', '4.11.2', '4.11.3']
+      tests: ['4.11.1', '4.11.2', '4.11.3'],
+      glossary: [
+        'media-temporel-type-son-video-et-synchronise',
+        'accessible-et-activable-par-le-clavier-et-tout-dispositif-de-pointage',
+        'controle-de-la-consultation-d-un-media-temporel'
+      ]
     },
     4.12: {
       theme: 4,
@@ -380,7 +511,11 @@ const RGAA_CRITERIA = {
         'La consultation de chaque média non temporel est-elle contrôlable par le clavier et tout dispositif de pointage ?',
       wcagSc: ['2.1.1', '2.1.2'],
       techniques: ['G4', 'G90'],
-      tests: ['4.12.1', '4.12.2']
+      tests: ['4.12.1', '4.12.2'],
+      glossary: [
+        'media-non-temporel',
+        'accessible-et-activable-par-le-clavier-et-tout-dispositif-de-pointage'
+      ]
     },
     4.13: {
       theme: 4,
@@ -392,6 +527,12 @@ const RGAA_CRITERIA = {
       particularCases: [
         'Il existe une gestion de cas particulier lorsque le média temporel ou non temporel est utilisé à des fins décoratives (c’est-à-dire qu’il n’apporte aucune information).',
         'Dans ces situations, le critère est non applicable.'
+      ],
+      glossary: [
+        'media-temporel-type-son-video-et-synchronise',
+        'media-non-temporel',
+        'compatible-avec-les-technologies-d-assistance',
+        'lien-ou-bouton-adjacent'
       ]
     },
     5.1: {
@@ -402,14 +543,16 @@ const RGAA_CRITERIA = {
       tests: ['5.1.1'],
       technicalNotes: [
         'La spécification HTML propose plusieurs méthodes pour lier un résumé à un tableau (tableau lié à un passage de texte avec l’attribut aria-describedby, tableau groupé dans un élément figure avec un résumé présent dans un élément figcaption ou un élément p, résumé présent dans un élément details contenu dans l’élément caption). Ces méthodes n’ont pas un support suffisant pour être utilisées actuellement.'
-      ]
+      ],
+      glossary: ['tableau-de-donnees-complexe', 'resume-de-tableau']
     },
     5.2: {
       theme: 5,
       title: 'Pour chaque tableau de données complexe ayant un résumé, celui-ci est-il pertinent ?',
       wcagSc: ['1.3.1'],
       techniques: ['H73'],
-      tests: ['5.2.1']
+      tests: ['5.2.1'],
+      glossary: ['tableau-de-donnees-complexe', 'resume-de-tableau']
     },
     5.3: {
       theme: 5,
@@ -417,7 +560,8 @@ const RGAA_CRITERIA = {
         'Pour chaque tableau de mise en forme, le contenu linéarisé reste-t-il compréhensible ?',
       wcagSc: ['1.3.2', '4.1.2'],
       techniques: ['F49', 'ARIA4'],
-      tests: ['5.3.1']
+      tests: ['5.3.1'],
+      glossary: ['tableau-de-mise-en-forme']
     },
     5.4: {
       theme: 5,
@@ -425,14 +569,16 @@ const RGAA_CRITERIA = {
         'Pour chaque tableau de données ayant un titre, le titre est-il correctement associé au tableau de données ?',
       wcagSc: ['1.3.1'],
       techniques: ['H39'],
-      tests: ['5.4.1']
+      tests: ['5.4.1'],
+      glossary: ['tableau-de-donnees-ayant-un-titre']
     },
     5.5: {
       theme: 5,
       title: 'Pour chaque tableau de données ayant un titre, celui-ci est-il pertinent ?',
       wcagSc: ['1.3.1'],
       techniques: ['H39'],
-      tests: ['5.5.1']
+      tests: ['5.5.1'],
+      glossary: ['tableau-de-donnees-ayant-un-titre', 'tableau-de-donnees']
     },
     5.6: {
       theme: 5,
@@ -440,7 +586,8 @@ const RGAA_CRITERIA = {
         'Pour chaque tableau de données, chaque en-tête de colonne et chaque en-tête de ligne sont-ils correctement déclarés ?',
       wcagSc: ['1.3.1'],
       techniques: ['H51', 'F91'],
-      tests: ['5.6.1', '5.6.2', '5.6.3', '5.6.4']
+      tests: ['5.6.1', '5.6.2', '5.6.3', '5.6.4'],
+      glossary: ['tableau-de-donnees', 'en-tete-de-colonne-ou-de-ligne']
     },
     5.7: {
       theme: 5,
@@ -454,7 +601,8 @@ const RGAA_CRITERIA = {
       ],
       technicalNotes: [
         'Si l’attribut headers est implémenté sur une cellule déjà reliée à un en-tête (de ligne ou de colonne) avec l’attribut scope (avec la valeur col ou row), c’est l’en-tête ou les en-têtes référencés par l’attribut headers qui seront restitués aux technologies d’assistance. Les en-têtes reliés avec l’attribut scope seront ignorés.'
-      ]
+      ],
+      glossary: ['tableau-de-donnees', 'en-tete-de-colonne-ou-de-ligne']
     },
     5.8: {
       theme: 5,
@@ -462,7 +610,8 @@ const RGAA_CRITERIA = {
         'Chaque tableau de mise en forme ne doit pas utiliser d’éléments propres aux tableaux de données. Cette règle est-elle respectée ?',
       wcagSc: ['1.3.1'],
       techniques: ['F46'],
-      tests: ['5.8.1']
+      tests: ['5.8.1'],
+      glossary: ['tableau-de-mise-en-forme', 'tableau-de-donnees']
     },
     6.1: {
       theme: 6,
@@ -473,18 +622,29 @@ const RGAA_CRITERIA = {
       particularCases: [
         'Il existe une gestion de cas particuliers pour les tests 6.1.1, 6.1.2, 6.1.3 et 6.1.4 lorsque le lien est ambigu pour tout le monde. Dans cette situation, où il n’est pas possible de rendre le lien explicite dans son contexte, le critère est non applicable.',
         'Il existe une gestion de cas particuliers pour le test 6.1.5 lorsque :',
-        'La ponctuation et les lettres majuscules sont présentes dans le texte de l’intitulé visible : elles peuvent être ignorées dans le nom accessible sans porter à conséquence ;',
-        'Le texte de l’intitulé visible sert de symbole : le texte ne doit pas être interprété littéralement au niveau du nom accessible. Le nom doit exprimer la fonction véhiculée par le symbole (par exemple, “B” au niveau d’un éditeur de texte aura pour nom accessible “Mettre en gras”, le signe “>” en fonction du contexte signifiera “Suivant” ou “Lancer la vidéo”). Le cas des symboles mathématiques fait cependant exception (voir la note ci-dessous).',
+        '- La ponctuation et les lettres majuscules sont présentes dans le texte de l’intitulé visible : elles peuvent être ignorées dans le nom accessible sans porter à conséquence ;',
+        '- Le texte de l’intitulé visible sert de symbole : le texte ne doit pas être interprété littéralement au niveau du nom accessible. Le nom doit exprimer la fonction véhiculée par le symbole (par exemple, “B” au niveau d’un éditeur de texte aura pour nom accessible “Mettre en gras”, le signe “>” en fonction du contexte signifiera “Suivant” ou “Lancer la vidéo”). Le cas des symboles mathématiques fait cependant exception (voir la note ci-dessous).',
         'Note : si l’étiquette visible représente une expression mathématique, les symboles mathématiques peuvent être repris littéralement pour servir d’étiquette au nom accessible (ex. : “A>B”). Il est laissé à l’utilisateur le soin d’opérer la correspondance entre l’expression et ce qu’il doit épeler compte tenu de la connaissance qu’il a du fonctionnement de son logiciel de saisie vocale (“A plus grand que B” ou “A supérieur à B”).'
       ],
       technicalNotes: [
         'Lorsque l’intitulé visible est complété par une autre expression dans le nom accessible :',
-        'WCAG insiste sur le placement de l’intitulé visible au début du nom accessible sans toutefois réserver l’exclusivité de cet emplacement ;',
-        'WCAG considère comme un cas d’échec une correspondance non exacte de la chaîne de caractères de l’intitulé visible au sein du nom accessible.',
+        '- WCAG insiste sur le placement de l’intitulé visible au début du nom accessible sans toutefois réserver l’exclusivité de cet emplacement ;',
+        '- WCAG considère comme un cas d’échec une correspondance non exacte de la chaîne de caractères de l’intitulé visible au sein du nom accessible.',
         'Par exemple, si l’on considère l’intitulé visible « Commander maintenant » complété dans le nom accessible par l’expression « produit X », on peut avoir les différents cas suivants :',
-        '« Commander maintenant produit X » est valide (bonne pratique) ;',
-        '« Produit X : commander maintenant » est valide ;',
-        '« Commander produit X maintenant » est non valide.'
+        '- « Commander maintenant produit X » est valide (bonne pratique) ;',
+        '- « Produit X : commander maintenant » est valide ;',
+        '- « Commander produit X maintenant » est non valide.'
+      ],
+      glossary: [
+        'lien',
+        'lien-texte',
+        'intitule-ou-nom-accessible-de-lien',
+        'contexte-du-lien',
+        'lien-image',
+        'lien-composite',
+        'lien-svg',
+        'intitule-visible',
+        'ambigu-pour-tout-le-monde'
       ]
     },
     6.2: {
@@ -495,7 +655,8 @@ const RGAA_CRITERIA = {
       tests: ['6.2.1'],
       technicalNotes: [
         'Une ancre n’est pas un lien même si pendant longtemps l’élément <a> a servi de support à cette technique. Elle n’est donc pas concernée par le présent critère.'
-      ]
+      ],
+      glossary: ['lien', 'intitule-ou-nom-accessible-de-lien']
     },
     7.1: {
       theme: 7,
@@ -520,13 +681,22 @@ const RGAA_CRITERIA = {
       tests: ['7.1.1', '7.1.2', '7.1.3'],
       particularCases: [
         'Il existe une gestion de cas particuliers pour le test 7.1.3 lorsque :',
-        'La ponctuation et les lettres majuscules sont présentes dans le texte de l’intitulé visible : elles peuvent être ignorées dans le nom accessible sans porter à conséquence ;',
-        'Le texte de l’intitulé visible sert de symbole : le texte ne doit pas être interprété littéralement au niveau du nom accessible. Le nom doit exprimer la fonction véhiculée par le symbole (par exemple, “B” au niveau d’un éditeur de texte aura pour nom accessible “Mettre en gras”, le signe “>” en fonction du contexte signifiera “Suivant” ou “Lancer la vidéo”). Le cas des symboles mathématiques fait cependant exception (voir la note ci-dessous).',
+        '- La ponctuation et les lettres majuscules sont présentes dans le texte de l’intitulé visible : elles peuvent être ignorées dans le nom accessible sans porter à conséquence ;',
+        '- Le texte de l’intitulé visible sert de symbole : le texte ne doit pas être interprété littéralement au niveau du nom accessible. Le nom doit exprimer la fonction véhiculée par le symbole (par exemple, “B” au niveau d’un éditeur de texte aura pour nom accessible “Mettre en gras”, le signe “>” en fonction du contexte signifiera “Suivant” ou “Lancer la vidéo”). Le cas des symboles mathématiques fait cependant exception (voir la note ci-dessous).',
         'Note : si l’étiquette visible représente une expression mathématique, les symboles mathématiques peuvent être repris littéralement pour servir d’étiquette au nom accessible (ex. : “A>B”). Il est laissé à l’utilisateur le soin d’opérer la correspondance entre l’expression et ce qu’il doit épeler compte tenu de la connaissance qu’il a du fonctionnement de son logiciel de saisie vocale (“A plus grand que B” ou “A supérieur à B”).'
       ],
       technicalNotes: [
         'Le critère 7.1 implémente la notion de « compatible avec les technologies d’assistance » telle que définie par les WCAG, ainsi que le recours à WAI-ARIA pour rendre un composant ou une fonctionnalité accessible. Le bon usage de WAI-ARIA est vérifié via les tests 7.1.1, 7.1.2, 7.1.3.',
         'Note importante : dans un environnement HTML5, beaucoup de composants peuvent nécessiter JavaScript pour fonctionner ; en conséquence la fourniture d’une alternative à un composant JavaScript qui ne pourrait pas être rendu accessible devra bénéficier d’une méthode spécifique au composant en cause, permettant de le remplacer par une alternative accessible (et de le réactiver). Cela signifie que la désactivation de JavaScript pour l’ensemble de la page ne sera pas acceptée comme une méthode valable, à moins qu’elle ne remette pas en cause l’utilisation des autres composants.'
+      ],
+      glossary: [
+        'script',
+        'compatible-avec-les-technologies-d-assistance',
+        'composant-d-interface',
+        'le-nom-le-role-la-valeur-le-parametrage-et-les-changements-d-etats',
+        'alternative-a-script',
+        'correctement-restitue-par-les-technologies-d-assistance',
+        'intitule-visible'
       ]
     },
     7.2: {
@@ -534,7 +704,8 @@ const RGAA_CRITERIA = {
       title: 'Pour chaque script ayant une alternative, cette alternative est-elle pertinente ?',
       wcagSc: ['1.1.1', '4.1.2'],
       techniques: ['G136', 'F19', 'F20'],
-      tests: ['7.2.1', '7.2.2']
+      tests: ['7.2.1', '7.2.2'],
+      glossary: ['script', 'alternative-a-script', 'cadre']
     },
     7.3: {
       theme: 7,
@@ -545,7 +716,8 @@ const RGAA_CRITERIA = {
       tests: ['7.3.1', '7.3.2'],
       particularCases: [
         'Il existe une gestion de cas particuliers lorsque la fonctionnalité dépend de l’utilisation d’un gestionnaire d’événement sans équivalent universel ; par exemple, une application de dessin à main levée ne pourra pas être rendue contrôlable au clavier. Dans ces situations, le critère est non applicable.'
-      ]
+      ],
+      glossary: ['script', 'accessible-et-activable-par-le-clavier-et-tout-dispositif-de-pointage']
     },
     7.4: {
       theme: 7,
@@ -566,7 +738,8 @@ const RGAA_CRITERIA = {
         'F41',
         'SCR19'
       ],
-      tests: ['7.4.1']
+      tests: ['7.4.1'],
+      glossary: ['script', 'changement-de-contexte']
     },
     7.5: {
       theme: 7,
@@ -577,18 +750,20 @@ const RGAA_CRITERIA = {
       tests: ['7.5.1', '7.5.2', '7.5.3'],
       technicalNotes: [
         'Les rôles WAI-ARIA log, status et alert ont implicitement une valeur d’attribut WAI-ARIA aria-live et aria-atomic. On pourra donc considérer (conformément à la spécification WAI-ARIA 1.1) que :',
-        'Un attribut WAI-ARIA aria-live="polite" associé à un message de statut peut valoir pour un rôle WAI-ARIA log ;',
-        'Un attribut WAI-ARIA aria-live="polite" et un attribut WAI-ARIA aria-atomic="true" associés à un message de statut peuvent valoir pour un rôle WAI-ARIA status ;',
-        'Un attribut WAI-ARIA aria-live="assertive" et un attribut WAI-ARIA aria-atomic="true" associés à un message de statut peuvent valoir pour un rôle WAI-ARIA alert.',
+        '- Un attribut WAI-ARIA aria-live="polite" associé à un message de statut peut valoir pour un rôle WAI-ARIA log ;',
+        '- Un attribut WAI-ARIA aria-live="polite" et un attribut WAI-ARIA aria-atomic="true" associés à un message de statut peuvent valoir pour un rôle WAI-ARIA status ;',
+        '- Un attribut WAI-ARIA aria-live="assertive" et un attribut WAI-ARIA aria-atomic="true" associés à un message de statut peuvent valoir pour un rôle WAI-ARIA alert.',
         'C’est sous réserve que la nature du message de statut satisfasse bien à la correspondance implicitement établie. Dans le cas d’un message de statut indiquant la progression d’un processus et matérialisé graphiquement par une barre de progression, un rôle WAI-ARIA progressbar explicite est nécessaire.'
-      ]
+      ],
+      glossary: ['message-de-statut']
     },
     8.1: {
       theme: 8,
       title: 'Chaque page web est-elle définie par un type de document ?',
       wcagSc: ['4.1.1'],
       techniques: ['G134', 'G192'],
-      tests: ['8.1.1', '8.1.2', '8.1.3']
+      tests: ['8.1.1', '8.1.2', '8.1.3'],
+      glossary: ['type-de-document']
     },
     8.2: {
       theme: 8,
@@ -596,14 +771,16 @@ const RGAA_CRITERIA = {
         'Pour chaque page web, le code source généré est-il valide selon le type de document spécifié ?',
       wcagSc: ['4.1.1', '4.1.2'],
       techniques: ['H74', 'H93', 'H94', 'F70', 'F77'],
-      tests: ['8.2.1']
+      tests: ['8.2.1'],
+      glossary: ['type-de-document', 'regles-d-ecriture']
     },
     8.3: {
       theme: 8,
       title: 'Dans chaque page web, la langue par défaut est-elle présente ?',
       wcagSc: ['3.1.1'],
       techniques: ['H57'],
-      tests: ['8.3.1']
+      tests: ['8.3.1'],
+      glossary: ['langue-par-defaut']
     },
     8.4: {
       theme: 8,
@@ -611,21 +788,24 @@ const RGAA_CRITERIA = {
         'Pour chaque page web ayant une langue par défaut, le code de langue est-il pertinent ?',
       wcagSc: ['3.1.1'],
       techniques: ['H57'],
-      tests: ['8.4.1']
+      tests: ['8.4.1'],
+      glossary: ['langue-par-defaut', 'code-de-langue']
     },
     8.5: {
       theme: 8,
       title: 'Chaque page web a-t-elle un titre de page ?',
       wcagSc: ['2.4.2'],
       techniques: ['G88', 'G127', 'H25'],
-      tests: ['8.5.1']
+      tests: ['8.5.1'],
+      glossary: ['titre-de-page']
     },
     8.6: {
       theme: 8,
       title: 'Pour chaque page web ayant un titre de page, ce titre est-il pertinent ?',
       wcagSc: ['2.4.2'],
       techniques: ['G88', 'G127', 'H25'],
-      tests: ['8.6.1']
+      tests: ['8.6.1'],
+      glossary: ['titre-de-page']
     },
     8.7: {
       theme: 8,
@@ -636,14 +816,15 @@ const RGAA_CRITERIA = {
       tests: ['8.7.1'],
       particularCases: [
         'Il y a une gestion de cas particuliers sur le changement de langue pour les cas suivants :',
-        'Nom propre, le critère est non applicable ;',
-        'Nom commun de langue étrangère présent dans le dictionnaire officiel de la langue (voir note 1 ci-dessous) par défaut de la page web, le critère est non applicable ;',
-        'Le terme de langue étrangère soumis, via un champ de formulaire et rappelé dans la page (par exemple comme indication du terme recherché dans le cas d’un moteur de recherche), le critère est non applicable ;',
-        'Passage de texte dont la langue ne peut pas être déterminée : le critère est non applicable ;',
-        'Terme ou passage de texte issus d’une langue morte ou imaginaire pour laquelle il n’existe pas d’interprétation vocale : le critère est non applicable.',
+        '- Nom propre, le critère est non applicable ;',
+        '- Nom commun de langue étrangère présent dans le dictionnaire officiel de la langue (voir note 1 ci-dessous) par défaut de la page web, le critère est non applicable ;',
+        '- Le terme de langue étrangère soumis, via un champ de formulaire et rappelé dans la page (par exemple comme indication du terme recherché dans le cas d’un moteur de recherche), le critère est non applicable ;',
+        '- Passage de texte dont la langue ne peut pas être déterminée : le critère est non applicable ;',
+        '- Terme ou passage de texte issus d’une langue morte ou imaginaire pour laquelle il n’existe pas d’interprétation vocale : le critère est non applicable.',
         'Note 1 : le dictionnaire officiel est celui recommandé par l’académie en charge de la langue en question. Pour la France, par exemple, le lien vers le dictionnaire officiel se trouve sur le site de l’Académie française à l’adresse suivante : http://www.academie-francaise.fr/le-dictionnaire/la-9e-edition. Pour toute demande auprès du service du dictionnaire de l’Académie française, utiliser le formulaire de contact du service du dictionnaire.',
         'Note 2 : pour les noms communs de langue étrangère, absents dans le dictionnaire officiel de la langue par défaut de la page web, et qui sont passés dans le langage commun (exemple : newsletter) : le critère est applicable, uniquement lorsque l’absence d’indication de langue peut provoquer une incompréhension pour la restitution.'
-      ]
+      ],
+      glossary: ['changement-de-langue', 'langue-par-defaut', 'champ-de-saisie-de-formulaire']
     },
     8.8: {
       theme: 8,
@@ -651,7 +832,8 @@ const RGAA_CRITERIA = {
         'Dans chaque page web, le code de langue de chaque changement de langue est-il valide et pertinent ?',
       wcagSc: ['3.1.2'],
       techniques: ['H58'],
-      tests: ['8.8.1']
+      tests: ['8.8.1'],
+      glossary: ['changement-de-langue']
     },
     8.9: {
       theme: 8,
@@ -659,14 +841,16 @@ const RGAA_CRITERIA = {
         'Dans chaque page web, les balises ne doivent pas être utilisées uniquement à des fins de présentation. Cette règle est-elle respectée ?',
       wcagSc: ['1.3.1'],
       techniques: ['G115', 'H88', 'F43', 'F92'],
-      tests: ['8.9.1']
+      tests: ['8.9.1'],
+      glossary: ['uniquement-a-des-fins-de-presentation']
     },
     '8.10': {
       theme: 8,
       title: 'Dans chaque page web, les changements du sens de lecture sont-ils signalés ?',
       wcagSc: ['1.3.2'],
       techniques: ['H56'],
-      tests: ['8.10.1', '8.10.2']
+      tests: ['8.10.1', '8.10.2'],
+      glossary: ['sens-de-lecture']
     },
     9.1: {
       theme: 9,
@@ -677,7 +861,8 @@ const RGAA_CRITERIA = {
       tests: ['9.1.1', '9.1.2', '9.1.3'],
       technicalNotes: [
         'WAI-ARIA permet de définir des titres via le rôle heading et l’attribut aria-level (indication du niveau de titre). Bien qu’il soit préférable d’utiliser l’élément de titre natif en HTML <hx>, l’utilisation du rôle WAI-ARIA heading est compatible avec l’accessibilité.'
-      ]
+      ],
+      glossary: ['titre']
     },
     9.2: {
       theme: 9,
@@ -691,6 +876,13 @@ const RGAA_CRITERIA = {
       ],
       technicalNotes: [
         'La balise <main> peut être utilisée plusieurs fois dans le même document HTML. Néanmoins, il ne peut y avoir en permanence qu’une seule balise visible et lisible par les technologies d’assistances, les autres devant disposer d’un attribut hidden ou d’un style permettant de les masquer aux technologies d’assistances. À noter cependant que l’utilisation d’un style seul restera insuffisante pour assurer l’unicité d’une balise <main> visible en cas de désactivation des feuilles de styles.'
+      ],
+      glossary: [
+        'structure-du-document',
+        'zone-d-en-tete',
+        'menu-et-barre-de-navigation',
+        'zone-de-contenu-principal',
+        'zone-de-pied-de-page'
       ]
     },
     9.3: {
@@ -702,14 +894,16 @@ const RGAA_CRITERIA = {
       technicalNotes: [
         'Les attributs WAI-ARIA role="list" et role="listitem" peuvent nécessiter l’utilisation des attributs WAI-ARIA aria-setsize et aria-posinset dans le cas où l’ensemble de la liste n’est pas disponible via le DOM généré au moment de la consultation.',
         'Les attributs WAI-ARIA role="tree", role="tablist", role="menu", role="combobox" et role="listbox" ne sont pas équivalents à une liste HTML <ul> ou <ol>.'
-      ]
+      ],
+      glossary: ['listes']
     },
     9.4: {
       theme: 9,
       title: 'Dans chaque page web, chaque citation est-elle correctement indiquée ?',
       wcagSc: ['1.3.1'],
       techniques: ['G115', 'H49', 'F2'],
-      tests: ['9.4.1', '9.4.2']
+      tests: ['9.4.1', '9.4.2'],
+      glossary: []
     },
     10.1: {
       theme: 10,
@@ -717,7 +911,8 @@ const RGAA_CRITERIA = {
         'Dans le site web, des feuilles de styles sont-elles utilisées pour contrôler la présentation de l’information ?',
       wcagSc: ['1.3.1', '1.3.2'],
       techniques: ['G140', 'F32', 'F33', 'F34', 'F48', 'C6', 'C8', 'C18', 'C22'],
-      tests: ['10.1.1', '10.1.2', '10.1.3']
+      tests: ['10.1.1', '10.1.2', '10.1.3'],
+      glossary: ['feuille-de-style', 'presentation-de-l-information']
     },
     10.2: {
       theme: 10,
@@ -725,7 +920,8 @@ const RGAA_CRITERIA = {
         'Dans chaque page web, le contenu visible porteur d’information reste-t-il présent lorsque les feuilles de styles sont désactivées ?',
       wcagSc: ['1.1.1', '1.3.1'],
       techniques: ['G140', 'F3', 'F87'],
-      tests: ['10.2.1']
+      tests: ['10.2.1'],
+      glossary: ['contenu-visible', 'feuille-de-style']
     },
     10.3: {
       theme: 10,
@@ -733,7 +929,8 @@ const RGAA_CRITERIA = {
         'Dans chaque page web, l’information reste-t-elle compréhensible lorsque les feuilles de styles sont désactivées ?',
       wcagSc: ['1.3.2', '2.4.3'],
       techniques: ['G59', 'G140', 'F1'],
-      tests: ['10.3.1']
+      tests: ['10.3.1'],
+      glossary: ['comprehensible-ordre-de-lecture', 'feuille-de-style']
     },
     10.4: {
       theme: 10,
@@ -744,10 +941,11 @@ const RGAA_CRITERIA = {
       tests: ['10.4.1', '10.4.2'],
       particularCases: [
         'Font exception à ce critère, les contenus pour lesquels l’utilisateur n’a pas de possibilité de personnalisation :',
-        'Les sous-titres incrustés dans une vidéo ;',
-        'Les textes en image ;',
-        'Le texte au sein d’une balise <canvas>.'
-      ]
+        '- Les sous-titres incrustés dans une vidéo ;',
+        '- Les textes en image ;',
+        '- Le texte au sein d’une balise <canvas>.'
+      ],
+      glossary: ['taille-des-caracteres', 'composant-d-interface']
     },
     10.5: {
       theme: 10,
@@ -755,7 +953,8 @@ const RGAA_CRITERIA = {
         'Dans chaque page web, les déclarations CSS de couleurs de fond d’élément et de police sont-elles correctement utilisées ?',
       wcagSc: ['1.4.3'],
       techniques: ['F24'],
-      tests: ['10.5.1', '10.5.2', '10.5.3']
+      tests: ['10.5.1', '10.5.2', '10.5.3'],
+      glossary: []
     },
     10.6: {
       theme: 10,
@@ -763,7 +962,8 @@ const RGAA_CRITERIA = {
         'Dans chaque page web, chaque lien dont la nature n’est pas évidente est-il visible par rapport au texte environnant ?',
       wcagSc: ['1.4.1'],
       techniques: ['G183', 'F73'],
-      tests: ['10.6.1']
+      tests: ['10.6.1'],
+      glossary: ['lien-dont-la-nature-n-est-pas-evidente', 'lien-texte', 'contraste']
     },
     10.7: {
       theme: 10,
@@ -771,7 +971,8 @@ const RGAA_CRITERIA = {
         'Dans chaque page web, pour chaque élément recevant le focus, la prise de focus est-elle visible ?',
       wcagSc: ['1.4.1', '2.4.7'],
       techniques: ['G149', 'G165', 'G183', 'G195', 'F73', 'F78', 'SCR31', 'C15'],
-      tests: ['10.7.1']
+      tests: ['10.7.1'],
+      glossary: ['prise-de-focus']
     },
     10.8: {
       theme: 10,
@@ -785,7 +986,8 @@ const RGAA_CRITERIA = {
         'Sauf si le contenu contrôlé par aria-hidden n’a pas vocation à être restitué par les technologies d’assistance, la valeur de l’attribut aria-hidden doit être cohérente avec l’état affiché ou masqué du contenu à l’écran.',
         'La spécification HTML5 propose un attribut hidden qui permet de rendre indisponible (quand l’attribut hidden est présent) un contenu dans le DOM généré (de manière similaire au type="hidden" sur un contrôle de formulaire).',
         'Il est possible d’avoir des situations où un contenu contrôlé par hidden ou aria-hidden se trouve momentanément dans un état incohérent avec le statut affiché ou masqué du contenu, par exemple si l’on désire rendre disponible un élément, mais que son affichage à l’écran reste dépendant d’une action ultérieure. Dans ce cas, c’est l’état final du contenu qui doit être considéré.'
-      ]
+      ],
+      glossary: ['contenu-cache']
     },
     10.9: {
       theme: 10,
@@ -793,7 +995,12 @@ const RGAA_CRITERIA = {
         'Dans chaque page web, l’information ne doit pas être donnée uniquement par la forme, taille ou position. Cette règle est-elle respectée ?',
       wcagSc: ['1.3.3', '1.4.1'],
       techniques: ['G96', 'G140', 'F14', 'F26'],
-      tests: ['10.9.1', '10.9.2', '10.9.3', '10.9.4']
+      tests: ['10.9.1', '10.9.2', '10.9.3', '10.9.4'],
+      glossary: [
+        'indication-donnee-par-la-forme-la-taille-ou-la-position',
+        'media-temporel-type-son-video-et-synchronise',
+        'media-non-temporel'
+      ]
     },
     '10.10': {
       theme: 10,
@@ -801,7 +1008,12 @@ const RGAA_CRITERIA = {
         'Dans chaque page web, l’information ne doit pas être donnée par la forme, taille ou position uniquement. Cette règle est-elle implémentée de façon pertinente ?',
       wcagSc: ['1.3.3', '1.4.1'],
       techniques: ['G96', 'G140', 'F14', 'F26'],
-      tests: ['10.10.1', '10.10.2', '10.10.3', '10.10.4']
+      tests: ['10.10.1', '10.10.2', '10.10.3', '10.10.4'],
+      glossary: [
+        'indication-donnee-par-la-forme-la-taille-ou-la-position',
+        'media-temporel-type-son-video-et-synchronise',
+        'media-non-temporel'
+      ]
     },
     10.11: {
       theme: 10,
@@ -813,16 +1025,17 @@ const RGAA_CRITERIA = {
       particularCases: [
         "L'objectif de ce critère est de garantir un défilement dans une unique direction pour une lecture facilitée selon le sens de l'écriture.",
         "Font exception à ce critère, les contenus dont l'agencement requiert deux dimensions pour être compris ou utilisés comme :",
-        'Les images, les graphiques ou les vidéos ;',
-        'Les jeux (jeux de plateforme, par exemple) ;',
-        'Les présentations (type diaporama, par exemple) ;',
-        'Les tableaux de données ;',
-        "Les interfaces où il est nécessaire d'avoir un ascenseur horizontal lors de la manipulation de l'interface.",
+        '- Les images, les graphiques ou les vidéos ;',
+        '- Les jeux (jeux de plateforme, par exemple) ;',
+        '- Les présentations (type diaporama, par exemple) ;',
+        '- Les tableaux de données ;',
+        "- Les interfaces où il est nécessaire d'avoir un ascenseur horizontal lors de la manipulation de l'interface.",
         "Note : la majorité des navigateurs sur les systèmes d'exploitation sur mobile (Android, iOS) ne gère pas correctement la redistribution en cas de zoom. Dans ce contexte, le critère sera considéré comme non applicable sur ces environnements."
       ],
       technicalNotes: [
         "Lorsqu'il est ici question de pixel, il s'agit du pixel CSS tel que défini par le W3C https://www.w3.org/TR/css3-values/"
-      ]
+      ],
+      glossary: []
     },
     10.12: {
       theme: 10,
@@ -833,10 +1046,11 @@ const RGAA_CRITERIA = {
       tests: ['10.12.1'],
       particularCases: [
         'Font exception à ce critère, les contenus pour lesquels l’utilisateur n’a pas de possibilité de personnalisation :',
-        'Les sous-titres directement intégrés à une vidéo ;',
-        'Les images texte ;',
-        'Le texte au sein d’une balise <canvas>.'
-      ]
+        '- Les sous-titres directement intégrés à une vidéo ;',
+        '- Les images texte ;',
+        '- Le texte au sein d’une balise <canvas>.'
+      ],
+      glossary: []
     },
     10.13: {
       theme: 10,
@@ -848,7 +1062,8 @@ const RGAA_CRITERIA = {
       particularCases: [
         'Lorsque le contenu additionnel est contrôlé par l’agent utilisateur (par exemple, attribut title ou validation native de formulaire) ou correspond à une fenêtre modale conforme au motif de conception WAI-ARIA dialog, le critère 10.13 est non applicable.',
         'Lorsque le contenu additionnel ne masque ou ne remplace aucun contenu porteur d’information, le test 10.13.1 est non applicable.'
-      ]
+      ],
+      glossary: ['composant-d-interface', 'motif-de-conception']
     },
     10.14: {
       theme: 10,
@@ -856,7 +1071,8 @@ const RGAA_CRITERIA = {
         'Dans chaque page web, les contenus additionnels apparaissant via les styles CSS uniquement peuvent-ils être rendus visibles au clavier et par tout dispositif de pointage ?',
       wcagSc: ['2.1.1'],
       techniques: ['G202'],
-      tests: ['10.14.1', '10.14.2']
+      tests: ['10.14.1', '10.14.2'],
+      glossary: ['composant-d-interface']
     },
     11.1: {
       theme: 11,
@@ -875,7 +1091,13 @@ const RGAA_CRITERIA = {
         'ARIA14',
         'ARIA16'
       ],
-      tests: ['11.1.1', '11.1.2', '11.1.3']
+      tests: ['11.1.1', '11.1.2', '11.1.3'],
+      glossary: [
+        'champ-de-saisie-de-formulaire',
+        'etiquette-de-champ-de-formulaire',
+        'passage-de-texte-lie-par-aria-labelledby-ou-aria-describedby',
+        'accoles-etiquette-et-champ-accoles'
+      ]
     },
     11.2: {
       theme: 11,
@@ -886,10 +1108,16 @@ const RGAA_CRITERIA = {
       tests: ['11.2.1', '11.2.2', '11.2.3', '11.2.4', '11.2.5', '11.2.6'],
       particularCases: [
         'Il existe une gestion de cas particuliers pour le test 11.2.5 lorsque :',
-        'La ponctuation et les lettres majuscules sont présentes dans le texte de l’intitulé visible : elles peuvent être ignorées dans le nom accessible sans porter à conséquence ;',
-        'Le texte de l’intitulé visible sert de symbole : le texte ne doit pas être interprété littéralement au niveau du nom accessible. Le nom doit exprimer la fonction véhiculée par le symbole (par exemple, “B” au niveau d’un éditeur de texte aura pour nom accessible “Mettre en gras”, le signe “>” en fonction du contexte signifiera “Suivant” ou “Lancer la vidéo”). Le cas des symboles mathématiques fait cependant exception (voir la note ci-dessous).',
+        '- La ponctuation et les lettres majuscules sont présentes dans le texte de l’intitulé visible : elles peuvent être ignorées dans le nom accessible sans porter à conséquence ;',
+        '- Le texte de l’intitulé visible sert de symbole : le texte ne doit pas être interprété littéralement au niveau du nom accessible. Le nom doit exprimer la fonction véhiculée par le symbole (par exemple, “B” au niveau d’un éditeur de texte aura pour nom accessible “Mettre en gras”, le signe “>” en fonction du contexte signifiera “Suivant” ou “Lancer la vidéo”). Le cas des symboles mathématiques fait cependant exception (voir la note ci-dessous).',
         'Note : si l’étiquette visible représente une expression mathématique, les symboles mathématiques peuvent être repris littéralement pour servir d’étiquette au nom accessible (ex. : “A>B”). Il est laissé à l’utilisateur le soin d’opérer la correspondance entre l’expression et ce qu’il doit épeler compte tenu de la connaissance qu’il a du fonctionnement de son logiciel de saisie vocale (“A plus grand que B” ou “A supérieur à B”).',
         'Ce cas particulier s’applique également au test 11.9.2.'
+      ],
+      glossary: [
+        'etiquette-de-champ-de-formulaire',
+        'champ-de-saisie-de-formulaire',
+        'passage-de-texte-lie-par-aria-labelledby-ou-aria-describedby',
+        'intitule-visible'
       ]
     },
     11.3: {
@@ -898,7 +1126,14 @@ const RGAA_CRITERIA = {
         'Dans chaque formulaire, chaque étiquette associée à un champ de formulaire ayant la même fonction et répétée plusieurs fois dans une même page ou dans un ensemble de pages est-elle cohérente ?',
       wcagSc: ['3.2.4'],
       techniques: ['F31'],
-      tests: ['11.3.1', '11.3.2']
+      tests: ['11.3.1', '11.3.2'],
+      glossary: [
+        'formulaire',
+        'etiquette-de-champ-de-formulaire',
+        'champ-de-saisie-de-formulaire',
+        'ensemble-de-pages',
+        'etiquettes-coherentes'
+      ]
     },
     11.4: {
       theme: 11,
@@ -909,10 +1144,16 @@ const RGAA_CRITERIA = {
       tests: ['11.4.1', '11.4.2', '11.4.3'],
       particularCases: [
         'Les tests 11.4.2 et 11.4.3 seront considérés comme non applicables :',
-        'Dans le cas où l’étiquette mélange une portion de texte qui se lit de droite à gauche avec une portion de texte qui se lit de gauche à droite ;',
-        'Dans le cas où un formulaire contient des labels de plusieurs langues qui se liraient de droite à gauche et inversement. Par exemple, un formulaire de commande en arabe qui propose une liste de cases à cocher de produit en langue française ou mixant des produits en langue arabe ou en langue française ;',
-        'Dans le cas où les champs de type radio ou checkbox et les balises ayant un attribut WAI-ARIA role="checkbox", role="radio" ou role="switch" ne sont pas visuellement présentés sous forme de bouton radio ou de case à cocher ;',
-        'Dans le cas où les champs seraient utilisés dans un contexte où il pourrait être légitime, du point de vue de l’expérience utilisateur, de placer les étiquettes de manière différente à celle requise dans les tests 11.4.2 et 11.4.3.'
+        '- Dans le cas où l’étiquette mélange une portion de texte qui se lit de droite à gauche avec une portion de texte qui se lit de gauche à droite ;',
+        '- Dans le cas où un formulaire contient des labels de plusieurs langues qui se liraient de droite à gauche et inversement. Par exemple, un formulaire de commande en arabe qui propose une liste de cases à cocher de produit en langue française ou mixant des produits en langue arabe ou en langue française ;',
+        '- Dans le cas où les champs de type radio ou checkbox et les balises ayant un attribut WAI-ARIA role="checkbox", role="radio" ou role="switch" ne sont pas visuellement présentés sous forme de bouton radio ou de case à cocher ;',
+        '- Dans le cas où les champs seraient utilisés dans un contexte où il pourrait être légitime, du point de vue de l’expérience utilisateur, de placer les étiquettes de manière différente à celle requise dans les tests 11.4.2 et 11.4.3.'
+      ],
+      glossary: [
+        'formulaire',
+        'etiquette-de-champ-de-formulaire',
+        'accoles-etiquette-et-champ-accoles',
+        'champ-de-saisie-de-formulaire'
       ]
     },
     11.5: {
@@ -921,7 +1162,8 @@ const RGAA_CRITERIA = {
         'Dans chaque formulaire, les champs de même nature sont-ils regroupés, si nécessaire ?',
       wcagSc: ['1.3.1', '3.3.2'],
       techniques: ['H71', 'ARIA17'],
-      tests: ['11.5.1']
+      tests: ['11.5.1'],
+      glossary: ['formulaire', 'champs-de-meme-nature']
     },
     11.6: {
       theme: 11,
@@ -929,7 +1171,8 @@ const RGAA_CRITERIA = {
         'Dans chaque formulaire, chaque regroupement de champs de même nature a-t-il une légende ?',
       wcagSc: ['1.3.1', '3.3.2'],
       techniques: ['H71', 'ARIA17'],
-      tests: ['11.6.1']
+      tests: ['11.6.1'],
+      glossary: ['formulaire', 'champs-de-meme-nature', 'legende']
     },
     11.7: {
       theme: 11,
@@ -937,7 +1180,8 @@ const RGAA_CRITERIA = {
         'Dans chaque formulaire, chaque légende associée à un regroupement de champs de même nature est-elle pertinente ?',
       wcagSc: ['1.3.1', '3.3.2'],
       techniques: ['H71', 'ARIA17'],
-      tests: ['11.7.1']
+      tests: ['11.7.1'],
+      glossary: ['formulaire', 'legende', 'champs-de-meme-nature']
     },
     11.8: {
       theme: 11,
@@ -948,7 +1192,8 @@ const RGAA_CRITERIA = {
       tests: ['11.8.1', '11.8.2', '11.8.3'],
       technicalNotes: [
         'Il est possible d’utiliser une balise ayant un attribut WAI-ARIA role="listbox" en remplacement d’une balise <select>. En revanche, il est impossible de créer des groupes d’options via l’utilisation de WAI-ARIA. De ce fait, une liste nécessitant un regroupement d’options structurée à l’aide d’une balise ayant un attribut WAI-ARIA role="listbox" sera considérée comme non conforme au critère 11.8.'
-      ]
+      ],
+      glossary: ['formulaire', 'items-de-meme-nature-d-une-liste-de-choix']
     },
     11.9: {
       theme: 11,
@@ -957,7 +1202,13 @@ const RGAA_CRITERIA = {
       wcagSc: ['2.5.3', '4.1.2'],
       techniques: ['H36', 'H91', 'ARIA6', 'ARIA9', 'ARIA14', 'ARIA16'],
       tests: ['11.9.1', '11.9.2'],
-      particularCases: ['Pour le test 11.9.2, voir cas particuliers critère 11.2.']
+      particularCases: ['Pour le test 11.9.2, voir cas particuliers critère 11.2.'],
+      glossary: [
+        'formulaire',
+        'bouton-formulaire',
+        'passage-de-texte-lie-par-aria-labelledby-ou-aria-describedby',
+        'intitule-visible'
+      ]
     },
     '11.10': {
       theme: 11,
@@ -987,15 +1238,23 @@ const RGAA_CRITERIA = {
       tests: ['11.10.1', '11.10.2', '11.10.3', '11.10.4', '11.10.5', '11.10.6', '11.10.7'],
       particularCases: [
         'Le test 11.10.1 et le test 11.10.2 seront considérés comme non applicables lorsque le formulaire comporte un seul champ de formulaire ou qu’il indique les champs optionnels de manière :',
-        'Visible ;',
-        'Dans la balise <label> ou dans la légende associée au champ.',
+        '- Visible ;',
+        '- Dans la balise <label> ou dans la légende associée au champ.',
         'Dans le cas où l’ensemble des champs d’un formulaire sont obligatoires, les tests 11.10.1 et 11.10.2 restent applicables.'
       ],
       technicalNotes: [
         'Dans un long formulaire dont la majorité des champs sont obligatoires, on pourrait constater que ce sont les quelques champs restés facultatifs qui sont explicitement signalés comme tels. Dans ce cas, il faudrait s’assurer que :',
-        'Un message précise visuellement en haut de formulaire que “tous les champs sont obligatoires sauf ceux indiqués comme étant facultatifs” ;',
-        'Une mention “facultatif” est présente visuellement dans le libellé des champs facultatifs ou dans la légende d’un groupe de champs facultatifs ;',
-        'Un attribut required ou aria-required="true" reste associé à chaque champ qui n’est pas concerné par ce caractère facultatif.'
+        '- Un message précise visuellement en haut de formulaire que “tous les champs sont obligatoires sauf ceux indiqués comme étant facultatifs” ;',
+        '- Une mention “facultatif” est présente visuellement dans le libellé des champs facultatifs ou dans la légende d’un groupe de champs facultatifs ;',
+        '- Un attribut required ou aria-required="true" reste associé à chaque champ qui n’est pas concerné par ce caractère facultatif.'
+      ],
+      glossary: [
+        'formulaire',
+        'controle-de-saisie-formulaire',
+        'indication-de-champ-obligatoire',
+        'passage-de-texte-lie-par-aria-labelledby-ou-aria-describedby',
+        'champ-de-saisie-de-formulaire',
+        'legende'
       ]
     },
     11.11: {
@@ -1007,7 +1266,8 @@ const RGAA_CRITERIA = {
       tests: ['11.11.1', '11.11.2'],
       technicalNotes: [
         'Certains types de contrôles en HTML5 proposent des messages d’aide à la saisie automatique : par exemple le type email affiche un message du type « veuillez saisir une adresse e-mail valide » dans le cas où l’adresse e-mail saisie ne correspond pas au format attendu. Ces messages sont personnalisables via l’API Constraint Validation, ce qui permet de personnaliser les messages d’erreur et de valider le critère. L’attribut pattern permet d’effectuer automatiquement des contrôles de format (via des expressions régulières) et affiche un message d’aide personnalisable via l’attribut title : ce dispositif valide également le critère.'
-      ]
+      ],
+      glossary: ['formulaire', 'controle-de-saisie-formulaire']
     },
     11.12: {
       theme: 11,
@@ -1015,7 +1275,12 @@ const RGAA_CRITERIA = {
         'Pour chaque formulaire qui modifie ou supprime des données, ou qui transmet des réponses à un test ou à un examen, ou dont la validation a des conséquences financières ou juridiques, les données saisies peuvent-elles être modifiées, mises à jour ou récupérées par l’utilisateur ?',
       wcagSc: ['3.3.4'],
       techniques: ['G98', 'G99', 'G155', 'G164', 'G168'],
-      tests: ['11.12.1', '11.12.2']
+      tests: ['11.12.1', '11.12.2'],
+      glossary: [
+        'formulaire',
+        'modifier-ou-annuler-les-donnees-et-les-actions-effectues',
+        'champ-de-saisie-de-formulaire'
+      ]
     },
     11.13: {
       theme: 11,
@@ -1026,7 +1291,11 @@ const RGAA_CRITERIA = {
       tests: ['11.13.1'],
       technicalNotes: [
         'La liste des valeurs possibles pour l’attribut autocomplete repose sur la liste des valeurs présentes dans la spécification WCAG2.1 qui reprend elle-même la liste des valeurs de type “field name” de la spécification HTML5.2. Le critère WCAG demande à ce que l’une de ces valeurs soit présente pour qualifier un champ de saisie concernant l’utilisateur.',
-        'Ce que le critère WCAG laisse implicite, ce sont les différentes règles de construction possibles pour obtenir une valeur (simple ou composée) pour l’attribut autocomplete. C’est cependant l’affaire du développeur de fournir à l’attribut autocomplete une valeur ou un ensemble de valeurs valides au regard des exigences de l’algorithme fourni par la spécification HTML5.2. Ainsi, un attribut autocomplete ne peut contenir qu’une seule valeur de type “field name”, comme "name" ou "street-address". On peut avoir également un ensemble composé de différentes valeurs comme, par exemple, autocomplete="shipping name" ou autocomplete="section-software shipping street-address" : "section-software" renvoie à une valeur de type <span lang="en">“scope”</span> et "shipping" à une valeur de type <span lang="en">“hint set”</span>, mais toujours une seule valeur de type <span lang="en">“field name”</span>.'
+        'Ce que le critère WCAG laisse implicite, ce sont les différentes règles de construction possibles pour obtenir une valeur (simple ou composée) pour l’attribut autocomplete. C’est cependant l’affaire du développeur de fournir à l’attribut autocomplete une valeur ou un ensemble de valeurs valides au regard des exigences de l’algorithme fourni par la spécification HTML5.2. Ainsi, un attribut autocomplete ne peut contenir qu’une seule valeur de type “field name”, comme "name" ou "street-address". On peut avoir également un ensemble composé de différentes valeurs comme, par exemple, autocomplete="shipping name" ou autocomplete="section-software shipping street-address" : "section-software" renvoie à une valeur de type “scope” et "shipping" à une valeur de type “hint set”, mais toujours une seule valeur de type “field name”.'
+      ],
+      glossary: [
+        'champ-de-saisie-de-formulaire',
+        'liste-des-valeurs-possibles-pour-l-attribut-autocomplete'
       ]
     },
     12.1: {
@@ -1040,6 +1309,13 @@ const RGAA_CRITERIA = {
         'Il existe une gestion de cas particulier lorsque le site web est constitué d’une seule page ou d’un nombre très limité de pages (cf. note). Dans ce cas-là, le critère est non applicable.',
         'Le critère est également non applicable pour les pages d’un ensemble de pages qui sont le résultat ou une partie d’un processus (un processus de paiement ou de prise de commande, par exemple).',
         'Note : l’appréciation d’un nombre très limité de pages devrait être réservé à un site dont l’ensemble des pages sont atteignables depuis la page d’accueil.'
+      ],
+      glossary: [
+        'ensemble-de-pages',
+        'systeme-de-navigation',
+        'menu-et-barre-de-navigation',
+        'page-plan-du-site',
+        'moteur-de-recherche-interne-a-un-site-web'
       ]
     },
     12.2: {
@@ -1051,18 +1327,20 @@ const RGAA_CRITERIA = {
       tests: ['12.2.1'],
       particularCases: [
         'Il existe une gestion de cas particuliers lorsque :',
-        'La page est la page d’accueil ;',
-        'Le site web est constitué d’une seule page ;',
-        'Le changement fait suite à une modification initiée par l’utilisateur.',
+        '- La page est la page d’accueil ;',
+        '- Le site web est constitué d’une seule page ;',
+        '- Le changement fait suite à une modification initiée par l’utilisateur.',
         'Dans ces situations, le critère est non applicable.'
-      ]
+      ],
+      glossary: ['ensemble-de-pages', 'menu-et-barre-de-navigation']
     },
     12.3: {
       theme: 12,
       title: 'La page « plan du site » est-elle pertinente ?',
       wcagSc: ['2.4.5'],
       techniques: ['G63'],
-      tests: ['12.3.1', '12.3.2', '12.3.3']
+      tests: ['12.3.1', '12.3.2', '12.3.3'],
+      glossary: ['page-plan-du-site']
     },
     12.4: {
       theme: 12,
@@ -1070,7 +1348,8 @@ const RGAA_CRITERIA = {
         'Dans chaque ensemble de pages, la page « plan du site » est-elle accessible à partir d’une fonctionnalité identique ?',
       wcagSc: ['2.4.5', '3.2.3'],
       techniques: ['G61', 'G63'],
-      tests: ['12.4.1', '12.4.2', '12.4.3']
+      tests: ['12.4.1', '12.4.2', '12.4.3'],
+      glossary: ['ensemble-de-pages', 'page-plan-du-site']
     },
     12.5: {
       theme: 12,
@@ -1078,7 +1357,8 @@ const RGAA_CRITERIA = {
         'Dans chaque ensemble de pages, le moteur de recherche est-il atteignable de manière identique ?',
       wcagSc: ['3.2.3'],
       techniques: ['G61', 'F66'],
-      tests: ['12.5.1', '12.5.2', '12.5.3']
+      tests: ['12.5.1', '12.5.2', '12.5.3'],
+      glossary: ['ensemble-de-pages', 'moteur-de-recherche-interne-a-un-site-web']
     },
     12.6: {
       theme: 12,
@@ -1086,7 +1366,16 @@ const RGAA_CRITERIA = {
         'Les zones de regroupement de contenus présentes dans plusieurs pages web (zones d’en-tête, de navigation principale, de contenu principal, de pied de page et de moteur de recherche) peuvent-elles être atteintes ou évitées ?',
       wcagSc: ['1.3.1', '2.4.1', '4.1.2'],
       techniques: ['H69', 'G115', 'ARIA4', 'ARIA11'],
-      tests: ['12.6.1']
+      tests: ['12.6.1'],
+      glossary: [
+        'zone-d-en-tete',
+        'menu-et-barre-de-navigation',
+        'zone-de-contenu-principal',
+        'zone-de-pied-de-page',
+        'moteur-de-recherche-interne-a-un-site-web',
+        'landmarks',
+        'liens-d-evitement-ou-d-acces-rapide'
+      ]
     },
     12.7: {
       theme: 12,
@@ -1098,14 +1387,16 @@ const RGAA_CRITERIA = {
       particularCases: [
         'Il existe une gestion de cas particuliers lorsque le site web est constitué d’une seule page.',
         'Dans ce cas de figure, l’obligation de la présence d’un lien d’accès rapide est liée au contexte de la page : présence ou absence de navigation ou de contenus additionnels, par exemple. Le critère peut être considéré comme non applicable lorsqu’il est avéré qu’un lien d’accès rapide est inutile.'
-      ]
+      ],
+      glossary: ['liens-d-evitement-ou-d-acces-rapide', 'zone-de-contenu-principal']
     },
     12.8: {
       theme: 12,
       title: 'Dans chaque page web, l’ordre de tabulation est-il cohérent ?',
       wcagSc: ['2.4.3'],
       techniques: ['G59', 'H4', 'F44', 'F85', 'SCR26', 'SCR27', 'SCR37', 'C27'],
-      tests: ['12.8.1', '12.8.2']
+      tests: ['12.8.1', '12.8.2'],
+      glossary: ['ordre-de-tabulation', 'comprehensible-ordre-de-lecture', 'script']
     },
     12.9: {
       theme: 12,
@@ -1113,7 +1404,8 @@ const RGAA_CRITERIA = {
         'Dans chaque page web, la navigation ne doit pas contenir de piège au clavier. Cette règle est-elle respectée ?',
       wcagSc: ['2.1.1', '2.1.2'],
       techniques: ['G21', 'H91', 'F10'],
-      tests: ['12.9.1']
+      tests: ['12.9.1'],
+      glossary: ['prise-de-focus']
     },
     '12.10': {
       theme: 12,
@@ -1121,7 +1413,8 @@ const RGAA_CRITERIA = {
         'Dans chaque page web, les raccourcis clavier n’utilisant qu’une seule touche (lettre minuscule ou majuscule, ponctuation, chiffre ou symbole) sont-ils contrôlables par l’utilisateur ?',
       wcagSc: ['2.1.4'],
       techniques: ['F99', 'G217'],
-      tests: ['12.10.1']
+      tests: ['12.10.1'],
+      glossary: ['raccourci-clavier', 'composant-d-interface']
     },
     12.11: {
       theme: 12,
@@ -1132,7 +1425,8 @@ const RGAA_CRITERIA = {
       tests: ['12.11.1'],
       technicalNotes: [
         'Ce critère adresse les situations où un contenu additionnel contient des composants d’interface avec lesquels il doit être possible d’interagir au clavier. Par exemple, une infobulle personnalisée qui propose un lien dans son contenu.'
-      ]
+      ],
+      glossary: ['composant-d-interface']
     },
     13.1: {
       theme: 13,
@@ -1161,7 +1455,8 @@ const RGAA_CRITERIA = {
       particularCases: [
         'Il existe une gestion de cas particuliers lorsque la limite de temps est essentielle, notamment lorsqu’elle ne pourrait pas être supprimée sans changer fondamentalement le contenu ou les fonctionnalités liées au contenu.',
         'Dans ces situations, le critère est non applicable. Par exemple, le rafraîchissement d’un flux RSS dans une page n’est pas une limite de temps essentielle ; le critère est applicable. En revanche, une redirection automatique qui amène vers la nouvelle version d’une page à partir d’une URL obsolète est essentielle ; le critère est non applicable.'
-      ]
+      ],
+      glossary: ['procede-de-rafraichissement', 'redirection', 'script']
     },
     13.2: {
       theme: 13,
@@ -1169,7 +1464,8 @@ const RGAA_CRITERIA = {
         'Dans chaque page web, l’ouverture d’une nouvelle fenêtre ne doit pas être déclenchée sans action de l’utilisateur. Cette règle est-elle respectée ?',
       wcagSc: ['3.2.1'],
       techniques: ['F55', 'G107'],
-      tests: ['13.2.1']
+      tests: ['13.2.1'],
+      glossary: []
     },
     13.3: {
       theme: 13,
@@ -1180,9 +1476,10 @@ const RGAA_CRITERIA = {
       tests: ['13.3.1'],
       particularCases: [
         'Il existe une gestion de cas particuliers :',
-        'Pour les personnes de droit privé mentionnées aux 2° à 4° du I de l’article 47 de la loi du 11 février 2005 : si les fichiers bureautiques (ex : PDF, documents Microsoft ou LibreOffice, etc.) ont été publiés avant le 23 septembre 2018 (sauf si ce sont des documents nécessaires pour accomplir une démarche administrative relevant des tâches effectuées par l’organisme concerné), ils sont exemptés de l’obligation d’accessibilité.',
+        '- Pour les personnes de droit privé mentionnées aux 2° à 4° du I de l’article 47 de la loi du 11 février 2005 : si les fichiers bureautiques (ex : PDF, documents Microsoft ou LibreOffice, etc.) ont été publiés avant le 23 septembre 2018 (sauf si ce sont des documents nécessaires pour accomplir une démarche administrative relevant des tâches effectuées par l’organisme concerné), ils sont exemptés de l’obligation d’accessibilité.',
         'Dans cette situation, le critère est non applicable.'
-      ]
+      ],
+      glossary: ['version-accessible-pour-un-document-en-telechargement']
     },
     13.4: {
       theme: 13,
@@ -1190,7 +1487,8 @@ const RGAA_CRITERIA = {
         'Pour chaque document bureautique ayant une version accessible, cette version offre-t-elle la même information ?',
       wcagSc: ['1.1.1', '1.3.1', '1.3.2', '2.4.1', '2.4.3', '3.1.1', '4.1.2'],
       techniques: ['F15', 'G10', 'G135'],
-      tests: ['13.4.1']
+      tests: ['13.4.1'],
+      glossary: ['version-accessible-pour-un-document-en-telechargement']
     },
     13.5: {
       theme: 13,
@@ -1198,7 +1496,8 @@ const RGAA_CRITERIA = {
         'Dans chaque page web, chaque contenu cryptique (art ASCII, émoticône, syntaxe cryptique) a-t-il une alternative ?',
       wcagSc: ['1.1.1'],
       techniques: ['F71', 'F70', 'G135', 'H86'],
-      tests: ['13.5.1']
+      tests: ['13.5.1'],
+      glossary: []
     },
     13.6: {
       theme: 13,
@@ -1206,7 +1505,8 @@ const RGAA_CRITERIA = {
         'Dans chaque page web, pour chaque contenu cryptique (art ASCII, émoticône, syntaxe cryptique) ayant une alternative, cette alternative est-elle pertinente ?',
       wcagSc: ['1.1.1'],
       techniques: ['F71', 'F72', 'H86'],
-      tests: ['13.6.1']
+      tests: ['13.6.1'],
+      glossary: []
     },
     13.7: {
       theme: 13,
@@ -1214,7 +1514,8 @@ const RGAA_CRITERIA = {
         'Dans chaque page web, les changements brusques de luminosité ou les effets de flash sont-ils correctement utilisés ?',
       wcagSc: ['2.3.1'],
       techniques: ['G15', 'G19', 'G176'],
-      tests: ['13.7.1', '13.7.2', '13.7.3']
+      tests: ['13.7.1', '13.7.2', '13.7.3'],
+      glossary: ['changement-brusque-de-luminosite-ou-effet-de-flash']
     },
     13.8: {
       theme: 13,
@@ -1239,7 +1540,8 @@ const RGAA_CRITERIA = {
         'SM11',
         'SM12'
       ],
-      tests: ['13.8.1', '13.8.2']
+      tests: ['13.8.1', '13.8.2'],
+      glossary: ['controle-contenu-en-mouvement-ou-clignotant']
     },
     13.9: {
       theme: 13,
@@ -1252,7 +1554,8 @@ const RGAA_CRITERIA = {
         'Il existe des interfaces pour lesquelles l’orientation du périphérique est essentielle à leur utilisation.',
         'Dans ces situations, le critère est non applicable. Il peut s’agir d’interfaces de jeu, de piano, de dépôt de chèques bancaires, etc.',
         'Si l’interface est le seul moyen d’accéder au service proposé, une alternative devrait être mise en place pour pallier cette carence.'
-      ]
+      ],
+      glossary: []
     },
     '13.10': {
       theme: 13,
@@ -1263,9 +1566,10 @@ const RGAA_CRITERIA = {
       tests: ['13.10.1', '13.10.2'],
       particularCases: [
         'Il existe une gestion de cas particuliers dans deux types de situation :',
-        'Le critère ne s’applique qu’à des fonctionnalités mises en place par l’auteur du site. Il ne concerne donc pas les gestes requis par l’agent utilisateur ou le système d’exploitation ;',
-        'Le critère ne s’applique pas aux fonctionnalités dont la réalisation d’un geste complexe est essentielle (exécuter le tracé d’une signature, par exemple).'
-      ]
+        '- Le critère ne s’applique qu’à des fonctionnalités mises en place par l’auteur du site. Il ne concerne donc pas les gestes requis par l’agent utilisateur ou le système d’exploitation ;',
+        '- Le critère ne s’applique pas aux fonctionnalités dont la réalisation d’un geste complexe est essentielle (exécuter le tracé d’une signature, par exemple).'
+      ],
+      glossary: ['gestes-complexes-et-gestes-simples']
     },
     13.11: {
       theme: 13,
@@ -1279,9 +1583,10 @@ const RGAA_CRITERIA = {
       ],
       technicalNotes: [
         'Deux exemples de mécanisme mis en place pour annuler ou abandonner une action déclenchée au moyen d’un dispositif de pointage sur un point unique de l’écran :',
-        'Une fenêtre modale permettant d’annuler l’action après son achèvement ;',
-        'Pour une fonction de glisser/déposer, le fait d’abandonner l’action si l’utilisateur relâche l’élément en dehors de la zone cible.'
-      ]
+        '- Une fenêtre modale permettant d’annuler l’action après son achèvement ;',
+        '- Pour une fonction de glisser/déposer, le fait d’abandonner l’action si l’utilisateur relâche l’élément en dehors de la zone cible.'
+      ],
+      glossary: ['relache-ou-releve', 'presse-ou-pose']
     },
     13.12: {
       theme: 13,
@@ -1292,9 +1597,10 @@ const RGAA_CRITERIA = {
       tests: ['13.12.1', '13.12.2', '13.12.3'],
       particularCases: [
         'Il existe une gestion de cas particulier lorsque :',
-        'Le mouvement est essentiel à l’accomplissement de la fonctionnalité (ex. podomètre) ;',
-        'La détection du mouvement est utilisée pour contrôler une fonctionnalité au travers d’une interface compatible avec l’accessibilité.'
-      ]
+        '- Le mouvement est essentiel à l’accomplissement de la fonctionnalité (ex. podomètre) ;',
+        '- La détection du mouvement est utilisée pour contrôler une fonctionnalité au travers d’une interface compatible avec l’accessibilité.'
+      ],
+      glossary: ['composant-d-interface']
     }
   }
 };
@@ -1455,8 +1761,8 @@ const RGAA_TESTS = {
           'Si au moins une alternative textuelle est trouvée, le test est validé.',
           'Si les étapes 3 et 4 ne sont pas satisfaites, vérifier que l’élément <canvas> est : - Soit pourvu d’un contenu alternatif présent entre les balises <canvas> et </canvas> ; - Soit immédiatement suivi d’un lien ou bouton adjacent permettant d’accéder à un contenu alternatif ; - Soit un mécanisme permet à l’utilisateur de remplacer l’élément <canvas> par un contenu alternatif.'
         ],
-        passWhen:
-          "Si c’est le cas, le test est validé. Note : si l'élément <canvas> dispose d'un rôle img, son alternative ne peut être fournie que par les techniques listées à l'étape 4."
+        passWhen: 'Si c’est le cas, le test est validé.',
+        note: "Note : si l'élément <canvas> dispose d'un rôle img, son alternative ne peut être fournie que par les techniques listées à l'étape 4."
       },
       glossary: [
         'image-porteuse-d-information',
@@ -2819,8 +3125,8 @@ const RGAA_TESTS = {
           'Retrouver dans le document les mécanismes qui permettent d’afficher un rapport de contraste conforme ;',
           'Pour chacun de ces mécanismes, vérifier que le rapport de contraste entre les couleurs du composant ou des éléments graphiques porteurs d’informations qui le composent est suffisamment élevé ;'
         ],
-        passWhen:
-          "Si c’est le cas pour chaque mécanisme, le test est validé. Note : le critère est non applicable dans ces situations : - Composant d'interface inactif (par exemple, un bouton avec un attribut disabled) sur lequel aucune action n'est possible ; - Composant d'interface pour lequel l'apparence est gérée par les styles natifs du navigateur sans aucune modification par l'auteur (par exemple, le style au focus natif dans Chrome ou Firefox) ; - Composant d'interface pour lequel la couleur n'est pas nécessaire pour identifier le composant ou son état (par exemple, un groupe de liens faisant office de navigation dont la position dans la page, la taille et la couleur du texte permettent de comprendre qu'il s'agit de liens même si la couleur du soulignement des liens avec le fond blanc n'a pas un ratio de 3:1 et que le texte lui a un ratio de 4.5:1) ; - Élément graphique ou parties d'élément graphique non porteur d'information ou ayant une alternative (description longue, informations identiques visibles dans la page) ; - Élément graphique ou parties d'élément graphique faisant partie d'un logo ou du nom de marque d'un organisme ou d'une société ; - Élément graphique ou parties d'élément graphique dont la présentation est essentielle à l'information véhiculée (exemple drapeaux, logotypes, photos de personnes ou de scènes, captures d'écran, diagrammes médicaux, carte de chaleurs) ; - Élément graphique ou parties d'élément graphique dynamiques dont le contraste au survol / focus est suffisant."
+        passWhen: 'Si c’est le cas pour chaque mécanisme, le test est validé.',
+        note: "Note : le critère est non applicable dans ces situations : - Composant d'interface inactif (par exemple, un bouton avec un attribut disabled) sur lequel aucune action n'est possible ; - Composant d'interface pour lequel l'apparence est gérée par les styles natifs du navigateur sans aucune modification par l'auteur (par exemple, le style au focus natif dans Chrome ou Firefox) ; - Composant d'interface pour lequel la couleur n'est pas nécessaire pour identifier le composant ou son état (par exemple, un groupe de liens faisant office de navigation dont la position dans la page, la taille et la couleur du texte permettent de comprendre qu'il s'agit de liens même si la couleur du soulignement des liens avec le fond blanc n'a pas un ratio de 3:1 et que le texte lui a un ratio de 4.5:1) ; - Élément graphique ou parties d'élément graphique non porteur d'information ou ayant une alternative (description longue, informations identiques visibles dans la page) ; - Élément graphique ou parties d'élément graphique faisant partie d'un logo ou du nom de marque d'un organisme ou d'une société ; - Élément graphique ou parties d'élément graphique dont la présentation est essentielle à l'information véhiculée (exemple drapeaux, logotypes, photos de personnes ou de scènes, captures d'écran, diagrammes médicaux, carte de chaleurs) ; - Élément graphique ou parties d'élément graphique dynamiques dont le contraste au survol / focus est suffisant."
       },
       glossary: [
         'mecanisme-qui-permet-d-afficher-un-rapport-de-contraste-conforme',
@@ -3130,8 +3436,8 @@ const RGAA_TESTS = {
           'Retrouver dans le document les médias non temporels associés à une alternative ;',
           'Pour chaque média non temporel, vérifier que : - La page référencée par le lien ou le bouton adjacent est accessible ; - L’alternative dans la page, référencée par le lien ou le bouton adjacent, est accessible.'
         ],
-        passWhen:
-          "Si c’est le cas pour chaque média non temporel, le test est validé. Note : le critère est non applicable dans les situations où : - Le média non temporel est utilisé à des fins décoratives (c'est-à-dire qu'il n'apporte aucune information) ; - Le média non temporel est diffusé dans un environnement maîtrisé ; - Le média non temporel est inséré via JavaScript en vérifiant la présence et la version du plug-in, en remplacement d'un contenu alternatif déjà présent."
+        passWhen: 'Si c’est le cas pour chaque média non temporel, le test est validé.',
+        note: "Note : le critère est non applicable dans les situations où : - Le média non temporel est utilisé à des fins décoratives (c'est-à-dire qu'il n'apporte aucune information) ; - Le média non temporel est diffusé dans un environnement maîtrisé ; - Le média non temporel est inséré via JavaScript en vérifiant la présence et la version du plug-in, en remplacement d'un contenu alternatif déjà présent."
       },
       glossary: ['media-non-temporel', 'lien-ou-bouton-adjacent']
     },
@@ -3161,8 +3467,8 @@ const RGAA_TESTS = {
         steps: [
           'Au chargement du document, si un son se déclenche automatiquement, vérifier que : - Soit la séquence sonore a une durée inférieure ou égale à 3 secondes ; - Soit un dispositif (un bouton par exemple), sur l’élément ayant déclenché le son (voir note), ou dans la page, permet de le stopper ; - Soit le volume de la séquence peut être contrôlé par l’utilisateur, indépendamment du contrôle de volume du système.'
         ],
-        passWhen:
-          'Si c’est le cas, le test est validé. Note : les éléments suivants sont susceptibles de déclencher des sons au chargement de la page : éléments <audio>, <video>, <object>, <embed>, <bgsound> ou un code JavaScript (utilisation de la Web Audio API, par exemple).'
+        passWhen: 'Si c’est le cas, le test est validé.',
+        note: 'Note : les éléments suivants sont susceptibles de déclencher des sons au chargement de la page : éléments <audio>, <video>, <object>, <embed>, <bgsound> ou un code JavaScript (utilisation de la Web Audio API, par exemple).'
       },
       glossary: ['controle-son-declenche-automatiquement']
     },
@@ -3623,8 +3929,8 @@ const RGAA_TESTS = {
           'Pour chaque lien SVG, vérifier que le contenu de l’attribut aria-labelledby ou de l’attribut aria-label ou de l’élément <title> ou de l’attribut x-link:title ou d’un ou plusieurs éléments <text> contient l’intitulé visible ;',
           'Si c’est le cas pour chaque lien SVG, le test est validé pour les liens SVG.'
         ],
-        passWhen:
-          'Si le test est validé à la fois pour les liens non SVG et pour les liens SVG, le test est globalement validé. Note : considérant la détermination du nom accessible, il existe deux cas particuliers et une particularité liée aux expressions mathématiques : - La ponctuation et les lettres majuscules présentes dans le texte de l’intitulé visible peuvent être ignorées dans le nom accessible sans porter à conséquence. - Si le texte de l’intitulé visible sert de symbole, il ne doit pas être interprété littéralement au niveau du nom accessible. Le nom doit exprimer la fonction véhiculée par le symbole (par exemple, "B" au niveau d\'un éditeur de texte aura pour nom accessible "Mettre en gras", le signe ">" en fonction du contexte signifiera "Suivant" ou "Lancer la vidéo"). Le cas des symboles mathématiques fait cependant exception (voir le point ci-dessous). - Si l\'étiquette visible représente une expression mathématique, les symboles mathématiques peuvent être repris littéralement pour servir d\'étiquette au nom accessible (par exemple, "A>B"). Il est laissé à l\'utilisateur le soin d\'opérer la correspondance entre l\'expression et ce qu\'il doit épeler compte tenu de la connaissance qu\'il a du fonctionnement de son logiciel de saisie vocale ("A plus grand que B" ou "A supérieur à B").'
+        passWhen: 'Si le test est validé ',
+        note: 'à la fois pour les liens non SVG et pour les liens SVG, le test est globalement validé. Note : considérant la détermination du nom accessible, il existe deux cas particuliers et une particularité liée aux expressions mathématiques : - La ponctuation et les lettres majuscules présentes dans le texte de l’intitulé visible peuvent être ignorées dans le nom accessible sans porter à conséquence. - Si le texte de l’intitulé visible sert de symbole, il ne doit pas être interprété littéralement au niveau du nom accessible. Le nom doit exprimer la fonction véhiculée par le symbole (par exemple, "B" au niveau d\'un éditeur de texte aura pour nom accessible "Mettre en gras", le signe ">" en fonction du contexte signifiera "Suivant" ou "Lancer la vidéo"). Le cas des symboles mathématiques fait cependant exception (voir le point ci-dessous). - Si l\'étiquette visible représente une expression mathématique, les symboles mathématiques peuvent être repris littéralement pour servir d\'étiquette au nom accessible (par exemple, "A>B"). Il est laissé à l\'utilisateur le soin d\'opérer la correspondance entre l\'expression et ce qu\'il doit épeler compte tenu de la connaissance qu\'il a du fonctionnement de son logiciel de saisie vocale ("A plus grand que B" ou "A supérieur à B").'
       },
       glossary: ['lien', 'intitule-visible', 'intitule-ou-nom-accessible-de-lien']
     },
@@ -3998,8 +4304,8 @@ const RGAA_TESTS = {
           'Retrouver dans le document l’ensemble des éléments sémantiques utilisés à des fins de présentation ;',
           'Pour chacun de ces éléments, vérifier que : - L’élément est pourvu d’un attribut role="presentation" ; - L’utilisation de cet élément à des fins de présentation reste justifée.'
         ],
-        passWhen:
-          'Si c’est le cas, le test est validé. Note : Quelques exemples, non exhaustifs de détournement de balisage : un élément <div> utilisé comme paragraphe, un titre utilisé comme légende, un élément <blockquote> ou des paragraphes vides ou encore des espaces utilisés pour créer des effets de marges. L\'utilisation d\'un role="presentation" est formellement déconseillée, mais peut toutefois se justifier dans de rares cas. Cela peut être acceptable sur un élément <blockquote> ou un paragraphe vide, mais sera considéré comme non-conforme sur un titre. Le cas des tableaux : à noter que ce test aborde les tableaux de présentation qui ne devraient finalement pas apparaître au sein de la thématique Tableaux.'
+        passWhen: 'Si c’est le cas, le test est validé.',
+        note: 'Note : Quelques exemples, non exhaustifs de détournement de balisage : un élément <div> utilisé comme paragraphe, un titre utilisé comme légende, un élément <blockquote> ou des paragraphes vides ou encore des espaces utilisés pour créer des effets de marges. L\'utilisation d\'un role="presentation" est formellement déconseillée, mais peut toutefois se justifier dans de rares cas. Cela peut être acceptable sur un élément <blockquote> ou un paragraphe vide, mais sera considéré comme non-conforme sur un titre. Le cas des tableaux : à noter que ce test aborde les tableaux de présentation qui ne devraient finalement pas apparaître au sein de la thématique Tableaux.'
       },
       glossary: ['uniquement-a-des-fins-de-presentation']
     },
@@ -4510,8 +4816,8 @@ const RGAA_TESTS = {
           'Modifier les styles du document en donnant : - Une valeur de 1.5 à la propriété line-height de tous les éléments du document ; - Une valeur de 2em à la propriété margin-bottom des éléments <p> ; - Une valeur de 0.12em à la propriété letter-spacing de tous les éléments du document ; - Une valeur de 0.16em à la propriété word-spacing de tous les éléments du document ;',
           'Pour chaque passage de texte, vérifier qu’il reste lisible, à l’exception : - Des sous-titres directement intégrés à une vidéo ; - Des images texte ; - Des textes au sein d’une balise <canvas>.'
         ],
-        passWhen:
-          'Si c’est le cas pour chaque passage de texte, le test est validé. Note : une implémentation de ces règles de modification est disponible dans les ressources du critère de succès WCAG 1.4.12 (https://github.com/alastc/adaptation-scripts/blob/master/scripts/text-adaptation.js).'
+        passWhen: 'Si c’est le cas pour chaque passage de texte, le test est validé.',
+        note: 'Note : une implémentation de ces règles de modification est disponible dans les ressources du critère de succès WCAG 1.4.12 (https://github.com/alastc/adaptation-scripts/blob/master/scripts/text-adaptation.js).'
       }
     },
     '10.13.1': {
@@ -5200,7 +5506,7 @@ const RGAA_TESTS = {
       methodology: {
         steps: [
           'Retrouver dans le document les champs de formulaire qui se rapportent à une information concernant l’utilisateur (nom, prénom, numéro de téléphone, etc.) ;',
-          'Pour chaque champ de formulaire, vérifier que : - Le champ de formulaire possède un attribut autocomplete ; - L’attribut autocomplete est pourvu d’une valeur présente dans la <a rel="noreferrer noopener" target="_blank" title="liste des valeurs possibles - en anglais - nouvelle fenêtre" href="https://www.w3.org/TR/html52/sec-forms.html#autofill-processing-model">liste des valeurs possibles</a> ; - La valeur indiquée pour l’attribut autocomplete est pertinente au regard du type d’information attendu.'
+          'Pour chaque champ de formulaire, vérifier que : - Le champ de formulaire possède un attribut autocomplete ; - L’attribut autocomplete est pourvu d’une valeur présente dans la liste des valeurs possibles ; - La valeur indiquée pour l’attribut autocomplete est pertinente au regard du type d’information attendu.'
         ],
         passWhen: 'Si c’est le cas pour chaque champ de formulaire retrouvé, le test est validé.'
       },
@@ -5246,8 +5552,8 @@ const RGAA_TESTS = {
           'Comparer visuellement les deux pages et vérifier que le menu ou les barres de navigation sont toujours à la même place dans la présentation ;',
           'Comparer le code source (généré côté client) des deux pages et vérifier que le menu ou les barres de navigation se présentent toujours dans le même ordre relatif dans la structure ;'
         ],
-        passWhen:
-          "Si c’est le cas, le test est validé. Note : le critère est non applicable dans les situations où : - Les pages d'un ensemble de pages sont le résultat ou une partie d'un processus (un processus de paiement ou de prise de commande, par exemple) ; - La page est la page d'accueil ; - Le site web est constitué d'une seule page."
+        passWhen: 'Si c’est le cas, le test est validé.',
+        note: "Note : le critère est non applicable dans les situations où : - Les pages d'un ensemble de pages sont le résultat ou une partie d'un processus (un processus de paiement ou de prise de commande, par exemple) ; - La page est la page d'accueil ; - Le site web est constitué d'une seule page."
       },
       glossary: ['ensemble-de-pages', 'menu-et-barre-de-navigation']
     },
@@ -5259,8 +5565,8 @@ const RGAA_TESTS = {
         steps: [
           'Vérifier que le plan du site est représentatif de l’architecture générale du site (cf. note) ;'
         ],
-        passWhen:
-          "Si c’est le cas, le test est validé. Note : Un plan du site trop complexe ou trop profond n'est pas recommandé pour aider à la navigation. Il n'est pas obligatoire que toutes les pages soient présentes dans le plan du site si elles peuvent être atteintes, par exemple, à partir de la page d'accueil d'une rubrique ou d'un catalogue."
+        passWhen: 'Si c’est le cas, le test est validé.',
+        note: "Note : Un plan du site trop complexe ou trop profond n'est pas recommandé pour aider à la navigation. Il n'est pas obligatoire que toutes les pages soient présentes dans le plan du site si elles peuvent être atteintes, par exemple, à partir de la page d'accueil d'une rubrique ou d'un catalogue."
       },
       glossary: ['page-plan-du-site']
     },
@@ -5420,8 +5726,8 @@ const RGAA_TESTS = {
           'Retrouver dans le document la zone de contenu principal (indiquée par l’élément main visible) ;',
           'Vérifier que le lien d’évitement ou d’accès rapide à la zone est : - Situé à la même place dans la présentation ; - Présent toujours dans le même ordre relatif dans le code source (généré côté client) ; - Visible à la prise de focus lors d’une tabulation ; - Fonctionnel.'
         ],
-        passWhen:
-          "Si c’est le cas, le test est validé. Note : lorsque le site web est constitué d'une seule page, l'obligation de la présence d'un lien d'accès rapide est liée au contexte de la page (présence ou absence de navigation ou de contenus additionnels, par exemple). Le critère peut être considéré comme non applicable lorsqu'il est avéré qu'un lien d'accès rapide est inutile."
+        passWhen: 'Si c’est le cas, le test est validé.',
+        note: "Note : lorsque le site web est constitué d'une seule page, l'obligation de la présence d'un lien d'accès rapide est liée au contexte de la page (présence ou absence de navigation ou de contenus additionnels, par exemple). Le critère peut être considéré comme non applicable lorsqu'il est avéré qu'un lien d'accès rapide est inutile."
       },
       glossary: ['liens-d-evitement-ou-d-acces-rapide', 'zone-de-contenu-principal']
     },
@@ -5433,8 +5739,8 @@ const RGAA_TESTS = {
           'Parcourir dans le document l’ensemble des contenus au moyen de la touche de tabulation vers l’avant (touche Tab) et vers l’arrière (touches Maj+Tab) ;',
           'Vérifier que l’ordre de déplacement du focus reste cohérent relativement au contenu considéré (par exemple, l’ordre de tabulation dans une fenêtre modale ne doit considérer que les éléments d’interface présents au sein de cette fenêtre) ;'
         ],
-        passWhen:
-          "Si c’est le cas, le test est validé. Note : il n'est pas obligatoire que la tabulation suive l'ordre de lecture naturel (de gauche à droite et de haut en bas par exemple) tant que les éléments sont accessibles dans un ordre cohérent."
+        passWhen: 'Si c’est le cas, le test est validé.',
+        note: "Note : il n'est pas obligatoire que la tabulation suive l'ordre de lecture naturel (de gauche à droite et de haut en bas par exemple) tant que les éléments sont accessibles dans un ordre cohérent."
       },
       glossary: ['ordre-de-tabulation', 'comprehensible-ordre-de-lecture']
     },
@@ -5465,8 +5771,8 @@ const RGAA_TESTS = {
           'Retrouver dans le document l’ensemble des éléments d’interface susceptibles de recevoir le focus (au moyen de la tabulation ou au moyen d’un script) ;',
           'Pour chaque élément d’interface, vérifier que l’utilisateur peut atteindre l’élément suivant ou précédent pouvant recevoir le focus : - Soit au moyen de la touche de tabulation (Tab ou Maj+Tab) ; - Soit au moyen d’une autre interaction clavier dont l’utilisateur est informé (par exemple, les flèches de direction).'
         ],
-        passWhen:
-          "Si c’est le cas pour chaque élément d’interface, le test est validé. Note : certains éléments d'interface complexes, comme un groupe de boutons radio, une liste de sélection et tous les composants développés avec WAI-ARIA font appel à des navigations optimisées qui utilisent généralement les flèches de direction pour passer d'une partie du composant à l'autre. Par exemple, dans un groupe de boutons radio les options sont navigables avec les flèches de direction. De même dans un système d'onglets l'utilisateur active les onglets avec les flèches de direction. Le test sur le piège au clavier se limite alors à vérifier que le composant est atteint avec la tabulation et qu'il est possible de passer au composant suivant ou revenir au composant précédent."
+        passWhen: 'Si c’est le cas pour chaque élément d’interface, le test est validé.',
+        note: "Note : certains éléments d'interface complexes, comme un groupe de boutons radio, une liste de sélection et tous les composants développés avec WAI-ARIA font appel à des navigations optimisées qui utilisent généralement les flèches de direction pour passer d'une partie du composant à l'autre. Par exemple, dans un groupe de boutons radio les options sont navigables avec les flèches de direction. De même dans un système d'onglets l'utilisateur active les onglets avec les flèches de direction. Le test sur le piège au clavier se limite alors à vérifier que le composant est atteint avec la tabulation et qu'il est possible de passer au composant suivant ou revenir au composant précédent."
       },
       glossary: ['prise-de-focus']
     },
@@ -5566,8 +5872,8 @@ const RGAA_TESTS = {
           'Retrouver dans le document les procédés limitant le temps d’une session (par exemple, après une authentification) ;',
           'Pour chaque procédé, vérifier que : - Soit la présence d’un mécanisme permet à l’utilisateur de supprimer la limite de temps ; - Soit la présence d’un mécanisme permet à l’utilisateur d’augmenter la limite de temps ; - Soit la limite de temps est de vingt heures, au moins.'
         ],
-        passWhen:
-          "Si c’est le cas, le test est validé. Note : lorsque la limite de temps est essentielle, notamment lorsqu'elle ne pourrait pas être supprimée sans changer fondamentalement le contenu ou les fonctionnalités liées au contenu, le critère est non applicable. Par exemple, le rafraîchissement d'un flux RSS dans une page n'est pas une limite de temps essentielle ; le critère est applicable. En revanche, une redirection automatique qui amène vers la nouvelle version d'une page à partir d'une url obsolète est essentielle ; le critère est non applicable."
+        passWhen: 'Si c’est le cas, le test est validé.',
+        note: "Note : lorsque la limite de temps est essentielle, notamment lorsqu'elle ne pourrait pas être supprimée sans changer fondamentalement le contenu ou les fonctionnalités liées au contenu, le critère est non applicable. Par exemple, le rafraîchissement d'un flux RSS dans une page n'est pas une limite de temps essentielle ; le critère est applicable. En revanche, une redirection automatique qui amène vers la nouvelle version d'une page à partir d'une url obsolète est essentielle ; le critère est non applicable."
       }
     },
     '13.2.1': {
@@ -5595,8 +5901,8 @@ const RGAA_TESTS = {
           'Retrouver dans le document les liens et les contrôles de formulaire (un bouton de formulaire ou un formulaire de téléchargement par exemple) permettant de télécharger un fichier au format bureautique ;',
           'Pour chaque fichier au format bureautique, vérifier la présence d’une version alternative présentée comme accessible : - Pour les documents au format .pdf, analyser le fichier avec l’outil PAC (PDF Accessibility Checker) et vérifier l’absence d’erreur d’accessibilité dans le document (cf. note) ; - Pour les documents au format .doc ou .docx, analyser le fichier avec l’outil de vérification d’accessibilité de Microsoft Office (à partir de la version 2010) et vérifier l’absence d’erreur d’accessibilité (cf. note) ; - Pour les documents au format .odt, analyser le document avec l’éditeur OpenOffice et vérifier que l’ensemble des contenus est conforme avec la liste des critères « Liste document bureautique en téléchargement » (cf. note pour une méthode alternative) ; - Pour les documents au format EPUB/DAISY, analyser le document avec un éditeur EPUB/DAISY et vérifier que l’ensemble des contenus est conforme avec la liste des critères « Liste document bureautique en téléchargement ». - Pour les documents eux-mêmes au format .html, analyser l’accessibilité du document.'
         ],
-        passWhen:
-          "Si c’est le cas pour chaque fichier au format bureautique, le test est validé. Note au sujet de l'outil PAC : l'outil analyse le document PDF du point de vue de l'accessibilité mais également de critères de qualité (par exemple la norme PDF/UA). Seules les erreurs relatives à des critères présents dans la liste des critères « Liste document bureautique en téléchargement » rendent le critère « Non conforme ». Par ailleurs, cet outil ne fonctionne que sur la plateforme Windows. Sur Mac, le contrôle doit se faire manuellement. Note au sujet Microsoft Office : le logiciel offre un vérificateur d'accessibilité en standard, (accessible via le menu « Fichier > Informations > Vérifier la présence de problèmes > Vérifier l'accessibilité »). Ce vérificateur peut être considérablement amélioré via le plugin Word Accessibility Plug-in (voir dans la section Outils). Ce plugin ne fonctionne que sur Windows. Sur Mac, le contrôle doit se faire manuellement. Note au sujet des documents au format .odt : OpenOffice et LibreOffice ne possèdent pas de vérificateur d'accessibilité. Une méthode plus rapide qu'une analyse manuelle peut consister à enregistrer le document au format .docx et le vérifier via le vérificateur d'accessibilité de Microsoft Office 2010. Attention cependant : cette méthode rapide est à réserver aux documents très simples car certaines informations liées à l'accessibilité ne sont pas correctement transcodées. C'est le cas des indications de langue, de certaines alternatives d'images ou d'en-têtes fusionnées sur les tableaux par exemple. Note au sujet du format EPUB : l'utilitaire Ace by DAISY App permet d'effectuer le travail de validation d'un fichier EPUB 3 de manière efficace. Note au sujet des documents dérogés : le référentiel propose un statut de dérogation dans certains cas (cf. guide d'accompagnement). Dans ce cas, les tests ne sont pas à réaliser, la version accessible étant fournie sur demande de l'utilisateur. Note à l'attention des personnes de droit privé mentionnées aux 2° à 4° du I de l’article 47 de la loi du 11 février 2005 : si les fichiers bureautiques (ex : PDF, documents Microsoft ou LibreOffice, etc.) ont été publiés avant le 23 septembre 2018 (sauf si ce sont des documents nécessaires pour accomplir une démarche administrative relevant des tâches effectuées par l'organisme concerné), ils sont exemptés de l’obligation d’accessibilité."
+        passWhen: 'Si c’est le cas pour chaque fichier au format bureautique, le test est validé.',
+        note: "Note au sujet de l'outil PAC : l'outil analyse le document PDF du point de vue de l'accessibilité mais également de critères de qualité (par exemple la norme PDF/UA). Seules les erreurs relatives à des critères présents dans la liste des critères « Liste document bureautique en téléchargement » rendent le critère « Non conforme ». Par ailleurs, cet outil ne fonctionne que sur la plateforme Windows. Sur Mac, le contrôle doit se faire manuellement. Note au sujet Microsoft Office : le logiciel offre un vérificateur d'accessibilité en standard, (accessible via le menu « Fichier > Informations > Vérifier la présence de problèmes > Vérifier l'accessibilité »). Ce vérificateur peut être considérablement amélioré via le plugin Word Accessibility Plug-in (voir dans la section Outils). Ce plugin ne fonctionne que sur Windows. Sur Mac, le contrôle doit se faire manuellement. Note au sujet des documents au format .odt : OpenOffice et LibreOffice ne possèdent pas de vérificateur d'accessibilité. Une méthode plus rapide qu'une analyse manuelle peut consister à enregistrer le document au format .docx et le vérifier via le vérificateur d'accessibilité de Microsoft Office 2010. Attention cependant : cette méthode rapide est à réserver aux documents très simples car certaines informations liées à l'accessibilité ne sont pas correctement transcodées. C'est le cas des indications de langue, de certaines alternatives d'images ou d'en-têtes fusionnées sur les tableaux par exemple. Note au sujet du format EPUB : l'utilitaire Ace by DAISY App permet d'effectuer le travail de validation d'un fichier EPUB 3 de manière efficace. Note au sujet des documents dérogés : le référentiel propose un statut de dérogation dans certains cas (cf. guide d'accompagnement). Dans ce cas, les tests ne sont pas à réaliser, la version accessible étant fournie sur demande de l'utilisateur. Note à l'attention des personnes de droit privé mentionnées aux 2° à 4° du I de l’article 47 de la loi du 11 février 2005 : si les fichiers bureautiques (ex : PDF, documents Microsoft ou LibreOffice, etc.) ont été publiés avant le 23 septembre 2018 (sauf si ce sont des documents nécessaires pour accomplir une démarche administrative relevant des tâches effectuées par l'organisme concerné), ils sont exemptés de l’obligation d’accessibilité."
       },
       glossary: ['version-accessible-pour-un-document-en-telechargement']
     },
@@ -5663,7 +5969,8 @@ const RGAA_TESTS = {
           'Pour chaque contenu clignotant ou provoquant des effets de flash, vérifier que : - Soit la fréquence de l’effet est inférieur à 3 par seconde ; - Soit la surface cumulée est inférieure à 21824 pixels.'
         ],
         passWhen:
-          "Si c’est le cas pour chaque contenu clignotant ou provoquant des effets de flash, le test est validé. Note : l'évaluation de ce critère peut être complexe. Lorsque l'effet est géré par un script ou au moyen de CSS, l'analyse du code est suffisante. L'outil PEAT permet d'analyser les vidéos au format .avi, par exemple. Un exemple de vidéo ayant provoqué des crises d'épilepsie peut être consulté ici : London 2012 Olympics Seizure (https://www.youtube.com/watch?v=vs0hfhSje9M)."
+          'Si c’est le cas pour chaque contenu clignotant ou provoquant des effets de flash, le test est validé.',
+        note: "Note : l'évaluation de ce critère peut être complexe. Lorsque l'effet est géré par un script ou au moyen de CSS, l'analyse du code est suffisante. L'outil PEAT permet d'analyser les vidéos au format .avi, par exemple. Un exemple de vidéo ayant provoqué des crises d'épilepsie peut être consulté ici : London 2012 Olympics Seizure (https://www.youtube.com/watch?v=vs0hfhSje9M)."
       },
       glossary: ['changement-brusque-de-luminosite-ou-effet-de-flash']
     },
@@ -5737,8 +6044,8 @@ const RGAA_TESTS = {
           'Retrouver dans le document les contenus clignotants (obtenus au moyen d’une image, d’un script ou d’un effet CSS) déclenchés automatiquement au chargement de la page ou lors de l’affichage d’un contenu (cf. note).',
           'Pour chaque contenu, vérifier que : - Soit la durée du clignotement est inférieure à 5 secondes ; - Soit la présence d’un mécanisme (un bouton, par exemple) permet d’arrêter et de relancer le clignotement ; - Soit la présence d’un mécanisme (un bouton, par exemple) permet de cacher et d’afficher à nouveau le contenu clignotant ; - Soit la présence d’un mécanisme (un bouton, par exemple) permet d’afficher la totalité du contenu clignotant.'
         ],
-        passWhen:
-          "Si c’est le cas pour chaque contenu clignotant, le test est validé. Note : l'arrêt ou la mise en pause d'un contenu en mouvement ou clignotant au moyen de la prise de focus (par exemple, l'effet est suspendu uniquement pendant la prise de focus) n'est pas considéré comme un procédé conforme. Dans certains cas, le mouvement ne peut pas être arrêté, par exemple dans le cas d'une barre de progression, dans ce cas, le critère est non applicable."
+        passWhen: 'Si c’est le cas pour chaque contenu clignotant, le test est validé.',
+        note: "Note : l'arrêt ou la mise en pause d'un contenu en mouvement ou clignotant au moyen de la prise de focus (par exemple, l'effet est suspendu uniquement pendant la prise de focus) n'est pas considéré comme un procédé conforme. Dans certains cas, le mouvement ne peut pas être arrêté, par exemple dans le cas d'une barre de progression, dans ce cas, le critère est non applicable."
       },
       glossary: ['controle-contenu-en-mouvement-ou-clignotant']
     },
@@ -5755,8 +6062,8 @@ const RGAA_TESTS = {
           'Consulter le document dans un mode d’orientation portrait puis dans un mode d’orientation paysage ;',
           'Vérifier que : - La consultation est possible quel que soit le mode d’orientation de l’écran. - Le contenu proposé reste le même quel que soit le mode d’orientation de l’écran utilisé même si sa présentation et le moyen d’y accéder peut différer.'
         ],
-        passWhen:
-          "Si c’est le cas, le test est validé. Note : il existe des interfaces pour lesquelles l'orientation du périphérique est essentielle à leur utilisation. Dans ces situations, le critère est non applicable. Il peut s'agir d'interfaces de jeu, de piano, de dépôt de chèques bancaires, etc. Si l'interface est le seul moyen d'accéder au service proposé, une alternative devrait être mise en place pour pallier cette carence."
+        passWhen: 'Si c’est le cas, le test est validé.',
+        note: "Note : il existe des interfaces pour lesquelles l'orientation du périphérique est essentielle à leur utilisation. Dans ces situations, le critère est non applicable. Il peut s'agir d'interfaces de jeu, de piano, de dépôt de chèques bancaires, etc. Si l'interface est le seul moyen d'accéder au service proposé, une alternative devrait être mise en place pour pallier cette carence."
       }
     },
     '13.10.1': {
@@ -5783,7 +6090,8 @@ const RGAA_TESTS = {
           'Pour chaque fonctionnalité, vérifier qu’elle reste disponible au moyen d’une interaction au toucher de type contact en un point unique de l’écran (par exemple, la possibilité de composer son mot de passe en suivant une trajectoire sur un clavier virtuel doit aussi être disponible au moyen de pressions successives sur les touches du clavier) ;'
         ],
         passWhen:
-          "Si c’est le cas pour chaque fonctionnalité utilisable ou disponible au moyen d’une interaction au toucher qui implique le suivi d’une trajectoire sur l’écran, le test est validé. Il existe une gestion de cas particuliers dans deux types de situation : - Le critère ne s'applique qu'à des fonctionnalités mises en place par l'auteur du site. Il ne concerne donc pas les gestes requis par l'agent utilisateur ou le système d'exploitation. - Le critère ne s'applique pas aux fonctionnalités dont la réalisation d'un geste complexe est essentielle (exécuter le tracé d'une signature, par exemple)."
+          'Si c’est le cas pour chaque fonctionnalité utilisable ou disponible au moyen d’une interaction au toucher qui implique le suivi d’une trajectoire sur l’écran, le test est validé.',
+        note: "Il existe une gestion de cas particuliers dans deux types de situation : - Le critère ne s'applique qu'à des fonctionnalités mises en place par l'auteur du site. Il ne concerne donc pas les gestes requis par l'agent utilisateur ou le système d'exploitation. - Le critère ne s'applique pas aux fonctionnalités dont la réalisation d'un geste complexe est essentielle (exécuter le tracé d'une signature, par exemple)."
       },
       glossary: ['gestes-complexes-et-gestes-simples']
     },

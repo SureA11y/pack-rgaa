@@ -889,5 +889,7 @@
   "consequentialFormReview_summary_cantTell_passwordChange": "This form changes a password (\"{{label}}\").",
   "consequentialFormReview_summary_cantTell_passwordChange_noLabel": "This form changes a password: it asks for the current and a new one.",
   "consequentialFormReview_summary_cantTell_testAnswers": "This form sends the answers to a test or an exam (\"{{label}}\").",
-  "consequentialFormReview_hint_cantTell": "Check that the user can review and correct the data before submitting, confirm explicitly (a checkbox or an extra step), or change, cancel or recover them afterwards (RGAA 11.12)."
+  "consequentialFormReview_hint_cantTell": "Check that the user can review and correct the data before submitting, confirm explicitly (a checkbox or an extra step), or change, cancel or recover them afterwards (RGAA 11.12).",
+  "pageLanguagePresent_summary_cantTell_langOnlyOnXhtml": "The page gives its language with lang alone, on an XHTML page that needs xml:lang.",
+  "pageLanguagePresent_hint_cantTell_langOnlyOnXhtml": "Add xml:lang with the same value, for example <html lang=\"fr\" xml:lang=\"fr\">."
 }
