@@ -49,6 +49,22 @@ test(`${RULE_ID}: no modal, a hidden one, or an inert page behind it is not appl
   }
 });
 
+// Core's view of modality (helpers.getOpenModalDialogs, isModalInert): under
+// jsdom an open <dialog aria-modal="true"> is modal only with assumeModal,
+// and then the page behind it is inert, so nothing there takes focus.
+test(`${RULE_ID}: a dialog core takes as modal, and what is behind it, are not asked about`, () => {
+  const assumeModal = { ...RUN, engineOptions: { assumeModal: true } };
+  const modal =
+    '<dialog open aria-modal="true" aria-label="Connexion"><button>Fermer</button></dialog>';
+  assertRule(runa11yCoreOnHtml(page(PAGE + modal), assumeModal), RULE_ID, 'notApplicable');
+  // A script-made modal behind it is inert too, with all it would reach.
+  const behind =
+    '<div role="dialog" aria-modal="true" aria-label="Aide"><button>Fermer</button></div>';
+  assertRule(runa11yCoreOnHtml(page(PAGE + behind + modal), assumeModal), RULE_ID, 'notApplicable');
+  // Without the option, the same <dialog> is not modal, and is asked about.
+  assertRule(runa11yCoreOnHtml(page(PAGE + modal), RUN), RULE_ID, 'cantTell');
+});
+
 test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html)`, () => {
   const fixturePath = path.join(__dirname, '../..', 'fixtures', `${RULE_ID}-all-scenarios.html`);
   const result = runa11yCoreOnHtml(fs.readFileSync(fixturePath, 'utf8'), RUN);
