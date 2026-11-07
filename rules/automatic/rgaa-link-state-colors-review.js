@@ -338,7 +338,7 @@ function runInPage(ctx) {
   function hasImageChild(el) {
     try {
       if (dom.querySelector(el, 'img, svg, picture, canvas')) return true;
-      return Array.from(dom.querySelectorAll(el, '[role~="img" i]')).some(
+      return [...dom.querySelectorAll(el, '[role~="img" i]')].some(
         (n) => helpers.aria.getExplicitRole(n) === 'img'
       );
     } catch {

@@ -29,6 +29,7 @@ All notable changes to this package are documented here. This project adheres to
 
 ### Fixed
 
+- The rules make their arrays with spread, not `Array.from`, which old libraries (Prototype, MooTools) replace. Prototype's gives an empty list for a `Set` or a `Map` iterator and counts a string by UTF-16 code unit, so on such a page `rgaa-moving-content-review` would have taken any animation for blinking and the label-in-name rules miscounted characters outside the Basic Multilingual Plane. With a core that scans such pages (the release after 1.15.0), they are scanned with the pack too; before, the scan stopped with `PAGE_BUILTINS_BROKEN`.
 - The rules follow RGAA 4.1.2's revision notes: a layout table may have a `<colgroup>` (5.8.1), `basefont` is no longer a presentational attribute (10.1.2), and an `<svg role="img">`, or an SVG element with `role="img"`, named by its `<title>` passes (1.1.5, 1.1.1).
 - A `<canvas>` with no role, name, fallback or link is asked about under 1.1.8 and 1.2.5 rather than failed under 1.1.8, since decorative canvases are common; an `<svg aria-hidden="true">` that keeps a `<title>` fails 1.2.4 and is asked about under 1.1.5 rather than failing both.
 - Screen-reader-only text is no longer part of a visible label in `rgaa-field-label-in-name-sources`, `rgaa-link-label-in-name-sources` and `rgaa-form-button-label-in-name-sources`, which failed a link whose title repeated its visible text beside a hidden "Page active".

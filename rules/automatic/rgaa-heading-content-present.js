@@ -212,12 +212,12 @@ function runInPage(ctx) {
     }
     if (tag === 'svg') {
       const parts = [];
-      for (const child of Array.from(dom.querySelectorAll(el, ':scope > *'))) {
+      for (const child of [...dom.querySelectorAll(el, ':scope > *')]) {
         if (tagOf(child) === 'title') parts.push(norm(dom.textContent(child)));
       }
-      for (const t of Array.from(
-        dom.get(el, 'querySelectorAll') ? dom.querySelectorAll(el, 'text') : []
-      )) {
+      for (const t of [
+        ...(dom.get(el, 'querySelectorAll') ? dom.querySelectorAll(el, 'text') : [])
+      ]) {
         parts.push(norm(dom.textContent(t)));
       }
       return norm(parts.join(' '));
@@ -254,7 +254,7 @@ function runInPage(ctx) {
 
     function walk(node, atHidden, depth) {
       if (depth > 200) return;
-      for (const child of Array.from(dom.childNodes(node) || [])) {
+      for (const child of [...(dom.childNodes(node) || [])]) {
         if (dom.nodeType(child) === 3) {
           if (!norm(child.data)) continue;
           if (isVisibilityHidden(dom.parentElement(child))) continue;

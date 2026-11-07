@@ -114,7 +114,7 @@ function runInPage(ctx) {
 
   // Every element of the document, not only those the scan keeps: while a
   // modal is open, the scan sees the dialog alone.
-  const all = Array.from(dom.querySelectorAll(document, '[aria-modal]'));
+  const all = [...dom.querySelectorAll(document, '[aria-modal]')];
   const dialogs = all.filter((el) => {
     if (trim(dom.getAttribute(el, 'aria-modal')).toLowerCase() !== 'true') return false;
     const role = helpers.aria.getExplicitRole(el);
@@ -125,7 +125,7 @@ function runInPage(ctx) {
 
   const occurrences = [];
   for (const dialog of dialogs) {
-    const outside = Array.from(dom.querySelectorAll(document, FOCUSABLE)).filter((el) => {
+    const outside = [...dom.querySelectorAll(document, FOCUSABLE)].filter((el) => {
       if (dom.contains(dialog, el)) return false;
       if (trim(dom.getAttribute(el, 'tabindex')) === '-1') return false;
       return !outOfTabOrder(el);

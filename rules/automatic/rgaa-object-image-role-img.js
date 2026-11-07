@@ -206,7 +206,7 @@ function runInPage(ctx) {
 
   function hasFallback(el) {
     if (trim(dom.textContent(el))) return true;
-    return Array.from(dom.querySelectorAll(el, ':scope > *')).some((c) => tagOf(c) !== 'param');
+    return [...dom.querySelectorAll(el, ':scope > *')].some((c) => tagOf(c) !== 'param');
   }
 
   const nodes = helpers.queryAllSmart
@@ -226,7 +226,7 @@ function runInPage(ctx) {
     const figure = dom.closest(el, 'figure');
     if (
       figure &&
-      Array.from(dom.querySelectorAll(figure, ':scope > figcaption')).some((c) =>
+      [...dom.querySelectorAll(figure, ':scope > figcaption')].some((c) =>
         String(dom.textContent(c) || '').trim()
       )
     ) {
@@ -253,7 +253,7 @@ function runInPage(ctx) {
     }
     if (!control) return false;
     if (String(dom.textContent(control) || '').trim()) return false;
-    return !Array.from(dom.querySelectorAll(control, 'img, svg, canvas, object, embed')).some(
+    return ![...dom.querySelectorAll(control, 'img, svg, canvas, object, embed')].some(
       (n) => n !== el && !dom.contains(el, n)
     );
   }

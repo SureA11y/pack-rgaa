@@ -71,7 +71,7 @@ function runInPage(ctx) {
 
   const usedMaps = new Map();
   try {
-    for (const img of Array.from(doc ? dom.querySelectorAll(doc, 'img[usemap]') : [])) {
+    for (const img of [...(doc ? dom.querySelectorAll(doc, 'img[usemap]') : [])]) {
       const raw = trim(attr(img, 'usemap'));
       const name = (raw[0] === '#' ? raw.slice(1) : raw).toLowerCase();
       if (name && !usedMaps.has(name)) usedMaps.set(name, img);

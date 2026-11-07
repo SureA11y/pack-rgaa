@@ -501,7 +501,7 @@ function runInPage(ctx) {
   function containsInflectedRun(needle, hay) {
     if (!needle.length) return false;
     const close = (label, source) =>
-      label === source || (Array.from(label).length >= 4 && source.indexOf(label) === 0);
+      label === source || ([...label].length >= 4 && source.indexOf(label) === 0);
     for (let i = 0; i + needle.length <= hay.length; i++) {
       if (needle.every((w, j) => close(w, hay[i + j]))) return true;
     }
@@ -592,7 +592,7 @@ function runInPage(ctx) {
     }
     if (label.elements.some(isIconFontElement)) return 'symbol';
     const whole = label.text.toLowerCase();
-    if (Array.from(whole).length === 1 && sourceText.toLowerCase().indexOf(whole) === -1) {
+    if ([...whole].length === 1 && sourceText.toLowerCase().indexOf(whole) === -1) {
       return 'symbol';
     }
     return 'no';

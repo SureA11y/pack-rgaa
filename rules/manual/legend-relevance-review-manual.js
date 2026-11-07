@@ -106,7 +106,7 @@ function runInPage(ctx) {
 
   function hasField(group) {
     if (dom.querySelector(group, NATIVE_FIELDS)) return true;
-    return Array.from(dom.querySelectorAll(group, ROLE_FIELDS)).some((el) =>
+    return [...dom.querySelectorAll(group, ROLE_FIELDS)].some((el) =>
       FIELD_ROLES.includes(explicitRole(el))
     );
   }
@@ -141,9 +141,7 @@ function runInPage(ctx) {
     let legend = '';
     let source = '';
     if (isFieldset) {
-      const el = Array.from(dom.querySelectorAll(group, ':scope > *')).find(
-        (c) => tagOf(c) === 'legend'
-      );
+      const el = [...dom.querySelectorAll(group, ':scope > *')].find((c) => tagOf(c) === 'legend');
       legend = el ? norm(dom.textContent(el)) : '';
       source = 'legend';
     }

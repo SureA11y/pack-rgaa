@@ -66,7 +66,7 @@ function runInPage(ctx) {
   function textOf(node) {
     const parts = [];
     const visit = (n) => {
-      for (const c of Array.from(dom.childNodes(n) || [])) {
+      for (const c of [...(dom.childNodes(n) || [])]) {
         const type = dom.nodeType(c);
         if (type === 3) parts.push(String(dom.nodeValue(c) || ''));
         else if (type === 1) {

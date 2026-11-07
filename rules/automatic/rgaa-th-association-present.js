@@ -82,11 +82,11 @@ function runInPage(ctx) {
       .trim();
 
   function rowsOf(table) {
-    return Array.from(dom.querySelectorAll(table, 'tr')).filter(
+    return [...dom.querySelectorAll(table, 'tr')].filter(
       (tr) => dom.closest(tr, 'table') === table
     );
   }
-  const cellsOf = (tr) => Array.from(dom.querySelectorAll(tr, ':scope > th, :scope > td'));
+  const cellsOf = (tr) => [...dom.querySelectorAll(tr, ':scope > th, :scope > td')];
   const spanned = (c) =>
     Number(dom.getAttribute(c, 'rowspan') || 1) > 1 ||
     Number(dom.getAttribute(c, 'colspan') || 1) > 1;

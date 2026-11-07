@@ -201,7 +201,7 @@ function runInPage(ctx) {
   ]);
   const NATIVE = new Set(['input', 'select', 'textarea']);
   const fieldsIn = (root) =>
-    Array.from(dom.querySelectorAll(root, FIELD)).filter(
+    [...dom.querySelectorAll(root, FIELD)].filter(
       (el) => NATIVE.has(tagOf(el)) || FIELD_ROLES.has(roleOf(el))
     );
 
@@ -239,7 +239,7 @@ function runInPage(ctx) {
   const stylesUnread =
     !hasLayout &&
     (dom.querySelectorAll(document, 'link[rel~="stylesheet" i]').length > 0 ||
-      Array.from(dom.querySelectorAll(document, 'style')).some((s) =>
+      [...dom.querySelectorAll(document, 'style')].some((s) =>
         /content\s*:|background(-image)?\s*:[^;]*url\(/i.test(dom.textContent(s))
       ));
 
@@ -305,7 +305,7 @@ function runInPage(ctx) {
         const cs = styleOf(el);
         if (cs && cs.backgroundImage && cs.backgroundImage !== 'none') out.icon = true;
       }
-      for (const n of Array.from(dom.childNodes(el) || [])) {
+      for (const n of [...(dom.childNodes(el) || [])]) {
         const type = dom.nodeType(n);
         if (type === 3) {
           const t = norm(dom.nodeValue(n));
@@ -437,7 +437,7 @@ function runInPage(ctx) {
       "Check that the field's label shows a required indication, such as one added by CSS (RGAA 11.10.2)."
   };
 
-  const forms = Array.from(dom.querySelectorAll(document, 'form, [role~="form" i]')).filter(isForm);
+  const forms = [...dom.querySelectorAll(document, 'form, [role~="form" i]')].filter(isForm);
   const fails = [];
   const cantTells = [];
   let applicable = 0;
@@ -475,7 +475,7 @@ function runInPage(ctx) {
     }
     if (groups.size < 2) continue;
 
-    const markOptional = Array.from(dom.querySelectorAll(form, 'label, legend')).some((n) =>
+    const markOptional = [...dom.querySelectorAll(form, 'label, legend')].some((n) =>
       OPTIONAL.test(look(n).text)
     );
     if (markOptional) continue;
@@ -491,7 +491,7 @@ function runInPage(ctx) {
       const legend = (() => {
         const fs = closestUp(field, (a) => tagOf(a) === 'fieldset' || a === form);
         if (!fs || fs === form) return null;
-        return Array.from(dom.querySelectorAll(fs, ':scope > legend'))[0] || null;
+        return [...dom.querySelectorAll(fs, ':scope > legend')][0] || null;
       })();
       const own = merge(
         members.flatMap((m) =>

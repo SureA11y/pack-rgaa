@@ -168,7 +168,7 @@ function runInPage(ctx) {
     return p && dom.nodeType(p) === 1 ? p : null;
   };
   const hasText = (el) =>
-    Array.from(dom.childNodes(el) || []).some(
+    [...(dom.childNodes(el) || [])].some(
       (n) => dom.nodeType(n) === 3 && /\S/.test(dom.nodeValue(n) || '')
     );
 
@@ -362,7 +362,7 @@ function runInPage(ctx) {
   ]);
   const TRANSPARENT = new Set(['a', 'ins', 'del', 'map']);
   const flowInPhrasing = [];
-  for (const d of query(Array.from(FLOW_ONLY).join(', '))) {
+  for (const d of query([...FLOW_ONLY].join(', '))) {
     if (!isHtml(d)) continue;
     let p = parentElementOf(d);
     while (p && isHtml(p) && TRANSPARENT.has(tagOf(p))) p = parentElementOf(p);
@@ -391,7 +391,7 @@ function runInPage(ctx) {
   // ul, ol, menu: li, script and template children only.
   for (const list of lists) {
     const parent = tagOf(list);
-    for (const child of Array.from(dom.querySelectorAll(list, ':scope > *'))) {
+    for (const child of [...dom.querySelectorAll(list, ':scope > *')]) {
       const tag = tagOf(child);
       if (!isHtml(child)) {
         report(child, 'listChild', { element: tag, parent });
@@ -423,7 +423,7 @@ function runInPage(ctx) {
   }
 
   for (const dl of dls) {
-    const kids = Array.from(dom.querySelectorAll(dl, ':scope > *')).filter(
+    const kids = [...dom.querySelectorAll(dl, ':scope > *')].filter(
       (c) => !(isHtml(c) && SCRIPT_SUPPORTING.has(tagOf(c)))
     );
     if (hasText(dl)) report(dl, 'dlText', { element: 'dl' });
@@ -446,7 +446,7 @@ function runInPage(ctx) {
     for (const div of divs) {
       if (hasText(div)) report(div, 'dlText', { element: 'div' });
       const groupTags = [];
-      for (const c of Array.from(dom.querySelectorAll(div, ':scope > *'))) {
+      for (const c of [...dom.querySelectorAll(div, ':scope > *')]) {
         const tag = tagOf(c);
         if (isHtml(c) && SCRIPT_SUPPORTING.has(tag)) continue;
         if (isHtml(c) && (tag === 'dt' || tag === 'dd')) groupTags.push(tag);
@@ -496,7 +496,7 @@ function runInPage(ctx) {
   }
   const seen = new Set();
   for (const container of containers) {
-    for (const d of Array.from(dom.querySelectorAll(container, '*'))) {
+    for (const d of [...dom.querySelectorAll(container, '*')]) {
       if (!isHtml(d) || seen.has(d)) continue;
       const interactive = isInteractive(d);
       const tabindex = dom.hasAttribute(d, 'tabindex');

@@ -123,7 +123,7 @@ function runInPage(ctx) {
 
   const HTML_NS = 'http://www.w3.org/1999/xhtml';
   let titleEl = null;
-  for (const t of Array.from(dom.getElementsByTagName(document, 'title'))) {
+  for (const t of [...dom.getElementsByTagName(document, 'title')]) {
     if (!dom.namespaceURI(t) || dom.namespaceURI(t) === HTML_NS) {
       titleEl = t;
       break;

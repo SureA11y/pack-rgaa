@@ -80,9 +80,7 @@ function runInPage(ctx) {
     if (String(dom.tagName(el)).toLowerCase() === 'select') continue;
     applicableCount += 1;
 
-    const groups = Array.from(dom.querySelectorAll(el, '[role]')).filter(
-      (d) => firstRole(d) === 'group'
-    );
+    const groups = [...dom.querySelectorAll(el, '[role]')].filter((d) => firstRole(d) === 'group');
     if (!groups.length) continue;
 
     occurrences.push(

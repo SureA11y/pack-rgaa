@@ -81,7 +81,7 @@ function runInPage(ctx) {
     'marker'
   ]);
   const drawsNothing = (svg) =>
-    Array.from(dom.querySelectorAll(svg, ':scope > *')).every((c) =>
+    [...dom.querySelectorAll(svg, ':scope > *')].every((c) =>
       NOT_DRAWN.has(String(dom.localName(c) || dom.tagName(c)).toLowerCase())
     );
 
@@ -96,7 +96,7 @@ function runInPage(ctx) {
     if (drawsNothing(svg)) continue;
     applicableCount += 1;
 
-    const all = [svg].concat(Array.from(dom.querySelectorAll(svg, '*')));
+    const all = [svg].concat([...dom.querySelectorAll(svg, '*')]);
     const referenced = [];
     // Follow same-document <use> references (see @expectation above).
     const visited = new Set(all);
@@ -118,7 +118,7 @@ function runInPage(ctx) {
       }
       if (!target || visited.has(target)) continue;
       referenced.push(ref);
-      for (const node of [target].concat(Array.from(dom.querySelectorAll(target, '*')))) {
+      for (const node of [target].concat([...dom.querySelectorAll(target, '*')])) {
         if (visited.has(node)) continue;
         visited.add(node);
         all.push(node);

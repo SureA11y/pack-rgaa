@@ -164,7 +164,7 @@ function runInPage(ctx) {
   }
 
   // ASCII art: a <pre> of three lines or more, mostly signs.
-  for (const pre of Array.from(dom.querySelectorAll(document, 'pre'))) {
+  for (const pre of [...dom.querySelectorAll(document, 'pre')]) {
     if (excluded(pre) || !visible(pre) || titled(pre)) continue;
     if (dom.querySelectorAll(pre, 'code, kbd, samp').length) continue;
     const raw = String(dom.textContent(pre) || '');

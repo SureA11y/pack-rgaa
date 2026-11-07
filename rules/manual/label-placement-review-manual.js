@@ -197,7 +197,7 @@ function runInPage(ctx) {
     let box = null;
     let text = '';
     const walk = (node) => {
-      for (const c of Array.from(dom.childNodes(node) || [])) {
+      for (const c of [...(dom.childNodes(node) || [])]) {
         const type = dom.nodeType(c);
         if (type === 3) {
           const value = String(dom.nodeValue(c) || '');
@@ -206,7 +206,7 @@ function runInPage(ctx) {
           try {
             const range = dom.createRange(document);
             range.selectNodeContents(c);
-            rects = Array.from(dom.getClientRects(range) || []);
+            rects = [...(dom.getClientRects(range) || [])];
           } catch {
             rects = [];
           }

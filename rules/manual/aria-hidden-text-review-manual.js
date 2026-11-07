@@ -107,7 +107,7 @@ function runInPage(ctx) {
 
   const nodes = helpers.queryAll
     ? helpers.queryAll('[aria-hidden]')
-    : Array.from(dom.querySelectorAll(ctx.document, '[aria-hidden]'));
+    : [...dom.querySelectorAll(ctx.document, '[aria-hidden]')];
 
   const occurrences = [];
   for (const el of nodes) {

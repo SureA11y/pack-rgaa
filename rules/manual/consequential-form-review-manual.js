@@ -302,7 +302,7 @@ function runInPage(ctx) {
   const occurrences = [];
   for (const form of query('form')) {
     if (roleOf(form) === 'search' || !visible(form)) continue;
-    const fields = Array.from(dom.querySelectorAll(form, 'input, select, textarea')).filter(
+    const fields = [...dom.querySelectorAll(form, 'input, select, textarea')].filter(
       (f) => visible(f) || String(attr(f, 'type') || '').toLowerCase() === 'hidden'
     );
     const tokens = fields.map((f) => String(attr(f, 'autocomplete') || '').toLowerCase());
@@ -316,7 +316,7 @@ function runInPage(ctx) {
     ) {
       kind = 'passwordChange';
     }
-    for (const b of Array.from(dom.querySelectorAll(form, 'button, input'))) {
+    for (const b of [...dom.querySelectorAll(form, 'button, input')]) {
       if (!isSubmit(b) || !visible(b)) continue;
       const text = labelOf(b);
       const p = phrase(text);

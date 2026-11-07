@@ -83,13 +83,11 @@ function runInPage(ctx) {
   const occurrences = [];
   for (const table of tables) {
     if (['presentation', 'none'].includes(roleOf(table))) continue;
-    const ownTh = Array.from(dom.querySelectorAll(table, 'th')).some(
+    const ownTh = [...dom.querySelectorAll(table, 'th')].some(
       (th) => dom.closest(th, 'table') === table
     );
     if (!ownTh) continue;
-    const caption = Array.from(dom.querySelectorAll(table, ':scope > caption')).some((c) =>
-      text(c)
-    );
+    const caption = [...dom.querySelectorAll(table, ':scope > caption')].some((c) => text(c));
     if (
       caption ||
       has(table, 'title') ||

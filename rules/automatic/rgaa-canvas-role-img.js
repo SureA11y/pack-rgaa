@@ -150,7 +150,7 @@ function runInPage(ctx) {
 
   function hasFallback(el) {
     if (trim(dom.textContent(el))) return true;
-    for (const d of Array.from(dom.querySelectorAll(el, '[alt], [aria-label]'))) {
+    for (const d of [...dom.querySelectorAll(el, '[alt], [aria-label]')]) {
       if (trim(attr(d, 'alt')) || trim(attr(d, 'aria-label'))) return true;
     }
     return false;
@@ -221,7 +221,7 @@ function runInPage(ctx) {
     const figure = dom.closest(el, 'figure');
     if (
       figure &&
-      Array.from(dom.querySelectorAll(figure, ':scope > figcaption')).some((c) =>
+      [...dom.querySelectorAll(figure, ':scope > figcaption')].some((c) =>
         String(dom.textContent(c) || '').trim()
       )
     ) {
@@ -248,7 +248,7 @@ function runInPage(ctx) {
     }
     if (!control) return false;
     if (String(dom.textContent(control) || '').trim()) return false;
-    return !Array.from(dom.querySelectorAll(control, 'img, svg, canvas, object, embed')).some(
+    return ![...dom.querySelectorAll(control, 'img, svg, canvas, object, embed')].some(
       (n) => n !== el && !dom.contains(el, n)
     );
   }

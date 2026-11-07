@@ -161,7 +161,7 @@ function runInPage(ctx) {
     const engineOptions = ctx.engineOptions || {};
     const deep =
       engineOptions.includeShadowDom !== false && typeof helpers.queryAllDeep === 'function';
-    const list = Array.from((deep ? helpers.queryAllDeep(sel) : helpers.queryAll(sel)) || []);
+    const list = [...((deep ? helpers.queryAllDeep(sel) : helpers.queryAll(sel)) || [])];
     return typeof helpers.isExcluded === 'function'
       ? list.filter((el) => !helpers.isExcluded(el))
       : list;
@@ -242,12 +242,12 @@ function runInPage(ctx) {
     if (isLinkOrButton(node)) return mentionsTranscript(nameOf(node)) ? 'adjacentLink' : null;
     const text = dom.textContent(node);
     if (!mentionsTranscript(text)) return null;
-    const controls = Array.from(
-      dom.querySelectorAll(
+    const controls = [
+      ...dom.querySelectorAll(
         node,
         'a[href], button, summary, input, [role~="link" i], [role~="button" i]'
       )
-    );
+    ];
     if (controls.some((c) => isLinkOrButton(c) && mentionsTranscript(nameOf(c)))) {
       return 'adjacentLink';
     }

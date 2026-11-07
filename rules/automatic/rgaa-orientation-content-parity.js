@@ -281,7 +281,7 @@ function runInPage(ctx) {
       String(t || '')
         .toLowerCase()
         .match(/[\p{L}\p{N}]+/gu) || []
-    ).filter((w) => Array.from(w).length >= 4);
+    ).filter((w) => [...w].length >= 4);
   // Enough words to be content in its own right, not a label.
   const MIN_WORDS = 2;
   // Below this share of its words shown elsewhere, the content is gone.
@@ -334,7 +334,7 @@ function runInPage(ctx) {
       if (dom.nodeType(item.node) === 3) {
         const range = dom.createRange(document);
         range.selectNodeContents(item.node);
-        return Array.from(dom.getClientRects(range)).some((r) => r.width > 0 && r.height > 0);
+        return [...dom.getClientRects(range)].some((r) => r.width > 0 && r.height > 0);
       }
       const r = dom.getBoundingClientRect(item.node);
       return r.width > 0 && r.height > 0;
@@ -379,9 +379,9 @@ function runInPage(ctx) {
       .join(' \n ');
     // A menu button or disclosure shown in this orientation may give access
     // to what it hides.
-    const trigger = Array.from(
-      dom.querySelectorAll(dom.body(document), '[aria-expanded], [aria-controls], summary')
-    ).some((el) => shown(el));
+    const trigger = [
+      ...dom.querySelectorAll(dom.body(document), '[aria-expanded], [aria-controls], summary')
+    ].some((el) => shown(el));
     return {
       states,
       joined,

@@ -132,15 +132,15 @@ function runInPage(ctx) {
   function gridOf(table) {
     if (String(dom.tagName(table)).toLowerCase() === 'table') {
       return {
-        rows: Array.from(table.rows || []).map((row) => Array.from(row.cells || [])),
+        rows: [...(table.rows || [])].map((row) => [...(row.cells || [])]),
         colspan: 'colspan',
         rowspan: 'rowspan'
       };
     }
-    const rows = Array.from(dom.querySelectorAll(table, '[role]'))
+    const rows = [...dom.querySelectorAll(table, '[role]')]
       .filter((el) => explicitRole(el) === 'row' && owningTable(el) === table)
       .map((row) =>
-        Array.from(dom.querySelectorAll(row, ':scope > *')).filter((cell) =>
+        [...dom.querySelectorAll(row, ':scope > *')].filter((cell) =>
           ARIA_CELL_ROLES.includes(explicitRole(cell))
         )
       );
