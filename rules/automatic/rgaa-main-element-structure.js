@@ -25,11 +25,21 @@
  *   - when there are several <main> elements, all but one carry the hidden
  *     attribute. Every <main> is counted, hidden or not: CSS or
  *     aria-hidden alone does not do (« l'utilisation d'un style seul
- *     restera insuffisante », 9.2 technical note). A <main> hidden only
- *     through a hidden ancestor, or inside a closed <details> or <dialog>,
- *     is asked about, since the step speaks of the element's own
- *     attribute. A page whose every <main> carries hidden is asked about
- *     too.
+ *     restera insuffisante », 9.2 technical note). A second <main> without
+ *     its own hidden attribute, hidden only inside a closed <details> or
+ *     under an ancestor's hidden="until-found", fails too
+ *     (revealableMain): the user opens the details, or the browser's
+ *     find-in-page reveals the content, with no script, and two <main>
+ *     elements are then visible at once, which the test's « une balise
+ *     <main> visible unique » and the technical note's « il ne peut y
+ *     avoir en permanence qu'une seule balise visible » rule out. One
+ *     hidden by an ancestor's plain hidden attribute or a closed <dialog>
+ *     is asked about (hiddenByAncestor): only a script shows it, and
+ *     whether it ever shows beside the other <main> is for a person. It
+ *     passes 9.2.1 when the script that reveals it hides the other; the
+ *     missing hidden attribute still fails 8.2.1 (rgaa-html-nesting-valid,
+ *     extraMain). A
+ *     page whose every <main> carries hidden is asked about too.
  *   Steps 1, 2 and 6 also name the element: a zone marked with
  *   role="banner", "navigation" or "contentinfo" on another element than
  *   <header>, <nav> or <footer> fails (roleZoneOnly), unless such an
@@ -71,6 +81,7 @@ const meta = {
     'noMain',
     'extraMain',
     'hiddenByAncestor',
+    'revealableMain',
     'allHidden',
     'roleZoneOnly'
   ],
@@ -89,13 +100,14 @@ const meta = {
     },
     hiddenByAncestor: {
       steps: [
-        'Find the <main> element the report names; it has no hidden attribute of its own, but is hidden by an ancestor, a closed <details> or a closed <dialog>.',
-        'Inspect the page for its other <main> elements, and check which one is shown.'
+        'Find the <main> element the report names; it has no hidden attribute of its own, but is hidden by an ancestor with the hidden attribute or by a closed <dialog>, which only a script shows.',
+        'Use the page as a user does, and trigger what shows this <main> (the button, tab or link that reveals its ancestor or opens its dialog).',
+        'Watch the <main> that was shown before: check whether it is hidden when this one appears.'
       ],
       passWhen:
-        'Only one <main> is shown, and every other one carries the hidden attribute itself.',
+        'In normal use this <main> is never displayed at the same time as the shown one: the script that reveals it hides the other, so the page keeps a single visible <main> and passes RGAA 9.2.1. The markup still lacks the hidden attribute HTML asks for, which fails RGAA 8.2.1 through rgaa-html-nesting-valid.',
       failWhen:
-        'A <main> other than the one shown lacks its own hidden attribute, which RGAA 9.2.1 step 5 asks of every other <main>: this fails RGAA 9.2.1.'
+        'This <main> and the shown one can be visible together, which fails RGAA 9.2.1: the test asks for « une balise <main> visible unique ».'
     },
     allHidden: {
       steps: [
@@ -128,16 +140,43 @@ function runInPage(ctx) {
     helpers.queryAllSource ? helpers.queryAllSource(sel) : helpers.queryAll(sel);
   const mains = query('main');
 
-  // hidden on an ancestor, or a closed <details>/<dialog> around it.
-  function hiddenByAncestor(el) {
-    const parentOf = (n) =>
-      helpers.composedParent ? helpers.composedParent(n) : dom.parentNode(n);
+  const parentOf = (n) => (helpers.composedParent ? helpers.composedParent(n) : dom.parentNode(n));
+  const tagOf = (n) => String(dom.localName(n) || '').toLowerCase();
+
+  // The ancestors that hide `el`: an ancestor with hidden, a closed
+  // <details> or a closed <dialog>. `byUser` is true when each of them is
+  // one the user can open without a script: a closed <details> (its
+  // summary), or hidden="until-found" (the browser's find-in-page).
+  function hidersOf(el) {
+    const hiders = [];
+    let byUser = true;
     for (let n = parentOf(el); n && dom.nodeType(n) === 1; n = parentOf(n)) {
-      if (dom.hasAttribute(n, 'hidden')) return true;
-      const tag = String(dom.localName(n) || '').toLowerCase();
-      if ((tag === 'details' || tag === 'dialog') && !dom.hasAttribute(n, 'open')) return true;
+      const tag = tagOf(n);
+      if (dom.hasAttribute(n, 'hidden')) {
+        hiders.push(n);
+        const value = String(dom.getAttribute(n, 'hidden') || '').toLowerCase();
+        if (value !== 'until-found') byUser = false;
+      } else if (tag === 'details' && !dom.hasAttribute(n, 'open')) {
+        hiders.push(n);
+      } else if (tag === 'dialog' && !dom.hasAttribute(n, 'open')) {
+        hiders.push(n);
+        byUser = false;
+      }
     }
-    return false;
+    return { hidden: hiders.length > 0, byUser: hiders.length > 0 && byUser, hiders };
+  }
+  const hiddenByAncestor = (el) => hidersOf(el).hidden;
+
+  // The names of the exclusive <details> groups `el` sits in: opening another
+  // <details> of the group closes the one around it.
+  function detailsGroups(el) {
+    const names = new Set();
+    for (let n = parentOf(el); n && dom.nodeType(n) === 1; n = parentOf(n)) {
+      if (tagOf(n) === 'details' && dom.getAttribute(n, 'name')) {
+        names.add(dom.getAttribute(n, 'name'));
+      }
+    }
+    return names;
   }
 
   // Whether the page has text of its own, outside scripts, styles and
@@ -184,6 +223,10 @@ function runInPage(ctx) {
       hiddenByAncestor: [
         'This <main> element is hidden by an ancestor but has no hidden attribute of its own.',
         'Check that only one <main> can ever be visible, and give the others the hidden attribute.'
+      ],
+      revealableMain: [
+        'This <main> element has no hidden attribute of its own, and the user can show it beside the other <main>: it is only inside a closed <details> or under hidden="until-found".',
+        'Give this <main> the hidden attribute, or keep a single <main> and show other content in another element.'
       ],
       allHidden: [
         'Every <main> element on the page has the hidden attribute.',
@@ -285,11 +328,36 @@ function runInPage(ctx) {
     );
   }
   if (withoutOwnHidden.length > 1) {
+    const hiddenOnes = withoutOwnHidden.filter((el) => hiddenByAncestor(el));
+    // With one <main> shown, a <main> the user can reveal without a script
+    // is a second visible one, unless opening its <details> closes the one
+    // around the shown <main> (an exclusive group).
+    const shownGroups = shown.length === 1 ? detailsGroups(shown[0]) : null;
+    const revealable = (el) => {
+      if (!shownGroups) return false;
+      const h = hidersOf(el);
+      if (!h.byUser) return false;
+      return !h.hiders.some(
+        (n) => tagOf(n) === 'details' && shownGroups.has(dom.getAttribute(n, 'name'))
+      );
+    };
+    const fails = hiddenOnes.filter(revealable);
+    const asks = hiddenOnes.filter((el) => !revealable(el));
+    if (fails.length) {
+      const failOccs = fails.map((el) => occurrence(el, 'revealableMain', 'fail'));
+      const askOccs = asks.map((el) => occurrence(el, 'hiddenByAncestor', 'cantTell'));
+      return {
+        ruleId: rule.ruleId,
+        ...helpers.resolveTieredOutcome(
+          failOccs.concat(zoneFails),
+          askOccs,
+          rule.defaultSeverity || 'moderate'
+        )
+      };
+    }
     return result(
       'cantTell',
-      withoutOwnHidden
-        .filter((el) => hiddenByAncestor(el))
-        .map((el) => occurrence(el, 'hiddenByAncestor', 'cantTell'))
+      asks.map((el) => occurrence(el, 'hiddenByAncestor', 'cantTell'))
     );
   }
   if (!withoutOwnHidden.length) {

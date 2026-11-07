@@ -161,35 +161,35 @@ test(`${RULE_ID}: an img with a role needs a non-empty alt or an ARIA name`, () 
     reasons(assertRule(run('<img src="a.png" alt="" role="img">'), RULE_ID, 'fail')),
     ['imgRoleEmptyAlt']
   );
-  assert.deepEqual(reasons(assertRule(run('<img src="a.png" role="none">'), RULE_ID, 'fail')), [
+  assert.deepEqual(reasons(assertRule(run('<img src="a.png" role="button">'), RULE_ID, 'fail')), [
     'imgRoleNoName'
   ]);
 });
 
-// RGAA 1.2.1 names role="presentation" on an <img> for decorative images; the
-// validator reports an error, so the rule asks.
-test(`${RULE_ID}: an img with role="presentation" and an empty or missing alt is asked about`, () => {
+// RGAA 1.2.1 names role="presentation" on an <img> for decorative images, and
+// ARIA in HTML allows it, and its synonym none, with alt="": the markup
+// passes 8.2.1 though the validator reports it. With no alt it fails, as HTML
+// requires alt on an <img>.
+test(`${RULE_ID}: an img with role="presentation" or "none" passes with alt=""`, () => {
   for (const body of [
     '<img src="a.png" alt="" role="presentation">',
-    '<img src="a.png" role="presentation">'
+    '<img src="a.png" alt="" role="none">'
   ]) {
-    const rule = assertRule(run(body), RULE_ID, 'cantTell', {
+    assertRule(run(body), RULE_ID, 'pass');
+  }
+});
+
+test(`${RULE_ID}: an img with role="presentation" or "none" and no alt fails`, () => {
+  for (const role of ['presentation', 'none']) {
+    const rule = assertRule(run(`<img src="a.png" role="${role}">`), RULE_ID, 'fail', {
       minOccurrences: 1,
       maxOccurrences: 1
     });
     const occ = rule.occurrences[0];
     assert.equal(occ.data.details.reasonCode, 'imgPresentationRole');
-    assert.equal(occ.uncertainty.code, 'judgement-required');
+    assert.equal(occ.data.details.role, role);
+    assert.equal(occ.uncertainty, undefined);
   }
-});
-
-test(`${RULE_ID}: a fail and a question on one page make the rule fail and keep the question`, () => {
-  const rule = assertRule(
-    run('<img src="a.png" alt="" role="presentation"><nav role="tab">a</nav>'),
-    RULE_ID,
-    'fail'
-  );
-  assert.deepEqual(reasons(rule).sort(), ['imgPresentationRole', 'roleNotAllowed']);
 });
 
 // RGAA 8.2.1 judges the generated source, hidden markup included.
@@ -282,9 +282,29 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
   const expected = [];
   for (let i = 1; i <= 15; i++) expected.push(`arc_case_${String(i).padStart(2, '0')}`);
   assert.deepEqual(ids, expected);
-  const asked = rule.occurrences.filter((o) => o.data.details.reasonCode === 'imgPresentationRole');
+  const presentation = rule.occurrences.filter(
+    (o) => o.data.details.reasonCode === 'imgPresentationRole'
+  );
   assert.deepEqual(
-    asked.map((o) => (o.html.match(/id="([^"]+)"/) || [])[1]),
+    presentation.map((o) => (o.html.match(/id="([^"]+)"/) || [])[1]),
     ['arc_case_13']
   );
+});
+
+// A shadow root is part of the page's generated source (« code source
+// généré »), which RGAA 8.2.1 judges like the rest: its markup fails with the
+// same reason codes.
+test(`${RULE_ID}: markup inside an open shadow root fails like markup outside it`, () => {
+  const { createDom, runa11yCoreOnDom } = require('../../helpers/run.js');
+  const dom = createDom(page('<div id="host"></div>'));
+  const root = dom.window.document.getElementById('host').attachShadow({ mode: 'open' });
+  root.innerHTML = '<nav role="tab">a</nav>';
+  const rule = assertRule(runa11yCoreOnDom(dom, RUN), RULE_ID, 'fail', {
+    minOccurrences: 1,
+    maxOccurrences: 1
+  });
+  const occ = rule.occurrences[0];
+  assert.equal(occ.data.details.reasonCode, 'roleNotAllowed');
+  assert.equal(occ.data.details.inShadowRoot, undefined);
+  assert.equal(occ.uncertainty, undefined);
 });

@@ -29,20 +29,24 @@
  *     <main>, any role on a <td> in a native table, on the <summary> of a
  *     <details>, on <caption>, on <input type="hidden">, or a role other
  *     than listitem on an <li> in a list);
- *   - `imgRoleEmptyAlt`: an <img> with a role and alt="";
- *   - `imgRoleNoName`: an <img> with a role and no alt, aria-label or
- *     aria-labelledby attribute.
- *   It asks (cantTell) in one case, `imgPresentationRole`: an <img> with
- *   role="presentation" and an empty or missing alt. The validator reports
- *   an error there, but RGAA 1.2.1 names role="presentation" on an <img>
- *   as a way to mark a decorative image, and ARIA in HTML allows it with
- *   alt="". The pack reads it so: with alt="" the markup passes 8.2.1;
- *   with no alt it fails, as HTML requires alt on an <img>.
+ *   - `imgRoleEmptyAlt`: an <img> with a role other than presentation or
+ *     none and alt="";
+ *   - `imgRoleNoName`: an <img> with a role other than presentation or
+ *     none and no alt, aria-label or aria-labelledby attribute;
+ *   - `imgPresentationRole`: an <img> with role="presentation" or
+ *     role="none" and no alt, aria-label or aria-labelledby attribute: HTML
+ *     requires alt on an <img>, and the role does not replace it.
+ *   An <img> with role="presentation" or role="none" and alt="" passes,
+ *   though the validator reports an error there: RGAA 1.2.1 names
+ *   role="presentation" on an <img> as a way to mark a decorative image,
+ *   and ARIA in HTML allows both roles with alt="". The pack judges
+ *   role="none", its synonym, the same way.
  * @implementation-notes
- * - Markup inside a shadow root is asked about (cantTell) instead of failed:
- *   it is part of the page's generated source, which 8.2.1 judges, but
- *   the W3C validator its methodology runs does not see it in the
- *   serialization, so a person confirms the markup in the inspector.
+ * - Markup inside an open shadow root fails like markup outside it, with
+ *   the same reason codes: a shadow root is part of the page's generated
+ *   source (« code source généré »), which 8.2.1 judges. Every check here
+ *   reads only the element's own tree (its parent, its table, its
+ *   descendants), so it is as certain inside a shadow root as outside.
  * - Expected outcomes follow the W3C validator version 26.9.27. The tables
  *   of accepted roles and of the roles each element allows were read from
  *   that version's reports, element by element; re-check them when the
@@ -75,20 +79,6 @@
 
 const id = 'rgaa-aria-role-conformance';
 
-// Markup in a shadow root is asked about instead of failed, whatever is wrong
-// with it, since the W3C validator does not see it: a person confirms it in the
-// inspector. Each code gets these steps.
-const SHADOW_REVIEW = {
-  steps: [
-    'Find the element the report names: it sits inside a shadow root, which the browser inspector shows under its host element (#shadow-root).',
-    'Read what the report says is wrong with its markup, and check it on the element in the inspector. The W3C validator cannot do this, because a shadow root is not in the serialized source it reads.'
-  ],
-  passWhen:
-    'The markup is not as the report says: the element, attribute, value or nesting is allowed by the HTML specification.',
-  failWhen:
-    "The markup is as the report says, which fails RGAA 8.2.1: a shadow root is part of the page's generated source."
-};
-
 const meta = {
   title: 'Role attributes are valid for the W3C validator',
   description:
@@ -113,24 +103,7 @@ const meta = {
     'imgRoleEmptyAlt',
     'imgRoleNoName',
     'imgPresentationRole'
-  ],
-  review: {
-    imgPresentationRole: {
-      steps: [
-        'Find the <img role="presentation"> the report names.',
-        'Read its alt attribute: empty, or missing.'
-      ],
-      passWhen:
-        'The <img> has alt="": role="presentation" is allowed on it by the HTML specification and named by RGAA 1.2.1 for a decorative image, so it does not fail RGAA 8.2.1, whatever the validator reports.',
-      failWhen:
-        'The <img> has no alt attribute, which HTML requires on an <img>, so the code fails RGAA 8.2.1: role="presentation" does not replace alt.'
-    },
-    emptyRole: SHADOW_REVIEW,
-    unknownRoleToken: SHADOW_REVIEW,
-    roleNotAllowed: SHADOW_REVIEW,
-    imgRoleEmptyAlt: SHADOW_REVIEW,
-    imgRoleNoName: SHADOW_REVIEW
-  }
+  ]
 };
 
 function runInPage(ctx) {
@@ -290,12 +263,9 @@ function runInPage(ctx) {
       hint: 'Add an alt attribute (or an ARIA name) to the image.'
     },
     imgPresentationRole: {
-      outcome: 'cantTell',
-      summary:
-        'This <img> has role="presentation" with an empty or missing alt, which the W3C validator reports as an error.',
-      hint: 'RGAA 1.2.1 accepts role="presentation" to mark a decorative image: with alt="" the markup passes 8.2.1; with no alt it fails, as HTML requires alt.',
-      needed:
-        'Whether this <img role="presentation">, a markup RGAA 1.2.1 names for decorative images, has alt="" (it passes 8.2.1) or no alt (it fails).'
+      outcome: 'fail',
+      summary: 'This <img> has role="{{role}}" but no alt attribute.',
+      hint: 'Add alt="" to a decorative image: HTML requires alt on an <img>, and role="presentation" does not replace it.'
     }
   };
 
@@ -341,7 +311,7 @@ function runInPage(ctx) {
   function isFirstSummaryOfDetails(el) {
     const p = parentEl(el);
     if (!p || localName(p) !== 'details') return false;
-    for (const c of dom.querySelectorAll(p, ':scope > *')) {
+    for (const c of [...(dom.children(p) || [])]) {
       if (localName(c) === 'summary') return c === el;
     }
     return false;
@@ -401,38 +371,18 @@ function runInPage(ctx) {
   const cantTellOccurrences = [];
   let applicableCount = 0;
 
-  // Inside a shadow root: the W3C validator, which RGAA 8.2.1's methodology
-  // runs on the generated source, does not see it in the serialized page.
-  function inShadow(el) {
-    try {
-      const r = dom.get(el, 'getRootNode') ? dom.getRootNode(el) : null;
-      return !!r && r !== ctx.document && dom.nodeType(r) === 11;
-    } catch {
-      return false;
-    }
-  }
-  const SHADOW_NEEDED =
-    'Whether the markup in this shadow root, which the W3C validator does not see, is as the report says.';
-  const SHADOW_HINT =
-    "This markup is in a shadow root, part of the page's generated source that the W3C validator does not see. Check it in the browser inspector: if it is as the report says, it fails 8.2.1.";
-  const shadowAsked = [];
-
   function report(el, reasonCode, params) {
     const msg = MESSAGES[reasonCode];
     let summary = msg.summary;
     for (const k of Object.keys(params)) summary = summary.split(`{{${k}}}`).join(params[k]);
-    const shadow = msg.outcome === 'fail' && inShadow(el);
     const occurrence = helpers.reportOccurrence(el, {
       summary,
-      hint: shadow ? SHADOW_HINT : msg.hint,
+      hint: msg.hint,
       i18n: {
         summaryKey: `ariaRoleConformance_summary_${msg.outcome}_${reasonCode}`,
-        hintKey: shadow
-          ? 'markupShadowRoot_hint_cantTell'
-          : `ariaRoleConformance_hint_${msg.outcome}_${reasonCode}`,
+        hintKey: `ariaRoleConformance_hint_${msg.outcome}_${reasonCode}`,
         params
       },
-      ...(shadow ? { uncertainty: { code: 'judgement-required', needed: SHADOW_NEEDED } } : {}),
       ...(msg.outcome === 'cantTell'
         ? {
             uncertainty: {
@@ -443,12 +393,11 @@ function runInPage(ctx) {
           }
         : {}),
       data: {
-        details: { reasonCode, ...params, ...(shadow ? { inShadowRoot: true } : {}) },
+        details: { reasonCode, ...params },
         visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
       }
     });
-    if (shadow) shadowAsked.push(occurrence);
-    else if (msg.outcome === 'fail') failOccurrences.push(occurrence);
+    if (msg.outcome === 'fail') failOccurrences.push(occurrence);
     else cantTellOccurrences.push(occurrence);
   }
 
@@ -483,8 +432,10 @@ function runInPage(ctx) {
       const emptyAlt = alt === '';
       const noName = alt == null && !named;
       if (emptyAlt || noName) {
-        if (role === 'presentation' && !unknown.length) {
-          report(el, 'imgPresentationRole', { element, role });
+        // role="presentation" (or none, its synonym) with alt="" is how
+        // RGAA 1.2.1 marks a decorative image: it passes.
+        if ((role === 'presentation' || role === 'none') && !unknown.length) {
+          if (noName) report(el, 'imgPresentationRole', { element, role });
         } else {
           report(el, emptyAlt ? 'imgRoleEmptyAlt' : 'imgRoleNoName', { element });
         }
@@ -510,7 +461,7 @@ function runInPage(ctx) {
   }
   const resolved = helpers.resolveTieredOutcome(
     failOccurrences,
-    cantTellOccurrences.concat(shadowAsked),
+    cantTellOccurrences,
     rule.defaultSeverity || 'moderate'
   );
   return { ruleId: rule.ruleId, ...resolved };

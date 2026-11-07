@@ -238,9 +238,117 @@ test(`${RULE_ID}: RGAA 8.2 and WCAG 4.1.2 agree on a misspelt value and on valid
 test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html)`, () => {
   const fixturePath = path.join(__dirname, '../..', 'fixtures', `${RULE_ID}-all-scenarios.html`);
   const result = runa11yCoreOnHtml(fs.readFileSync(fixturePath, 'utf8'), RUN);
-  const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 14, maxOccurrences: 14 });
+  const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 15, maxOccurrences: 15 });
   const ids = rule.occurrences.map((o) => (o.html.match(/id="([^"]+)"/) || [])[1]);
   const expected = [];
   for (let i = 1; i <= 14; i++) expected.push(`aac_case_${String(i).padStart(2, '0')}`);
+  expected.push('aac_case_20');
   assert.deepEqual(ids, expected);
+  assert.deepEqual(
+    rule.occurrences
+      .filter((o) => o.occurrenceOutcome === 'cantTell')
+      .map((o) => o.data.details.reasonCode),
+    ['emptyIdReference']
+  );
+});
+
+// A shadow root is part of the page's generated source (« code source
+// généré »), which RGAA 8.2.1 judges like the rest.
+function shadowRun(light, shadow) {
+  const { createDom, runa11yCoreOnDom } = require('../../helpers/run.js');
+  const dom = createDom(page(light));
+  const root = dom.window.document.getElementById('host').attachShadow({ mode: 'open' });
+  root.innerHTML = shadow;
+  return runa11yCoreOnDom(dom, RUN);
+}
+
+test(`${RULE_ID}: markup inside an open shadow root fails like markup outside it`, () => {
+  const rule = assertRule(
+    shadowRun('<div id="host"></div>', '<div aria-labeledby="x">a</div>'),
+    RULE_ID,
+    'fail',
+    { minOccurrences: 1, maxOccurrences: 1 }
+  );
+  const occ = rule.occurrences[0];
+  assert.equal(occ.data.details.reasonCode, 'unknownAttribute');
+  assert.equal(occ.data.details.inShadowRoot, undefined);
+  assert.equal(occ.uncertainty, undefined);
+});
+
+test(`${RULE_ID}: an aria-activedescendant naming an element across a shadow boundary is asked about`, () => {
+  // From a shadow root to the document.
+  const out = assertRule(
+    shadowRun(
+      '<div id="host"></div><div id="opt1" role="option">A</div>',
+      '<input role="combobox" aria-expanded="true" aria-activedescendant="opt1">'
+    ),
+    RULE_ID,
+    'cantTell',
+    { minOccurrences: 1, maxOccurrences: 1 }
+  );
+  assert.equal(out.occurrences[0].data.details.reasonCode, 'idReferenceOtherTree');
+  assert.equal(out.occurrences[0].uncertainty.code, 'judgement-required');
+  // From the document to a shadow root.
+  const into = assertRule(
+    shadowRun(
+      '<div id="host"></div><input role="combobox" aria-expanded="true" aria-activedescendant="opt1">',
+      '<div id="opt1" role="option">A</div>'
+    ),
+    RULE_ID,
+    'cantTell'
+  );
+  assert.deepEqual(reasons(into), ['idReferenceOtherTree']);
+});
+
+test(`${RULE_ID}: an aria-activedescendant naming no element of the page fails, in a shadow root too`, () => {
+  const rule = assertRule(
+    shadowRun(
+      '<div id="host"></div>',
+      '<input role="combobox" aria-expanded="true" aria-activedescendant="nowhere">'
+    ),
+    RULE_ID,
+    'fail'
+  );
+  assert.deepEqual(reasons(rule), ['invalidValue']);
+  // Found in its own shadow root, it passes.
+  assertRule(
+    shadowRun(
+      '<div id="host"></div>',
+      '<input role="combobox" aria-expanded="true" aria-activedescendant="o"><div id="o" role="option">A</div>'
+    ),
+    RULE_ID,
+    'pass'
+  );
+});
+
+// ARIA element reflection (el.ariaLabelledByElements = [...]) writes an empty
+// attribute and keeps the reference in the DOM property, as Chromium does:
+// an empty ID reference is asked about, for a person to read the
+// accessibility tree.
+test(`${RULE_ID}: an empty ID-reference attribute is asked about`, () => {
+  for (const body of [
+    '<button aria-labelledby="">a</button>',
+    '<button aria-describedby="">a</button>',
+    '<button aria-controls="" aria-expanded="false">a</button>',
+    '<div role="listbox" tabindex="0" aria-activedescendant=""></div>',
+    '<button aria-details="">a</button>',
+    '<input aria-errormessage="" aria-invalid="true">'
+  ]) {
+    const rule = assertRule(run(body), RULE_ID, 'cantTell', {
+      minOccurrences: 1,
+      maxOccurrences: 1
+    });
+    const occ = rule.occurrences[0];
+    assert.equal(occ.data.details.reasonCode, 'emptyIdReference', body);
+    assert.equal(occ.uncertainty.code, 'judgement-required');
+  }
+});
+
+test(`${RULE_ID}: an ID reference of whitespace, or naming no element, still fails`, () => {
+  for (const body of [
+    '<button aria-describedby="  ">a</button>',
+    '<div role="listbox" tabindex="0" aria-activedescendant="nope"></div>'
+  ]) {
+    assert.deepEqual(reasons(assertRule(run(body), RULE_ID, 'fail')), ['invalidValue'], body);
+  }
 });

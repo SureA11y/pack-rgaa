@@ -43,13 +43,13 @@ test('9.3 asks about a plain <li> in a list with a widget role', () => {
   assert.equal(outcomes(runa11yCoreOnHtml(loose, RGAA)).rollup('9.3'), 'fail');
 });
 
-test('8.2 asks about duplicate ids inside one shadow tree, and fails them in the document', () => {
+test('8.2 fails duplicate ids inside one shadow tree, as in the document', () => {
   const dom = createDom(page('<main><div id="host"></div></main>'));
   const root = dom.window.document.getElementById('host').attachShadow({ mode: 'open' });
   root.innerHTML = '<p id="a">1</p><p id="a">2</p>';
   const r = outcomes(runa11yCoreOnDom(dom, RGAA));
   assert.equal(r.rule('duplicate-id'), 'fail');
-  assert.equal(r.rollup('8.2'), 'cantTell');
+  assert.equal(r.rollup('8.2'), 'fail');
   const doc = page('<main><p id="a">1</p><p id="a">2</p></main>');
   assert.equal(outcomes(runa11yCoreOnHtml(doc, RGAA)).rollup('8.2'), 'fail');
 });

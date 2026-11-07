@@ -1,9 +1,9 @@
 'use strict';
 
 /**
- * The 8.2.1 rules in a real browser, with markup inside shadow roots, which
- * the W3C validator RGAA's methodology names does not see in the generated
- * source.
+ * The 8.2.1 rules in a real browser, with markup inside open shadow roots: a
+ * shadow root is part of the page's generated source (« code source
+ * généré »), so its markup fails like the rest, with the same reason codes.
  *
  * Skipped when Playwright or its Chromium build is not installed. Set
  * CHROMIUM_EXECUTABLE_PATH to use another Chromium build.
@@ -48,7 +48,7 @@ const skip = !chromium
     : false;
 
 test(
-  '8.2.1 rules in Chromium: markup in a shadow root is asked about, not failed',
+  '8.2.1 rules in Chromium: markup in a shadow root fails as it does outside',
   { skip },
   async (t) => {
     const browser = await chromium.launch({ executablePath });
@@ -65,10 +65,7 @@ test(
         const out = {};
         for (const r of result.checksResults) {
           if (!RULES.includes(r.ruleId)) continue;
-          out[r.ruleId] = [
-            r.outcome,
-            r.occurrences.map((o) => o.data.details.inShadowRoot === true)
-          ];
+          out[r.ruleId] = [r.outcome, r.occurrences.map((o) => o.data.details.reasonCode)];
         }
         return out;
       } finally {
@@ -84,10 +81,24 @@ test(
       ['<p id="">x</p>', 'rgaa-html-elements-attributes-valid']
     ]) {
       const inShadow = await outcomes(shadow(inner));
-      assert.equal(inShadow[ruleId][0], 'cantTell', inner);
-      assert.ok(inShadow[ruleId][1].every(Boolean), inner);
       const light = await outcomes(inner);
+      assert.equal(inShadow[ruleId][0], 'fail', inner);
       assert.equal(light[ruleId][0], 'fail', inner);
+      assert.deepEqual(inShadow[ruleId][1], light[ruleId][1], inner);
     }
+    // An aria-activedescendant naming an element only across the shadow
+    // boundary is asked about; one naming no element of the page fails.
+    const across = await outcomes(
+      '<div id="opt1" role="option">A</div>' +
+        shadow('<input role="combobox" aria-expanded="true" aria-activedescendant="opt1">')
+    );
+    assert.deepEqual(across['rgaa-aria-attribute-conformance'], [
+      'cantTell',
+      ['idReferenceOtherTree']
+    ]);
+    const nowhere = await outcomes(
+      shadow('<input role="combobox" aria-expanded="true" aria-activedescendant="opt9">')
+    );
+    assert.deepEqual(nowhere['rgaa-aria-attribute-conformance'], ['fail', ['invalidValue']]);
   }
 );

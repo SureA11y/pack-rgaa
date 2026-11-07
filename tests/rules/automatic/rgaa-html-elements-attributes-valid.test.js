@@ -442,3 +442,21 @@ test(`${RULE_ID}: a type that is not one of the element's keywords fails`, () =>
     assert.ok(!r.occurrences.some((o) => o.data.details.reasonCode === 'typeValue'), body);
   }
 });
+
+// A shadow root is part of the page's generated source (« code source
+// généré »), which RGAA 8.2.1 judges like the rest: its markup fails with the
+// same reason codes.
+test(`${RULE_ID}: markup inside an open shadow root fails like markup outside it`, () => {
+  const { createDom, runa11yCoreOnDom } = require('../../helpers/run.js');
+  const dom = createDom(page('<div id="host"></div>'));
+  const root = dom.window.document.getElementById('host').attachShadow({ mode: 'open' });
+  root.innerHTML = '<div dir="up">x</div>';
+  const rule = assertRule(runa11yCoreOnDom(dom, RUN), RULE_ID, 'fail', {
+    minOccurrences: 1,
+    maxOccurrences: 1
+  });
+  const occ = rule.occurrences[0];
+  assert.equal(occ.data.details.reasonCode, 'dirValue');
+  assert.equal(occ.data.details.inShadowRoot, undefined);
+  assert.equal(occ.uncertainty, undefined);
+});

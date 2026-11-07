@@ -15,10 +15,10 @@ None — every rule has a fixture.
 | Rule ID | Type | Fixture | Cases | PASS | FAIL | CANTTELL | OTHER |
 |---|---|---|---:|---:|---:|---:|---:|
 | rgaa-area-alt-source | automatic | `tests/fixtures/rgaa-area-alt-source-all-scenarios.html` | 7 | 2 | 2 | 0 | 3 |
-| rgaa-aria-attribute-conformance | automatic | `tests/fixtures/rgaa-aria-attribute-conformance-all-scenarios.html` | 19 | 5 | 14 | 0 | 0 |
+| rgaa-aria-attribute-conformance | automatic | `tests/fixtures/rgaa-aria-attribute-conformance-all-scenarios.html` | 20 | 5 | 14 | 1 | 0 |
 | rgaa-aria-hidden-text-review | manual | `tests/fixtures/rgaa-aria-hidden-text-review-all-scenarios.html` | 2 | 0 | 0 | 1 | 1 |
 | rgaa-aria-list-item-roles | automatic | `tests/fixtures/rgaa-aria-list-item-roles-all-scenarios.html` | 7 | 1 | 0 | 4 | 2 |
-| rgaa-aria-role-conformance | automatic | `tests/fixtures/rgaa-aria-role-conformance-all-scenarios.html` | 20 | 5 | 14 | 1 | 0 |
+| rgaa-aria-role-conformance | automatic | `tests/fixtures/rgaa-aria-role-conformance-all-scenarios.html` | 22 | 7 | 15 | 0 | 0 |
 | rgaa-autocomplete-user-field | automatic | `tests/fixtures/rgaa-autocomplete-user-field-all-scenarios.html` | 6 | 1 | 1 | 2 | 2 |
 | rgaa-canvas-decorative-aria-hidden | automatic | `tests/fixtures/rgaa-canvas-decorative-aria-hidden-all-scenarios.html` | 8 | 2 | 3 | 1 | 2 |
 | rgaa-canvas-role-img | automatic | `tests/fixtures/rgaa-canvas-role-img-all-scenarios.html` | 10 | 2 | 4 | 2 | 2 |
@@ -78,7 +78,7 @@ None — every rule has a fixture.
 | rgaa-link-state-colors-review | automatic | `tests/fixtures/rgaa-link-state-colors-review-all-scenarios.html` | 7 | 0 | 0 | 3 | 4 |
 | rgaa-link-title-content-name | automatic | `tests/fixtures/rgaa-link-title-content-name-all-scenarios.html` | 5 | 2 | 2 | 1 | 0 |
 | rgaa-listbox-option-groups-absent | automatic | `tests/fixtures/rgaa-listbox-option-groups-absent-all-scenarios.html` | 4 | 1 | 2 | 0 | 1 |
-| rgaa-main-element-structure | automatic | `tests/fixtures/rgaa-main-element-structure-all-scenarios.html` | 1 | 0 | 1 | 0 | 0 |
+| rgaa-main-element-structure | automatic | `tests/fixtures/rgaa-main-element-structure-all-scenarios.html` | 3 | 1 | 2 | 0 | 0 |
 | rgaa-markup-for-presentation | automatic | `tests/fixtures/rgaa-markup-for-presentation-all-scenarios.html` | 4 | 0 | 2 | 1 | 1 |
 | rgaa-markup-validation-review | automatic | `tests/fixtures/rgaa-markup-validation-review-all-scenarios.html` | 1 | 0 | 0 | 1 | 0 |
 | rgaa-media-transcript-adjacent | automatic | `tests/fixtures/rgaa-media-transcript-adjacent-all-scenarios.html` | 9 | 3 | 0 | 5 | 1 |
@@ -115,7 +115,7 @@ None — every rule has a fixture.
 | rgaa-svg-hidden-no-alternative | automatic | `tests/fixtures/rgaa-svg-hidden-no-alternative-all-scenarios.html` | 10 | 3 | 5 | 0 | 2 |
 | rgaa-svg-role-img | automatic | `tests/fixtures/rgaa-svg-role-img-all-scenarios.html` | 10 | 3 | 1 | 3 | 3 |
 | rgaa-table-title-adjacent | manual | `tests/fixtures/rgaa-table-title-adjacent-all-scenarios.html` | 2 | 0 | 0 | 1 | 1 |
-| rgaa-text-direction-marked | automatic | `tests/fixtures/rgaa-text-direction-marked-all-scenarios.html` | 3 | 0 | 1 | 1 | 1 |
+| rgaa-text-direction-marked | automatic | `tests/fixtures/rgaa-text-direction-marked-all-scenarios.html` | 5 | 0 | 3 | 1 | 1 |
 | rgaa-text-image-review | manual | `tests/fixtures/rgaa-text-image-review-all-scenarios.html` | 3 | 0 | 0 | 2 | 1 |
 | rgaa-th-association-present | automatic | `tests/fixtures/rgaa-th-association-present-all-scenarios.html` | 4 | 2 | 1 | 1 | 0 |
 | rgaa-th-scope-row-col | automatic | `tests/fixtures/rgaa-th-scope-row-col-all-scenarios.html` | 7 | 1 | 4 | 0 | 2 |

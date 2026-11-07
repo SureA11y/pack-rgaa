@@ -261,12 +261,19 @@ Checks, hidden content included, that every aria-* attribute is one the W3C vali
 Each aria-* attribute passes the W3C validator (Nu HTML Checker), which RGAA 8.2.1 step 1 names: attributes and their values respect the writing rules (« Les balises, attributs et valeurs d'attributs respectent les règles d'écriture »). The rule fails where the validator reports an error:
 
 - `unknownAttribute`: an aria-* name the validator does not know (aria-labeledby, aria-foo);
-- `invalidValue`: a value that does not fit the attribute: an empty or misspelt token (aria-expanded="", aria-hidden="TRUE"), an integer out of range (aria-level="0", aria-setsize="-2"), an empty ID reference, or an aria-activedescendant that points to no element;
+- `invalidValue`: a value that does not fit the attribute: an empty or misspelt token (aria-expanded="", aria-hidden="TRUE"), an integer out of range (aria-level="0", aria-setsize="-2"), an ID reference made only of whitespace, or an aria-activedescendant that points to no element of the page;
 - `attributeNotAllowed`: an attribute the element's role does not support: aria-pressed on a link, aria-sort on a &lt;td&gt;, aria-expanded on the &lt;summary&gt; of a &lt;details&gt;, any aria-* on &lt;input type="hidden"&gt;;
 - `namingProhibited`: aria-label, aria-labelledby or aria-braillelabel on an element whose role cannot be named (a &lt;div&gt;, &lt;span&gt;, &lt;p&gt;, &lt;strong&gt;, &lt;code&gt; or &lt;caption&gt; with no role, even inside a button);
 - `nativeCheckedConflict`: aria-checked on &lt;input type="checkbox"&gt; or &lt;input type="radio"&gt;, whatever its value;
 - `nativeAttributeConflict`: an ARIA state that contradicts a native attribute (aria-disabled other than "true" with disabled, likewise aria-required with required, aria-readonly with readonly, aria-hidden with hidden), aria-placeholder with placeholder, aria-hidden on &lt;html&gt;, aria-hidden="true" on &lt;body&gt;;
 - `missingRequired`: a role without the state or property the validator requires for it, even where WAI-ARIA gives a default value: role="heading" without aria-level, role="combobox" without aria-expanded, role="checkbox", "radio", "switch", "menuitemcheckbox" or "menuitemradio" without aria-checked, role="slider", "scrollbar" or "meter" without aria-valuenow.
+
+It asks (cantTell) in two cases:
+
+- `emptyIdReference`: an ID-reference attribute (aria-labelledby, aria-describedby, aria-controls, aria-owns, aria-flowto, aria-details, aria-errormessage, aria-activedescendant) whose value is the empty string. The validator reports it, but ARIA element reflection (el.ariaLabelledByElements = [...] and the like) writes exactly that: an empty attribute, with the reference kept in the DOM property, which can point across a shadow boundary. Chromium does so. Whether the relation is exposed is read in the accessibility tree;
+- `idReferenceOtherTree`: an
+
+aria-activedescendant whose id names no element in its own tree (the document, or the shadow root the element sits in) but names one in another tree of the page: the document from inside a shadow root, or a shadow root from the document. ID references do not cross a shadow boundary, yet the validator asks only that the attribute « refer to an element in the same document », which that element is; whether the id is meant for it is for a person. An id found in no tree of the page fails (invalidValue).
 
 ### `rgaa-aria-hidden-text-review`
 
@@ -309,10 +316,11 @@ Each role attribute passes the W3C validator (Nu HTML Checker), which RGAA 8.2.1
 - `emptyRole`: the attribute holds no token;
 - `unknownRoleToken`: a token that is not a role the validator accepts, alone or in a list: a misspelling, an abstract role (widget, landmark), a token written with capitals (BUTTON), or a role the validator rejects (generic, mark, comment, suggestion, doc-pageheader, doc-pagefooter);
 - `roleNotAllowed`: the first recognised token is a role ARIA in HTML does not allow on this element (a tab on &lt;nav&gt;, a navigation on &lt;main&gt;, any role on a &lt;td&gt; in a native table, on the &lt;summary&gt; of a &lt;details&gt;, on &lt;caption&gt;, on &lt;input type="hidden"&gt;, or a role other than listitem on an &lt;li&gt; in a list);
-- `imgRoleEmptyAlt`: an &lt;img&gt; with a role and alt="";
-- `imgRoleNoName`: an &lt;img&gt; with a role and no alt, aria-label or aria-labelledby attribute.
+- `imgRoleEmptyAlt`: an &lt;img&gt; with a role other than presentation or none and alt="";
+- `imgRoleNoName`: an &lt;img&gt; with a role other than presentation or none and no alt, aria-label or aria-labelledby attribute;
+- `imgPresentationRole`: an &lt;img&gt; with role="presentation" or role="none" and no alt, aria-label or aria-labelledby attribute: HTML requires alt on an &lt;img&gt;, and the role does not replace it.
 
-It asks (cantTell) in one case, `imgPresentationRole`: an &lt;img&gt; with role="presentation" and an empty or missing alt. The validator reports an error there, but RGAA 1.2.1 names role="presentation" on an &lt;img&gt; as a way to mark a decorative image, and ARIA in HTML allows it with alt="". The pack reads it so: with alt="" the markup passes 8.2.1; with no alt it fails, as HTML requires alt on an &lt;img&gt;.
+An &lt;img&gt; with role="presentation" or role="none" and alt="" passes, though the validator reports an error there: RGAA 1.2.1 names role="presentation" on an &lt;img&gt; as a way to mark a decorative image, and ARIA in HTML allows both roles with alt="". The pack judges role="none", its synonym, the same way.
 
 ### `rgaa-autocomplete-user-field`
 
@@ -1209,7 +1217,7 @@ Checks that the main content is a &lt;main&gt; element and that every other &lt;
 Steps 4 and 5 of RGAA 9.2.1:
 
 - the main content zone is structured with a &lt;main&gt; element. Every page has a main content zone (glossary « Zone de contenu principal »), so a page with text and no &lt;main&gt; element fails, whether or not it has role="main". A page with neither and no text of its own (only frames, a canvas or shadow DOM content) is asked about (cantTell), since only a person can say where its main content is;
-- when there are several &lt;main&gt; elements, all but one carry the hidden attribute. Every &lt;main&gt; is counted, hidden or not: CSS or aria-hidden alone does not do (« l'utilisation d'un style seul restera insuffisante », 9.2 technical note). A &lt;main&gt; hidden only through a hidden ancestor, or inside a closed &lt;details&gt; or &lt;dialog&gt;, is asked about, since the step speaks of the element's own attribute. A page whose every &lt;main&gt; carries hidden is asked about too.
+- when there are several &lt;main&gt; elements, all but one carry the hidden attribute. Every &lt;main&gt; is counted, hidden or not: CSS or aria-hidden alone does not do (« l'utilisation d'un style seul restera insuffisante », 9.2 technical note). A second &lt;main&gt; without its own hidden attribute, hidden only inside a closed &lt;details&gt; or under an ancestor's hidden="until-found", fails too (revealableMain): the user opens the details, or the browser's find-in-page reveals the content, with no script, and two &lt;main&gt; elements are then visible at once, which the test's « une balise &lt;main&gt; visible unique » and the technical note's « il ne peut y avoir en permanence qu'une seule balise visible » rule out. One hidden by an ancestor's plain hidden attribute or a closed &lt;dialog&gt; is asked about (hiddenByAncestor): only a script shows it, and whether it ever shows beside the other &lt;main&gt; is for a person. It passes 9.2.1 when the script that reveals it hides the other; the missing hidden attribute still fails 8.2.1 (rgaa-html-nesting-valid, extraMain). A page whose every &lt;main&gt; carries hidden is asked about too.
 
 Steps 1, 2 and 6 also name the element: a zone marked with role="banner", "navigation" or "contentinfo" on another element than &lt;header&gt;, &lt;nav&gt; or &lt;footer&gt; fails (roleZoneOnly), unless such an element wraps it or sits inside it. Whether a page's header, navigation and footer zones are marked at all, and step 3 (&lt;nav&gt; kept for navigation zones), are left to a person.
 
@@ -1747,16 +1755,18 @@ Flags each data table with no caption or name that comes right after a heading, 
 
 automatic · no formal WCAG SC mapping · confidence high · default severity moderate
 
-Fails text of three words or more that reads right to left in a left-to-right context, or the reverse, with no dir attribute around it; asks about shorter texts.
+Fails Hebrew, Arabic or other right-to-left script of two letters or more in a left-to-right context, and left-to-right text of three words or more in a right-to-left context, with no dir attribute around it, a &lt;bdi&gt; included; asks about a single letter and shorter left-to-right text.
 
 **Applies to.** Applies to visible text whose strong characters read in the direction opposite to that of its context: right-to-left letters (Hebrew, Arabic, Syriac, Thaana, NKo and related blocks) where the direction is left to right, or other letters where it is right to left. The context is the nearest ancestor whose dir is ltr or rtl, and left to right with none (glossary « Sens de lecture »: « le sens de lecture par défaut est de gauche à droite »). Text under dir="auto" is left to rgaa-dir-attribute-valid; code, scripts and styles are left out. A page with none is notApplicable.
 
 **Expectation.**
 
-RGAA 8.10.1: « chaque texte dont le sens de lecture est différent du sens de lecture par défaut est contenu dans une balise possédant un attribut dir ».
+RGAA 8.10.1: « chaque texte dont le sens de lecture est différent du sens de lecture par défaut est contenu dans une balise possédant un attribut dir ». The test has no exception for short text, and its methodology names the passages « qui utilisent une langue qui se lit dans le sens inverse de la langue du document (comme l'arabe ou l'hébreu pour le français) ». It fails, with no dir between the text and its context:
 
-- It fails (directionNotMarked) when a text of three words or more reads in the other direction, as a whole element or a run inside other text, with no dir between it and its context.
-- A text of one or two words is asked about (cantTell): a whole element (shortText), such as « العربية » in a language menu, or a run inside other text (shortRun), such as a word quoted in a sentence, so that a person confirms they are words of a language read in the other direction. If they are, they fail 8.10.1 without dir, whatever their length: the test has no exception for it. So is text in a &lt;bdi&gt; with no dir (bdiWithoutDir): browsers isolate it, but RGAA asks for a dir attribute, which a &lt;bdi&gt; does not replace.
+- directionNotMarked: a run of right-to-left script (Hebrew, Arabic, Syriac, Thaana, NKo…) with two letters or more in a left-to-right context, as a whole element or inside other text, whatever its length (« العربية » in a language menu, « شكرا » quoted in a sentence): those scripts write only languages read right to left, so such a run is words of one. Also a text of three words or more that reads left to right in a right-to-left context;
+- bdiWithoutDir: the same text inside a &lt;bdi&gt; with no dir: browsers isolate it, but RGAA asks for a dir attribute, which a &lt;bdi&gt; does not replace.
+
+It asks (cantTell) where the characters may not be words of such a language, as a whole element (shortText) or a run inside other text (shortRun): a right-to-left run with fewer than two letters (a single letter, Arabic-Indic digits, a sign of those blocks such as ﷼), Arabic Mathematical Alphabetic Symbols (U+1EE00 to U+1EEFF), or a left-to-right run of one or two words in a right-to-left context (a brand name, an acronym). Text with no letter at all (Western digits, punctuation) is not looked at.
 
 ### `rgaa-text-image-review`
 
