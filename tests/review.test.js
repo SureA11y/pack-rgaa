@@ -130,24 +130,67 @@ test('a finding of a rule linked to several tests reads under the test it fails'
   }
 });
 
-test("core's steps in RGAA's terms are as generated, and name no WCAG", async () => {
+test("core's steps in RGAA's terms are as generated, and name no WCAG, in either language", async () => {
   const { REVIEW } = require('../review');
   const generator = require('../scripts/generate-review');
-  const expected = await generator.formatted(generator.renderModule(generator.buildReview()));
-  assert.equal(
-    fs.readFileSync(path.join(__dirname, '..', 'review.js'), 'utf8'),
-    expected,
-    'run npm run review'
-  );
-  assert.doesNotMatch(JSON.stringify(REVIEW), /WCAG|\bAAA?\b|bonnes? pratiques?|18[.,]66|7:1/);
-  // Nor WCAG's techniques, which RGAA does not have.
-  assert.doesNotMatch(JSON.stringify(REVIEW), /\((?:ARIA|SCR|F|G|H|C)\d+[,)]/);
+  for (const [file, text] of await generator.outputs()) {
+    assert.equal(fs.readFileSync(file, 'utf8'), text, `${file}: run npm run review`);
+  }
+  const french = Object.entries(pack.dictionaries.fr)
+    .filter(([key]) => key.startsWith('rgaa_standardReview_'))
+    .map(([, text]) => text);
+  assert.ok(french.length > 500, `${french.length} French texts`);
+  for (const texts of [JSON.stringify(REVIEW), JSON.stringify(french)]) {
+    assert.doesNotMatch(texts, /WCAG|\bAAA?\b|bonnes? pratiques?|best practices?|18[.,]66|7:1/);
+    // Nor WCAG's techniques, which RGAA does not have.
+    assert.doesNotMatch(texts, /\((?:ARIA|SCR|F|G|H|C)\d+[,)]/);
+  }
   // A failure names what it fails, whatever core's words were.
   for (const [ruleId, codes] of Object.entries(REVIEW['4.1.2'])) {
     for (const [code, entry] of Object.entries(codes)) {
       assert.match(entry.failWhen, /RGAA/, `${ruleId} ${code}`);
+      const fail = pack.dictionaries.fr[`rgaa_standardReview_${ruleId}_${code}_fail`];
+      assert.match(fail, /RGAA/, `${ruleId} ${code} (fr)`);
     }
   }
+});
+
+test("core's steps in RGAA's terms are English, and French in a French scan", () => {
+  const { REVIEW } = require('../review');
+  const code = 'GENERIC_LINK_TEXT';
+  const entry = REVIEW['4.1.2']['link-name-quality'][code];
+  // A finding only the RGAA profile asks about reads RGAA's steps.
+  const how = (locale) =>
+    addHowToCheck(
+      {
+        engine: { profile: 'rgaa-4.1.2', locale },
+        checksResults: [
+          {
+            ruleId: 'link-name-quality',
+            i18n: { titleKey: 'linkNameQuality_title' },
+            outcome: 'cantTell',
+            occurrences: [
+              {
+                verdicts: { 'rgaa-4.1.2': 'cantTell' },
+                data: { details: { reasonCode: code, linkKind: 'text' } }
+              }
+            ]
+          }
+        ]
+      },
+      { packs: [rgaa] }
+    ).checksResults[0].occurrences[0].howToCheck;
+  assert.deepEqual(how('en').steps, entry.steps);
+  assert.match(how('en').failWhen, /RGAA test 6\.1\.1 for a text link/);
+  const fr = how('fr');
+  assert.equal(
+    fr.failWhen,
+    pack.dictionaries.fr[`rgaa_standardReview_link-name-quality_${code}_fail`]
+  );
+  assert.match(fr.failWhen, /le test 6\.1\.1 du RGAA pour un lien texte/);
+  assert.equal(fr.steps.length, entry.steps.length);
+  // A locale the pack doesn't translate reads the English.
+  assert.equal(how('de').failWhen, entry.failWhen);
 });
 
 // Each of core's codes is filed under the test its findings go to, as a pack
@@ -164,28 +207,94 @@ test("core's steps in RGAA's terms are each filed under a test their failure nam
   }
 });
 
-test("the generator refuses a code left in WCAG's terms", () => {
+test("the generator refuses a code left in WCAG's terms, in either language", () => {
   const { buildReview } = require('../scripts/generate-review');
-  const dictionary = {
+  const table = { 'page-title-present': { tests: ['8.5.1'] } };
+  const french = {
     pageTitlePresent_review_X_step1: 'Regardez.',
     pageTitlePresent_review_X_pass: 'Selon WCAG 2.2, cela va.',
     pageTitlePresent_review_X_fail: 'Niveau AAA.'
   };
-  const table = { 'page-title-present': { tests: ['8.5.1'] } };
-  assert.throws(() => buildReview(dictionary, table, {}), /still in WCAG's terms/);
+  assert.throws(
+    () => buildReview({ lang: 'fr', dictionary: french, table, overrides: {} }),
+    /still in WCAG's terms/
+  );
+  const english = {
+    pageTitlePresent_review_X_step1: 'Look.',
+    pageTitlePresent_review_X_pass: 'It is fine, a best practice.',
+    pageTitlePresent_review_X_fail: 'Nothing.'
+  };
+  assert.throws(
+    () => buildReview({ dictionary: english, table, overrides: {} }),
+    /still in WCAG's terms/
+  );
 });
 
-test("the generator drops WCAG's technique ids, alone or listed", () => {
+test("the generator drops WCAG's technique ids, alone or listed, and names the test", () => {
   const { buildReview } = require('../scripts/generate-review');
-  const dictionary = {
+  const table = { 'page-title-present': { tests: ['8.5.1'] } };
+  const french = {
     pageTitlePresent_review_X_step1: 'Regardez.',
     pageTitlePresent_review_X_pass: 'Cela va (G88).',
     pageTitlePresent_review_X_fail: 'Rien, ce qui ne respecte pas WCAG 2.4.2 (F54, F42, ARIA22).'
   };
-  const table = { 'page-title-present': { tests: ['8.5.1'] } };
-  const entry = buildReview(dictionary, table, {})['page-title-present'].X;
-  assert.equal(entry.passWhen, 'Cela va.');
-  assert.equal(entry.failWhen, 'Rien, ce qui ne respecte pas le test 8.5.1 du RGAA.');
+  const fr = buildReview({ lang: 'fr', dictionary: french, table, overrides: {} });
+  assert.equal(fr['page-title-present'].X.passWhen, 'Cela va.');
+  assert.equal(
+    fr['page-title-present'].X.failWhen,
+    'Rien, ce qui ne respecte pas le test 8.5.1 du RGAA.'
+  );
+  const english = {
+    pageTitlePresent_review_X_step1: 'Look.',
+    pageTitlePresent_review_X_pass: 'It is fine (G88).',
+    pageTitlePresent_review_X_fail: 'Nothing, which fails WCAG 2.4.2 and 2.4.4 (F54, F42, ARIA22).'
+  };
+  const en = buildReview({ dictionary: english, table, overrides: {} });
+  assert.equal(en['page-title-present'].X.passWhen, 'It is fine.');
+  assert.equal(en['page-title-present'].X.failWhen, 'Nothing, which fails RGAA test 8.5.1.');
+  assert.equal(en['page-title-present'].X.facet, 'test-8-5-1');
+});
+
+test('the generator refuses an entry that differs between the languages', () => {
+  const { translationKeys } = require('../scripts/generate-review');
+  const entry = (steps) => ({ steps, passWhen: 'Yes.', failWhen: 'No, RGAA.' });
+  const english = { 'page-title-present': { X: entry(['Look.', 'Read.']) } };
+  assert.deepEqual(
+    Object.keys(
+      translationKeys(english, { 'page-title-present': { X: entry(['A.', 'B.']) } }, 'fr')
+    ),
+    [
+      'rgaa_standardReview_page-title-present_X_step1',
+      'rgaa_standardReview_page-title-present_X_step2',
+      'rgaa_standardReview_page-title-present_X_pass',
+      'rgaa_standardReview_page-title-present_X_fail'
+    ]
+  );
+  assert.throws(
+    () => translationKeys(english, { 'page-title-present': { X: entry(['A.']) } }, 'fr'),
+    /1 steps, where the English has 2/
+  );
+  assert.throws(() => translationKeys(english, {}, 'fr'), /no entry/);
+  const placeholder = { 'page-title-present': { X: entry(['Look at {{title|it}}.', 'Read.']) } };
+  assert.throws(
+    () => translationKeys(placeholder, { 'page-title-present': { X: entry(['A.', 'B.']) } }, 'fr'),
+    /other placeholders/
+  );
+});
+
+test('every hand-written entry exists in both languages, with as many steps', () => {
+  const { overrides } = require('../scripts/data/review-overrides');
+  const en = overrides('en');
+  const fr = overrides('fr');
+  assert.deepEqual(Object.keys(fr), Object.keys(en));
+  for (const [ruleId, codes] of Object.entries(en)) {
+    assert.deepEqual(Object.keys(fr[ruleId]), Object.keys(codes), ruleId);
+    for (const [code, entry] of Object.entries(codes)) {
+      if (typeof entry === 'function') continue;
+      assert.deepEqual(Object.keys(fr[ruleId][code]), Object.keys(entry), `${ruleId} ${code}`);
+      if (entry.steps) assert.equal(fr[ruleId][code].steps.length, entry.steps.length);
+    }
+  }
 });
 
 test("the variants' steps use RGAA's thresholds, in every language", () => {
