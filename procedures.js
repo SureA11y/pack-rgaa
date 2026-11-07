@@ -68,6 +68,24 @@ function noteOf(version, criterion) {
   return parts.join(' ');
 }
 
+// RGAA gives some tests the steps of another (« Tests identiques à 7.5.1 »):
+// those steps cover all of them, so each says which part is its own, or a
+// failure at any step would read as its failure.
+const SCOPE = {
+  '4.1.2': {
+    '7.5.1':
+      'Ce test ne porte que sur les messages qui informent de la réussite, du résultat d’une action ou de l’état d’une application (étape 3).',
+    '7.5.2':
+      'Ce test ne porte que sur les messages qui présentent une suggestion ou avertissent de l’existence d’une erreur (étape 4).',
+    '7.5.3':
+      'Ce test ne porte que sur les messages qui indiquent la progression d’un processus (étape 5).',
+    '8.1.1': 'Ce test ne porte que sur la présence de la balise DOCTYPE (étape 1).',
+    '8.1.2': 'Ce test ne porte que sur la validité du type de document (étape 2).',
+    '8.1.3':
+      'Ce test ne porte que sur la place de la balise DOCTYPE, avant la balise <html> (étape 2).'
+  }
+};
+
 function requirementOf(version, criterion, decided) {
   const row = RGAA_CRITERIA[version][criterion];
   const complete = (COMPLETE_CHECK[version] || []).includes(criterion);
@@ -86,7 +104,12 @@ function requirementOf(version, criterion, decided) {
         tools: toolsOf(test, entry),
         steps: entry.methodology.steps,
         passWhen: entry.methodology.passWhen || 'Si c’est le cas, le test est validé.',
-        failWhen: `Si un élément concerné ne le vérifie pas, le test ${test} n’est pas validé, ce qui invalide {{requirement}}.`
+        failWhen: [
+          (SCOPE[version] || {})[test],
+          `Si un élément concerné ne le vérifie pas, le test ${test} n’est pas validé, ce qui invalide {{requirement}}.`
+        ]
+          .filter(Boolean)
+          .join(' ')
       };
     })
   };
