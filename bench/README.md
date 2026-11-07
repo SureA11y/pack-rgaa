@@ -1,6 +1,6 @@
 # Comparing the pack with other RGAA engines
 
-This folder scans pages with `@surea11y/pack-rgaa` and with the other open-source engines that check RGAA automatically and report per RGAA criterion, and compares what each finds. It lives on its own branch, isn't part of the published package, and has its own dependencies.
+This folder scans pages with `@surea11y/pack-rgaa` and with the other open-source engines that check RGAA automatically and report per RGAA criterion, and compares what each finds. It lives in this repository, isn't part of the published package, and has its own dependencies.
 
 ```sh
 cd bench
