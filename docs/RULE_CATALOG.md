@@ -1303,7 +1303,7 @@ manual · no formal WCAG SC mapping · confidence high · default severity moder
 
 Flags each open dialog marked aria-modal="true" while elements outside it can still take focus, for a person to check that focus stays inside it.
 
-**Applies to.** Applies to each dialog shown as modal by aria-modal="true" (an element with role dialog or alertdialog, or a &lt;dialog&gt;), rendered, and not opened with showModal(), which makes the rest of the page inert. A page with none is notApplicable.
+**Applies to.** Applies to each dialog shown as modal by aria-modal="true" (an element with role dialog or alertdialog, or a &lt;dialog&gt;), rendered, and not one core takes as an open modal dialog (helpers.getOpenModalDialogs: opened with showModal(), or, with engineOptions.assumeModal under jsdom, an open &lt;dialog aria-modal="true"&gt;), which makes the rest of the page inert. A page with none is notApplicable.
 
 **Expectation.** The 12.8.1 methodology names this case: « l'ordre de tabulation dans une fenêtre modale ne doit considérer que les éléments … au sein de cette fenêtre ». aria-modal="true" tells assistive technologies that the rest of the page is out of reach, but does not stop the Tab key: elements outside the dialog that can take focus (not disabled, no tabindex="-1", not inert, not hidden) are reachable unless a script keeps focus inside the dialog, which only a person can check. The dialog is asked about (cantTell), naming how many such elements there are.
 
