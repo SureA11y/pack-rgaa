@@ -94,25 +94,38 @@ function runInPage(ctx) {
           Number(dom.getAttribute(c, 'colspan') || 1) > 1)
     );
 
+  // What axisOf needs to know of a table's shape, read once per table: a
+  // table with scope on every header would otherwise read all its rows and
+  // cells again for each header. null when the shape settles no header.
+  const shapes = new Map();
+  function shapeOf(table) {
+    if (shapes.has(table)) return shapes.get(table);
+    let shape = null;
+    if (!spans(table)) {
+      const rows = rowsOf(table);
+      const first = rows.length >= 2 ? cellsOf(rows[0]) : [];
+      if (first.length > 1 && first.every((c) => tagOf(c) === 'th')) {
+        const bodyStartsWithTd = rows.slice(1).every((r) => {
+          const cells = cellsOf(r);
+          return cells.length && tagOf(cells[0]) === 'td';
+        });
+        shape = { firstRow: rows[0], bodyStartsWithTd };
+      }
+    }
+    shapes.set(table, shape);
+    return shape;
+  }
+
   // The way a header heads, when the table's shape makes it certain:
   // 'row' for the first cell of a body row of a table whose first row is
   // all <th>, 'col' for a cell of that first row when rows below start
   // with a <td>; null otherwise.
   function axisOf(th, table) {
-    if (spans(table)) return null;
-    const rows = rowsOf(table);
-    if (rows.length < 2) return null;
-    const first = cellsOf(rows[0]);
-    const headRow = first.length > 1 && first.every((c) => tagOf(c) === 'th');
-    if (!headRow) return null;
+    const shape = shapeOf(table);
+    if (!shape) return null;
     const tr = dom.closest(th, 'tr');
+    if (tr === shape.firstRow) return shape.bodyStartsWithTd ? 'col' : null;
     const cells = cellsOf(tr);
-    if (tr === rows[0]) {
-      const bodyStartsWithTd = rows
-        .slice(1)
-        .every((r) => cellsOf(r).length && tagOf(cellsOf(r)[0]) === 'td');
-      return bodyStartsWithTd ? 'col' : null;
-    }
     if (cells[0] === th && cells.length > 1 && cells.slice(1).every((c) => tagOf(c) === 'td')) {
       return 'row';
     }
