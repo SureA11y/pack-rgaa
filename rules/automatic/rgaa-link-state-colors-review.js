@@ -68,6 +68,13 @@
  *   link. A state rule that also sets a text decoration, border, outline,
  *   box-shadow, font weight or style, or background image marks that state
  *   by more than color and is not flagged.
+ * - The browser's own visited color applies when no author rule sets the
+ *   link's color at rest. When a style sheet cannot be read (another
+ *   origin's), that is told from the computed color in a browser: one
+ *   other than the browser's own link color (LinkText, in the link's color
+ *   scheme) is an author's, and the link is asked about for the unread
+ *   sheet (STYLESHEET_UNREADABLE). Without a layout it is asked about for
+ *   the sheet too.
  * - link-in-text-block judges the resting state.
  * - Opt-in (tag `rgaa`): WCAG 1.4.1 does not single out these states.
  */
@@ -459,8 +466,42 @@ function runInPage(ctx) {
     return states;
   }
 
+  // The color the browser gives a link no author style reaches, in the
+  // link's color scheme: the LinkText system color, read from a hidden
+  // probe whose inline !important declarations no style sheet overrides.
+  // null when it cannot be read.
+  const uaLinkColors = new Map();
+  function uaLinkColor(doc, scheme) {
+    if (uaLinkColors.has(scheme)) return uaLinkColors.get(scheme);
+    let color = null;
+    let probe = null;
+    try {
+      probe = dom.createElement(doc, 'span');
+      dom.setAttribute(
+        probe,
+        'style',
+        `display:none!important;color:LinkText!important;color-scheme:${scheme}!important`
+      );
+      dom.insertBefore(dom.documentElement(doc), probe, null);
+      const cs = safeComputedStyle(probe);
+      color = (cs && cs.color) || null;
+    } catch {
+      color = null;
+    } finally {
+      try {
+        if (probe && dom.parentNode(probe)) dom.removeChild(dom.parentNode(probe), probe);
+      } catch {}
+    }
+    uaLinkColors.set(scheme, color);
+    return color;
+  }
+
   // Whether an author declaration sets the link's color at rest, which then
-  // applies to its visited state too.
+  // applies to its visited state too: true, false, or null when a style
+  // sheet could not be read and the browser cannot tell. With an unreadable
+  // sheet, where the page has a layout, a computed color other than the
+  // browser's own link color is an author's; the browser's own one is taken
+  // as the browser's.
   function authorSetsRestingColor(el) {
     if (declared(el.style, 'color')) return true;
     for (const cssRule of getStyleRules(dom.ownerDocument(el))) {
@@ -470,7 +511,12 @@ function runInPage(ctx) {
         if (matches(el, part)) return true;
       }
     }
-    return false;
+    if (!unreadableSheet) return false;
+    const doc = dom.ownerDocument(el);
+    const cs = hasLayout(doc) ? safeComputedStyle(el) : null;
+    const ua = cs && cs.color ? uaLinkColor(doc, String(cs.colorScheme || 'normal')) : null;
+    if (!ua) return null;
+    return cs.color !== ua;
   }
 
   const CANTTELL_HINT =
@@ -756,7 +802,7 @@ function runInPage(ctx) {
       }
     }
     for (const [el, v] of verdicts) {
-      v.visitedUnknown = v.visitedSame && uaUnderlines(el) && !authorSetsRestingColor(el);
+      v.visitedUnknown = v.visitedSame && uaUnderlines(el) && authorSetsRestingColor(el) === false;
     }
     return verdicts;
   }
@@ -914,8 +960,9 @@ function runInPage(ctx) {
     const states = colorOnlyStates(el);
     let reasonCode = '';
     if (states.length) reasonCode = 'STATE_COLOR_CHANGE';
-    else if (uaUnderlines(el) && !authorSetsRestingColor(el)) reasonCode = 'BROWSER_STATE_COLORS';
-    else if (unreadableSheet) reasonCode = 'STYLESHEET_UNREADABLE';
+    else if (uaUnderlines(el) && authorSetsRestingColor(el) === false) {
+      reasonCode = 'BROWSER_STATE_COLORS';
+    } else if (unreadableSheet) reasonCode = 'STYLESHEET_UNREADABLE';
     if (!reasonCode) continue;
     occurrences.push(report(el, reasonCode, { states: states.join(', ') }, { states }));
   }
