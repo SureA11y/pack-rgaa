@@ -13,7 +13,10 @@
  *   the first one, or, failing one, a visible role="main". With neither,
  *   the rule asks a person to locate the zone, unless the page has no link
  *   and no navigation block, which is notApplicable. A run narrowed by
- *   contextSelector or engineOptions.fragment is notApplicable.
+ *   contextSelector or engineOptions.fragment is notApplicable, and so is a
+ *   document shown in a frame. While a modal dialog is open the rest of the
+ *   page is inert, so only a skip link to the content whose target does not
+ *   exist is judged (it fails); without one the rule is notApplicable.
  * @expectation
  *   A same-page link outside the main content zone leads to it: its
  *   fragment resolves to <main>, to an element before it with no navigation
@@ -150,15 +153,15 @@ const meta = {
   }
 };
 
-// Not applicable while a modal dialog is open either: the rest of the page
-// is inert then, so the scan sees the dialog, not the page's own zones and
-// links (helpers.isModalDialogOpen, as core's whole-page rules use it).
 // A document shown in a frame is no web page of its own (RGAA's « page web »).
+// While a modal dialog is open (helpers.isModalDialogOpen, as core's
+// whole-page rules use it), the rest of the page is inert, so the scan sees
+// the dialog, not the page's own zones and links: runInPage then judges only
+// skip links whose target does not exist, which no dialog changes.
 function applicability(ctx) {
   if (ctx.helpers.isTopLevelDocument && !ctx.helpers.isTopLevelDocument()) return false;
   const { helpers } = ctx;
-  if (helpers.isWholeDocumentScope && !helpers.isWholeDocumentScope()) return false;
-  return !(helpers.isModalDialogOpen && helpers.isModalDialogOpen());
+  return !(helpers.isWholeDocumentScope && !helpers.isWholeDocumentScope());
 }
 
 function runInPage(ctx) {
@@ -340,6 +343,43 @@ function runInPage(ctx) {
   const navigations = query('nav, [role~="navigation" i]').filter(isNavigation);
   const links = query('a[href]');
 
+  function targetMissing(el, href) {
+    return helpers.reportOccurrence(el, {
+      summary: `This skip link points to "${href}", which does not exist in the page.`,
+      hint: 'Point the skip link at the id of the <main> element, or add that id.',
+      i18n: {
+        summaryKey: 'skipLinkPresent_summary_fail_targetMissing',
+        hintKey: 'skipLinkPresent_hint_fail_targetMissing',
+        params: { href }
+      },
+      data: { details: { reasonCode: 'skipLinkTargetMissing', href } }
+    });
+  }
+
+  // A cookie banner or menu open as a modal dialog makes the page inert, but
+  // a skip link to the content whose target is nowhere in the page is broken
+  // whatever is open: lcl.fr, behind its cookie dialog.
+  if (helpers.isModalDialogOpen && helpers.isModalDialogOpen()) {
+    const broken = [];
+    for (const el of links) {
+      if (main && dom.contains(main, el)) continue;
+      const fragment = sameDocumentFragment(el);
+      if (fragment == null || resolveTarget(el, fragment)) continue;
+      const name = linkName(el);
+      const first = !!main && el === links[0] && precedes(el, main);
+      if (!first && !hasSkipWording(name)) continue;
+      if (!CONTENT_WORDS.test(name) && !CONTENT_FRAGMENT.test(fragment)) continue;
+      broken.push(targetMissing(el, String(attr(el, 'href') || '').trim()));
+    }
+    if (!broken.length) {
+      return { ruleId: rule.ruleId, outcome: 'notApplicable', severity: 'minor', occurrences: [] };
+    }
+    return {
+      ruleId: rule.ruleId,
+      ...helpers.resolveTieredOutcome(broken, [], rule.defaultSeverity || 'moderate')
+    };
+  }
+
   if (!main) {
     // Without <main> the zone cannot be located; a person finds it. A page
     // with no link and no navigation has nothing to skip.
@@ -448,18 +488,7 @@ function runInPage(ctx) {
       // A broken first link that names something else (cookie settings, a
       // menu) is no skip link to the content: 12.7.1 is about that zone.
       if (!aboutContent) continue;
-      fails.push(
-        helpers.reportOccurrence(el, {
-          summary: `This skip link points to "${href}", which does not exist in the page.`,
-          hint: 'Point the skip link at the id of the <main> element, or add that id.',
-          i18n: {
-            summaryKey: 'skipLinkPresent_summary_fail_targetMissing',
-            hintKey: 'skipLinkPresent_hint_fail_targetMissing',
-            params: { href }
-          },
-          data: { details: { reasonCode: 'skipLinkTargetMissing', href } }
-        })
-      );
+      fails.push(targetMissing(el, href));
       continue;
     }
 

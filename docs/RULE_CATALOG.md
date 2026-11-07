@@ -1651,7 +1651,7 @@ automatic · no formal WCAG SC mapping · confidence high · default severity mo
 
 Checks that a page with navigation before its main content has a working same-page link to that content.
 
-**Applies to.** Applies to a run over a whole document. RGAA 12.7.1 step 1 finds the main content zone through the visible &lt;main&gt; element; the rule takes the first one, or, failing one, a visible role="main". With neither, the rule asks a person to locate the zone, unless the page has no link and no navigation block, which is notApplicable. A run narrowed by contextSelector or engineOptions.fragment is notApplicable.
+**Applies to.** Applies to a run over a whole document. RGAA 12.7.1 step 1 finds the main content zone through the visible &lt;main&gt; element; the rule takes the first one, or, failing one, a visible role="main". With neither, the rule asks a person to locate the zone, unless the page has no link and no navigation block, which is notApplicable. A run narrowed by contextSelector or engineOptions.fragment is notApplicable, and so is a document shown in a frame. While a modal dialog is open the rest of the page is inert, so only a skip link to the content whose target does not exist is judged (it fails); without one the rule is notApplicable.
 
 **Expectation.**
 
