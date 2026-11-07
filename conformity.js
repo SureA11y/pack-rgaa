@@ -23,8 +23,14 @@ const STATUS_OF_OUTCOME = { pass: 'C', fail: 'NC', notApplicable: 'NA' };
  * One row per criterion of the version, in RGAA's order:
  * { criterion, title, status: 'C' | 'NC' | 'NA' | 'NT', outcome }, `outcome`
  * being the scan's, or null for a criterion no rule checks.
+ *
+ * Non applicable is said of a page. A scan of part of one (a contextSelector,
+ * which the result records, or engineOptions.fragment, which it doesn't, so
+ * pass `fragment: true`) can't say the page lacks what its part lacks, and the
+ * page-wide rules (doctype, language, title) leave such a scan alone: there a
+ * criterion found non applicable is non testé.
  */
-function rgaaCriteriaStatus(result, { version = LATEST } = {}) {
+function rgaaCriteriaStatus(result, { version = LATEST, fragment = false } = {}) {
   const criteria = RGAA_CRITERIA[version];
   if (!criteria) throw new RangeError(`RGAA has no version ${version}`);
   const prefix = `rgaa-${version}-`;
@@ -34,9 +40,11 @@ function rgaaCriteriaStatus(result, { version = LATEST } = {}) {
       scanned.set(rule.ruleId.slice(prefix.length), rule.outcome);
     }
   }
+  const narrowed = fragment || (result && result.contextSelector != null);
   return Object.entries(criteria).map(([criterion, { title }]) => {
     const outcome = scanned.has(criterion) ? scanned.get(criterion) : null;
-    return { criterion, title, status: STATUS_OF_OUTCOME[outcome] || 'NT', outcome };
+    const status = STATUS_OF_OUTCOME[outcome] || 'NT';
+    return { criterion, title, status: narrowed && status === 'NA' ? 'NT' : status, outcome };
   });
 }
 

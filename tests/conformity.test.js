@@ -37,6 +37,30 @@ const ALL = Object.keys(RGAA_CRITERIA['4.1.2']);
 const complete = (statuses) =>
   ALL.map((criterion) => ({ criterion, status: statuses[criterion] || 'NA' }));
 
+test('a scan of part of a page says nothing is non applicable to the page', () => {
+  const html =
+    '<!doctype html><html lang="fr"><head><title>Accueil</title></head><body><main><p>Texte</p></main></body></html>';
+  const status = (rows) =>
+    Object.fromEntries(
+      rows
+        .filter((r) => ['8.1', '8.3', '8.5'].includes(r.criterion))
+        .map((r) => [r.criterion, r.status])
+    );
+  const opts = { engineOptions: { profile: 'rgaa-4.1.2' } };
+  assert.deepEqual(status(rgaaCriteriaStatus(runa11yCoreOnHtml(html, opts))), {
+    8.1: 'C',
+    8.3: 'C',
+    8.5: 'C'
+  });
+  const part = rgaaCriteriaStatus(runa11yCoreOnHtml(html, { ...opts, contextSelector: 'main' }));
+  assert.deepEqual(status(part), { 8.1: 'NT', 8.3: 'NT', 8.5: 'NT' });
+  assert.ok(!part.some((r) => r.status === 'NA'));
+  const fragment = runa11yCoreOnHtml('<p>Texte</p>', {
+    engineOptions: { profile: 'rgaa-4.1.2', fragment: true }
+  });
+  assert.ok(!rgaaCriteriaStatus(fragment, { fragment: true }).some((r) => r.status === 'NA'));
+});
+
 test('a criterion counts as validated only if it is on every page of the sample', () => {
   const rate = rgaaConformityRate([complete({ 1.1: 'C', 1.2: 'C' }), complete({ 1.1: 'NC' })]);
   // 1.1 fails on one page; 1.2 is applicable on one page and validated there;
