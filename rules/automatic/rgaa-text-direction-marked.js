@@ -27,10 +27,11 @@
  *   - A text of one or two words is asked about (cantTell): a whole
  *     element (shortText), such as « العربية » in a language menu, or a
  *     run inside other text (shortRun), such as a word quoted in a
- *     sentence. The letter of 8.10.1 covers it, but a browser shows one or
- *     two words the same with or without dir, so whether it needs one is
- *     for a person. So is text in a <bdi> with no dir (bdiWithoutDir),
- *     which browsers isolate but RGAA does not name.
+ *     sentence, so that a person confirms they are words of a language
+ *     read in the other direction. If they are, they fail 8.10.1 without
+ *     dir, whatever their length: the test has no exception for it. So
+ *     is text in a <bdi> with no dir (bdiWithoutDir): browsers isolate it,
+ *     but RGAA asks for a dir attribute, which a <bdi> does not replace.
  * @implementation-notes
  * - One occurrence per element: the highest element whose text all reads
  *   in the other direction, or the parent of a shorter run.
@@ -60,38 +61,34 @@ const meta = {
   review: {
     shortText: {
       steps: [
-        'Find the text the report names: one or two words that read in the other direction from the text around them.',
-        'Inspect it: no element around it has a dir attribute.',
-        'Look at it on screen, and check that its letters and any punctuation next to it show in the right order.',
-        'Check whether the audit asks for dir on text this short.'
+        'Find the text the report names: one or two words written in a script that reads in the other direction from the text around them, such as Arabic or Hebrew in a French page.',
+        'Check that they are words of a language read in that direction, not a symbol or a number.',
+        'Inspect them: check whether an element around them has a dir attribute.'
       ],
       passWhen:
-        'The words show correctly, and the audit accepts them without dir; a dir on the element settles it.',
+        'The words are not text in a language read in the other direction, or an element around them has a dir attribute.',
       failWhen:
-        'The words show in the wrong order, or the audit holds to the letter of the test, so text with no dir fails RGAA 8.10.1.'
+        'The words are in a language read in the other direction and no element around them has a dir attribute, which fails RGAA 8.10.1, whatever their length.'
     },
     shortRun: {
       steps: [
-        'Find the element the report names, and in it the one or two words that read in the other direction.',
-        'Inspect it: no element around those words has a dir attribute.',
-        'Look at the sentence on screen, and check that the words and the punctuation next to them show in the right order.',
-        'Check whether the audit asks for dir on a run this short.'
+        'Find the element the report names, and in it the one or two words written in a script that reads in the other direction from the text around them, such as Arabic or Hebrew in a French page.',
+        'Check that they are words of a language read in that direction, not a symbol or a number.',
+        'Inspect them: check whether an element around them has a dir attribute.'
       ],
       passWhen:
-        'The sentence shows correctly, and the audit accepts the words without dir; an element with dir around them settles it.',
+        'The words are not text in a language read in the other direction, or an element around them has a dir attribute.',
       failWhen:
-        'The sentence shows in the wrong order, or the audit holds to the letter of the test, so a run with no dir fails RGAA 8.10.1.'
+        'The words are in a language read in the other direction and no element around them has a dir attribute, which fails RGAA 8.10.1, whatever their length.'
     },
     bdiWithoutDir: {
       steps: [
         'Find the text the report names: it reads in the other direction, inside a <bdi> with no dir attribute.',
-        'Look at it on screen, and check that it shows in the right order.',
-        'Check whether the audit accepts a <bdi>, which browsers isolate from the text around it but RGAA does not name.'
+        'Inspect it: check whether the <bdi>, or an element inside it around the text, has a dir attribute.'
       ],
-      passWhen:
-        'The text shows correctly, and the audit accepts the <bdi>; a dir on it settles it.',
+      passWhen: 'The <bdi>, or an element around the text inside it, has a dir attribute.',
       failWhen:
-        'The audit holds to the letter of the test, which asks for a dir attribute, so the text fails RGAA 8.10.1.'
+        'The text is contained only by a <bdi> with no dir attribute; RGAA asks for a dir attribute, which a <bdi> does not replace, so this fails RGAA 8.10.1.'
     }
   }
 };
@@ -301,7 +298,8 @@ function runInPage(ctx) {
           },
           uncertainty: {
             code: 'judgement-required',
-            needed: 'Whether the text needs dir to read in the other direction.'
+            needed:
+              'Whether the text is words of a language read in the other direction, which 8.10.1 asks to be in an element with dir.'
           },
           data: {
             details: {

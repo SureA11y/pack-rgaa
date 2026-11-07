@@ -17,7 +17,7 @@ None — every rule has a fixture.
 | rgaa-area-alt-source | automatic | `tests/fixtures/rgaa-area-alt-source-all-scenarios.html` | 7 | 2 | 2 | 0 | 3 |
 | rgaa-aria-attribute-conformance | automatic | `tests/fixtures/rgaa-aria-attribute-conformance-all-scenarios.html` | 19 | 5 | 14 | 0 | 0 |
 | rgaa-aria-hidden-text-review | manual | `tests/fixtures/rgaa-aria-hidden-text-review-all-scenarios.html` | 2 | 0 | 0 | 1 | 1 |
-| rgaa-aria-list-item-roles | automatic | `tests/fixtures/rgaa-aria-list-item-roles-all-scenarios.html` | 6 | 1 | 0 | 3 | 2 |
+| rgaa-aria-list-item-roles | automatic | `tests/fixtures/rgaa-aria-list-item-roles-all-scenarios.html` | 7 | 1 | 0 | 4 | 2 |
 | rgaa-aria-role-conformance | automatic | `tests/fixtures/rgaa-aria-role-conformance-all-scenarios.html` | 20 | 5 | 14 | 1 | 0 |
 | rgaa-autocomplete-user-field | automatic | `tests/fixtures/rgaa-autocomplete-user-field-all-scenarios.html` | 6 | 1 | 1 | 2 | 2 |
 | rgaa-canvas-decorative-aria-hidden | automatic | `tests/fixtures/rgaa-canvas-decorative-aria-hidden-all-scenarios.html` | 8 | 2 | 3 | 1 | 2 |
@@ -117,7 +117,7 @@ None — every rule has a fixture.
 | rgaa-table-title-adjacent | manual | `tests/fixtures/rgaa-table-title-adjacent-all-scenarios.html` | 2 | 0 | 0 | 1 | 1 |
 | rgaa-text-direction-marked | automatic | `tests/fixtures/rgaa-text-direction-marked-all-scenarios.html` | 3 | 0 | 1 | 1 | 1 |
 | rgaa-text-image-review | manual | `tests/fixtures/rgaa-text-image-review-all-scenarios.html` | 3 | 0 | 0 | 2 | 1 |
-| rgaa-th-association-present | automatic | `tests/fixtures/rgaa-th-association-present-all-scenarios.html` | 3 | 1 | 1 | 1 | 0 |
+| rgaa-th-association-present | automatic | `tests/fixtures/rgaa-th-association-present-all-scenarios.html` | 4 | 2 | 1 | 1 | 0 |
 | rgaa-th-scope-row-col | automatic | `tests/fixtures/rgaa-th-scope-row-col-all-scenarios.html` | 7 | 1 | 4 | 0 | 2 |
 | rgaa-title-placeholder-identical | automatic | `tests/fixtures/rgaa-title-placeholder-identical-all-scenarios.html` | 7 | 2 | 0 | 3 | 2 |
 | rgaa-tooltip-review | manual | `tests/fixtures/rgaa-tooltip-review-all-scenarios.html` | 3 | 0 | 0 | 2 | 1 |

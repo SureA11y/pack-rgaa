@@ -83,33 +83,34 @@ const meta = {
     wrappingLabel: {
       steps: [
         'Find the form field the report names: a <label> without a for attribute wraps it.',
-        "Listen to the field with a screen reader, or read its accessible name in the browser's accessibility tree, and check that the label text names it.",
-        'Check whether the audit accepts a wrapping <label>, which the RGAA glossary "Étiquette de champ de formulaire" allows and 11.1.1 does not list.'
+        'Inspect the field: check that it has no aria-labelledby, aria-label or title with text, and no <label for> matching its id.'
       ],
       passWhen:
-        "The wrapping label names the field and the audit accepts it; giving the label a for attribute matching the field's id settles it.",
+        'The field has one of the label sources RGAA 11.1.1 lists, with text: an aria-labelledby, an aria-label, a <label for> matching its id, or a title.',
       failWhen:
-        'The audit holds to the conditions 11.1.1 lists, none of which the field meets, so it fails RGAA 11.1.1.'
+        "The field's only label is a <label> without for. RGAA 11.1.1 names « une balise <label> ayant un attribut for », so the field fails RGAA 11.1.1."
     },
     labelForNotLabelable: {
       steps: [
         'Find the form field the report names: a <label for> points at it, but it is not an element a <label> can name (an ARIA field such as role="textbox").',
         "Read its accessible name in the browser's accessibility tree, or listen to it with a screen reader: the label gives it none.",
-        'Check whether the field has another name source that 11.1.1 lists (aria-labelledby, aria-label, title).'
+        'Check that the field has no aria-labelledby, aria-label or title with text.'
       ],
       passWhen:
-        'Another source names the field, or the audit counts the <label for>, which meets the wording of 11.1.1, as enough.',
+        "The field's accessible name comes from the <label> after all, or from an aria-labelledby, an aria-label or a title.",
       failWhen:
-        'The field has no name from any source 11.1.1 lists, which assistive technologies can read, so it fails RGAA 11.1.1.'
+        'The <label for> is not associated with the field, since a <label> cannot name such an element, and the field has no other source RGAA 11.1.1 lists, so it fails RGAA 11.1.1.'
     },
     outputStatus: {
       steps: [
         'Find the <output> the report names: it has no label.',
-        'Use the form, and see what the element shows and when.',
-        'Decide whether it shows the result of a calculation in the form, or a status message, such as a text saying the form was saved.'
+        'Inspect it: check whether it is inside a <form> or an element with role="form", or joined to a form by its form attribute.',
+        'Use the page, and see what the <output> shows.'
       ],
-      passWhen: 'The <output> is a status message, which needs no label.',
-      failWhen: 'The <output> shows a result of the form and has no label, which fails RGAA 11.1.1.'
+      passWhen:
+        'The <output> belongs to no form (it sits outside any form and no form attribute joins it to one), so it is not a form field under the glossary « Champ de saisie de formulaire »; its message is judged under criterion 7.5.',
+      failWhen:
+        'The <output> belongs to a form and has no label from a source RGAA 11.1.1 lists, which fails RGAA 11.1.1.'
     }
   }
 };
@@ -305,9 +306,8 @@ function runInPage(ctx) {
       outcome: 'cantTell',
       summary:
         'This form field is labelled only by a <label> that wraps it, without a for attribute.',
-      hint: 'RGAA 11.1.1 names a <label> with a for attribute; check whether the audit accepts the wrapping label, or add for and a matching id.',
-      needed:
-        'Whether the audit accepts a <label> without for, which the RGAA glossary allows and 11.1.1 does not name.'
+      hint: 'RGAA 11.1.1 names a <label> with a for attribute: add for and a matching id, or give the field another source 11.1.1 lists.',
+      needed: 'Whether the field has a label source 11.1.1 lists after all.'
     },
     labelForNotLabelable: {
       outcome: 'cantTell',
@@ -315,7 +315,7 @@ function runInPage(ctx) {
         'A <label for> points at this field, but this element cannot be labelled by a <label>.',
       hint: 'The label gives the field no accessible name. Use aria-labelledby pointing to the label text, or a native form field.',
       needed:
-        'Whether a <label for> that gives the field no accessible name meets 11.1.1, whose condition it meets to the letter.'
+        'Whether the field gets an accessible name from the <label> or another source 11.1.1 lists.'
     },
     duplicateId: {
       outcome: 'fail',
@@ -327,9 +327,9 @@ function runInPage(ctx) {
       outcome: 'cantTell',
       summary:
         'This <output> has no label, and looks like a status message rather than a field: it has no for attribute, and is announced as a status.',
-      hint: 'If the <output> shows the result of a calculation in a form, give it a <label for>, an aria-labelledby, an aria-label or a title. A status message needs none.',
+      hint: 'If the <output> belongs to a form (inside it, or joined by its form attribute), give it a <label for>, an aria-labelledby, an aria-label or a title: RGAA counts an <output> as a form field. Outside any form, its message is judged under 7.5.',
       needed:
-        'Whether this <output> is a form field showing a result, which needs a label, or a status message.'
+        'Whether this <output> belongs to a form, which makes it a form field that needs a label.'
     },
     emptySource: {
       outcome: 'fail',

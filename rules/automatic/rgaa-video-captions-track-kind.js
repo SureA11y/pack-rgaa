@@ -62,10 +62,10 @@ const meta = {
       steps: [
         'Find the video the report names, and note the language spoken in it.',
         'Turn on each of its subtitles tracks in the player and watch a passage with dialogue and sounds.',
-        'Check whether a track is in the language of the video and gives who speaks and the sounds that matter, which makes it captions.'
+        'Check whether a track is in the language of the video and gives the speech and the sounds that matter, which makes it captions, or is a translation.'
       ],
       passWhen:
-        'Every subtitles track is a translation into another language, and captions are provided some other way, so the tracks need no kind="captions".',
+        'Every subtitles track is a translation into another language, so RGAA 4.3.2 does not apply to them (whether the video has captions is RGAA 4.3.1’s question).',
       failWhen:
         'A track carries the captions of the video in its own language but is marked kind="subtitles" (or has no kind), which fails RGAA 4.3.2.'
     }

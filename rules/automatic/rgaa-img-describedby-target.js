@@ -53,13 +53,13 @@ const meta = {
     someTargetsMissing: {
       steps: [
         'Find the image the report names, and read the ids in its aria-describedby; the report says which ones point to nothing.',
-        'Read the passage that the ids that exist point to, and compare it with what the image shows.',
-        'Listen to the image with a screen reader.'
+        'Decide whether the image carries information and has a detailed description on the page.',
+        'If it does, check that the ids that exist point to that description, and listen to the image with a screen reader.'
       ],
       passWhen:
-        'The passage is the detailed description of the image, and the screen reader reads it.',
+        'The image has no detailed description, so RGAA 1.6.9 does not apply; or aria-describedby points to its detailed description and a screen reader reads it.',
       failWhen:
-        'The passage is not the detailed description, or the screen reader does not read it, which fails RGAA 1.6.9.'
+        'The image has a detailed description, and aria-describedby does not point to it or a screen reader does not read it, which fails RGAA 1.6.9.'
     },
     emptyDescription: {
       steps: [
@@ -68,9 +68,9 @@ const meta = {
         'Listen to the image with a screen reader.'
       ],
       passWhen:
-        'The passage holds the detailed description once the page is in use, and the screen reader reads it.',
+        'The passage holds the image’s detailed description once the page is in use and a screen reader reads it; or the image has no detailed description, so RGAA 1.6.9 does not apply.',
       failWhen:
-        'The passage stays empty, so aria-describedby associates no description, which fails RGAA 1.6.9.'
+        'The image has a detailed description, but the passage aria-describedby points to stays empty, so aria-describedby does not associate it, which fails RGAA 1.6.9.'
     }
   }
 };

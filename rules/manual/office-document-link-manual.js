@@ -62,11 +62,12 @@ const meta = {
     officeDocument: {
       steps: [
         'Find the link, form or button the report names, and download the document it gives.',
-        'Open the document and check that it is accessible: structured headings, text alternatives for images, a reading order, a language.',
-        'If it is not, look next to the link for an accessible version of it, to download or as an HTML page.'
+        "Open the document and check it against RGAA's list « Liste document bureautique en téléchargement », with the checker RGAA's methodology names for its format (PDF, Word, ODT, EPUB).",
+        'If it is not accessible, look next to the link for an alternative version presented as accessible, to download or as an HTML page.',
+        'If the site belongs to a private-law body, check the publication date: a document published before 23 September 2018, and not needed for an administrative procedure, makes the test not applicable.'
       ],
       passWhen:
-        'The document is accessible, or an accessible version of it is offered for download or in HTML.',
+        'The document is accessible, or an alternative version presented as accessible is offered for download or in HTML, or the particular case of RGAA 13.3 applies.',
       failWhen:
         'The document is not accessible and no accessible version is offered, which fails RGAA 13.3.1.'
     }

@@ -50,22 +50,33 @@ test('a contrast failure names the 3.2 test of its text size and weight', () => 
   assert.deepEqual(tests(both), ['3.2.1', '3.2.3']);
 });
 
-test('an invalid list child names the test of its own list', () => {
+// A stray child inside a list may be a heading, a separator or a wrapper not
+// presented as an item: asked about under the test of its own list. Its
+// nesting still fails 8.2.1 (rgaa-html-nesting-valid).
+test('an invalid list child is asked about under the test of its own list', () => {
   const ul = criterion(scan('<ul><li>a</li><p>b</p></ul>'), '9.3');
-  assert.equal(ul.outcome, 'fail');
-  assert.deepEqual(tests(ul), ['9.3.1']);
+  assert.equal(ul.outcome, 'cantTell');
+  assert.deepEqual(contributor(ul, 'list-children-valid').requirements, ['9.3.1']);
   const ol = criterion(scan('<ol><li>a</li><p>b</p></ol>'), '9.3');
-  assert.equal(ol.outcome, 'fail');
-  assert.deepEqual(tests(ol), ['9.3.2']);
+  assert.equal(ol.outcome, 'cantTell');
+  assert.deepEqual(contributor(ol, 'list-children-valid').requirements, ['9.3.2']);
 });
 
-// Core asks where only HTML breaks; RGAA 9.3 names the elements a list is
-// structured with, so these stay failures of the standard.
-test('a broken description list fails 9.3.3', () => {
-  for (const html of ['<dl><dd>b</dd><dt>a</dt></dl>', '<dl><p>a</p></dl>', '<dt>a</dt>']) {
+// A <dt> or <dd> outside a <dl> was marked as an item of a description list
+// by its author: RGAA 9.3.3 names <dl>, <dt> and <dd>, so it fails. A stray
+// child or a broken order inside a <dl> is asked about.
+test('a description item outside a <dl> fails 9.3.3, and a broken <dl> is asked about', () => {
+  const orphan = criterion(scan('<dt>a</dt>'), '9.3');
+  assert.equal(orphan.outcome, 'fail');
+  assert.deepEqual(tests(orphan), ['9.3.3']);
+  for (const html of ['<dl><dd>b</dd><dt>a</dt></dl>', '<dl><p>a</p></dl>']) {
     const rollup = criterion(scan(html), '9.3');
-    assert.equal(rollup.outcome, 'fail', html);
-    assert.deepEqual(tests(rollup), ['9.3.3'], html);
+    assert.equal(rollup.outcome, 'cantTell', html);
+    assert.deepEqual(
+      contributor(rollup, 'definition-list-children-valid').requirements,
+      ['9.3.3'],
+      html
+    );
   }
 });
 

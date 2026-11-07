@@ -63,12 +63,12 @@ const meta = {
       steps: [
         'Find the <object> the report names: it has role="none" or role="presentation", no aria-hidden="true", and content between its tags.',
         'Look at the image on screen, and decide whether it carries information or only decorates.',
-        'Read the content between <object> and </object>, and compare it with what the image shows.'
+        'If it carries information, look right after it, in the code and on screen, for a link or button that leads to an alternative content, and on the page for a mechanism that replaces the image with one: the content between <object> and </object> does not count for RGAA 1.1.6.'
       ],
       passWhen:
-        'The image carries information and that content gives the same information, so RGAA 1.2.3 does not apply; removing the role settles it.',
+        'The image carries information, so RGAA 1.2.3 does not apply, and a link or button right after it, or a mechanism on the page, gives access to an alternative content, which RGAA 1.1.6 accepts.',
       failWhen:
-        'The image is decorative, with no aria-hidden="true" and with content inside it, which fails RGAA 1.2.3.'
+        'The image only decorates, with no aria-hidden="true" and with content between its tags, which fails RGAA 1.2.3; or it carries information and has only that content, with no adjacent link or button and no replacement mechanism, which fails RGAA 1.1.6.'
     }
   }
 };

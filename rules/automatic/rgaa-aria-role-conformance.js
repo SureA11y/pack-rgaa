@@ -35,13 +35,14 @@
  *   It asks (cantTell) in one case, `imgPresentationRole`: an <img> with
  *   role="presentation" and an empty or missing alt. The validator reports
  *   an error there, but RGAA 1.2.1 names role="presentation" on an <img>
- *   as a way to mark a decorative image, so whether the audit counts it
- *   against 8.2.1 is left to the auditor.
+ *   as a way to mark a decorative image, and ARIA in HTML allows it with
+ *   alt="". The pack reads it so: with alt="" the markup passes 8.2.1;
+ *   with no alt it fails, as HTML requires alt on an <img>.
  * @implementation-notes
  * - Markup inside a shadow root is asked about (cantTell) instead of failed:
- *   RGAA 8.2.1's methodology runs the W3C validator on the generated
- *   source, whose serialization holds no shadow root. Correcting the
- *   markup settles both readings.
+ *   it is part of the page's generated source, which 8.2.1 judges, but
+ *   the W3C validator its methodology runs does not see it in the
+ *   serialization, so a person confirms the markup in the inspector.
  * - Expected outcomes follow the W3C validator version 26.9.27. The tables
  *   of accepted roles and of the roles each element allows were read from
  *   that version's reports, element by element; re-check them when the
@@ -75,16 +76,17 @@
 const id = 'rgaa-aria-role-conformance';
 
 // Markup in a shadow root is asked about instead of failed, whatever is wrong
-// with it, since the W3C validator does not see it: each code gets these steps.
+// with it, since the W3C validator does not see it: a person confirms it in the
+// inspector. Each code gets these steps.
 const SHADOW_REVIEW = {
   steps: [
-    'Find the element the report names: it sits inside a shadow root, which the browser inspector shows under its host element.',
-    'Read what the report says is wrong with its markup, and check it on the element.',
-    'Check whether the audit judges markup in shadow roots under RGAA 8.2.1: the W3C validator does not see it in the page’s generated source.'
+    'Find the element the report names: it sits inside a shadow root, which the browser inspector shows under its host element (#shadow-root).',
+    'Read what the report says is wrong with its markup, and check it on the element in the inspector. The W3C validator cannot do this, because a shadow root is not in the serialized source it reads.'
   ],
-  passWhen: 'The audit leaves shadow roots out of 8.2.1; correcting the markup settles both.',
+  passWhen:
+    'The markup is not as the report says: the element, attribute, value or nesting is allowed by the HTML specification.',
   failWhen:
-    'The audit judges markup in shadow roots, and this markup is as the report says, which fails RGAA 8.2.1.'
+    "The markup is as the report says, which fails RGAA 8.2.1: a shadow root is part of the page's generated source."
 };
 
 const meta = {
@@ -116,13 +118,12 @@ const meta = {
     imgPresentationRole: {
       steps: [
         'Find the <img role="presentation"> the report names.',
-        'Look at the image on screen and decide whether it is decorative.',
-        'Check which validation rule the audit applies to role="presentation" on an <img>, which the W3C validator reports as an error.'
+        'Read its alt attribute: empty, or missing.'
       ],
       passWhen:
-        'The image is decorative and the audit accepts role="presentation" on it, as RGAA 1.2.1 names it as a way to mark a decorative image; alt="" alone avoids the question.',
+        'The <img> has alt="": role="presentation" is allowed on it by the HTML specification and named by RGAA 1.2.1 for a decorative image, so it does not fail RGAA 8.2.1, whatever the validator reports.',
       failWhen:
-        'The audit counts the validator error against the generated source, which fails RGAA 8.2.1; if the image carries information, it also lacks a text alternative (RGAA 1.1.1).'
+        'The <img> has no alt attribute, which HTML requires on an <img>, so the code fails RGAA 8.2.1: role="presentation" does not replace alt.'
     },
     emptyRole: SHADOW_REVIEW,
     unknownRoleToken: SHADOW_REVIEW,
@@ -292,9 +293,9 @@ function runInPage(ctx) {
       outcome: 'cantTell',
       summary:
         'This <img> has role="presentation" with an empty or missing alt, which the W3C validator reports as an error.',
-      hint: 'RGAA 1.2.1 accepts role="presentation" to mark a decorative image. Check how the audit treats the validator error, or use alt="" alone.',
+      hint: 'RGAA 1.2.1 accepts role="presentation" to mark a decorative image: with alt="" the markup passes 8.2.1; with no alt it fails, as HTML requires alt.',
       needed:
-        'Whether the audit counts the validator error on an <img role="presentation">, a markup RGAA 1.2.1 names for decorative images, against 8.2.1.'
+        'Whether this <img role="presentation">, a markup RGAA 1.2.1 names for decorative images, has alt="" (it passes 8.2.1) or no alt (it fails).'
     }
   };
 
@@ -411,9 +412,9 @@ function runInPage(ctx) {
     }
   }
   const SHADOW_NEEDED =
-    'Whether markup in a shadow root, which the W3C validator does not see in the generated source, is to be judged under 8.2.1.';
+    'Whether the markup in this shadow root, which the W3C validator does not see, is as the report says.';
   const SHADOW_HINT =
-    "This markup is in a shadow root, which the W3C validator does not see in the page's generated source. Check whether the audit judges it under 8.2.1; correcting the markup settles both.";
+    "This markup is in a shadow root, part of the page's generated source that the W3C validator does not see. Check it in the browser inspector: if it is as the report says, it fails 8.2.1.";
   const shadowAsked = [];
 
   function report(el, reasonCode, params) {

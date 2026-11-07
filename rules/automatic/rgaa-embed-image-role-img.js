@@ -32,9 +32,11 @@
  *   (noAlternativeMayBeDecorative): it may be decorative, and then it fails
  *   1.2.6 instead.
  *   Asks (cantTell):
- *   - a text alternative without role="img". The test wording requires
- *     both, but the methodology validates on the alternative alone (steps 2
- *     to 4), so RGAA does not say which reading wins;
+ *   - a text alternative without role="img". The test's first condition
+ *     and step 2 of its methodology ask for both, so the
+ *     alternative alone does not meet it: an informative image passes only
+ *     through a link or button right after it or a replacement mechanism,
+ *     and a decorative one fails 1.2.6, as it keeps an alternative;
  *   - no text alternative, but a link or button right after the <embed>
  *     (does it lead to an alternative content?).
  * @implementation-notes
@@ -79,24 +81,24 @@ const meta = {
     alternativeWithoutRoleImg: {
       steps: [
         'Find the <embed> image the report names: it has a text alternative (aria-labelledby, aria-label or title) but no role="img".',
-        'Look at the image and read its text alternative.',
-        'Check which reading of RGAA 1.1.7 the audit follows: the test asks for both the alternative and role="img", while its methodology checks the alternative alone.'
+        'Look at the image with the text around it, and decide whether it carries information or only decorates.',
+        'If it carries information, look right after it, in the code and on screen, for a link or button that leads to an alternative content, and on the page for a mechanism that replaces the image with an alternative content.'
       ],
       passWhen:
-        'The image is informative, its alternative is there, and the audit reads 1.1.7 by its methodology; adding role="img" settles it either way.',
+        'The image carries information and a link or button right after it, or a mechanism on the page, gives access to an alternative content.',
       failWhen:
-        'The audit reads 1.1.7 by its wording, which requires role="img" with the alternative, so the image fails RGAA 1.1.7.'
+        'The image carries information and its alternative comes without role="img", with no adjacent link or button and no replacement mechanism, which fails RGAA 1.1.7; or it only decorates but keeps an alternative and has no aria-hidden="true", which fails RGAA 1.2.6.'
     },
     adjacentLinkOrButton: {
       steps: [
-        'Find the <embed> image the report names, and the link or button right after it in the code.',
-        'Activate the link or button.',
-        'Compare what it gives access to with what the image shows.'
+        'Find the <embed> image the report names, and the link or button right after it in the code; check that it also sits next to it on screen.',
+        'Decide whether the image carries information or only decorates.',
+        'If it carries information, activate the link or button and compare what it gives access to with what the image shows.'
       ],
       passWhen:
-        'The link or button leads to an alternative content that gives the same information as the image.',
+        'The image carries information, and the link or button sits next to it on screen and leads to an alternative content that gives the same information.',
       failWhen:
-        'The link or button does not lead to an alternative, so the informative image has none, which fails RGAA 1.1.7.'
+        'The image carries information, the link or button is not next to it on screen or does not lead to an alternative content, and no mechanism replaces the image, which fails RGAA 1.1.7; or it only decorates and has no aria-hidden="true", which fails RGAA 1.2.6.'
     },
     noAlternativeMayBeDecorative: {
       steps: [
@@ -252,7 +254,7 @@ function runInPage(ctx) {
       cantTells.push(
         helpers.reportOccurrence(el, {
           summary: `This embedded image has a text alternative (${source}) but no role="img".`,
-          hint: 'RGAA 1.1.7 asks for a text alternative and role="img". Add role="img", or check that the alternative is rendered by assistive technologies.',
+          hint: 'RGAA 1.1.7 asks for a text alternative and role="img". Add role="img" if the image carries information, or aria-hidden="true" in place of the alternative if it is decorative.',
           i18n: {
             summaryKey: 'embedImageRoleImg_summary_cantTell_noRole',
             hintKey: 'embedImageRoleImg_hint_cantTell_noRole',

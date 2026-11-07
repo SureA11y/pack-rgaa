@@ -73,66 +73,66 @@ const meta = {
     payment: {
       steps: [
         'Find the form the report names: it pays or places an order.',
-        'Look in the form, and before its submit button, for a checkbox or an extra step that asks you to confirm, or a step that shows the data to check and correct.',
+        'Look in the form, before its submit button, for a check box or an extra step that asks you to confirm; and, in a form in several steps, for a step before the last that shows the data to check and correct.',
         "On a test account, or by reading the site's help, find out what happens after sending it: whether the payment or order can be changed, cancelled or recovered."
       ],
       passWhen:
-        'The data can be checked and corrected before sending, the form asks for an explicit confirmation, or the data can be changed, cancelled or recovered afterwards.',
+        'A step of the form, before it is sent, shows the data to check and correct; or the form asks for an explicit confirmation (a check box or an extra step); or the data and the actions taken on them can be changed or cancelled afterwards.',
       failWhen:
         'The form offers none of these, which fails RGAA 11.12.1; where it changes or deletes financial, legal or personal data with no way to recover them and no confirmation, it also fails RGAA 11.12.2.'
     },
     accountDeletion: {
       steps: [
         'Find the form the report names: it deletes or closes an account.',
-        'Look in the form, and before its submit button, for a checkbox or an extra step that asks you to confirm, or a step that shows the data to check and correct.',
+        'Look in the form, before its submit button, for a check box or an extra step that asks you to confirm; and, in a form in several steps, for a step before the last that shows the data to check and correct.',
         "On a test account, or by reading the site's help, find out what happens after sending it: whether the account and its data can be changed, cancelled or recovered."
       ],
       passWhen:
-        'The data can be checked and corrected before sending, the form asks for an explicit confirmation, or the data can be changed, cancelled or recovered afterwards.',
+        'A step of the form, before it is sent, shows the data to check and correct; or the form asks for an explicit confirmation (a check box or an extra step); or the data and the actions taken on them can be changed or cancelled afterwards.',
       failWhen:
         'The form offers none of these, which fails RGAA 11.12.1; where it changes or deletes financial, legal or personal data with no way to recover them and no confirmation, it also fails RGAA 11.12.2.'
     },
     cancellation: {
       steps: [
         'Find the form the report names: it cancels a subscription, an order or a booking.',
-        'Look in the form, and before its submit button, for a checkbox or an extra step that asks you to confirm, or a step that shows the data to check and correct.',
+        'Look in the form, before its submit button, for a check box or an extra step that asks you to confirm; and, in a form in several steps, for a step before the last that shows the data to check and correct.',
         "On a test account, or by reading the site's help, find out what happens after sending it: whether the cancellation can be changed, cancelled or recovered."
       ],
       passWhen:
-        'The data can be checked and corrected before sending, the form asks for an explicit confirmation, or the data can be changed, cancelled or recovered afterwards.',
+        'A step of the form, before it is sent, shows the data to check and correct; or the form asks for an explicit confirmation (a check box or an extra step); or the data and the actions taken on them can be changed or cancelled afterwards.',
       failWhen:
         'The form offers none of these, which fails RGAA 11.12.1; where it changes or deletes financial, legal or personal data with no way to recover them and no confirmation, it also fails RGAA 11.12.2.'
     },
     signature: {
       steps: [
         'Find the form the report names: it signs a document or a contract.',
-        'Look in the form, and before its submit button, for a checkbox or an extra step that asks you to confirm, or a step that shows the data to check and correct.',
+        'Look in the form, before its submit button, for a check box or an extra step that asks you to confirm; and, in a form in several steps, for a step before the last that shows the data to check and correct.',
         "On a test account, or by reading the site's help, find out what happens after sending it: whether the signature can be changed, cancelled or recovered."
       ],
       passWhen:
-        'The data can be checked and corrected before sending, the form asks for an explicit confirmation, or the data can be changed, cancelled or recovered afterwards.',
+        'A step of the form, before it is sent, shows the data to check and correct; or the form asks for an explicit confirmation (a check box or an extra step); or the data and the actions taken on them can be changed or cancelled afterwards.',
       failWhen:
         'The form offers none of these, which fails RGAA 11.12.1; where it changes or deletes financial, legal or personal data with no way to recover them and no confirmation, it also fails RGAA 11.12.2.'
     },
     passwordChange: {
       steps: [
         'Find the form the report names: it changes a password.',
-        'Look in the form, and before its submit button, for a checkbox or an extra step that asks you to confirm, or a step that shows the data to check and correct.',
+        'Look in the form, before its submit button, for a check box or an extra step that asks you to confirm; and, in a form in several steps, for a step before the last that shows the data to check and correct.',
         "On a test account, or by reading the site's help, find out what happens after sending it: whether the new password can be changed, cancelled or recovered."
       ],
       passWhen:
-        'The data can be checked and corrected before sending, the form asks for an explicit confirmation, or the data can be changed, cancelled or recovered afterwards.',
+        'A step of the form, before it is sent, shows the data to check and correct; or the form asks for an explicit confirmation (a check box or an extra step); or the data and the actions taken on them can be changed or cancelled afterwards.',
       failWhen:
         'The form offers none of these, which fails RGAA 11.12.1; where it changes or deletes financial, legal or personal data with no way to recover them and no confirmation, it also fails RGAA 11.12.2.'
     },
     testAnswers: {
       steps: [
         'Find the form the report names: it sends the answers to a test or an exam.',
-        'Look in the form, and before its submit button, for a checkbox or an extra step that asks you to confirm, or a step that shows the answers to check and correct.',
+        'Look in the form, before its submit button, for a check box or an extra step that asks you to confirm; and, in a form in several steps, for a step before the last that shows the answers to check and correct.',
         'On a test account, or by reading the site’s help, find out whether the answers can be changed after sending.'
       ],
       passWhen:
-        'The answers can be checked and corrected before sending, the form asks for an explicit confirmation, or they can be changed afterwards.',
+        'A step of the form, before it is sent, shows the answers to check and correct; or the form asks for an explicit confirmation (a check box or an extra step); or the answers can be changed or cancelled afterwards.',
       failWhen: 'The form offers none of these, which fails RGAA 11.12.1.'
     }
   }

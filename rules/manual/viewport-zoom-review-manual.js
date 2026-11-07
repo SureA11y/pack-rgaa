@@ -22,7 +22,7 @@
  *   its graphic zoom, or a zoom control provided by the site (« selon une de
  *   ces conditions »). The viewport meta tag acts only on pinch zoom, which
  *   desktop browsers do not use, so whether it stops all three depends on
- *   the audit environment. A person checks them.
+ *   the test environment. A person checks them.
  * @implementation-notes
  * - WCAG 1.4.4 is failed by meta-viewport-zoom-enabled, which RGAA 10.4.2
  *   may pass through one of its other conditions. This rule asks the RGAA
@@ -55,13 +55,14 @@ const meta = {
   review: {
     zoomRestricted: {
       steps: [
-        'Open the page in the audit’s browsers, desktop and mobile.',
+        'Open the page in the browsers of the test environment, desktop and mobile.',
         'Enlarge the text to 200% with the browser’s text zoom, then with its page zoom, and on mobile try pinching to zoom.',
-        'Look also for a text size control the site provides, and check that the content stays readable and usable at 200%.'
+        'Look also for a text size control the site provides, and check that all the text is enlarged to 200%.'
       ],
       passWhen:
-        'One of the browser’s text zoom, its page zoom or a control of the site enlarges the text to 200% with nothing lost.',
-      failWhen: 'None of them reaches 200% in an environment of the audit, which fails RGAA 10.4.2.'
+        'One of the browser’s text zoom, its page zoom or a control of the site enlarges all the text to 200%.',
+      failWhen:
+        'None of them enlarges all the text to 200% in one of the test environment’s browsers, which fails RGAA 10.4.2.'
     }
   }
 };

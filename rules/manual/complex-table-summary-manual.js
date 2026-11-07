@@ -36,8 +36,9 @@
  *   with no doctype is not HTML5. An ARIA table's summary comes only through
  *   aria-describedby.
  * @implementation-notes
- * - Manual (cantTell): the summary can be in the caption or next to the
- *   table, which only a person can judge.
+ * - Manual (cantTell): whether the <caption> explains the table's nature
+ *   and structure is for a person; 5.1.1 accepts no other passage unless
+ *   aria-describedby ties it to the table.
  * - Positions account for colspan and rowspan (aria-colspan and
  *   aria-rowspan in an ARIA table). Nested tables are checked on their own.
  * - Opt-in (tag `rgaa`).
@@ -66,13 +67,13 @@ const meta = {
   review: {
     complexTableNoSummary: {
       steps: [
-        'Find the table the report names, and check that it is a data table whose headers do not all apply to whole rows or columns.',
-        'Read its <caption> and the text just before and after it.',
+        'Find the table the report names, and check that it is a complex data table: its headers are not only in the first row and/or first column, or some do not apply to a whole row or column.',
+        'Read its <caption>, any text its aria-describedby points to, and its summary attribute (before HTML 5).',
         'Look there for a summary: a passage that explains how the table is built (what its groups of headers are and how to read a cell).'
       ],
       passWhen:
-        'The caption, or a passage next to the table, explains the nature and structure of the table, or the table is in fact simple.',
-      failWhen: 'Nothing near the complex table explains its structure, which fails RGAA 5.1.1.'
+        'The <caption>, a passage tied to the table with aria-describedby, or the summary attribute (before HTML 5) explains the nature and structure of the table; or the table is in fact not complex.',
+      failWhen: 'None of these explains the structure of the complex table, which fails RGAA 5.1.1.'
     }
   }
 };
@@ -240,7 +241,7 @@ function runInPage(ctx) {
       helpers.reportOccurrence(table, {
         summary:
           'This table looks like a complex data table, and nothing marks a summary of its structure.',
-        hint: 'Check that a summary explains how the table is organised, in its <caption> or in a passage next to it, ideally linked with aria-describedby.',
+        hint: 'Check that a summary explains how the table is organised, in its <caption> or in a passage tied to it with aria-describedby (RGAA 5.1.1).',
         i18n: {
           summaryKey: 'complexTableSummary_summary_cantTell',
           hintKey: 'complexTableSummary_hint_cantTell',

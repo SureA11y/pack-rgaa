@@ -62,7 +62,7 @@ const meta = {
       passWhen:
         'The media has the alternatives it needs, a text next to it identifies it, and its controls work with the keyboard, the mouse and a screen reader.',
       failWhen:
-        'A missing transcript fails RGAA 4.1, missing captions RGAA 4.3, a missing audio description RGAA 4.5, no identifying text RGAA 4.7, missing or unusable controls RGAA 4.11, and a player a screen reader cannot use RGAA 4.13.'
+        'A media that needs them and has no transcript (for a video, nor audio description) fails RGAA 4.1.1, 4.1.2 or 4.1.3 by its type; synchronised media without captions fails 4.3.1; one without the audio description it needs fails 4.5.1 or 4.5.2; no adjacent text that identifies it fails 4.7.1; missing controls fail 4.11.1, and controls not reachable or not operable with the keyboard and any pointing device fail 4.11.2 or 4.11.3; a player assistive technologies cannot use fails 4.13.1.'
     },
     embeddedPlayerAutoplay: {
       steps: [
@@ -76,7 +76,7 @@ const meta = {
       passWhen:
         'Sound lasts 3 seconds or less, or can be stopped or its volume set, and the media has its alternatives, an identifying text and controls that work with the keyboard, the mouse and a screen reader.',
       failWhen:
-        'Sound plays for more than 3 seconds and nothing stops it or sets its volume, which fails RGAA 4.10.1. A missing transcript fails RGAA 4.1, missing captions RGAA 4.3, a missing audio description RGAA 4.5, no identifying text RGAA 4.7, missing or unusable controls RGAA 4.11, and a player a screen reader cannot use RGAA 4.13.'
+        'Sound plays for more than 3 seconds and nothing stops it or sets its volume, which fails RGAA 4.10.1. A media that needs them and has no transcript (for a video, nor audio description) fails RGAA 4.1.1, 4.1.2 or 4.1.3 by its type; synchronised media without captions fails 4.3.1; one without the audio description it needs fails 4.5.1 or 4.5.2; no adjacent text that identifies it fails 4.7.1; missing controls fail 4.11.1, and controls not reachable or not operable with the keyboard and any pointing device fail 4.11.2 or 4.11.3; a player assistive technologies cannot use fails 4.13.1.'
     }
   }
 };

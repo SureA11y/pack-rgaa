@@ -57,7 +57,7 @@ const meta = {
       passWhen:
         'The alternative says what the image is and does, and a non-graphic test or another way in is offered.',
       failWhen:
-        'The alternative does not say what the image is and does, which fails RGAA 1.4; or nothing but the image gives access, which fails RGAA 1.5.'
+        'The alternative does not say what the image is and what it is for, which fails the RGAA 1.4 test for its element (1.4.1 for an <img>, 1.4.2 for an <area>, 1.4.3 for an image button, 1.4.4 for an <object>, 1.4.5 for an <embed>, 1.4.6 for an <svg>, 1.4.7 for a <canvas>); or nothing but the image gives access, which fails RGAA 1.5.1 (1.5.2 for an image button).'
     },
     captchaWidget: {
       steps: [
@@ -68,7 +68,7 @@ const meta = {
       passWhen:
         'The test offers a non-graphic version, or another way to the same function is offered.',
       failWhen:
-        'Only images can get a person through, and nothing else gives access to the function, which fails RGAA 1.5.'
+        'Only images can get a person through, and nothing else gives access to the function, which fails RGAA 1.5.1.'
     }
   }
 };

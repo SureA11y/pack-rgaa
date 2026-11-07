@@ -78,12 +78,12 @@ const meta = {
       steps: [
         'Find the field the report names, and read its label on screen: it does not say the field is required.',
         'Read the legend of its group, which holds a required indication.',
-        'Decide whether the legend makes it clear that this field is required, and whether the audit accepts a legend as the text linked to the field.'
+        'Decide whether the legend clearly shows that this field is required (for a group of radio buttons, the group is the field).'
       ],
       passWhen:
-        'The legend leaves no doubt that this field is required, and the audit accepts it; an indication in the label settles it.',
+        'The legend visibly shows, before the form is sent, that this field is required. RGAA treats the legend as associated with the fields of its group (particular case and technical note of criterion 11.10).',
       failWhen:
-        "The indication does not identify this field, or the audit holds to the field's label and linked passages, which fails RGAA 11.10.2."
+        "The legend's indication does not identify this field, and neither the field's label nor its linked passages give one, which fails RGAA 11.10.2."
     },
     indicationOutsideLabel: {
       steps: [
@@ -114,20 +114,20 @@ const meta = {
         'Check that what you found says the field is required, and that it sits in the label or in a passage linked to the field.'
       ],
       passWhen:
-        'An image, icon or text in the label or a linked passage visibly shows the field is required.',
+        'The label or a linked passage visibly shows the field is required; where this is a sign or an icon, the page explains it before its first use, both on screen and in the code.',
       failWhen:
-        'Nothing in the label or a linked passage shows the field is required, which fails RGAA 11.10.2.'
+        'Nothing in the label or a linked passage shows the field is required, or a sign or icon there is not explained before its first use, which fails RGAA 11.10.2.'
     },
     allFieldsRequiredSentence: {
       steps: [
         'Find the field the report names, and read its label on screen: it does not say the field is required.',
         'Find the sentence that says all the fields of the form are required, and check that it comes before the fields.',
-        "Inspect the field: check whether the sentence is linked to it by aria-describedby or aria-labelledby, and whether the audit accepts it as the field's indication."
+        'Inspect the field: check whether the sentence is linked to it by aria-describedby or aria-labelledby, and whether the form marks its optional fields as such in their label or legend.'
       ],
       passWhen:
-        'The sentence is linked to the field, or the audit accepts it; an indication in the label settles it.',
+        'The sentence is visible and linked to the field by aria-describedby or aria-labelledby, so the indication sits in a passage linked to the field; or the form visibly marks its optional fields in their label or legend, which makes the test not applicable (particular case of RGAA 11.10).',
       failWhen:
-        "The field's label and linked passages show no indication, and the audit does not accept the sentence, which fails RGAA 11.10.2."
+        "The sentence is not linked to the field and the form marks no field as optional, so the field's label and linked passages give no indication, which fails RGAA 11.10.2: where all the fields of a form are required, the particular case of 11.10 keeps the test applicable."
     },
     stylesNotRead: {
       steps: [
@@ -135,8 +135,10 @@ const meta = {
         'Look at its label on screen: the style sheets may add a sign, such as an asterisk, that the code does not show.',
         'If a sign appears, check that the page explains it before this field.'
       ],
-      passWhen: 'The label visibly shows the field is required.',
-      failWhen: 'The label and its linked passages show no indication, which fails RGAA 11.10.2.'
+      passWhen:
+        'The label or a linked passage visibly shows the field is required; where this is a sign or an icon, the page explains it before its first use, both on screen and in the code.',
+      failWhen:
+        'The label and its linked passages show no indication, or a sign there is not explained before its first use, which fails RGAA 11.10.2.'
     },
     signMayMeanOther: {
       steps: [

@@ -93,7 +93,8 @@ const meta = {
         'Use the page, and watch for the moment a script fills it, such as after a search or a form error.',
         'Look at the page where it sits, and check whether it makes a gap while it is empty.'
       ],
-      passWhen: 'A script fills the element with content.',
+      passWhen:
+        'A script fills the element with content, or the element shows nothing on screen while it is empty.',
       failWhen: 'The element stays empty and is there only to make space, which fails RGAA 8.9.1.'
     },
     consecutiveBr: {

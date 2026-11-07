@@ -68,19 +68,19 @@ const meta = {
         'Look at the image and decide what the button does.',
         'Listen to it with a screen reader, or read its accessible name in the browser\'s accessibility tree: the browser names it with a generic word such as "Submit".'
       ],
-      passWhen:
-        'The generic name says what the button does, which is rare; an alt describing the action settles it.',
+      passWhen: 'The generic name the browser gives says what the button does.',
       failWhen:
-        "The generic name does not tell what the button does, so the button has no relevant label, which fails RGAA 11.9.1 (and the image button's alternative, 1.1.3)."
+        'The generic name does not say what the button does, so the button has no relevant label, which fails RGAA 11.9.1.'
     },
     formAttributeOnly: {
       steps: [
-        'Find the button the report names: it has no label, and sits outside the form it submits, joined to it by its form attribute.',
-        'Check whether the audit counts such a button as a button of the form (11.9.1), or as an interface component of the page (7.1.1).'
+        'Find the button the report names: it sits outside the form it submits, joined to it by its form attribute.',
+        "Read its accessible name in the browser's accessibility tree, and look at what it shows on screen."
       ],
-      passWhen: 'The button is given a label that says what it does, under either reading.',
+      passWhen:
+        'The button has a label after all (visible content, an aria-label, an aria-labelledby, a value or a title), and it says what the button does.',
       failWhen:
-        'The button has no label, which fails RGAA 11.9.1 if the audit counts it in the form, or 7.1.1 otherwise.'
+        'The button has no label. Its form attribute makes it a button of the form it submits (glossary « Bouton (formulaire) »), so it fails RGAA 11.9.1.'
     }
   }
 };
@@ -217,9 +217,8 @@ function runInPage(ctx) {
       outcome: 'cantTell',
       summary:
         'This button has no label and sits outside the form it submits, which it joins through its form attribute.',
-      hint: 'Check whether the audit counts this button as part of the form. In any case, give it a label that describes its action.',
-      needed:
-        'Whether a button joined to a form by its form attribute counts as a button of that form.'
+      hint: 'Its form attribute makes it a button of that form: give it a label that describes its action.',
+      needed: 'Whether the button has a label after all, and whether it says what the button does.'
     }
   };
   const MESSAGES = outsideForms ? MESSAGES_OUTSIDE : MESSAGES_IN_FORMS;

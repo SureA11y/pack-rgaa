@@ -123,7 +123,13 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-aria-list-item-roles': {
       tests: ['9.3.1', '9.3.2'],
-      note: 'Asks about an element with role="list" (not <ul> or <ol>) whose children do not all have role="listitem", <li> elements without that role included: 9.3.1 and 9.3.2 step 2 accept only <ul>/<ol> with <li>, or role="list" with role="listitem". It asks rather than fails, because whether the content is visually a list, and an ordered or unordered one, only a person can tell.'
+      reasonCodes: {
+        liWithoutListitemRole: { tests: ['9.3.1'] },
+        childWithoutListitemRole: { tests: ['9.3.1'] },
+        liWithoutListitemRoleOrdered: { tests: ['9.3.2'] },
+        childWithoutListitemRoleOrdered: { tests: ['9.3.2'] }
+      },
+      note: 'Asks about an element with role="list" (not <ul> or <ol>) whose children do not all have role="listitem", <li> elements without that role included: 9.3.1 and 9.3.2 step 2 accept only <ul>/<ol> with <li>, or role="list" with role="listitem". It asks rather than fails, because whether the content is visually a list only a person can tell. Each finding counts toward one test: a list whose items are numbered (a numeric list-style-type, a CSS counter, or a leading number in every item) toward 9.3.2 (the …Ordered codes), any other toward 9.3.1.'
     },
     'aria-owns-valid': {
       tests: [],
@@ -240,12 +246,13 @@ const RGAA_RULE_TESTS = {
     'rgaa-canvas-role-img': {
       tests: ['1.1.8'],
       reasonCodes: {
+        adjacentLinkOrButton: { tests: ['1.1.8', '1.2.5'] },
         noAlternativeMayBeDecorative: {
           tests: ['1.1.8', '1.2.5'],
           outcome: 'cantTell'
         }
       },
-      note: 'Checks each <canvas> not marked decorative. Passes role="img" with aria-labelledby or aria-label (steps 3 and 4), or, without role="img", fallback content (step 6). Fails a <canvas role="img"> with no ARIA name, since the note of the methodology limits its alternative to step 4, a canvas with no role, no fallback content and no link or button after it that aria-label or title names, and one with nothing at all that certainly carries information (captioned, or focusable). Asks about any other canvas with nothing at all, which may be decorative and then fails 1.2.5 instead, and when a link or button follows the canvas. A replacement mechanism cannot be detected. One that is the only content of a link or a button is left out: the glossary « Image porteuse d\'information » (notes 1 and 2) judges its alternative as the control\'s label, under 6.1, 11.9 or 7.1. A canvas that may be decorative is asked about under 1.1.8 and 1.2.5.'
+      note: 'Checks each <canvas> not marked decorative. Passes role="img" with aria-labelledby or aria-label (steps 3 and 4), or, without role="img", fallback content (step 6). Fails a <canvas role="img"> with no ARIA name, since the note of the methodology limits its alternative to step 4, a canvas with no role, no fallback content and no link or button after it that aria-label or title names, and one with nothing at all that certainly carries information (captioned, or focusable). Asks about any other canvas with nothing at all, which may be decorative and then fails 1.2.5 instead, and when a link or button follows the canvas. A replacement mechanism cannot be detected. One that is the only content of a link or a button is left out: the glossary « Image porteuse d\'information » (notes 1 and 2) judges its alternative as the control\'s label, under 6.1, 11.9 or 7.1. A canvas that may be decorative, or is followed by a link or button, is asked about under 1.1.8 and 1.2.5.'
     },
     'canvas-text-alternative-present': {
       tests: [],
@@ -279,7 +286,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-complex-table-summary': {
       tests: ['5.1.1'],
-      note: 'Asks whether a summary is available for a <table> or role="table" the rule takes as complex: a header cell outside both the first row and the first column, a cell with a headers attribute, a header with scope="rowgroup" or "colgroup", or first-row (or first-column) headers that each span a group of columns (or rows), as in RGAA\'s definition of a complex data table. A table with an aria-describedby that points to some text is not asked about (one pointing to a missing or empty element marks no summary), nor one with a summary attribute in a document whose doctype is not HTML5 (5.1.1 step 2 accepts summary only before HTML5). The summary may sit in the caption or next to the table, which only a person can judge.'
+      note: 'Asks whether a summary is available for a <table> or role="table" the rule takes as complex: a header cell outside both the first row and the first column, a cell with a headers attribute, a header with scope="rowgroup" or "colgroup", or first-row (or first-column) headers that each span a group of columns (or rows), as in RGAA\'s definition of a complex data table. A table with an aria-describedby that points to some text is not asked about (one pointing to a missing or empty element marks no summary), nor one with a summary attribute in a document whose doctype is not HTML5 (5.1.1 step 2 accepts summary only before HTML5). Whether the <caption> explains the nature and structure of the table, or the table is in fact not complex, only a person can judge; a passage next to the table counts only when aria-describedby ties it to the table.'
     },
     'rgaa-complex-table-summary-quality': {
       tests: ['5.2.1'],
@@ -368,12 +375,8 @@ const RGAA_RULE_TESTS = {
       note: "Flags tab-order elements whose outline is removed, by a :focus/:focus-visible rule or by a rule with no state such as a { outline: none }, with no border, box-shadow or background replacement in any matching focus rule. That is 10.7.1 condition 1 (native focus style removed) and step 2 (visual focus indicator present). The 3:1 contrast part of step 2 is rgaa-focus-indicator-contrast's."
     },
     'css-hidden-focus': {
-      tests: ['10.7.1', '12.8.1'],
-      note: 'Flags keyboard-focusable elements that are visually hidden (opacity 0, clipped, off-screen, zero-size with overflow hidden), so taking focus on them gives no visible indication. An element that a :focus/:focus-visible rule brings back into view, such as an off-screen skip link, is not flagged. This is evidence for 10.7.1 step 2 on focusable elements, and for 12.8.1: Tab stops on elements a person cannot see, such as the links of a closed off-canvas menu, make the tab order incoherent. It is not 10.8.1, because the content stays exposed to AT and the problem is purely visual.',
-      outsideCorrespondence: {
-        '12.8.1':
-          'Tab stops on hidden elements break the coherent tab order 12.8.1 asks for. RGAA relates 12.8 to WCAG 2.4.3; the engine files this check under 2.4.7. It only asks.'
-      }
+      tests: ['10.7.1'],
+      note: 'Asks about keyboard-focusable elements that are visually hidden (opacity 0, clipped, off-screen, zero-size with overflow hidden), so taking focus on them gives no visible indication. An element that a :focus/:focus-visible rule brings back into view, such as an off-screen skip link, is not flagged. This is 10.7.1 step 2 on focusable elements: the focus is taken with no visible indication. Not linked to 12.8.1: whether the tab order is coherent is a separate question, which manual-review asks under 12.8.1. It is not 10.8.1, because the content stays exposed to AT and the problem is purely visual.'
     },
     'css-orientation-lock': {
       tests: ['13.9.1'],
@@ -398,16 +401,16 @@ const RGAA_RULE_TESTS = {
     },
     'definition-list-children-valid': {
       tests: ['9.3.3'],
-      note: 'Fails a <dl> whose children are not dt/dd groups (one wrapping div allowed), that has text directly inside it, or whose dt/dd set is unbalanced or out of order (a dd before the first dt, a dt after the last dd), so the description list is not correctly built from <dl>/<dt>/<dd>, which is step 2 of 9.3.3. Not linked to 8.2.1: the rule accepts some content the HTML content model rejects (such as a <style> child) and skips hidden lists; rgaa-html-nesting-valid reports the dl content model under 8.2.1. Core asks, as only HTML breaks; 9.3.3 names <dl>, <dt> and <dd>, so it fails here.',
+      note: 'Asks about a <dl> whose children are not dt/dd groups (one wrapping div allowed), that has text directly inside it, or whose dt/dd set is unbalanced or out of order (a dd before the first dt, a dt after the last dd): if the page presents the stray content as a term or a description of the list, the description list is not built from <dl>/<dt>/<dd>, which is step 2 of 9.3.3. It asks rather than fails because the stray content may be a heading, a separator or a wrapper not presented as part of the list, which 9.3.3 does not judge; its invalid nesting still fails 8.2.1 through rgaa-html-nesting-valid, which reports the dl content model there, so the defect is not lost. Not linked to 8.2.1: the rule accepts some content the HTML content model rejects (such as a <style> child) and skips hidden lists.',
       reasonCodes: {
         DL_INVALID_CHILD: {
-          outcome: 'fail'
+          outcome: 'cantTell'
         },
         DL_NO_DT_DD: {
-          outcome: 'fail'
+          outcome: 'cantTell'
         },
         DL_DT_DD_ORDER: {
-          outcome: 'fail'
+          outcome: 'cantTell'
         }
       }
     },
@@ -442,7 +445,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-doctype-valid': {
       tests: ['8.1.2'],
-      note: 'Fails a declared doctype that is neither the HTML5 doctype nor one the W3C recommends (HTML 2.0 to 4.01, XHTML 1.0 and 1.1, XHTML Basic, XHTML plus MathML/SVG, the RDFa doctypes), which is 8.1.2. A page with no doctype is not applicable here; rgaa-doctype-present fails it under 8.1.1.'
+      note: "Passes the HTML5 doctype and the published HTML and XHTML doctypes it knows (HTML 2.0 to 4.01, ISO/IEC 15445 HTML, XHTML 1.0 and 1.1, XHTML Basic, XHTML Mobile Profile, XHTML plus MathML/SVG, the RDFa doctypes). RGAA 8.1.2 asks that the doctype be « valide » and names no list; the glossary « Type de document » is the reference data that tells user agents the page's languages. So it fails with certainty only a doctype that cannot be valid: a name other than html, which does not describe an HTML page, or the HTML5 form with a system identifier other than about:legacy-compat; and it asks (unknownPublicId) about any other public identifier, for a person to look up. A page with no doctype is not applicable here; rgaa-doctype-present fails it under 8.1.1."
     },
     'duplicate-id': {
       tests: ['8.2.1'],
@@ -451,7 +454,7 @@ const RGAA_RULE_TESTS = {
           outcome: 'cantTell'
         }
       },
-      note: 'Fails on non-empty id values that are not unique in their document or shadow tree, compared as written (id="a " and id="a" differ). That is the 8.2.1 condition \'Les valeurs d\'attribut id sont uniques dans la page\'. Core asks rather than fails under WCAG 2.1, whose 2023 errata count 4.1.1 as satisfied; the rgaa-4.1.2 profile keeps 4.1.1 (keepsParsing), as RGAA 8.2 still requires valid code, so it fails there. A duplicate inside one shadow tree is asked about under 8.2.1: the source the W3C validator checks does not hold an open shadow root, so whether the audit counts it is the auditor\'s call.'
+      note: 'Fails on non-empty id values that are not unique in their document or shadow tree, compared as written (id="a " and id="a" differ). That is the 8.2.1 condition \'Les valeurs d\'attribut id sont uniques dans la page\'. Core asks rather than fails under WCAG 2.1, whose 2023 errata count 4.1.1 as satisfied; the rgaa-4.1.2 profile keeps 4.1.1 (keepsParsing), as RGAA 8.2 still requires valid code, so it fails there. A duplicate inside one shadow tree is asked about under 8.2.1: a shadow root is part of the page\'s generated source, so the duplicate fails when a person confirms it in the inspector, since the source the W3C validator checks does not hold an open shadow root.'
     },
     'duplicate-id-aria': {
       tests: [],
@@ -459,7 +462,12 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-embed-image-role-img': {
       tests: ['1.1.7'],
-      note: 'Checks each <embed type="image/..."> not marked decorative. Passes role="img" with aria-labelledby, aria-label or title. Fails an embed with no text alternative and no link or button right after it, which meets none of the conditions of 1.1.7 short of a replacement mechanism the page would have to offer, when it has role="img" or certainly carries information (captioned, or focusable); asks about any other, which may be decorative and then fails 1.2.6 instead. Asks when there is a text alternative without role="img" (the test wording requires both, the methodology validates on the alternative alone) and when a link or button follows (does it lead to an alternative content?). One that is the only content of a link or a button is left out: the glossary « Image porteuse d\'information » (notes 1 and 2) judges its alternative as the control\'s label, under 6.1, 11.9 or 7.1.'
+      reasonCodes: {
+        alternativeWithoutRoleImg: { tests: ['1.1.7', '1.2.6'] },
+        adjacentLinkOrButton: { tests: ['1.1.7', '1.2.6'] },
+        noAlternativeMayBeDecorative: { tests: ['1.1.7', '1.2.6'], outcome: 'cantTell' }
+      },
+      note: 'Checks each <embed type="image/..."> not marked decorative. Passes role="img" with aria-labelledby, aria-label or title. Fails an embed with no text alternative and no link or button right after it, which meets none of the conditions of 1.1.7 short of a replacement mechanism the page would have to offer, when it has role="img" or certainly carries information (captioned, or focusable); asks about any other, which may be decorative and then fails 1.2.6 instead. Asks when there is a text alternative without role="img" (the first condition and step 2 of the methodology ask for both, so only a link or button after it or a replacement mechanism lets an informative one pass) and when a link or button follows (does it lead to an alternative content?). One that is the only content of a link or a button is left out: the glossary « Image porteuse d\'information » (notes 1 and 2) judges its alternative as the control\'s label, under 6.1, 11.9 or 7.1. Each question also covers 1.2.6, which a decorative embed without aria-hidden="true" fails.'
     },
     'embed-text-alternative-present': {
       tests: [],
@@ -467,7 +475,7 @@ const RGAA_RULE_TESTS = {
     },
     'embed-text-alternative-quality': {
       tests: ['1.3.5'],
-      note: 'Asks a human to judge the relevance of an <embed>\'s existing name, which is 1.3.5 step 2. Scope mismatch: 1.3.5 only covers image embeds (type="image/..."), and the rule reviews all embeds.'
+      note: 'Asks a human to judge the relevance of an <embed>\'s existing name, which is 1.3.5 step 2. Scope mismatch: 1.3.5 only covers image embeds (type="image/..."), and the rule reviews all embeds, so the steps first ask whether the embed shows an image.'
     },
     'rgaa-embedded-player-review': {
       tests: [
@@ -541,7 +549,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-field-label-in-name-sources': {
       tests: ['11.2.5'],
-      note: 'Fails a form field (glossary "Champ de saisie de formulaire", native and ARIA) with a visible label when the source that gives its accessible name (aria-labelledby, aria-label, <label> or title, in the glossary\'s order) does not contain that label. Asks when another source present does not: 11.2.5\'s conditions name each source, but its methodology and the glossary « Étiquette de champ de formulaire » judge the étiquette alone, the conflict 11.9.2 is asked about for buttons. Punctuation and capital letters are ignored (particular cases of 11.2). Asks when the visible label may be a symbol, or when a source differs only by an abbreviation, by text in parentheses, or by the ending of a word of 4 letters or more ("Recherche" for "Rechercher"), since « contient » may be read as a string or as words. The visible label is read from the <label>, else from aria-labelledby, else from the field\'s own text for the checkbox, radio and switch roles.'
+      note: 'Fails a form field (glossary "Champ de saisie de formulaire", native and ARIA) with a visible label when the source that gives its accessible name (aria-labelledby, aria-label, <label> or title, in the glossary\'s order) does not contain that label. Asks when another source present does not: 11.2.5\'s conditions name each source, but the glossary « Étiquette de champ de formulaire » has the étiquette, the source that gives the name, judged under 11.2, and the pack reads the test so: such a finding passes once a person confirms the name source contains the label. Punctuation and capital letters are ignored (particular cases of 11.2). Asks when the visible label may be a symbol, or when a source differs only by an abbreviation, by text in parentheses, or by the ending of a word of 4 letters or more ("Recherche" for "Rechercher"), which a person compares: the pack reads « contient » as the text shown, punctuation and capital letters aside, so another form of a word fails. The visible label is read from the <label>, else from aria-labelledby, else from the field\'s own text for the checkbox, radio and switch roles.'
     },
     'rgaa-field-label-listed-source': {
       tests: ['11.1.1'],
@@ -597,7 +605,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-form-button-label-in-name-sources': {
       tests: ['11.9.2'],
-      note: 'Fails a button inside a <form> or role="form" whose accessible name does not contain its visible label (its text, or the value of an <input> button), which is 11.9.2 methodology step 2. Asks when a title, or an aria-label that loses to aria-labelledby, does not contain it: the test\'s conditions check every source, but its methodology checks only the accessible name. Buttons outside a form are out of scope (step 1 covers « les boutons présents au sein d\'un formulaire »), and an image button shows its label inside the image. Punctuation and capital letters are ignored (particular cases of 11.2).'
+      note: 'Fails a button inside a <form> or role="form" whose accessible name does not contain its visible label (its text, or the value of an <input> button), which is 11.9.2 methodology step 2. Asks when a title, or an aria-label that loses to aria-labelledby, does not contain it: the test\'s conditions check every source, but its methodology and the glossary « Bouton (formulaire) » judge the accessible name alone, which the pack follows: such a finding passes once a person confirms the accessible name contains the label. Buttons outside a form are out of scope (step 1 covers « les boutons présents au sein d\'un formulaire »), and an image button shows its label inside the image. Punctuation and capital letters are ignored (particular cases of 11.2).'
     },
     'rgaa-form-button-name-present': {
       tests: ['11.9.1'],
@@ -605,7 +613,12 @@ const RGAA_RULE_TESTS = {
     },
     'form-control-label-quality': {
       tests: ['11.2.1', '11.2.4'],
-      note: 'Takes the visible label text of a field, from a native <label> or from aria-labelledby references, and flags placeholder labels or duplicate labels with no visible context telling the fields apart. That covers 11.2.1 (the <label> content is relevant) and 11.2.4 (aria-labelledby text is relevant). aria-label and title are not used, so 11.2.2 and 11.2.3 are not covered.'
+      note: 'Takes the visible label text of a field, from a native <label> or from aria-labelledby references, and flags placeholder labels or duplicate labels with no visible context telling the fields apart. That covers 11.2.1 (the <label> content is relevant) and 11.2.4 (aria-labelledby text is relevant). aria-label and title are not used, so 11.2.2 and 11.2.3 are not covered. A label partly hidden (PARTIALLY_HIDDEN_LABEL) is asked about under 11.1.3, which covers a label whose content is not visible: whether its visible part, a title or a visible text next to the field makes the expected input understandable. Its whole content, hidden part included, is what 11.2.1 and 11.2.4 judge.',
+      reasonCodes: {
+        PARTIALLY_HIDDEN_LABEL: {
+          tests: ['11.1.3']
+        }
+      }
     },
     'form-control-programmatic-label-present': {
       tests: [],
@@ -613,7 +626,7 @@ const RGAA_RULE_TESTS = {
     },
     'form-control-programmatic-label-quality': {
       tests: ['11.1.3', '11.2.2', '11.2.3', '11.2.4'],
-      note: "Asks about native input/select/textarea controls whose only name is a placeholder, a title, an aria-label, or aria-labelledby pointing only at hidden text; a control not drawn on screen (transparent or clipped away) is left out. Those are the labels 11.1.3 covers, a label that is not visible (masqué, aria-label): its step asks whether a title, or text next to the field, makes the expected input understandable, which only a person can tell. 11.2.2 asks whether a title is relevant. Not mapped to 11.1.1: a placeholder-only field meets none of the 11.1.1 conditions, and rgaa-field-label-listed-source fails it there. The rule is filed under WCAG 3.3.2, which RGAA relates to 11.2. Also linked to 11.2.3 and 11.2.4, which ask whether a label given by aria-label, or by a passage linked with aria-labelledby, tells the field's exact function: the rule asks that about fields named only by aria-label or by aria-labelledby, and a question is never a false failure.",
+      note: "Asks about native input/select/textarea controls whose only name is a placeholder, a title, an aria-label, or aria-labelledby pointing only at hidden text; a control not drawn on screen (transparent or clipped away) is left out. Those are the labels 11.1.3 covers, a label that is not visible (masqué, aria-label): its step asks whether a title, or text next to the field, makes the expected input understandable, which only a person can tell. 11.2.2 asks whether a title is relevant. A field named only by its placeholder counts toward no test: a placeholder is no étiquette (glossary « Étiquette de champ de formulaire »), so the field has none and 11.1.3, which judges a label that is there, does not apply; it meets none of the 11.1.1 conditions, and rgaa-field-label-listed-source fails it there. The rule is filed under WCAG 3.3.2, which RGAA relates to 11.2. Also linked to 11.2.3 and 11.2.4, which ask whether a label given by aria-label, or by a passage linked with aria-labelledby, tells the field's exact function: the rule asks that about fields named only by aria-label or by aria-labelledby, and a question is never a false failure.",
       reasonCodes: {
         label_from_title_primary: {
           tests: ['11.2.2']
@@ -625,7 +638,7 @@ const RGAA_RULE_TESTS = {
           tests: ['11.1.3', '11.2.4']
         },
         label_from_placeholder_primary: {
-          tests: ['11.1.3']
+          tests: []
         }
       }
     },
@@ -726,8 +739,8 @@ const RGAA_RULE_TESTS = {
       note: 'Asks whether an image button (<input type="image">) draws text that could be real text, the question of 1.8.2, and whether an <img> showing an SVG data URL whose markup holds <text> does, the question of 1.8.1 (an <img> image texte). A question, as in core: whether an image holds text, and whether it falls under the logo or essential-presentation particular cases, is for a person. An inline <svg> with <text> is real text, which the 1.8 technical note leaves out, and so does the rule.'
     },
     'image-redundant-alt': {
-      tests: ['1.3.1'],
-      note: 'Flags <img> whose non-empty alt equals the visible text in its parent. The question is either whether the alternative is relevant (1.3.1 step 2) or whether the image is really decorative and should have alt="" (1.2.1). Both tests cover the same <img> element. Not mapped to 1.2.1: a redundant alt is not evidence that a decorative image is wrongly exposed.'
+      tests: ['1.3.1', '1.2.1'],
+      note: 'Asks about an <img> whose non-empty alt equals the visible text in its parent. RGAA does not fail an alternative for repeating text: the question is whether the image brings information of its own, and then whether its alternative is relevant (1.3.1 step 2), or whether it brings nothing beyond that text, which makes it an image de décoration (glossary: « ne véhiculant aucune information particulière par rapport au contenu auquel elle est associée ») that 1.2.1 asks to have alt="". Both tests cover the same <img> element, and the rule only asks.'
     },
     'img-alt-decorative': {
       tests: ['1.1.1', '1.1.5', '1.1.8'],
@@ -757,7 +770,10 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-img-decorative-no-alternative': {
       tests: ['1.2.1'],
-      note: 'Checks each <img> marked decorative (alt="", aria-hidden="true" or role none/presentation), without a caption, for aria-labelledby, aria-label or title, which 1.2.1 step 2 forbids. Fails when the image also has aria-hidden="true": it is decorative for assistive technologies, and if it carries information, hiding it fails 1.1.1 instead. Asks otherwise, since an image with alt="" and a title may be informative, and then 1.1.1 accepts the title as its alternative.'
+      reasonCodes: {
+        decorativeImgHasAlternative: { tests: ['1.2.1', '1.1.1', '1.3.1'] }
+      },
+      note: 'Checks each <img> marked decorative (alt="", aria-hidden="true" or role none/presentation), without a caption, for aria-labelledby, aria-label or title, which 1.2.1 step 2 forbids. Fails when the image also has aria-hidden="true": it is decorative for assistive technologies, and if it carries information, hiding it fails 1.1.1 instead. Asks otherwise, since an image with alt="" and a title may be informative: then 1.2.1 does not apply, and the alternative assistive technologies read must be there (1.1.1) and relevant (1.3.1), so the question covers those tests too.'
     },
     'rgaa-img-describedby-target': {
       tests: ['1.6.9'],
@@ -873,7 +889,10 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-layout-table-no-data-markup': {
       tests: ['5.8.1'],
-      note: 'Fails a table with role="presentation" or role="none" that has a non-empty summary, a <caption>, <th>, <thead>, <tfoot>, a rowheader or columnheader role, or cells with scope, headers or axis. Those are the two conditions of 5.8.1, applied to tables marked as layout. A <colgroup> passes: the RGAA 4.1.2 revision notes took it out of the list of 5.8.1. Such a table that looks like a data table (a full header row or column over data) is asked about instead, since role="presentation" on a data table is not a 5.8.1 matter. A layout table with no role is not found; deciding which tables are layout tables is 5.3.'
+      reasonCodes: {
+        dataLikeTableMarkedLayout: { tests: ['5.8.1', '5.6.1', '5.6.2'] }
+      },
+      note: 'Fails a table with role="presentation" or role="none" that has a non-empty summary, a <caption>, <th>, <thead>, <tfoot>, a rowheader or columnheader role, or cells with scope, headers or axis. Those are the two conditions of 5.8.1, applied to tables marked as layout. A <colgroup> passes: the RGAA 4.1.2 revision notes took it out of the list of 5.8.1. Such a table that looks like a data table (a full header row or column over data) is asked about instead, since role="presentation" on a data table is not a 5.8.1 matter: it takes its headers away from assistive technologies, which the pack reads as headers not declared as such, under 5.6.1 or 5.6.2, so the question covers those tests too. A layout table with no role is not found; deciding which tables are layout tables is 5.3.'
     },
     'rgaa-legend-relevance-review': {
       tests: ['11.7.1'],
@@ -951,21 +970,21 @@ const RGAA_RULE_TESTS = {
             element: 'ul'
           },
           tests: ['9.3.1'],
-          outcome: 'fail'
+          outcome: 'cantTell'
         },
         {
           when: {
             element: 'menu'
           },
           tests: ['9.3.1'],
-          outcome: 'fail'
+          outcome: 'cantTell'
         },
         {
           when: {
             element: 'ol'
           },
           tests: ['9.3.2'],
-          outcome: 'fail'
+          outcome: 'cantTell'
         }
       ],
       note: 'Fails a <ul>/<ol> (with no role other than list) with a direct child that is not an <li>/role=listitem (or script/template), so the list is not structured with ul/li (9.3.1) or ol/li (9.3.2), step 2. A finding counts toward the test of its list, by the element it names: <ul> and <menu> 9.3.1, <ol> 9.3.2. Not linked to 8.2.1: the rule accepts a child with role=listitem and skips hidden lists, while HTML accepts only li; rgaa-html-nesting-valid reports list nesting under 8.2.1. A list whose only stray children are <li> elements given another role (LIST_ITEM_ROLE_OVERRIDDEN: role="presentation" in pagers, role="group" in carousels) is asked about instead, under the test of its list: the items are written as a list, and whether the role makes them something else is for a person. Core asks about the rest, as only HTML breaks and WCAG may hold; RGAA 9.3.1 and 9.3.2 name the elements a list is structured with, so they fail here.'
@@ -1122,11 +1141,20 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-object-embed-decorative-aria-hidden': {
       tests: ['1.2.3', '1.2.6'],
-      note: 'Checks each <object> or <embed> of an image type marked decorative, without a caption. Fails aria-hidden="true" with aria-labelledby, aria-label, title, a child alternative or text inside an <object> (1.2.3 and 1.2.6 condition 2 and, for <object>, 3; if the image carries information, hiding it fails 1.1.6 or 1.1.7 instead), and role="none"/"presentation" without aria-hidden="true" and with no content (condition 1). Asks when such an <object> has content, which may be its alternative. The same checks as rgaa-canvas-decorative-aria-hidden for <canvas> (1.2.5).'
+      reasonCodes: {
+        presentationWithContent: { tests: ['1.2.3', '1.1.6'] }
+      },
+      note: 'Checks each <object> or <embed> of an image type marked decorative, without a caption. Fails aria-hidden="true" with aria-labelledby, aria-label, title, a child alternative or text inside an <object> (1.2.3 and 1.2.6 condition 2 and, for <object>, 3; if the image carries information, hiding it fails 1.1.6 or 1.1.7 instead), and role="none"/"presentation" without aria-hidden="true" and with no content (condition 1). Asks when such an <object> has content: if it is decorative it fails 1.2.3, and if it carries information that content is no alternative 1.1.6 accepts, so the question also covers 1.1.6. The same checks as rgaa-canvas-decorative-aria-hidden for <canvas> (1.2.5).'
     },
     'rgaa-object-image-role-img': {
       tests: ['1.1.6'],
-      note: 'Checks each <object type="image/..."> not marked decorative. Passes role="img" with aria-labelledby, aria-label or title. Fails an object with no text alternative, no fallback content and no link or button right after it, which meets none of the conditions of 1.1.6 short of a replacement mechanism the page would have to offer, when it has role="img" or certainly carries information (captioned, or focusable); asks about any other, which may be decorative and then fails 1.2.3 instead. Asks when there is a text alternative without role="img" (the test wording requires both, the methodology validates on the alternative alone), when a link or button follows (does it lead to an alternative content?), and when there is only fallback content. One that is the only content of a link or a button is left out: the glossary « Image porteuse d\'information » (notes 1 and 2) judges its alternative as the control\'s label, under 6.1, 11.9 or 7.1.'
+      reasonCodes: {
+        alternativeWithoutRoleImg: { tests: ['1.1.6', '1.2.3'] },
+        adjacentLinkOrButton: { tests: ['1.1.6', '1.2.3'] },
+        fallbackOnly: { tests: ['1.1.6', '1.2.3'] },
+        noAlternativeMayBeDecorative: { tests: ['1.1.6', '1.2.3'], outcome: 'cantTell' }
+      },
+      note: 'Checks each <object type="image/..."> not marked decorative. Passes role="img" with aria-labelledby, aria-label or title. Fails an object with no text alternative, no fallback content and no link or button right after it, which meets none of the conditions of 1.1.6 short of a replacement mechanism the page would have to offer, when it has role="img" or certainly carries information (captioned, or focusable); asks about any other, which may be decorative and then fails 1.2.3 instead. Asks when there is a text alternative without role="img" (the first condition and step 3 of the methodology ask for both, so only a link or button after it or a replacement mechanism lets an informative one pass), when a link or button follows (does it lead to an alternative content?), and when there is only content between <object> and </object>, which 1.1.6 does not list among its conditions. One that is the only content of a link or a button is left out: the glossary « Image porteuse d\'information » (notes 1 and 2) judges its alternative as the control\'s label, under 6.1, 11.9 or 7.1. Each question also covers 1.2.3, which a decorative object without aria-hidden="true" fails.'
     },
     'object-text-alternative-present': {
       tests: [],
@@ -1134,7 +1162,7 @@ const RGAA_RULE_TESTS = {
     },
     'object-text-alternative-quality': {
       tests: ['1.3.4'],
-      note: "Asks a human to judge the relevance of an <object>'s title, ARIA name or fallback content, which is 1.3.4 step 2; fallback content is one of the conditions of the test (« S’il est présent le contenu alternatif est pertinent »). Scope mismatch: 1.3.4 only covers image objects."
+      note: "Asks a human to judge the relevance of an <object>'s title, ARIA name or fallback content, which is 1.3.4 step 2; fallback content is one of the conditions of the test (« S’il est présent le contenu alternatif est pertinent »). Scope mismatch: 1.3.4 only covers image objects, so the steps first ask whether the object shows an image."
     },
     'rgaa-office-document-link': {
       tests: ['13.3.1'],
@@ -1199,7 +1227,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-presentational-attributes-absent': {
       tests: ['10.1.2'],
-      note: "Fails on each HTML element carrying an attribute 10.1.2 step 1 lists, with its exceptions: size allowed on <select>, width and height on <img>, <object>, <embed>, <canvas> and <svg>. SVG and MathML content is not checked, where those attributes are geometry rather than presentation, and neither are custom elements, whose attributes are the component's own, nor color on <link rel=\"mask-icon\">, the colour of the site's pinned-tab icon. Width and height on a <source> in a <picture> are asked about: they are outside the list's closed exceptions, but are the image's dimensions, as on its <img>, added to HTML after the list was written. Hidden content is checked too, since 10.1.2 judges the generated source. Metadata and script elements (<link>, <meta>, <script>…) are not checked either."
+      note: 'Fails on each HTML element carrying an attribute 10.1.2 step 1 lists, with its exceptions: size allowed on <select>, width and height on <img>, <object>, <embed>, <canvas> and <svg>. SVG and MathML content is not checked, where those attributes are geometry rather than presentation, and neither are custom elements, whose attributes are the component\'s own, nor color on <link rel="mask-icon">, the colour of the site\'s pinned-tab icon. Width and height on a <source> in a <picture> fail too: HTML added them after the list was written, but its exceptions are closed. Hidden content is checked too, since 10.1.2 judges the generated source. Metadata and script elements (<link>, <meta>, <script>…) are not checked either.'
     },
     'presentational-children-focusable-absent': {
       tests: [],
@@ -1373,10 +1401,13 @@ const RGAA_RULE_TESTS = {
     },
     'svg-text-alternative-quality': {
       tests: ['1.3.6'],
-      note: "Asks a human to judge the relevance of an <svg>'s existing title/ARIA name, which is 1.3.6 step 2. It also includes desc-only cases. An image that is a link's or button's only content (IMAGE_ONLY_CONTROL_CONTENT) counts toward no test: the glossary « Image porteuse d'information », notes 1 and 2, judges its alternative as the control's label, which the link and button rules check under 6.1, 6.2, 11.9 and 7.1.",
+      note: "Asks a human to judge the relevance of an <svg>'s existing title/ARIA name, which is 1.3.6 step 2. It also includes desc-only cases, though 1.3.6 does not list desc. The question also covers 1.2.4: an <svg> that turns out to be decorative and keeps its alternative fails it. An image that is a link's or button's only content (IMAGE_ONLY_CONTROL_CONTENT) counts toward no test: the glossary « Image porteuse d'information », notes 1 and 2, judges its alternative as the control's label, which the link and button rules check under 6.1, 6.2, 11.9 and 7.1.",
       reasonCodes: {
         IMAGE_ONLY_CONTROL_CONTENT: {
           tests: []
+        },
+        TEXT_ALTERNATIVE_REVIEW: {
+          tests: ['1.3.6', '1.2.4']
         }
       }
     },
@@ -1418,7 +1449,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-text-direction-marked': {
       tests: ['8.10.1'],
-      note: 'Fails text whose letters read in the direction opposite to its context (the nearest dir="ltr" or dir="rtl", or left to right with none, as the glossary « Sens de lecture » says) with no dir between them: three words or more, as a whole element or a run inside other text. 8.10.1: « chaque texte dont le sens de lecture est différent du sens de lecture par défaut est contenu dans une balise possédant un attribut dir ». Asks about a text of one or two words, a whole element (« العربية » in a language menu) or a run inside other text: the letter of the test covers it, but a browser shows one or two words the same with or without dir. Asks about text in a <bdi> with no dir too. Text under dir="auto" is left to rgaa-dir-attribute-valid; code is left out.'
+      note: 'Fails text whose letters read in the direction opposite to its context (the nearest dir="ltr" or dir="rtl", or left to right with none, as the glossary « Sens de lecture » says) with no dir between them: three words or more, as a whole element or a run inside other text. 8.10.1: « chaque texte dont le sens de lecture est différent du sens de lecture par défaut est contenu dans une balise possédant un attribut dir ». Asks about a text of one or two words, a whole element (« العربية » in a language menu) or a run inside other text: a person confirms they are words of a language read in the other direction, which then fail 8.10.1 without dir whatever their length. Asks about text in a <bdi> with no dir too, which fails 8.10.1: a <bdi> does not replace the dir attribute the test asks for. Text under dir="auto" is left to rgaa-dir-attribute-valid; code is left out.'
     },
     'rgaa-text-image-review': {
       tests: ['1.8.1', '1.8.2'],
@@ -1445,7 +1476,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-th-association-present': {
       tests: ['5.7.1'],
-      note: 'Fails a <th> with text and no unique id, scope or role="rowheader"/"columnheader" in a table with headers on both axes (a first row of <th>, and rows starting with a <th> followed by <td>) and no rowspan or colspan: 5.7.1 asks one of the three of each <th> « s\'appliquant à la totalité de la ligne ou de la colonne », and that shape leaves no doubt the header covers a whole row or column. Asks once about any other table whose headers lack all three: with headers on one axis browsers tie them to their cells and an auditor may accept it, and with spans a header may cover part of a row (5.7.3).'
+      note: 'Fails a <th> with text and no unique id, scope or role="rowheader"/"columnheader" in a table with headers on both axes (a first row of <th>, and rows starting with a <th> followed by <td>) and no rowspan or colspan: 5.7.1 asks one of the three of each <th> « s\'appliquant à la totalité de la ligne ou de la colonne », and that shape leaves no doubt the header covers a whole row or column. Passes a table whose headers all sit in a single row or a single column, which the particular case of 5.7 lets be <th> without scope. Asks once about any other table whose headers lack all three: with spans, or headers off the first row and column, a header may cover only part of a row or column, which 5.7.1 leaves to 5.7.3.'
     },
     'rgaa-th-scope-row-col': {
       tests: ['5.7.2', '5.7.3'],
@@ -1461,7 +1492,15 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-tooltip-review': {
       tests: ['10.13.1', '10.13.2', '10.13.3'],
-      note: 'Asks about author tooltips and popovers: an element with role="tooltip" (on the element that references it by aria-describedby or aria-labelledby, if any), and a visible element with a tooltip library attribute (data-tooltip, data-tippy-content, data-balloon, data-toggle or data-bs-toggle set to tooltip, or to popover with a hover or focus trigger). 10.13.1 to 10.13.3 ask that such content can be hidden without moving the pointer or focus, can be hovered, and stays visible; that is behaviour a script decides, for a person to test. The title attribute is left out: 10.13\'s particular case makes content « contrôlé par l’agent utilisateur (par exemple, attribut title) » not applicable.'
+      reasonCodes: {
+        tooltipRoleDismiss: { tests: ['10.13.1'] },
+        tooltipRoleHover: { tests: ['10.13.2'] },
+        tooltipRolePersist: { tests: ['10.13.3'] },
+        tooltipAttributeDismiss: { tests: ['10.13.1'] },
+        tooltipAttributeHover: { tests: ['10.13.2'] },
+        tooltipAttributePersist: { tests: ['10.13.3'] }
+      },
+      note: 'Asks about author tooltips and popovers: an element with role="tooltip" (on the element that references it by aria-describedby or aria-labelledby, if any), and a visible element with a tooltip library attribute (data-tooltip, data-tippy-content, data-balloon, data-toggle or data-bs-toggle set to tooltip, or to popover with a hover or focus trigger). 10.13.1 to 10.13.3 ask that such content can be hidden without moving the pointer or focus, can be hovered, and stays visible; that is behaviour a script decides, for a person to test. Each tooltip is asked about once per test, by a reason code routed to that test, so each answer counts toward its own test. The title attribute is left out: 10.13\'s particular case makes content « contrôlé par l’agent utilisateur (par exemple, attribut title) » not applicable.'
     },
     'treeitem-name-present': {
       tests: ['7.1.1'],

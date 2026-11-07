@@ -78,7 +78,7 @@ const meta = {
       steps: [
         'Find the video the report names: it plays by itself and has no browser controls.',
         'Decide whether it carries information: then it is a temporal medium, which the multimedia theme judges. A video that only decorates is judged as moving content.',
-        'If it carries information, check that its reading can be controlled, at least with the keyboard: play, pause, and the sound if it has any.',
+        'If it carries information, check that it offers play and pause (or stop), and also sound on/off if it has sound, show/hide captions if it has captions, and audio description on/off if it has one.',
         'If it only decorates, time the movement and look for a control that stops it, hides it or shows the content without it, which works with the keyboard and the mouse at least.'
       ],
       passWhen:
@@ -106,7 +106,7 @@ const meta = {
         'Check that the control stops and restarts the movement, hides and shows the content again, or shows all of its content without the movement. It must work with the keyboard and the mouse at least; pausing only while the pointer or the focus is on the content does not count.'
       ],
       passWhen:
-        'The movement lasts 5 seconds or less, or a control stops and restarts it, hides the content, or shows it all without the movement.',
+        'The movement lasts 5 seconds or less, or a control stops and restarts it, hides the content, or shows it all without the movement; or the movement is part of what the element does, such as a progress bar, which RGAA makes not applicable.',
       failWhen:
         'The movement lasts more than 5 seconds and no control does any of these, which fails RGAA 13.8.1.'
     },

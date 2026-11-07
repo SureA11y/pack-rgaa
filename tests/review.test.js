@@ -140,10 +140,26 @@ test("core's steps in RGAA's terms are as generated, and name no WCAG", async ()
     'run npm run review'
   );
   assert.doesNotMatch(JSON.stringify(REVIEW), /WCAG|\bAAA?\b|bonnes? pratiques?|18[.,]66|7:1/);
+  // Nor WCAG's techniques, which RGAA does not have.
+  assert.doesNotMatch(JSON.stringify(REVIEW), /\((?:ARIA|SCR|F|G|H|C)\d+[,)]/);
   // A failure names what it fails, whatever core's words were.
   for (const [ruleId, codes] of Object.entries(REVIEW['4.1.2'])) {
     for (const [code, entry] of Object.entries(codes)) {
       assert.match(entry.failWhen, /RGAA/, `${ruleId} ${code}`);
+    }
+  }
+});
+
+// Each of core's codes is filed under the test its findings go to, as a pack
+// rule's is (index.js), and its failure names that test.
+test("core's steps in RGAA's terms are each filed under a test their failure names", () => {
+  const { REVIEW } = require('../review');
+  const facet = (test) => `test-${test.replace(/\./g, '-')}`;
+  for (const [ruleId, codes] of Object.entries(REVIEW['4.1.2'])) {
+    for (const [code, entry] of Object.entries(codes)) {
+      const at = `${ruleId} ${code}`;
+      const named = (entry.failWhen.match(/\d+\.\d+\.\d+/g) || []).map(facet);
+      assert.ok(named.includes(entry.facet), `${at} is under ${entry.facet}, and fails ${named}`);
     }
   }
 });
@@ -157,6 +173,19 @@ test("the generator refuses a code left in WCAG's terms", () => {
   };
   const table = { 'page-title-present': { tests: ['8.5.1'] } };
   assert.throws(() => buildReview(dictionary, table, {}), /still in WCAG's terms/);
+});
+
+test("the generator drops WCAG's technique ids, alone or listed", () => {
+  const { buildReview } = require('../scripts/generate-review');
+  const dictionary = {
+    pageTitlePresent_review_X_step1: 'Regardez.',
+    pageTitlePresent_review_X_pass: 'Cela va (G88).',
+    pageTitlePresent_review_X_fail: 'Rien, ce qui ne respecte pas WCAG 2.4.2 (F54, F42, ARIA22).'
+  };
+  const table = { 'page-title-present': { tests: ['8.5.1'] } };
+  const entry = buildReview(dictionary, table, {})['page-title-present'].X;
+  assert.equal(entry.passWhen, 'Cela va.');
+  assert.equal(entry.failWhen, 'Rien, ce qui ne respecte pas le test 8.5.1 du RGAA.');
 });
 
 test("the variants' steps use RGAA's thresholds, in every language", () => {

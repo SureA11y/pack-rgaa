@@ -17,12 +17,10 @@
  *   vlink or vspace; size is allowed only on <select>, and width and height
  *   only on <img>, <object>, <embed>, <canvas> and <svg>. That is RGAA
  *   10.1.2's list as written, so width and height on an <iframe> or a
- *   <video>, and size on an <input>, are reported too. One exception: a
- *   <source> in a <picture> gives the <img> its width and height for its
- *   art direction (HTML added them in 2021, after the list was written):
- *   they are outside the list's closed exceptions but are the image's
- *   dimensions, so they are asked about (cantTell) rather than failed. One occurrence per element, naming
- *   every such attribute it carries.
+ *   <video>, and size on an <input>, are reported too, as are width and
+ *   height on a <source> in a <picture>, which HTML added after the list
+ *   was written: the list of exceptions is closed. One occurrence per
+ *   element, naming every such attribute it carries.
  * @implementation-notes
  * - Metadata and script elements (<head>, <title>, <base>, <link>, <meta>,
  *   <style>, <script>) are left out: they present no information, so a
@@ -66,20 +64,7 @@ const meta = {
   coverage: {},
   // The reason codes the rule gives, so definePack can check that `review`
   // names only these.
-  reasonCodes: ['presentationalAttribute', 'pictureSourceDimensions'],
-  review: {
-    pictureSourceDimensions: {
-      steps: [
-        'Find the <source> the report names, inside a <picture>: it carries width or height.',
-        'Check that these are the dimensions of the image, as on its <img>, and not a way of laying out the page.',
-        'Check whether the audit accepts them: HTML added them to <source> after RGAA wrote its closed list of exceptions.'
-      ],
-      passWhen:
-        'The audit accepts them as the dimensions of the image; setting the size in CSS settles it.',
-      failWhen:
-        'The audit holds to the closed list of RGAA 10.1.2, which leaves out <source>, so the attributes fail RGAA 10.1.2.'
-    }
-  }
+  reasonCodes: ['presentationalAttribute']
 };
 
 function runInPage(ctx) {
@@ -125,7 +110,6 @@ function runInPage(ctx) {
     : helpers.queryAll(selector);
 
   const occurrences = [];
-  const questions = [];
   for (const el of nodes) {
     if (!el || !dom.get(el, 'getAttribute') || !dom.tagName(el)) continue;
     if (dom.namespaceURI(el) && dom.namespaceURI(el) !== HTML_NS) continue;
@@ -134,43 +118,9 @@ function runInPage(ctx) {
     if (NOT_PRESENTED.includes(element) || element.includes('-')) continue;
     const found = ALWAYS.filter((a) => dom.hasAttribute(el, a));
     if (dom.hasAttribute(el, 'size') && !SIZE_ALLOWED_ON.includes(element)) found.push('size');
-    const parent = dom.parentElement(el);
-    const pictureSource =
-      element === 'source' &&
-      !!parent &&
-      String(dom.tagName(parent) || '').toLowerCase() === 'picture';
-    if (!DIMENSIONS_ALLOWED_ON.includes(element) && !pictureSource) {
+    if (!DIMENSIONS_ALLOWED_ON.includes(element)) {
       if (dom.hasAttribute(el, 'width')) found.push('width');
       if (dom.hasAttribute(el, 'height')) found.push('height');
-    }
-    // width and height on a <source> of a <picture> are outside 10.1.2's
-    // closed list of exceptions, but they are the image's dimensions, as on
-    // its <img>, which HTML allowed there after the list was written: asked.
-    const dimensions = pictureSource
-      ? ['width', 'height'].filter((a) => dom.hasAttribute(el, a))
-      : [];
-    if (dimensions.length) {
-      const attributes = dimensions.join(', ');
-      questions.push(
-        helpers.reportOccurrence(el, {
-          summary: `This <source> of a <picture> carries ${attributes}, which RGAA 10.1.2 allows only on <img>, <object>, <embed>, <canvas> and <svg>.`,
-          hint: "These are the image's dimensions, as on its <img>, which HTML added to <source> after RGAA 4.1 was written. Check whether the audit accepts them; setting the size in CSS settles both.",
-          i18n: {
-            summaryKey: 'presentationalAttributesAbsent_summary_cantTell_pictureSource',
-            hintKey: 'presentationalAttributesAbsent_hint_cantTell_pictureSource',
-            params: { attributes }
-          },
-          uncertainty: {
-            code: 'judgement-required',
-            needed:
-              'Whether width and height on a <source> of a <picture> are accepted under 10.1.2.'
-          },
-          data: {
-            details: { reasonCode: 'pictureSourceDimensions', attributes: dimensions },
-            visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
-          }
-        })
-      );
     }
     if (!found.length) continue;
 
@@ -192,12 +142,12 @@ function runInPage(ctx) {
     );
   }
 
-  if (!occurrences.length && !questions.length) {
+  if (!occurrences.length) {
     return { ruleId: rule.ruleId, outcome: 'pass', severity: 'minor', occurrences: [] };
   }
   return {
     ruleId: rule.ruleId,
-    ...helpers.resolveTieredOutcome(occurrences, questions, rule.defaultSeverity || 'minor')
+    ...helpers.resolveTieredOutcome(occurrences, [], rule.defaultSeverity || 'minor')
   };
 }
 

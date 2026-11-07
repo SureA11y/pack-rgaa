@@ -112,7 +112,7 @@ const meta = {
       steps: [
         'Find the element the report names, and move focus to it with the Tab key.',
         'Look at its focus indicator (the outline, border or shadow the report names) against the background behind the element and against the element itself.',
-        "Measure the indicator's color against the side the report gives below 3:1, with a color picker and a contrast checker."
+        "Measure the indicator's color against the side for which the report gives a ratio below 3:1, with a color picker and a contrast checker."
       ],
       passWhen:
         'The indicator stands out clearly where it is drawn, at 3:1 or more against the colors that frame it, or another change on focus shows the element.',

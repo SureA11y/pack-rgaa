@@ -98,11 +98,11 @@ const meta = {
     ZONE_SKIP_LINK: {
       steps: [
         'Find the area the report names and the same-page link just before it.',
-        'Tab to the link: check that it shows, at least on focus, and that activating it moves past the area.'
+        'Tab to the link (or reach it with a screen reader) and activate it: check that reading and keyboard focus move past the area.'
       ],
-      passWhen: 'The link is visible, at least on focus, and skips the area.',
+      passWhen: 'The link just before the area skips it.',
       failWhen:
-        'The link is never shown or does not skip the area, and the area has no landmark, relevant heading or other way past it, which fails RGAA 12.6.1.'
+        'The link does not skip the area, and the area has no landmark, relevant heading or other way past it, which fails RGAA 12.6.1.'
     },
     ZONE_TOGGLE: {
       steps: [
@@ -125,7 +125,7 @@ const meta = {
     ZONE_NO_MECHANISM: {
       steps: [
         'Find the block the report names and decide whether it is one of the page’s areas: header, main navigation, main content, footer or search.',
-        'If it is, check how a user reaches or skips it: a landmark matching its nature, a heading saying what it holds, a button just before it that hides it, a skip link just before it, or a visible quick-access link to it.'
+        'If it is, check how a user reaches or skips it: a landmark matching its nature, a heading saying what it holds, a button just before it that hides it, a skip link just before it, or a quick-access link to it that is visible, at least on focus.'
       ],
       passWhen: 'The block is not one of those areas, or one of those ways reaches or skips it.',
       failWhen:
@@ -134,18 +134,18 @@ const meta = {
     ZONE_UNIDENTIFIED: {
       steps: [
         'Find the block the report names; it holds links to other pages or places and sits outside every area found.',
-        'Decide whether it is a header, navigation or footer.',
-        'If it is, check whether a landmark matching its nature, a heading that says what it holds, a button before it that hides it, a skip link before it or a visible quick-access link lets a user reach or skip it.'
+        "Decide whether it is the page's header area, its main navigation or its footer area (a secondary menu or a block of related links is none of them).",
+        'If it is, check whether a landmark matching its nature, a heading that says what it holds, a button just before it that hides it, a skip link just before it or a quick-access link to it that is visible, at least on focus lets a user reach or skip it.'
       ],
       passWhen:
         'The block is not one of the areas RGAA 12.6.1 lists, or one of those ways reaches or skips it.',
       failWhen:
-        'The block is a header, navigation or footer that none of those ways reaches or skips, which fails RGAA 12.6.1.'
+        'The block is the header area, the main navigation or the footer area, and none of those ways reaches or skips it, which fails RGAA 12.6.1.'
     },
     MAIN_NOT_FOUND: {
       steps: [
         'Look at the page and find its main content.',
-        'Check how a user reaches it: a main landmark, a heading that says what it holds, a skip link just before it or a visible quick-access link to it.'
+        'Check how a user reaches it: a main landmark, a heading that says what it holds, a skip link just before it or a quick-access link to it that is visible, at least on focus.'
       ],
       passWhen: 'One of those ways reaches the main content.',
       failWhen: 'Nothing lets a user reach the main content directly, which fails RGAA 12.6.1.'

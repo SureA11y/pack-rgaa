@@ -54,9 +54,9 @@
  *     it (checkbox, radio, file, submit, image, reset, button).
  * @implementation-notes
  * - Markup inside a shadow root is asked about (cantTell) instead of failed:
- *   RGAA 8.2.1's methodology runs the W3C validator on the generated
- *   source, whose serialization holds no shadow root. Correcting the
- *   markup settles both readings.
+ *   it is part of the page's generated source, which 8.2.1 judges, but
+ *   the W3C validator its methodology runs does not see it in the
+ *   serialization, so a person confirms the markup in the inspector.
  * - The WCAG rules on these attributes (deprecated-elements-not-used,
  *   rgaa-dir-attribute-valid, scope-attr-valid, table-headers-attr-valid,
  *   html-xml-lang-mismatch, autocomplete-valid, rgaa-optgroup-label-present,
@@ -81,16 +81,17 @@
 const id = 'rgaa-html-elements-attributes-valid';
 
 // Markup in a shadow root is asked about instead of failed, whatever is wrong
-// with it, since the W3C validator does not see it: each code gets these steps.
+// with it, since the W3C validator does not see it: a person confirms it in the
+// inspector. Each code gets these steps.
 const SHADOW_REVIEW = {
   steps: [
-    'Find the element the report names: it sits inside a shadow root, which the browser inspector shows under its host element.',
-    'Read what the report says is wrong with its markup, and check it on the element.',
-    'Check whether the audit judges markup in shadow roots under RGAA 8.2.1: the W3C validator does not see it in the page’s generated source.'
+    'Find the element the report names: it sits inside a shadow root, which the browser inspector shows under its host element (#shadow-root).',
+    'Read what the report says is wrong with its markup, and check it on the element in the inspector. The W3C validator cannot do this, because a shadow root is not in the serialized source it reads.'
   ],
-  passWhen: 'The audit leaves shadow roots out of 8.2.1; correcting the markup settles both.',
+  passWhen:
+    'The markup is not as the report says: the element, attribute, value or nesting is allowed by the HTML specification.',
   failWhen:
-    'The audit judges markup in shadow roots, and this markup is as the report says, which fails RGAA 8.2.1.'
+    "The markup is as the report says, which fails RGAA 8.2.1: a shadow root is part of the page's generated source."
 };
 
 const meta = {
@@ -138,7 +139,7 @@ const meta = {
     otherDoctype: {
       steps: [
         'Find the doctype at the top of the page source: it is neither the HTML5 one nor missing, so the HTML5 rules this check applies do not hold.',
-        'Check the page with the W3C validator (Nu HTML Checker) on its generated source, against the document type it declares.',
+        'Check the page’s generated source with the W3C validator (Nu HTML Checker), choosing the preset that matches the declared doctype (for example the HTML 4.01 Transitional / XHTML 1.0 Transitional one); leave out any message about the doctype itself, which is a matter for RGAA 8.1.',
         'Read the errors about elements, attributes and attribute values.'
       ],
       passWhen:
@@ -428,9 +429,9 @@ function runInPage(ctx) {
     }
   }
   const SHADOW_NEEDED =
-    'Whether markup in a shadow root, which the W3C validator does not see in the generated source, is to be judged under 8.2.1.';
+    'Whether the markup in this shadow root, which the W3C validator does not see, is as the report says.';
   const SHADOW_HINT =
-    "This markup is in a shadow root, which the W3C validator does not see in the page's generated source. Check whether the audit judges it under 8.2.1; correcting the markup settles both.";
+    "This markup is in a shadow root, part of the page's generated source that the W3C validator does not see. Check it in the browser inspector: if it is as the report says, it fails 8.2.1.";
   const shadowAsked = [];
   const occurrences = [];
   function report(el, reasonCode, params, outcome) {

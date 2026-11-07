@@ -27,13 +27,18 @@
   </div>
 
   <div class="case" id="case_02">
-    <div class="case-title">02 — CANTTELL: a table with headers in its first row only</div>
-    <table id="tap_case_02"><tr><th>Nom</th><th>Âge</th></tr><tr><td>Ana</td><td>31</td></tr></table>
+    <div class="case-title">02 — CANTTELL: a table with a spanning header above row headers</div>
+    <table id="tap_case_02"><tr><th colspan="2">Population</th></tr><tr><th>Paris</th><td>2</td></tr><tr><th>Lyon</th><td>1</td></tr></table>
   </div>
 
   <div class="case" id="case_03">
     <div class="case-title">03 — PASS: headers with scope</div>
     <table id="tap_case_03"><tr><th scope="col">Nom</th><th scope="col">Âge</th></tr><tr><td>Ana</td><td>31</td></tr></table>
+  </div>
+
+  <div class="case" id="case_04">
+    <div class="case-title">04 — PASS: headers in the first row only, without scope (5.7's particular case)</div>
+    <table id="tap_case_04"><tr><th>Nom</th><th>Âge</th></tr><tr><td>Ana</td><td>31</td></tr></table>
   </div>
 </body>
 </html>

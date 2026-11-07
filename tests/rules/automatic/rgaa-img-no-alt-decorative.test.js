@@ -129,7 +129,7 @@ test(`${RULE_ID}: messages follow the scan locale`, () => {
   );
   assert.equal(
     rule.occurrences[0].summary,
-    'Cette image mesure 1 px sur 1 px : elle est de décoration, et n’a pas d’attribut alt.'
+    'Cette image mesure 1 px sur 1 px : c’est une image de décoration, et elle n’a pas d’attribut alt.'
   );
 });
 

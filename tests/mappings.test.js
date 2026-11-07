@@ -248,8 +248,9 @@ test('the image button, the title-only field and the labelled decorative image n
   ]);
   assert.ok(!result.checksResults.some((r) => r.ruleId === 'label-title-only'));
   // presentation-role-conflict maps to no RGAA test, so the profile does not
-  // run it; rgaa-img-decorative-no-alternative reports the image under 1.2.1.
-  assert.deepEqual(rgaa('rgaa-img-decorative-no-alternative'), ['1.2.1']);
+  // run it; rgaa-img-decorative-no-alternative reports the image under 1.2.1,
+  // and its question about an informative one under 1.1.1 and 1.3.1.
+  assert.deepEqual(rgaa('rgaa-img-decorative-no-alternative'), ['1.1.1', '1.2.1', '1.3.1']);
   assert.ok(!result.checksResults.some((r) => r.ruleId === 'presentation-role-conflict'));
 });
 

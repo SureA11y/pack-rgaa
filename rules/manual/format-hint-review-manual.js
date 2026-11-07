@@ -59,12 +59,13 @@ const meta = {
       steps: [
         'Find the field the report names: the report gives the constraint on what it accepts.',
         'Enter a value that breaks the constraint, and send the form.',
-        'Read the error message for this field.'
+        'Read the error message for this field.',
+        'Decide whether the message alone lets you write a valid value; a field with an input mask (a date or time field) needs no format indication.'
       ],
       passWhen:
-        'The error message says which type or format of data is expected, and gives an example of a valid value.',
+        'The error message says the expected type or format, or none is needed (the field has an input mask); and where the format alone does not let a user write a valid value, it also gives an example.',
       failWhen:
-        'The error message does not say the expected type or format, which fails RGAA 11.11.1, or gives no example of a valid value, which fails RGAA 11.11.2.'
+        'The error message does not say the expected type or format although one is needed, which fails RGAA 11.11.1. (A message that states the format but lacks an example the user needs fails RGAA 11.11.2.)'
     }
   }
 };

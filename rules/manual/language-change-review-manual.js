@@ -68,7 +68,7 @@ const meta = {
       steps: [
         'Find the text the report names, and read it; the language the report gives is only a guess from frequent words.',
         'Decide whether it is written in another language than the one the report says is in effect.',
-        'Leave out proper nouns, and foreign words that are in the dictionary of the page’s language or in common use.',
+        'Leave out what RGAA 8.7 leaves out: proper nouns; foreign words in the official dictionary of the page’s language; words in common use whose pronunciation causes no misunderstanding; a term the user typed that the page repeats; text whose language cannot be determined; a dead or invented language with no speech synthesis.',
         'Inspect the text: check for a lang or xml:lang attribute on its element or on a parent, which gives its language.'
       ],
       passWhen:

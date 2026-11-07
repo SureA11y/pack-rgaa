@@ -60,6 +60,50 @@ test(`${RULE_ID}: other children without role="listitem" are asked about`, () =>
   }
 });
 
+// 9.3.1 is the unordered list, 9.3.2 the ordered one: numbered items file a
+// finding under 9.3.2.
+test(`${RULE_ID}: a list whose items are numbered is asked about under 9.3.2`, () => {
+  for (const [body, code] of [
+    [
+      '<div role="list"><li style="list-style-type: decimal">a</li><li style="list-style-type: decimal">b</li></div>',
+      'liWithoutListitemRoleOrdered'
+    ],
+    [
+      '<div role="list"><div>1. Mix</div><div>2. Bake</div></div>',
+      'childWithoutListitemRoleOrdered'
+    ],
+    [
+      '<div role="list"><div style="counter-increment: step">Mix</div><div>Bake</div></div>',
+      'childWithoutListitemRoleOrdered'
+    ],
+    ['<div role="list"><div>Mix</div><div>2. Bake</div></div>', 'childWithoutListitemRole']
+  ]) {
+    const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'cantTell', {
+      minOccurrences: 1,
+      maxOccurrences: 1
+    });
+    assert.equal(rule.occurrences[0].data.details.reasonCode, code, body);
+  }
+});
+
+test(`${RULE_ID}: each code is filed under one test`, () => {
+  const pack = require('../../..');
+  const rule = pack.rules.find((r) => r.id === RULE_ID);
+  const facets = Object.fromEntries(
+    Object.entries(rule.meta.review).map(([code, entry]) => [code, entry.facet])
+  );
+  assert.deepEqual(facets, {
+    liWithoutListitemRole: 'test-9-3-1',
+    childWithoutListitemRole: 'test-9-3-1',
+    liWithoutListitemRoleOrdered: 'test-9-3-2',
+    childWithoutListitemRoleOrdered: 'test-9-3-2'
+  });
+  for (const [code, entry] of Object.entries(rule.meta.review)) {
+    const named = entry.failWhen.match(/9\.3\.\d/g);
+    assert.deepEqual(named, [entry.facet.slice(5).replace(/-/g, '.')], code);
+  }
+});
+
 test(`${RULE_ID}: HTML lists, empty lists and pages without role="list" are not applicable`, () => {
   for (const body of [
     '<ul role="list"><li>a</li></ul>',
@@ -167,7 +211,8 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
     'rgaa-aria-list-item-roles-all-scenarios.html'
   );
   const result = runa11yCoreOnHtml(fs.readFileSync(fixturePath, 'utf8'), RUN);
-  const rule = assertRule(result, RULE_ID, 'cantTell', { minOccurrences: 3, maxOccurrences: 3 });
+  const rule = assertRule(result, RULE_ID, 'cantTell', { minOccurrences: 4, maxOccurrences: 4 });
   const ids = rule.occurrences.map((o) => (o.html.match(/id="([^"]+)"/) || [])[1]);
-  assert.deepEqual(ids, ['alir_case_01', 'alir_case_02', 'alir_case_03']);
+  assert.deepEqual(ids, ['alir_case_01', 'alir_case_02', 'alir_case_03', 'alir_case_07']);
+  assert.equal(rule.occurrences[3].data.details.reasonCode, 'childWithoutListitemRoleOrdered');
 });

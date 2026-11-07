@@ -149,9 +149,9 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 
 | Rollup ID | Title | Rules |
 |---|---|---|
-| `rgaa-4.1.2-1.1` | Chaque image porteuse d’information a-t-elle une alternative textuelle ? | `area-alt-present`, `img-alt-decorative`, `input-image-alt-present`, `rgaa-area-alt-source`, `rgaa-canvas-role-img`, `rgaa-embed-image-role-img`, `rgaa-img-alt-present`, `rgaa-object-image-role-img`, `rgaa-role-img-aria-name`, `rgaa-svg-hidden-no-alternative`, `rgaa-svg-role-img`, `server-side-image-map-absent`, `svg-text-alternative-present` |
-| `rgaa-4.1.2-1.2` | Chaque image de décoration est-elle correctement ignorée par les technologies d’assistance ? | `rgaa-canvas-decorative-aria-hidden`, `rgaa-canvas-role-img`, `rgaa-img-decorative-no-alternative`, `rgaa-img-no-alt-decorative`, `rgaa-object-embed-decorative-aria-hidden`, `rgaa-svg-decorative-aria-hidden`, `rgaa-svg-hidden-no-alternative` |
-| `rgaa-4.1.2-1.3` | Pour chaque image porteuse d’information ayant une alternative textuelle, cette alternative est-elle pertinente (hors cas particuliers) ? | `area-alt-quality`, `canvas-text-alternative-quality`, `embed-text-alternative-quality`, `image-redundant-alt`, `img-alt-quality`, `input-image-alt-decorative`, `input-image-alt-present`, `input-image-alt-quality`, `object-text-alternative-quality`, `rgaa-image-alt-long`, `svg-text-alternative-quality` |
+| `rgaa-4.1.2-1.1` | Chaque image porteuse d’information a-t-elle une alternative textuelle ? | `area-alt-present`, `img-alt-decorative`, `input-image-alt-present`, `rgaa-area-alt-source`, `rgaa-canvas-role-img`, `rgaa-embed-image-role-img`, `rgaa-img-alt-present`, `rgaa-img-decorative-no-alternative`, `rgaa-object-embed-decorative-aria-hidden`, `rgaa-object-image-role-img`, `rgaa-role-img-aria-name`, `rgaa-svg-hidden-no-alternative`, `rgaa-svg-role-img`, `server-side-image-map-absent`, `svg-text-alternative-present` |
+| `rgaa-4.1.2-1.2` | Chaque image de décoration est-elle correctement ignorée par les technologies d’assistance ? | `image-redundant-alt`, `rgaa-canvas-decorative-aria-hidden`, `rgaa-canvas-role-img`, `rgaa-embed-image-role-img`, `rgaa-img-decorative-no-alternative`, `rgaa-img-no-alt-decorative`, `rgaa-object-embed-decorative-aria-hidden`, `rgaa-object-image-role-img`, `rgaa-svg-decorative-aria-hidden`, `rgaa-svg-hidden-no-alternative`, `svg-text-alternative-quality` |
+| `rgaa-4.1.2-1.3` | Pour chaque image porteuse d’information ayant une alternative textuelle, cette alternative est-elle pertinente (hors cas particuliers) ? | `area-alt-quality`, `canvas-text-alternative-quality`, `embed-text-alternative-quality`, `image-redundant-alt`, `img-alt-quality`, `input-image-alt-decorative`, `input-image-alt-present`, `input-image-alt-quality`, `object-text-alternative-quality`, `rgaa-image-alt-long`, `rgaa-img-decorative-no-alternative`, `svg-text-alternative-quality` |
 | `rgaa-4.1.2-1.4` | Pour chaque image utilisée comme CAPTCHA ou comme image-test, ayant une alternative textuelle, cette alternative permet-elle d’identifier la nature et la fonction de l’image ? | `rgaa-captcha-review` |
 | `rgaa-4.1.2-1.5` | Pour chaque image utilisée comme CAPTCHA, une solution d’accès alternatif au contenu ou à la fonction du CAPTCHA est-elle présente ? | `rgaa-captcha-review` |
 | `rgaa-4.1.2-1.6` | Chaque image porteuse d’information a-t-elle, si nécessaire, une description détaillée ? | `rgaa-img-describedby-target` |
@@ -166,7 +166,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-10.7` | Dans chaque page web, pour chaque élément recevant le focus, la prise de focus est-elle visible ? | `css-focus-indicator-suppressed`, `css-hidden-focus`, `manual-review`, `rgaa-focus-indicator-contrast` |
 | `rgaa-4.1.2-10.8` | Pour chaque page web, les contenus cachés ont-ils vocation à être ignorés par les technologies d’assistance ? | `aria-hidden-body`, `aria-hidden-focus`, `rgaa-aria-hidden-text-review` |
 | `rgaa-4.1.2-10.9` | Dans chaque page web, l’information ne doit pas être donnée uniquement par la forme, taille ou position. Cette règle est-elle respectée ? | `rgaa-current-item-review` |
-| `rgaa-4.1.2-11.1` | Chaque champ de formulaire a-t-il une étiquette ? | `form-control-programmatic-label-quality`, `option-name-present`, `rgaa-field-hidden-label-review`, `rgaa-field-label-listed-source`, `rgaa-label-for-target-valid` |
+| `rgaa-4.1.2-11.1` | Chaque champ de formulaire a-t-il une étiquette ? | `form-control-label-quality`, `form-control-programmatic-label-quality`, `option-name-present`, `rgaa-field-hidden-label-review`, `rgaa-field-label-listed-source`, `rgaa-label-for-target-valid` |
 | `rgaa-4.1.2-11.10` | Dans chaque formulaire, le contrôle de saisie est-il utilisé de manière pertinente (hors cas particuliers) ? | `invalid-field-error-message`, `rgaa-required-field-indication` |
 | `rgaa-4.1.2-11.11` | Dans chaque formulaire, le contrôle de saisie est-il accompagné, si nécessaire, de suggestions facilitant la correction des erreurs de saisie ? | `rgaa-format-hint-review` |
 | `rgaa-4.1.2-11.12` | Pour chaque formulaire qui modifie ou supprime des données, ou qui transmet des réponses à un test ou à un examen, ou dont la validation a des conséquences financières ou juridiques, les données saisies peuvent-elles être modifiées, mises à jour ou récupérées par l’utilisateur ? | `rgaa-consequential-form-review` |
@@ -182,7 +182,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-12.1` | Chaque ensemble de pages dispose-t-il de deux systèmes de navigation différents, au moins (hors cas particuliers) ? | `rgaa-navigation-systems-review` |
 | `rgaa-4.1.2-12.6` | Les zones de regroupement de contenus présentes dans plusieurs pages web (zones d’en-tête, de navigation principale, de contenu principal, de pied de page et de moteur de recherche) peuvent-elles être atteintes ou évitées ? | `rgaa-page-zones-reachable` |
 | `rgaa-4.1.2-12.7` | Dans chaque page web, un lien d’évitement ou d’accès rapide à la zone de contenu principal est-il présent (hors cas particuliers) ? | `rgaa-skip-link-placement`, `rgaa-skip-link-present`, `skip-link` |
-| `rgaa-4.1.2-12.8` | Dans chaque page web, l’ordre de tabulation est-il cohérent ? | `css-hidden-focus`, `manual-review`, `rgaa-modal-tab-order`, `tabindex` |
+| `rgaa-4.1.2-12.8` | Dans chaque page web, l’ordre de tabulation est-il cohérent ? | `manual-review`, `rgaa-modal-tab-order`, `tabindex` |
 | `rgaa-4.1.2-12.9` | Dans chaque page web, la navigation ne doit pas contenir de piège au clavier. Cette règle est-elle respectée ? | `manual-review` |
 | `rgaa-4.1.2-13.1` | Pour chaque page web, l’utilisateur a-t-il le contrôle de chaque limite de temps modifiant le contenu (hors cas particuliers) ? | `rgaa-embedded-refresh-review`, `rgaa-meta-redirect-immediate`, `rgaa-meta-refresh-no-url-timing`, `rgaa-script-redirect-review` |
 | `rgaa-4.1.2-13.3` | Dans chaque page web, chaque document bureautique en téléchargement possède-t-il, si nécessaire, une version accessible (hors cas particuliers) ? | `rgaa-office-document-link` |
@@ -205,7 +205,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-5.2` | Pour chaque tableau de données complexe ayant un résumé, celui-ci est-il pertinent ? | `rgaa-complex-table-summary-quality` |
 | `rgaa-4.1.2-5.3` | Pour chaque tableau de mise en forme, le contenu linéarisé reste-t-il compréhensible ? | `rgaa-data-table-headers-review` |
 | `rgaa-4.1.2-5.4` | Pour chaque tableau de données ayant un titre, le titre est-il correctement associé au tableau de données ? | `rgaa-table-title-adjacent`, `table-fake-caption` |
-| `rgaa-4.1.2-5.6` | Pour chaque tableau de données, chaque en-tête de colonne et chaque en-tête de ligne sont-ils correctement déclarés ? | `rgaa-data-table-headers-review` |
+| `rgaa-4.1.2-5.6` | Pour chaque tableau de données, chaque en-tête de colonne et chaque en-tête de ligne sont-ils correctement déclarés ? | `rgaa-data-table-headers-review`, `rgaa-layout-table-no-data-markup` |
 | `rgaa-4.1.2-5.7` | Pour chaque tableau de données, la technique appropriée permettant d’associer chaque cellule avec ses en-têtes est-elle utilisée (hors cas particuliers) ? | `rgaa-th-association-present`, `rgaa-th-scope-row-col`, `table-headers-attr-valid` |
 | `rgaa-4.1.2-5.8` | Chaque tableau de mise en forme ne doit pas utiliser d’éléments propres aux tableaux de données. Cette règle est-elle respectée ? | `rgaa-layout-table-no-data-markup` |
 | `rgaa-4.1.2-6.1` | Chaque lien est-il explicite (hors cas particuliers) ? | `identical-links-same-purpose`, `link-name-quality`, `rgaa-link-context-review`, `rgaa-link-label-in-name-sources`, `rgaa-link-title-content-name` |
@@ -290,7 +290,7 @@ Checks that the children of an element with role="list" have role="listitem", wh
 
 **Applies to.** Applies to every element other than &lt;ul&gt; and &lt;ol&gt; whose role attribute makes it a list (first token "list") and that has at least one child element other than &lt;script&gt; and &lt;template&gt;. Lists hidden by the default hidden-content policy are not checked. A page with none is notApplicable.
 
-**Expectation.** Every child element has role="listitem". RGAA 9.3.1 and 9.3.2 accept a list built with &lt;ul&gt; or &lt;ol&gt; and &lt;li&gt;, or with role="list" and role="listitem" (step 2). A role="list" whose items are &lt;li&gt; elements without role="listitem", or other elements, is neither. Such a list is asked about (cantTell), never failed: 9.3.1 and 9.3.2 judge information "regroupées visuellement sous forme de liste", and whether the list reads as ordered (9.3.2) or unordered (9.3.1) is visual. A list whose children all have role="listitem" passes.
+**Expectation.** Every child element has role="listitem". RGAA 9.3.1 and 9.3.2 accept a list built with &lt;ul&gt; or &lt;ol&gt; and &lt;li&gt;, or with role="list" and role="listitem" (step 2). A role="list" whose items are &lt;li&gt; elements without role="listitem", or other elements, is neither. Such a list is asked about (cantTell), never failed: 9.3.1 and 9.3.2 judge information "regroupées visuellement sous forme de liste", which is visual. A list whose children all have role="listitem" passes. Each finding is filed under one test: a list whose items are numbered (a numeric list-style-type, a CSS counter, or a text starting with a number) reads as an ordered list, under 9.3.2 (the `…Ordered` codes); any other under 9.3.1.
 
 ### `rgaa-aria-role-conformance`
 
@@ -312,7 +312,7 @@ Each role attribute passes the W3C validator (Nu HTML Checker), which RGAA 8.2.1
 - `imgRoleEmptyAlt`: an &lt;img&gt; with a role and alt="";
 - `imgRoleNoName`: an &lt;img&gt; with a role and no alt, aria-label or aria-labelledby attribute.
 
-It asks (cantTell) in one case, `imgPresentationRole`: an &lt;img&gt; with role="presentation" and an empty or missing alt. The validator reports an error there, but RGAA 1.2.1 names role="presentation" on an &lt;img&gt; as a way to mark a decorative image, so whether the audit counts it against 8.2.1 is left to the auditor.
+It asks (cantTell) in one case, `imgPresentationRole`: an &lt;img&gt; with role="presentation" and an empty or missing alt. The validator reports an error there, but RGAA 1.2.1 names role="presentation" on an &lt;img&gt; as a way to mark a decorative image, and ARIA in HTML allows it with alt="". The pack reads it so: with alt="" the markup passes 8.2.1; with no alt it fails, as HTML requires alt on an &lt;img&gt;.
 
 ### `rgaa-autocomplete-user-field`
 
@@ -615,11 +615,17 @@ Checks that the document has a doctype, written before the &lt;html&gt; element.
 
 automatic · no formal WCAG SC mapping · confidence high · default severity moderate
 
-Checks that a declared doctype is the HTML5 doctype or one of the doctypes the W3C recommends.
+Checks that a declared doctype names a published HTML or XHTML document type: passes those it knows, fails one that cannot be valid, and asks about other public identifiers.
 
 **Applies to.** Applies to a run over a whole document that declares a doctype. A page with no doctype is notApplicable here: rgaa-doctype-present fails it under RGAA 8.1.1. A run narrowed by contextSelector, or by engineOptions.fragment, is notApplicable: a subtree has no doctype of its own.
 
-**Expectation.** The doctype is valid (RGAA 8.1.2: « le type de document (balise doctype) est-il valide ? »): its name is html, and it is either the HTML5 doctype (no public identifier, and no system identifier or about:legacy-compat) or one of the W3C recommended doctypes for HTML 2.0 to 4.01, XHTML 1.0, XHTML 1.1, XHTML Basic, XHTML 1.1 plus MathML 2.0 (plus SVG 1.1), XHTML+RDFa 1.0 and 1.1, and HTML 4.01+RDFa 1.1. Public identifiers are compared without regard to case.
+**Expectation.**
+
+The doctype is valid (RGAA 8.1.2: « le type de document (balise doctype) est-il valide ? »). RGAA names no list of valid doctypes; its glossary « Type de document » is the reference data that tells user agents the page's languages, and RGAA itself treats HTML 4, XHTML 1.0, XHTML 1.1 and HTML5 as document types. The pack reads a doctype as valid when it is a well-formed declaration of a published document type that describes the page's language:
+
+- it passes the HTML5 doctype (name html, no public identifier, and no system identifier or about:legacy-compat), and the public identifiers it knows: HTML 2.0, 3.2, 4.0 and 4.01 (Strict, Transitional, Frameset), ISO/IEC 15445:2000 HTML, XHTML 1.0 and 1.1, XHTML Basic 1.0 and 1.1, XHTML Mobile Profile 1.0 to 1.2, XHTML 1.1 plus MathML 2.0 (plus SVG 1.1), XHTML+RDFa 1.0 and 1.1, and HTML 4.01+RDFa 1.1, compared without regard to case;
+- it fails (invalidDoctype) a doctype whose name is not html, which does not describe an HTML page (an svg or math doctype), and the HTML5 form with a system identifier other than about:legacy-compat;
+- it asks (unknownPublicId) about any other public identifier, which may name an industry or later specification, or none.
 
 ### `rgaa-embed-image-role-img`
 
@@ -641,7 +647,7 @@ RGAA 1.1.7 passes when one of these holds:
 
 Passes: role="img" and a text alternative. Fails: no text alternative and no link or button right after it, when the embed has role="img" or certainly carries information (a captioned image, or one that takes focus). Without either, it is asked about (noAlternativeMayBeDecorative): it may be decorative, and then it fails 1.2.6 instead. Asks (cantTell):
 
-- a text alternative without role="img". The test wording requires both, but the methodology validates on the alternative alone (steps 2 to 4), so RGAA does not say which reading wins;
+- a text alternative without role="img". The test's first condition and step 2 of its methodology ask for both, so the alternative alone does not meet it: an informative image passes only through a link or button right after it or a replacement mechanism, and a decorative one fails 1.2.6, as it keeps an alternative;
 - no text alternative, but a link or button right after the &lt;embed&gt; (does it lead to an alternative content?).
 
 ### `rgaa-embedded-player-review`
@@ -1172,7 +1178,7 @@ Fails an image link whose title does not repeat the text alternative of its imag
 Glossary « Intitulé (ou nom accessible) de lien », note 2: « Un intitulé de lien sera considéré comme non-explicite dans le cas où le lien possède un attribut title dont la valeur ne reprendrait pas au moins le "nom accessible" issu du contenu du lien », since assistive technologies can be set to read the title instead of the content. Punctuation and capital letters are ignored, as 6.1.5's particular cases allow; accents are not folded.
 
 - Fails an image link (6.1.2) whose title does not contain the text alternative of its images (imageLinkTitle).
-- Asks about a composite link (6.1.3) whose title contains its text but not the text alternative of its images (compositeLinkTitle): the image is often an icon (a file type, an external-link sign) whose alternative an auditor may judge the title need not repeat. A title that drops the text fails 6.1.5 already.
+- Asks about a composite link (6.1.3) whose title contains its text but not the whole name in the content's order (compositeLinkTitle): the title may still hold the text alternative of its images elsewhere, which the pack reads as repeating the name. Note 2 makes no exception for an icon. A title that drops the text fails 6.1.5 already.
 - Asks, rather than failing, when the alternative is a single character, which may be a symbol the title names by its function.
 
 ### `rgaa-listbox-option-groups-absent`
@@ -1375,7 +1381,7 @@ RGAA 1.1.6 passes when one of these holds:
 
 Passes: role="img" and a text alternative. Fails: no text alternative, no fallback content between &lt;object&gt; and &lt;/object&gt;, and no link or button right after it, when the object has role="img" or certainly carries information (a captioned image, or one that takes focus). Without either, it is asked about (noAlternativeMayBeDecorative): it may be decorative, and then it fails 1.2.3 instead. Asks (cantTell):
 
-- a text alternative without role="img". The test wording requires both, but the methodology validates on the alternative alone (steps 3 to 5), so RGAA does not say which reading wins;
+- a text alternative without role="img". The test's first condition and step 3 of its methodology ask for both, so the alternative alone does not meet it: an informative image passes only through a link or button right after it or a replacement mechanism, and a decorative one fails 1.2.3, as it keeps an alternative;
 - no text alternative, but a link or button right after the &lt;object&gt; (does it lead to an alternative content?);
 - no text alternative, but fallback content inside the &lt;object&gt;, which RGAA does not list as a text alternative for 1.1.6.
 
@@ -1499,7 +1505,7 @@ Checks that no HTML element carries one of the presentational attributes RGAA li
 
 **Applies to.** Applies to any scan scope; whether an HTML element in it carries one of the attributes RGAA 10.1.2 lists is always an answerable question.
 
-**Expectation.** No HTML element carries align, alink, background, bgcolor, border, cellpadding, cellspacing, char, charoff, clear, color, compact, frameborder, hspace, link, marginheight, marginwidth, text, valign, vlink or vspace; size is allowed only on &lt;select&gt;, and width and height only on &lt;img&gt;, &lt;object&gt;, &lt;embed&gt;, &lt;canvas&gt; and &lt;svg&gt;. That is RGAA 10.1.2's list as written, so width and height on an &lt;iframe&gt; or a &lt;video&gt;, and size on an &lt;input&gt;, are reported too. One exception: a &lt;source&gt; in a &lt;picture&gt; gives the &lt;img&gt; its width and height for its art direction (HTML added them in 2021, after the list was written): they are outside the list's closed exceptions but are the image's dimensions, so they are asked about (cantTell) rather than failed. One occurrence per element, naming every such attribute it carries.
+**Expectation.** No HTML element carries align, alink, background, bgcolor, border, cellpadding, cellspacing, char, charoff, clear, color, compact, frameborder, hspace, link, marginheight, marginwidth, text, valign, vlink or vspace; size is allowed only on &lt;select&gt;, and width and height only on &lt;img&gt;, &lt;object&gt;, &lt;embed&gt;, &lt;canvas&gt; and &lt;svg&gt;. That is RGAA 10.1.2's list as written, so width and height on an &lt;iframe&gt; or a &lt;video&gt;, and size on an &lt;input&gt;, are reported too, as are width and height on a &lt;source&gt; in a &lt;picture&gt;, which HTML added after the list was written: the list of exceptions is closed. One occurrence per element, naming every such attribute it carries.
 
 ### `rgaa-presentational-elements-absent`
 
@@ -1749,7 +1755,7 @@ Fails text of three words or more that reads right to left in a left-to-right co
 RGAA 8.10.1: « chaque texte dont le sens de lecture est différent du sens de lecture par défaut est contenu dans une balise possédant un attribut dir ».
 
 - It fails (directionNotMarked) when a text of three words or more reads in the other direction, as a whole element or a run inside other text, with no dir between it and its context.
-- A text of one or two words is asked about (cantTell): a whole element (shortText), such as « العربية » in a language menu, or a run inside other text (shortRun), such as a word quoted in a sentence. The letter of 8.10.1 covers it, but a browser shows one or two words the same with or without dir, so whether it needs one is for a person. So is text in a &lt;bdi&gt; with no dir (bdiWithoutDir), which browsers isolate but RGAA does not name.
+- A text of one or two words is asked about (cantTell): a whole element (shortText), such as « العربية » in a language menu, or a run inside other text (shortRun), such as a word quoted in a sentence, so that a person confirms they are words of a language read in the other direction. If they are, they fail 8.10.1 without dir, whatever their length: the test has no exception for it. So is text in a &lt;bdi&gt; with no dir (bdiWithoutDir): browsers isolate it, but RGAA asks for a dir attribute, which a &lt;bdi&gt; does not replace.
 
 ### `rgaa-text-image-review`
 
@@ -1778,7 +1784,8 @@ Fails a &lt;th&gt; with no id, scope or header role in a table with headers on b
 RGAA 5.7.1: each &lt;th&gt; « s'appliquant à la totalité de la ligne ou de la colonne » has a unique id, a scope, or role="rowheader" or "columnheader".
 
 - In a table with headers on both axes (a first row of &lt;th&gt; and rows that start with a &lt;th&gt; followed by &lt;td&gt;) and no rowspan or colspan, each &lt;th&gt; with none of the three fails (noAssociation): such a header covers a whole row or column, and the shape leaves no doubt.
-- Elsewhere, the table is asked about once (noAssociationSimple): in a table with headers on one axis only, browsers tie the headers to their cells, and an auditor may accept it; with spans, a header may cover only part of a row or column, which 5.7.3 handles.
+- A table whose headers all sit in a single row or a single column passes: criterion 5.7's particular case lets such headers be &lt;th&gt; without scope.
+- Elsewhere, the table is asked about once (noAssociationSimple): with spans, or headers that do not line up as a first row and first column, a header may cover only part of a row or column, which 5.7.1 leaves to 5.7.3.
 
 ### `rgaa-th-scope-row-col`
 
@@ -1819,7 +1826,7 @@ Flags author tooltips and popovers (role="tooltip", or a tooltip library attribu
 
 **Applies to.** Applies to author tooltips and popovers: an element with role="tooltip", and a visible element with a tooltip library's attribute (data-tooltip, data-tippy-content, data-balloon, or data-toggle / data-bs-toggle set to "tooltip", or to "popover" with a hover or focus trigger, since a popover otherwise opens on click). A role="tooltip" referenced by aria-describedby or aria-labelledby is reported on the element that references it. The title attribute is left out: 10.13's particular case makes content « contrôlé par l’agent utilisateur (par exemple, attribut title) » not applicable. A page with none is notApplicable.
 
-**Expectation.** RGAA 10.13: content that appears on hover or focus can be hidden by the user without moving the pointer or the focus (10.13.1), can be hovered without disappearing (10.13.2), and stays visible until the pointer or focus leaves, the user hides it, or it is no longer valid (10.13.3). Each is behaviour a script decides, so every tooltip is asked about (tooltipRole, tooltipAttribute), one occurrence per element.
+**Expectation.** RGAA 10.13: content that appears on hover or focus can be hidden by the user without moving the pointer or the focus (10.13.1), can be hovered without disappearing (10.13.2), and stays visible until the pointer or focus leaves, the user hides it, or it is no longer valid (10.13.3). Each is behaviour a script decides, so every tooltip is asked about, once per test, so that each answer is filed under its own test: tooltipRoleDismiss, tooltipRoleHover and tooltipRolePersist for a role="tooltip" (10.13.1, 10.13.2, 10.13.3), and the same for a library attribute (tooltipAttribute…).
 
 ### `rgaa-valid-lang`
 
@@ -1861,7 +1868,7 @@ Flags a &lt;meta name="viewport"&gt; that disables zoom or caps it below 200%, f
 
 **Applies to.** Applies to &lt;meta name="viewport"&gt; elements whose content sets user-scalable or maximum-scale to a value that disables or limits zoom: user-scalable other than yes, device-width, device-height or a number outside -1 to 1; maximum-scale from 0 up to (not including) 2, or a value that does not parse. These are the values meta-viewport-zoom-enabled fails. A page with no such tag is notApplicable. The check is whole-document: notApplicable when the scan is scoped to part of the page.
 
-**Expectation.** Always cantTell on such a tag, never pass or fail. RGAA 10.4.2 is met when text can be enlarged to 200% by any one of: the browser's text zoom, its graphic zoom, or a zoom control provided by the site (« selon une de ces conditions »). The viewport meta tag acts only on pinch zoom, which desktop browsers do not use, so whether it stops all three depends on the audit environment. A person checks them.
+**Expectation.** Always cantTell on such a tag, never pass or fail. RGAA 10.4.2 is met when text can be enlarged to 200% by any one of: the browser's text zoom, its graphic zoom, or a zoom control provided by the site (« selon une de ces conditions »). The viewport meta tag acts only on pinch zoom, which desktop browsers do not use, so whether it stops all three depends on the test environment. A person checks them.
 
 ### `rgaa-widget-label-in-name`
 

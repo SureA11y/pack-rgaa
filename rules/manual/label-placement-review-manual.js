@@ -84,16 +84,16 @@ const meta = {
       steps: [
         'Find the field the report names, and its label, on screen.',
         'Check where the label sits: for text that reads left to right, it should be immediately above the field or on its left; for text that reads right to left, above or on its right.',
-        'Decide whether a particular case applies: the field is used in a context where placing the label differently makes sense for users.'
+        "Decide whether a particular case applies: the label mixes text read left to right with text read right to left, or the form's labels are in languages read in both directions, or the field is used in a context where placing the label differently makes sense for users."
       ],
-      passWhen: 'The label sits where the test asks, or the context justifies another place.',
-      failWhen: 'The label sits elsewhere with no reason in the context, which fails RGAA 11.4.2.'
+      passWhen: 'The label sits where the test asks, or a particular case of RGAA 11.4 applies.',
+      failWhen: 'The label sits elsewhere and no particular case applies, which fails RGAA 11.4.2.'
     },
     labelNotBelowOrRight: {
       steps: [
         'Find the check box, radio button or switch the report names, and its label, on screen.',
         'Check where the label sits: for text that reads left to right, it should be immediately below the field or on its right; for text that reads right to left, below or on its left.',
-        'Decide whether a particular case applies: the field is not shown as a check box or a radio button, or the context makes another place sensible for users.'
+        "Decide whether a particular case applies: the label mixes text read left to right with text read right to left, or the form's labels are in languages read in both directions, or the field is not shown as a check box or a radio button, or the context makes another place sensible for users."
       ],
       passWhen: 'The label sits where the test asks, or a particular case applies.',
       failWhen: 'The label sits elsewhere with no particular case, which fails RGAA 11.4.3.'

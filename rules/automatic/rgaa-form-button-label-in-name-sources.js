@@ -71,43 +71,42 @@ const meta = {
       steps: [
         'Find the button the report names, and read its visible label on screen.',
         'Inspect it: a title, or an aria-label that aria-labelledby overrides, does not contain the visible label, while the accessible name does.',
-        'Check which reading of RGAA 11.9.2 the audit follows: its conditions list every source, while its methodology checks only the accessible name.'
+        "Read its accessible name in the browser's accessibility tree, and check that it contains the visible label, punctuation and capital letters aside."
       ],
       passWhen:
-        'The audit reads 11.9.2 by its methodology, and the accessible name contains the visible label; making the other source contain it too, or removing it, settles both readings.',
-      failWhen:
-        'The audit reads 11.9.2 by its conditions, so a source that does not contain the visible label fails RGAA 11.9.2.'
+        'The accessible name contains the visible label. RGAA judges the button by its accessible name (11.9.2 methodology, glossary « Bouton (formulaire) »), so a title, or an aria-label that aria-labelledby overrides, that does not contain it is not judged.',
+      failWhen: 'The accessible name does not contain the visible label, which fails RGAA 11.9.2.'
     },
     POSSIBLE_SYMBOL: {
       steps: [
         'Find the button the report names, and read its visible label on screen.',
         "Listen to its accessible name with a screen reader, or read it in the browser's accessibility tree.",
-        'Decide whether the visible label is a symbol (an icon glyph, "X" for close, ">" for next) or literal text.'
+        'Decide whether the visible label is a symbol (an icon glyph, "X" for close, ">" for next), a mathematical expression, or text to read as is.'
       ],
       passWhen:
-        'The visible label is a symbol, and the accessible name says what it means, which the particular cases of RGAA 11.2 accept.',
+        'The visible label is a symbol and the accessible name says what it means, or it is a mathematical expression the accessible name repeats as is, both of which the particular cases of RGAA 11.2 accept.',
       failWhen:
-        'The visible label is literal text that the accessible name does not contain, which fails RGAA 11.9.2.'
+        'The visible label is text to read as is that the accessible name does not contain, which fails RGAA 11.9.2.'
     },
     POSSIBLE_ABBREVIATION: {
       steps: [
         'Find the button the report names, and read its visible label on screen.',
-        "Read its accessible name in the browser's accessibility tree, and compare: they differ only by an abbreviation."
+        'Read its accessible name in the browser\'s accessibility tree, and compare: check whether it holds the visible text as shown, or only another form of it (such as "Numéro" for a visible "N°").'
       ],
       passWhen:
-        'The accessible name contains the visible label as a speech-input user would say it, the abbreviation aside.',
+        "The accessible name contains the visible label's text as shown, punctuation and capital letters aside.",
       failWhen:
-        'The accessible name does not contain the visible label: RGAA excuses only punctuation and capital letters, so the button fails RGAA 11.9.2.'
+        'The accessible name holds the visible text only in another form (written out in full, or abbreviated), so it does not contain the visible label, which fails RGAA 11.9.2.'
     },
     PARENTHESISED_TEXT_MISSING: {
       steps: [
         'Find the button the report names, and read its visible label, including any text in parentheses.',
-        "Read its accessible name in the browser's accessibility tree, and check whether it leaves out the text in parentheses."
+        "Read its accessible name in the browser's accessibility tree, check whether it leaves out the text in parentheses, and whether that text is shown inside the button or apart from it."
       ],
       passWhen:
-        'The accessible name contains the visible label, the text in parentheses being only a note that does not name the action.',
+        "The text in parentheses is shown apart from the button's label (outside the button), and the accessible name contains the visible label.",
       failWhen:
-        'The accessible name leaves out words of the visible label a user would say to activate the button, which fails RGAA 11.9.2.'
+        "The text in parentheses is part of the button's visible label and the accessible name leaves it out, which fails RGAA 11.9.2."
     }
   }
 };
@@ -586,7 +585,7 @@ function runInPage(ctx) {
       hintKey: 'formButtonLabelInNameSources_hint_cantTell_source',
       summary:
         'A label source of this button that does not give its accessible name does not contain its visible label.',
-      hint: 'RGAA 11.9.2 lists every source in its conditions, but its methodology checks only the accessible name. Check which reading the audit follows. Making the attribute contain the visible label, or removing it, settles both.'
+      hint: 'RGAA 11.9.2 judges a button by its accessible name (its methodology, glossary « Bouton (formulaire) »): check that the accessible name contains the visible label.'
     },
     POSSIBLE_SYMBOL: {
       reasonCode: 'POSSIBLE_SYMBOL',
@@ -605,7 +604,7 @@ function runInPage(ctx) {
       hintKey: 'formButtonLabelInNameSources_hint_cantTell_nearMatch',
       summary:
         'A label source of this button differs from its visible label only by an abbreviation or by text in parentheses.',
-      hint: 'Check whether the source still contains the visible label as a user would say it. RGAA excuses only punctuation and capital letters.',
+      hint: 'Check whether the accessible name contains the visible text as shown. RGAA excuses only punctuation and capital letters.',
       needed: 'Whether the source says the visible label, abbreviation or parenthesised text aside.'
     },
     PARENTHESISED_TEXT_MISSING: {
@@ -615,7 +614,7 @@ function runInPage(ctx) {
       hintKey: 'formButtonLabelInNameSources_hint_cantTell_nearMatch',
       summary:
         'A label source of this button differs from its visible label only by an abbreviation or by text in parentheses.',
-      hint: 'Check whether the source still contains the visible label as a user would say it. RGAA excuses only punctuation and capital letters.',
+      hint: 'Check whether the accessible name contains the visible text as shown. RGAA excuses only punctuation and capital letters.',
       needed: 'Whether the source says the visible label, abbreviation or parenthesised text aside.'
     }
   };
@@ -711,7 +710,7 @@ function runInPage(ctx) {
         ? {
             uncertainty: {
               code: 'judgement-required',
-              needed: 'Whether the audit checks the sources that do not give the accessible name.',
+              needed: 'Whether the accessible name contains the visible label.',
               evidence: { visibleLabel: label.text, sources }
             }
           }

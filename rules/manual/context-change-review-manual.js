@@ -52,7 +52,7 @@ const meta = {
         'Read the page before the field, and its label, for a text that says this will happen.'
       ],
       passWhen:
-        'A text before the field says what happens and what kind of change it is, or nothing changes until a button or a link is used.',
+        'A text before the field says what happens and what kind of change it is, or nothing changes until an explicit button or link is used.',
       failWhen:
         'The change comes from the field alone, with no warning before it, which fails RGAA 7.4.1.'
     }

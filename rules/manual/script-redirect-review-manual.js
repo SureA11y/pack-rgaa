@@ -54,7 +54,7 @@ const meta = {
         'Look for a warning before it happens that gives at least 20 seconds to extend the delay.'
       ],
       passWhen:
-        'The user can stop and restart it, extend the delay ten times or more, or is warned with 20 seconds to extend it, or the delay is 20 hours or more.',
+        'The user can stop and restart it, extend the delay ten times or more, or is warned with 20 seconds to extend it, or the delay is 20 hours or more; or the page is an obsolete address redirecting to its new version, which the particular cases of RGAA 13.1 make not applicable.',
       failWhen: 'None of these holds, which fails RGAA 13.1.3.'
     }
   }

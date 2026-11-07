@@ -27,10 +27,10 @@
  *   - Fails an image link (6.1.2) whose title does not contain the text
  *     alternative of its images (imageLinkTitle).
  *   - Asks about a composite link (6.1.3) whose title contains its text but
- *     not the text alternative of its images (compositeLinkTitle): the
- *     image is often an icon (a file type, an external-link sign) whose
- *     alternative an auditor may judge the title need not repeat. A title
- *     that drops the text fails 6.1.5 already.
+ *     not the whole name in the content's order (compositeLinkTitle): the
+ *     title may still hold the text alternative of its images elsewhere,
+ *     which the pack reads as repeating the name. Note 2 makes no exception
+ *     for an icon. A title that drops the text fails 6.1.5 already.
  *   - Asks, rather than failing, when the alternative is a single
  *     character, which may be a symbol the title names by its function.
  * @implementation-notes
@@ -64,12 +64,12 @@ const meta = {
       steps: [
         'Find the link the report names: it holds text and an image, and has a title attribute.',
         "Read the title, the link's text and the text alternative of its image.",
-        'Decide whether the image adds something to the link, or is only an icon, such as a file type or an external-link sign.'
+        'Check whether the title also contains the text alternative of the image, wherever it is placed.'
       ],
       passWhen:
-        'The image adds nothing the title needs to say, and the audit accepts that; repeating its alternative in the title, or removing the title, settles it.',
+        "The title contains both the link's text and the text alternative of its image, in any order, punctuation and capital letters aside: the pack reads note 2's « reprendre au moins » as holding each part of the name, not their order.",
       failWhen:
-        "The title leaves out what the image's alternative adds, so the link's name is not explicit, which fails RGAA 6.1.3."
+        "The title leaves out the text alternative of the image, so it does not repeat at least the name the link's content gives it (glossary « Intitulé de lien », note 2) and the link is not explicit, which fails RGAA 6.1.3."
     },
     symbolAlternative: {
       steps: [
@@ -77,7 +77,8 @@ const meta = {
         'Look at the image, and decide whether the character is a symbol, such as ">" for next, or literal text.',
         "Read the link's title."
       ],
-      passWhen: 'The character is a symbol, and the title says what it means.',
+      passWhen:
+        "The character is a symbol and the title says what it means: the pack applies 6.1.5's particular case for symbols to the title, which then gives the name from the content by its function.",
       failWhen:
         "The title does not say what the symbol means, or does not repeat a character that is literal text, so the link's name is not explicit, which fails RGAA 6.1.2."
     }
@@ -295,7 +296,7 @@ function runInPage(ctx) {
     imageLinkTitle:
       "Make the title repeat at least the image's text alternative, or remove the title: assistive technologies can be set to read the title instead of the content (RGAA 6.1, glossary « Intitulé de lien », note 2).",
     compositeLinkTitle:
-      "Check whether the title should also repeat the image's text alternative; if it should, add it, or remove the title (RGAA 6.1, glossary « Intitulé de lien », note 2).",
+      "Make the title repeat the image's text alternative too, or remove the title: the title must repeat at least the name the link's content gives it (RGAA 6.1, glossary « Intitulé de lien », note 2).",
     symbolAlternative:
       "Check that the title says what the symbol means; otherwise make it repeat the image's text alternative (RGAA 6.1, glossary « Intitulé de lien », note 2)."
   };

@@ -19,10 +19,13 @@
  *     that start with a <th> followed by <td>) and no rowspan or colspan,
  *     each <th> with none of the three fails (noAssociation): such a
  *     header covers a whole row or column, and the shape leaves no doubt.
- *   - Elsewhere, the table is asked about once (noAssociationSimple): in a
- *     table with headers on one axis only, browsers tie the headers to
- *     their cells, and an auditor may accept it; with spans, a header may
- *     cover only part of a row or column, which 5.7.3 handles.
+ *   - A table whose headers all sit in a single row or a single column
+ *     passes: criterion 5.7's particular case lets such headers be <th>
+ *     without scope.
+ *   - Elsewhere, the table is asked about once (noAssociationSimple): with
+ *     spans, or headers that do not line up as a first row and first
+ *     column, a header may cover only part of a row or column, which 5.7.1
+ *     leaves to 5.7.3.
  * @implementation-notes
  * - An empty <th>, such as the top-left corner of a table, is left out.
  * - Whether a scope value is right is rgaa-th-scope-row-col's matter.
@@ -34,7 +37,7 @@ const id = 'rgaa-th-association-present';
 const meta = {
   title: 'Table headers have an id, a scope or a header role',
   description:
-    'Fails a <th> with no id, scope or header role in a table with headers on both axes; asks about other tables whose headers have none.',
+    'Fails a <th> with no id, scope or header role in a table with headers on both axes; passes headers on a single row or column; asks about other tables whose headers have none.',
   i18n: {
     titleKey: 'thAssociationPresent_title',
     descriptionKey: 'thAssociationPresent_description'
@@ -53,13 +56,12 @@ const meta = {
     noAssociationSimple: {
       steps: [
         'Find the table the report names: some of its <th> cells have no id, scope or role="rowheader" or "columnheader".',
-        'Look at the table on screen, and decide for each of those headers whether it covers a whole row or column, or only part of one.',
-        'Check whether the audit accepts a table with headers along one side only, which browsers tie to their cells.'
+        'Look at the table on screen: are all its headers in a single row or a single column? If not, decide for each of those headers whether it covers a whole row or column, or only part of one.'
       ],
       passWhen:
-        'Those headers cover only part of a row or column, or the audit accepts them; scope="col" or scope="row" settles it.',
+        'All the table’s headers sit in a single row or a single column, which RGAA 5.7’s particular case allows without scope; or each of those <th> covers only part of its row or column, so RGAA 5.7.1 does not apply to it (5.7.3 then asks it for a unique id).',
       failWhen:
-        'A <th> covers a whole row or column and has no unique id, scope or header role, which fails RGAA 5.7.1.'
+        'The table has headers in more than one row or column, and a <th> that covers a whole row or column has no unique id, scope or header role, which fails RGAA 5.7.1.'
     }
   }
 };
@@ -114,6 +116,14 @@ function runInPage(ctx) {
     if (!missing.length) continue;
 
     const anySpan = grid.flat().some(spanned);
+    // RGAA 5.7's particular case: headers on a single row or a single
+    // column may be <th> without scope.
+    const at = grid.flatMap((cells, r) =>
+      cells.flatMap((c, i) => (tagOf(c) === 'th' && text(c) ? [{ r, i }] : []))
+    );
+    const oneRow = new Set(at.map((p) => p.r)).size === 1;
+    const oneColumn = !anySpan && new Set(at.map((p) => p.i)).size === 1;
+    if (oneRow || oneColumn) continue;
     const first = grid[0] || [];
     const columnHeaders = first.filter((c) => tagOf(c) === 'th').length >= 2;
     const rowHeaders = grid

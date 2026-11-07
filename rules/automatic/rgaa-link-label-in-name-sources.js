@@ -86,28 +86,29 @@ const meta = {
       passWhen:
         'The visible text is a symbol and each source says what it means, or it is literal text that each source contains.',
       failWhen:
-        'The visible text is literal text that a title, aria-label or aria-labelledby source does not contain, which fails RGAA 6.1.5.'
+        'The visible text is literal text that a title, aria-label or aria-labelledby source does not contain, or it is a symbol and a source does not say what it means, which fails RGAA 6.1.5.'
     },
     POSSIBLE_ABBREVIATION: {
       steps: [
         'Find the link the report names and read its visible text, which holds an abbreviation (such as "Av." for "Avenue").',
         'Read each of its title, aria-label and the text its aria-labelledby points to.',
-        'Check whether each source still holds the visible text as a user would say it, by speech input for example.'
+        'Check whether each source contains the visible text as displayed, the abbreviation written as it is shown.'
       ],
       passWhen:
-        'Each source holds the visible text, written in full or as displayed, so a user saying what they see reaches the link.',
+        'Each source contains the visible text as displayed, ignoring only punctuation and capital letters.',
       failWhen:
-        'A source replaces the visible text with other words, which fails RGAA 6.1.5: RGAA excuses only punctuation and capital letters.'
+        'A source spells the abbreviation out or changes it, so it does not contain the visible text as displayed, which fails RGAA 6.1.5: its particular cases excuse only punctuation, capital letters and symbols.'
     },
     PARENTHESISED_TEXT_MISSING: {
       steps: [
         'Find the link the report names and read its visible text, part of which is in parentheses.',
         'Read each of its title, aria-label and the text its aria-labelledby points to.',
-        'Check whether each source holds the whole visible text, the text in parentheses included.'
+        'Check whether the text in parentheses is displayed inside the link, and whether each source contains it.'
       ],
       passWhen:
-        'Each source holds the visible text, or leaves out only text in parentheses that is not part of the link’s label (a file size, a note).',
-      failWhen: 'A source leaves out part of the visible label, which fails RGAA 6.1.5.'
+        'Each source contains the whole visible text, the text in parentheses included (the brackets themselves may be left out), or the text in parentheses is not displayed inside the link.',
+      failWhen:
+        'A source leaves out text displayed inside the link, in parentheses or not, which fails RGAA 6.1.5: its particular cases excuse only punctuation, capital letters and symbols.'
     }
   }
 };
@@ -710,7 +711,8 @@ function runInPage(ctx) {
         ? {
             uncertainty: {
               code: 'judgement-required',
-              needed: 'Whether the audit checks the sources that do not give the accessible name.',
+              needed:
+                'Whether the source that gives the accessible name contains the visible label; RGAA judges that source.',
               evidence: { visibleLabel: label.text, sources }
             }
           }
