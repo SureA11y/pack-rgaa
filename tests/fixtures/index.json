@@ -558,12 +558,12 @@
       "testFile": "tests/rules/automatic/rgaa-field-label-listed-source.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-field-label-listed-source-all-scenarios.html",
-      "totalCases": 15,
+      "totalCases": 18,
       "caseCounts": {
         "PASS": 4,
-        "FAIL": 8,
+        "FAIL": 10,
         "CANTTELL": 2,
-        "OTHER": 1
+        "OTHER": 2
       }
     },
     {
@@ -626,10 +626,10 @@
       "testFile": "tests/rules/automatic/rgaa-form-button-name-present.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-form-button-name-present-all-scenarios.html",
-      "totalCases": 9,
+      "totalCases": 10,
       "caseCounts": {
         "PASS": 3,
-        "FAIL": 3,
+        "FAIL": 4,
         "CANTTELL": 2,
         "OTHER": 1
       }
@@ -1493,11 +1493,11 @@
       "testFile": "tests/rules/automatic/rgaa-required-field-indication.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-required-field-indication-all-scenarios.html",
-      "totalCases": 5,
+      "totalCases": 8,
       "caseCounts": {
-        "PASS": 1,
-        "FAIL": 2,
-        "CANTTELL": 1,
+        "PASS": 2,
+        "FAIL": 3,
+        "CANTTELL": 2,
         "OTHER": 1
       }
     },

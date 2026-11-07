@@ -97,5 +97,33 @@
         ><input id="v5" />
       </form>
     </div>
+
+    <div class="case" id="case_06">
+      <div class="case-title">06 — FAIL: « tous les champs sont obligatoires », not linked to the field</div>
+      <form>
+        <p>Tous les champs sont obligatoires.</p>
+        <label for="rfi_case_06">Nom</label><input id="rfi_case_06" required />
+        <label for="v6">Ville</label><input id="v6" />
+      </form>
+    </div>
+
+    <div class="case" id="case_07">
+      <div class="case-title">07 — CANTTELL: « tous les champs sont obligatoires, sauf mention contraire »</div>
+      <form>
+        <p>Tous les champs sont obligatoires, sauf mention contraire.</p>
+        <label for="rfi_case_07">Nom</label><input id="rfi_case_07" required />
+        <label for="v7">Ville</label><input id="v7" />
+      </form>
+    </div>
+
+    <div class="case" id="case_08">
+      <div class="case-title">08 — PASS: the sentence is linked to each field by aria-describedby</div>
+      <form>
+        <p id="rfi_all_08">Tous les champs sont obligatoires.</p>
+        <label for="rfi_case_08">Nom</label
+        ><input id="rfi_case_08" required aria-describedby="rfi_all_08" />
+        <label for="v8">Ville</label><input id="v8" required aria-describedby="rfi_all_08" />
+      </form>
+    </div>
   </body>
 </html>

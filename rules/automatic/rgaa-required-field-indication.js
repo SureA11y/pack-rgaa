@@ -11,8 +11,9 @@
  *   Applies to the fields of each form (a <form> or role="form", glossary
  *   « Formulaire ») that has at least two fields and does not mark its
  *   optional fields as such in their labels or legends (« facultatif »,
- *   « optionnel »): the 11.10 particular case makes 11.10.1 and 11.10.2 not
- *   applicable then. Radio buttons of one name count as one field. Fields
+ *   « optionnel »), a field's label being its <label> or the passage its
+ *   aria-labelledby points to: the 11.10 particular case makes 11.10.1 and
+ *   11.10.2 not applicable then. Radio buttons of one name count as one field. Fields
  *   hidden from view are left out. A page with none is notApplicable.
  * @expectation
  *   - 11.10.2: a field with `required` or aria-required="true" shows a
@@ -20,12 +21,18 @@
  *     text such as « obligatoire », or a sign such as « * ») visibly in its
  *     label or in a passage of text linked by aria-labelledby or
  *     aria-describedby. With a visible label, no indication in it or in
- *     those passages, none next to the field, no image, icon or generated
- *     content that could be one, and no sentence such as « tous les champs
- *     sont obligatoires », it fails (requiredNotIndicated). An indication
- *     found only next to the field, in a placeholder or a legend, an image
- *     or an icon, a global sentence, or a label hidden from view, is asked
- *     about (cantTell).
+ *     those passages, none next to the field, and no image, icon or
+ *     generated content that could be one, it fails (requiredNotIndicated).
+ *     A sentence such as « tous les champs sont obligatoires » not linked to
+ *     the field does not make up for it (allFieldsRequiredSentence): the
+ *     particular case of 11.10 keeps the test applicable when all the
+ *     fields are required. Linked by aria-describedby or aria-labelledby,
+ *     the sentence is an indication in a linked passage, and passes. An
+ *     indication found only next to the field, in a placeholder or a
+ *     legend, an image or an icon, or a label hidden from view, is asked
+ *     about (cantTell), as is a sentence with an exception (« sauf mention
+ *     contraire »), which says optional fields are marked in some way the
+ *     rule may not read (allFieldsRequiredWithException).
  *   - Glossary note: a sign such as « * » must be explained « visuellement
  *     et dans l'ordre du code source, avant la première utilisation ». When
  *     the page explains it only after the first field that uses it, that
@@ -70,6 +77,7 @@ const meta = {
     'noVisibleLabel',
     'indicationMayBeImage',
     'allFieldsRequiredSentence',
+    'allFieldsRequiredWithException',
     'stylesNotRead',
     'signMayMeanOther'
   ],
@@ -118,16 +126,16 @@ const meta = {
       failWhen:
         'Nothing in the label or a linked passage shows the field is required, or a sign or icon there is not explained before its first use, which fails RGAA 11.10.2.'
     },
-    allFieldsRequiredSentence: {
+    allFieldsRequiredWithException: {
       steps: [
         'Find the field the report names, and read its label on screen: it does not say the field is required.',
-        'Find the sentence that says all the fields of the form are required, and check that it comes before the fields.',
-        'Inspect the field: check whether the sentence is linked to it by aria-describedby or aria-labelledby, and whether the form marks its optional fields as such in their label or legend.'
+        'Read the sentence that says all the fields of the form are required, except some (« sauf mention contraire », « sauf ceux indiqués comme facultatifs »).',
+        'Look at the labels and legends of the form: check whether they visibly mark the optional fields, in whatever words.'
       ],
       passWhen:
-        'The sentence is visible and linked to the field by aria-describedby or aria-labelledby, so the indication sits in a passage linked to the field; or the form visibly marks its optional fields in their label or legend, which makes the test not applicable (particular case of RGAA 11.10).',
+        'The form visibly marks its optional fields in their label or legend, which makes the test not applicable (particular case of RGAA 11.10).',
       failWhen:
-        "The sentence is not linked to the field and the form marks no field as optional, so the field's label and linked passages give no indication, which fails RGAA 11.10.2: where all the fields of a form are required, the particular case of 11.10 keeps the test applicable."
+        "The form marks no field as optional in a label or legend, and the sentence is not linked to the field, so the field's label and linked passages give no indication, which fails RGAA 11.10.2."
     },
     stylesNotRead: {
       steps: [
@@ -183,6 +191,8 @@ function runInPage(ctx) {
   const SIGN_NAME = /ast[ée]risque|asterisk|asterisco|sternchen/i;
   const OPTIONAL =
     /(?:^|[^\p{L}])(facultati(?:f|ve)s?|optionnel(?:le)?s?|optional|opcional|freiwillig)(?![\p{L}])|任意/iu;
+  const EXCEPTION =
+    /(?:^|[^\p{L}])(sauf|except(?:é|ée|és|ées)?|à l['’]exception|unless|mention contraire)(?![\p{L}])/iu;
   const ALL_REQUIRED =
     /tous les champs[^.]{0,40}(obligatoires|requis)|all (?:the )?fields[^.]{0,30}(required|mandatory)|todos los campos[^.]{0,30}obligatorios|alle felder[^.]{0,30}(pflicht|erforderlich)/i;
 
@@ -411,7 +421,9 @@ function runInPage(ctx) {
     indicationMayBeImage: (p) =>
       `This required field ("${p.label}") shows no required indication in text; an image, icon or the text around it may give one.`,
     allFieldsRequiredSentence: (p) =>
-      `This required field ("${p.label}") shows no indication in its label; the form says all its fields are required.`,
+      `This required field ("${p.label}") shows no indication in its label or linked passages; the form says all its fields are required, in a sentence not linked to the field.`,
+    allFieldsRequiredWithException: (p) =>
+      `This required field ("${p.label}") shows no indication in its label; the form says all its fields are required except some, which may be marked as optional.`,
     stylesNotRead: (p) =>
       `This required field ("${p.label}") shows no required indication in its text; the page's styles, which could add one, were not read.`
   };
@@ -434,7 +446,9 @@ function runInPage(ctx) {
     indicationMayBeImage:
       'Check that an image or icon in the label, or the text the field belongs to, shows that it is required; otherwise add an indication to the label (RGAA 11.10.2).',
     allFieldsRequiredSentence:
-      'RGAA 11.10.2 still asks each field with required or aria-required for a visible indication in its label or a linked passage; check that it has one.',
+      "Link the sentence to each field with aria-describedby, show « (obligatoire) » or an explained « * » in each field's <label>, or mark the optional fields as such in their label or legend (RGAA 11.10.2).",
+    allFieldsRequiredWithException:
+      "Check that the form marks its optional fields in their label or legend; otherwise show a required indication in each field's <label> or link the sentence with aria-describedby (RGAA 11.10.2).",
     stylesNotRead:
       "Check that the field's label shows a required indication, such as one added by CSS (RGAA 11.10.2)."
   };
@@ -477,15 +491,31 @@ function runInPage(ctx) {
     }
     if (groups.size < 2) continue;
 
-    const markOptional = [...dom.querySelectorAll(form, 'label, legend')].some((n) =>
-      OPTIONAL.test(look(n).text)
-    );
+    // Optional fields marked in a label or legend of the form, or in a
+    // field's own label: its <label> or its aria-labelledby passage.
+    const markOptional =
+      [...dom.querySelectorAll(form, 'label, legend')].some((n) => OPTIONAL.test(look(n).text)) ||
+      all.some((el) =>
+        labelsOf(el)
+          .concat(refs(el, 'aria-labelledby'))
+          .some((n) => OPTIONAL.test(look(n).text))
+      );
     if (markOptional) continue;
 
+    // The « all fields are required » sentence, in the form or just before
+    // it, and whether it makes an exception.
     const before = dom.previousElementSibling ? dom.previousElementSibling(form) : null;
-    const globalSentence =
-      ALL_REQUIRED.test(norm(dom.textContent(form))) ||
-      (before && ALL_REQUIRED.test(norm(dom.textContent(before))));
+    const sentenceIn = (text) => {
+      const m = ALL_REQUIRED.exec(text);
+      if (!m) return null;
+      const start = Math.max(text.slice(0, m.index).search(/[^.!?]*$/), 0);
+      const tail = text.slice(m.index + m[0].length);
+      const end = tail.search(/[.!?]/);
+      return text.slice(start, m.index + m[0].length + (end < 0 ? tail.length : end));
+    };
+    const sentence =
+      sentenceIn(norm(dom.textContent(form))) ||
+      (before ? sentenceIn(norm(dom.textContent(before))) : null);
 
     for (const members of groups.values()) {
       const field = members[0];
@@ -538,10 +568,12 @@ function runInPage(ctx) {
         report(cantTells, field, 'indicationMayBeImage', params, NEEDED);
       } else if (own.icon || own.generated || near.icon) {
         report(cantTells, field, 'indicationMayBeImage', params, NEEDED);
-      } else if (globalSentence) {
-        report(cantTells, field, 'allFieldsRequiredSentence', params, NEEDED);
       } else if (stylesUnread) {
         report(cantTells, field, 'stylesNotRead', params, NEEDED);
+      } else if (sentence && EXCEPTION.test(sentence)) {
+        report(cantTells, field, 'allFieldsRequiredWithException', params, NEEDED);
+      } else if (sentence) {
+        report(fails, field, 'allFieldsRequiredSentence', params);
       } else {
         report(fails, field, 'requiredNotIndicated', params);
       }

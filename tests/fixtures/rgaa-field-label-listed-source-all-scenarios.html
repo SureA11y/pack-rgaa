@@ -44,8 +44,8 @@
   </div>
 
   <div class="case" id="case_05">
-    <div class="case-title">05 — FAIL: output whose only text is its value</div>
-    <output id="flls_case_05">5</output>
+    <div class="case-title">05 — FAIL: output in a form whose only text is its value</div>
+    <form action="#"><output id="flls_case_05">5</output></form>
   </div>
 
   <div class="case" id="case_06">
@@ -58,15 +58,13 @@
     <input type="email" aria-labelledby="flls_missing" id="flls_case_07">
   </div>
 
-  <h2>B. Asked about (CANTTELL)</h2>
-
   <div class="case" id="case_08">
-    <div class="case-title">08 — CANTTELL: wrapping label without for</div>
+    <div class="case-title">08 — FAIL: wrapping label without for</div>
     <label>Nom <input type="text" id="flls_case_08"></label>
   </div>
 
   <div class="case" id="case_09">
-    <div class="case-title">09 — CANTTELL: label for pointing at a role="listbox" element</div>
+    <div class="case-title">09 — FAIL: label for pointing at a role="listbox" element</div>
     <label for="flls_case_09">Pays</label>
     <div role="listbox" id="flls_case_09" tabindex="0"><div role="option" aria-selected="true">France</div></div>
   </div>
@@ -74,6 +72,22 @@
   <div class="case" id="case_10">
     <div class="case-title">10 — FAIL: empty aria-label is the only source</div>
     <input type="text" aria-label="" id="flls_case_10">
+  </div>
+
+  <h2>B. Asked about (CANTTELL)</h2>
+
+  <div class="case" id="case_16">
+    <div class="case-title">16 — CANTTELL: wrapping label without for, with a button next to it (11.1.1 fifth condition)</div>
+    <form action="#">
+      <label><span>Rechercher</span> <input type="search" id="flls_case_16"></label>
+      <button type="submit">Rechercher</button>
+    </form>
+  </div>
+
+  <div class="case" id="case_17">
+    <div class="case-title">17 — CANTTELL: label for pointing at a custom element, which may be form-associated</div>
+    <label for="flls_case_17">Quantité</label>
+    <x-stepper role="spinbutton" id="flls_case_17" tabindex="0" aria-valuenow="1"></x-stepper>
   </div>
 
   <h2>C. Listed source present (PASS)</h2>
@@ -106,6 +120,11 @@
     <div class="case-title">15 — NOT APPLICABLE: submit and hidden inputs are not form fields</div>
     <input type="submit" value="Envoyer" id="flls_case_15">
     <input type="hidden" name="token" value="x">
+  </div>
+
+  <div class="case" id="case_18">
+    <div class="case-title">18 — NOT APPLICABLE: output outside any form, a status message judged under 7.5</div>
+    <output aria-live="polite" id="flls_case_18">3 résultats</output>
   </div>
 </body>
 </html>

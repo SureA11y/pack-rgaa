@@ -99,8 +99,12 @@ test(`${RULE_ID}: where an indication may be elsewhere, it asks`, () => {
       'indicationMayBeImage'
     ],
     [
-      '<p>Tous les champs sont obligatoires.</p><label for="a">Nom</label><input id="a" required>',
-      'allFieldsRequiredSentence'
+      '<p>Tous les champs sont obligatoires, sauf mention contraire.</p><label for="a">Nom</label><input id="a" required>',
+      'allFieldsRequiredWithException'
+    ],
+    [
+      '<p>All fields are required unless marked otherwise.</p><label for="a">Name</label><input id="a" required>',
+      'allFieldsRequiredWithException'
     ]
   ]) {
     const rule = assertRule(runa11yCoreOnHtml(page(form(fields)), RUN), RULE_ID, 'cantTell', {
@@ -110,6 +114,54 @@ test(`${RULE_ID}: where an indication may be elsewhere, it asks`, () => {
     assert.deepEqual(codes(rule), [code], fields);
     assert.equal(rule.occurrences[0].uncertainty.code, 'judgement-required');
   }
+});
+
+// 11.10 particular case: « Dans le cas où l'ensemble des champs d'un
+// formulaire sont obligatoires, les tests 11.10.1 et 11.10.2 restent
+// applicables ».
+test(`${RULE_ID}: an « all fields are required » sentence not linked to the field fails, linked it passes`, () => {
+  for (const fields of [
+    '<p>Tous les champs sont obligatoires.</p><label for="a">Nom</label><input id="a" required>',
+    '<p>All fields are required.</p><div><label for="a">Name</label><input id="a" required></div>'
+  ]) {
+    const rule = assertRule(runa11yCoreOnHtml(page(form(fields)), RUN), RULE_ID, 'fail', {
+      minOccurrences: 1,
+      maxOccurrences: 1
+    });
+    assert.deepEqual(codes(rule), ['allFieldsRequiredSentence'], fields);
+    assert.equal(rule.occurrences[0].occurrenceOutcome, 'fail');
+    assert.equal(
+      rule.occurrences[0].i18n.summaryKey,
+      'requiredFieldIndication_summary_allFieldsRequiredSentence'
+    );
+  }
+  for (const link of ['aria-describedby="s"', 'aria-labelledby="n s"']) {
+    const fields =
+      '<p id="s">Tous les champs sont obligatoires.</p><label for="a" id="n">Nom</label>' +
+      `<input id="a" required ${link}>`;
+    assertRule(runa11yCoreOnHtml(page(form(fields)), RUN), RULE_ID, 'pass', { maxOccurrences: 0 });
+  }
+  // Optional fields marked in a field's aria-labelledby passage make 11.10
+  // not applicable.
+  assertRule(
+    runa11yCoreOnHtml(
+      page(
+        '<form><p>Tous les champs sont obligatoires.</p><label for="a">Nom</label><input id="a" required><span id="t">Téléphone (facultatif)</span><input aria-labelledby="t"></form>'
+      ),
+      RUN
+    ),
+    RULE_ID,
+    'notApplicable'
+  );
+  // Without a layout, styles that could add an indication are asked about first.
+  const styled = page(
+    form(
+      '<p>Tous les champs sont obligatoires.</p><label for="a">Nom</label><input id="a" required>'
+    )
+  ).replace('</head>', '<link rel="stylesheet" href="s.css"></head>');
+  assert.deepEqual(codes(assertRule(runa11yCoreOnHtml(styled, RUN), RULE_ID, 'cantTell')), [
+    'stylesNotRead'
+  ]);
 });
 
 test(`${RULE_ID}: without a layout, a page with style sheets is asked about, not failed`, () => {
@@ -139,14 +191,16 @@ test(`${RULE_ID}: one field, optional fields marked, or no form is not applicabl
 test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html)`, () => {
   const fixturePath = path.join(__dirname, '../..', 'fixtures', `${RULE_ID}-all-scenarios.html`);
   const result = runa11yCoreOnHtml(fs.readFileSync(fixturePath, 'utf8'), RUN);
-  const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 3, maxOccurrences: 3 });
+  const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 5, maxOccurrences: 5 });
   const byId = rule.occurrences.map((o) => [
     (o.html.match(/id="([^"]+)"/) || [])[1],
     o.occurrenceOutcome
   ]);
   assert.deepEqual(byId, [
     ['rfi_case_01', 'fail'],
+    ['rfi_case_06', 'fail'],
     ['rfi_case_03', 'fail'],
-    ['rfi_case_04', 'cantTell']
+    ['rfi_case_04', 'cantTell'],
+    ['rfi_case_07', 'cantTell']
   ]);
 });
