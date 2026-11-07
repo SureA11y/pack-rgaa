@@ -27,4 +27,8 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
         timeout-minutes: 5
+      # Locally a test samples the scenario pages; here, on one Node version,
+      # it scans them all.
       - run: npm test
+        env:
+          RGAA_FULL_TESTS: ${{ matrix.node-version == '22.x' && '1' || '' }}
