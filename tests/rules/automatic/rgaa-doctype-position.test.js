@@ -69,8 +69,8 @@ test(`${RULE_ID}: with no doctype in the DOM it asks when the source is missing,
 });
 
 test(`${RULE_ID}: messages follow the scan locale`, () => {
-  const rule = assertRule(run(LATE, { url: URL, start: LATE }, { locale: 'ja' }), RULE_ID, 'fail');
-  assert.match(rule.occurrences[0].summary, /<html> タグの後で doctype を宣言/);
+  const rule = assertRule(run(LATE, { url: URL, start: LATE }, { locale: 'fr' }), RULE_ID, 'fail');
+  assert.match(rule.occurrences[0].summary, /déclare son doctype après la balise <html>/);
 });
 
 test(`${RULE_ID}: opt-in, so a default, WCAG or EN 301 549 run does not include it`, () => {

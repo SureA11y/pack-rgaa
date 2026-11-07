@@ -8,7 +8,7 @@
  * the standard (its criteria and tests, generated from data/), the tests each
  * rule checks (rule-map.js), one rollup per criterion (mappings.js), the
  * rgaa-4.1.2 profile, 111 rules for what RGAA requires beyond WCAG or judges
- * differently (rules/), their messages in five languages (i18n/), and RGAA's
+ * differently (rules/), their messages in English and French (i18n/), and RGAA's
  * own methodology as the procedures a person follows (procedures.js).
  *
  * RGAA does not restate WCAG criterion by criterion, so the standard is mapped

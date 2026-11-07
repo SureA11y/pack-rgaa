@@ -145,7 +145,7 @@ const VARIANTS = {
     sc: { '3.1.2': 'RGAA 8.8', '3.1.1': 'RGAA 8.4' }
   }
 };
-const LOCALES = ['en', 'fr', 'de', 'es', 'ja'];
+const LOCALES = ['en', 'fr'];
 const dictionaryOf = (locale) => require(`@surea11y/core/procedures/${locale}`);
 
 // What a variant's steps say of WCAG beyond its name.

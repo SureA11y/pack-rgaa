@@ -89,11 +89,11 @@ test(`${RULE_ID}: no title, or an empty one, is page-title-present's and notAppl
 
 test(`${RULE_ID}: messages follow the scan locale and keep the glossary's words`, () => {
   const rule = assertRule(
-    run('Horaires', [{ url: 'https://example.test/b', title: 'Horaires' }], { locale: 'de' }),
+    run('Horaires', [{ url: 'https://example.test/b', title: 'Horaires' }], { locale: 'fr' }),
     RULE_ID,
     'fail'
   );
-  assert.match(rule.occurrences[0].summary, /^Andere Seiten der Website haben denselben Titel/);
+  assert.match(rule.occurrences[0].summary, /^D’autres pages du site ont le même titre/);
   assert.match(rule.occurrences[0].summary, /« de manière claire, concise et unique »/);
 });
 
