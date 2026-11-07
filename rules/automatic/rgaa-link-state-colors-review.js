@@ -234,6 +234,47 @@ function runInPage(ctx) {
     return styleRules;
   }
 
+  // What the resting-state checks read of each author rule, read once
+  // rather than for every link: the declarations they look at and the
+  // selector's parts. Read before any selector is rewritten for the states,
+  // so the parts are the page's own. Rules that set none of those
+  // declarations are left out.
+  let ruleInfoList = null;
+  function ruleInfos(doc) {
+    if (ruleInfoList) return ruleInfoList;
+    ruleInfoList = [];
+    for (const cssRule of getStyleRules(doc)) {
+      const style = cssRule.style;
+      let decoration = '';
+      let decorationImportant = false;
+      for (const prop of ['text-decoration-line', 'text-decoration']) {
+        decoration = declared(style, prop);
+        if (decoration) {
+          decorationImportant = String(style.getPropertyPriority(prop) || '') === 'important';
+          break;
+        }
+      }
+      const color = !!declared(style, 'color');
+      const content = declared(style, 'content');
+      const generates = !!content && !['none', 'normal', '""', "''"].includes(content);
+      if (!decoration && !color && !generates) continue;
+      ruleInfoList.push({
+        decoration,
+        decorationImportant,
+        color,
+        colorOnly: color && !addsNonColorMark(style),
+        generates,
+        parts: splitSelectorList(cssRule.selectorText).map((text) => ({
+          text,
+          pseudoElement: /::[a-z-]+/i.test(text),
+          anyState: ALL_STATES_RE.test(text),
+          beforeAfter: /::?(before|after)\s*$/i.test(text)
+        }))
+      });
+    }
+    return ruleInfoList;
+  }
+
   function matches(el, selector) {
     try {
       return dom.matches(el, selector);
@@ -287,21 +328,13 @@ function runInPage(ctx) {
   function underlineFromCssom(el) {
     const doc = dom.ownerDocument(el);
     let best = null;
-    for (const cssRule of getStyleRules(doc)) {
-      let value = '';
-      let important = false;
-      for (const prop of ['text-decoration-line', 'text-decoration']) {
-        value = declared(cssRule.style, prop);
-        if (value) {
-          important = String(cssRule.style.getPropertyPriority(prop) || '') === 'important';
-          break;
-        }
-      }
+    for (const info of ruleInfos(doc)) {
+      const value = info.decoration;
       if (!value) continue;
-      for (const part of splitSelectorList(cssRule.selectorText)) {
-        if (/::[a-z-]+/i.test(part) || ALL_STATES_RE.test(part)) continue;
-        if (!matches(el, part)) continue;
-        const rank = (important ? 1e9 : 0) + specificityOf(part);
+      for (const part of info.parts) {
+        if (part.pseudoElement || part.anyState) continue;
+        if (!matches(el, part.text)) continue;
+        const rank = (info.decorationImportant ? 1e9 : 0) + specificityOf(part.text);
         if (!best || rank >= best.rank) best = { rank, underlined: /\bunderline\b/.test(value) };
       }
     }
@@ -354,12 +387,11 @@ function runInPage(ctx) {
   }
 
   function hasPseudoContent(el) {
-    for (const cssRule of getStyleRules(dom.ownerDocument(el))) {
-      const content = declared(cssRule.style, 'content');
-      if (!content || ['none', 'normal', '""', "''"].includes(content)) continue;
-      for (const part of splitSelectorList(cssRule.selectorText)) {
-        if (!/::?(before|after)\s*$/i.test(part) || ALL_STATES_RE.test(part)) continue;
-        if (matches(el, part.replace(/::?(before|after)\s*$/i, '').trim() || '*')) return true;
+    for (const info of ruleInfos(dom.ownerDocument(el))) {
+      if (!info.generates) continue;
+      for (const part of info.parts) {
+        if (!part.beforeAfter || part.anyState) continue;
+        if (matches(el, part.text.replace(/::?(before|after)\s*$/i, '').trim() || '*')) return true;
       }
     }
     return false;
@@ -458,11 +490,10 @@ function runInPage(ctx) {
   // States whose author rule changes only the link's color.
   function colorOnlyStates(el) {
     const states = [];
-    for (const cssRule of getStyleRules(dom.ownerDocument(el))) {
-      if (!declared(cssRule.style, 'color')) continue;
-      if (addsNonColorMark(cssRule.style)) continue;
-      for (const part of splitSelectorList(cssRule.selectorText)) {
-        if (/::[a-z-]+/i.test(part)) continue;
+    for (const info of ruleInfos(dom.ownerDocument(el))) {
+      if (!info.colorOnly) continue;
+      for (const { text: part, pseudoElement } of info.parts) {
+        if (pseudoElement) continue;
         const found = part.match(STATE_RE);
         if (!found) continue;
         const base = part.replace(STATE_RE, '').trim() || '*';
@@ -514,11 +545,11 @@ function runInPage(ctx) {
   // as the browser's.
   function authorSetsRestingColor(el) {
     if (declared(el.style, 'color')) return true;
-    for (const cssRule of getStyleRules(dom.ownerDocument(el))) {
-      if (!declared(cssRule.style, 'color')) continue;
-      for (const part of splitSelectorList(cssRule.selectorText)) {
-        if (/::[a-z-]+/i.test(part) || ALL_STATES_RE.test(part)) continue;
-        if (matches(el, part)) return true;
+    for (const info of ruleInfos(dom.ownerDocument(el))) {
+      if (!info.color) continue;
+      for (const part of info.parts) {
+        if (part.pseudoElement || part.anyState) continue;
+        if (matches(el, part.text)) return true;
       }
     }
     if (!unreadableSheet) return false;
@@ -891,7 +922,7 @@ function runInPage(ctx) {
   // Each link's states, read in one pass while the selectors are rewritten.
   const judged = new Map();
   if (inScope.length && doc && hasLayout(doc)) {
-    getStyleRules(doc);
+    ruleInfos(doc);
     const restore = unreadableSheet ? null : emulateStates(doc);
     if (restore) {
       const unfreeze = freezeTransitions(doc);
