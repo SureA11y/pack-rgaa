@@ -214,3 +214,20 @@ test(`${RULE_ID}: screen-reader-only text is left out of the visible label`, () 
   const rule = result.checksResults.find((r) => r.ruleId === RULE_ID);
   assert.ok(rule && rule.outcome !== 'fail', rule && JSON.stringify(reasons(rule)));
 });
+
+// The visible label is read as the browser renders it: a word split across
+// inline elements stays one word.
+test(`${RULE_ID}: a word split across inline elements is one word of the visible label`, () => {
+  assertRule(
+    run(TAB('aria-label="Paramètres du compte"', 'Para<b>mètres</b> du compte')),
+    RULE_ID,
+    'pass',
+    { maxOccurrences: 0 }
+  );
+  const rule = assertRule(run(TAB('aria-label="Réglages"', 'Para<b>mètres</b>')), RULE_ID, 'fail');
+  assert.equal(rule.occurrences[0].data.details.visibleLabel, 'Paramètres');
+  assert.equal(
+    rule.occurrences[0].summary,
+    'The accessible name of this component (from aria-label) does not contain its visible label "Paramètres".'
+  );
+});

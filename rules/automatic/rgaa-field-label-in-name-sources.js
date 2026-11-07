@@ -35,6 +35,10 @@
  *   word with another ending ("Rechercher" for "Recherche"), an
  *   abbreviation written out or text in parentheses left out fails.
  * @implementation-notes
+ * - The visible label is the text as the browser renders it: text nodes
+ *   split across inline elements join with no space (Télé<b>charger</b>
+ *   reads "Télécharger"), and a space separates them only where the source
+ *   has whitespace, a line break, a form control or a block boundary.
  * - The content of a switch, checkbox or radio that is only a state word
  *   ("Activé", "On") is its state, not its étiquette: such a field has no
  *   visible label, and 11.2.5 does not apply to it.
@@ -248,6 +252,7 @@ function runInPage(ctx) {
     return false;
   }
 
+  const SHOW_ELEMENT = 1;
   const SHOW_TEXT = 4;
 
   // Rendered and in the accessibility tree but drawn so that nothing can be
@@ -262,8 +267,36 @@ function runInPage(ctx) {
     }
   }
 
+  // Whether an element separates the text before it from the text after it,
+  // as the browser lays the text out: a block box (block, list item, table
+  // cell, flex or grid container), a line break or a form control does; an
+  // inline element does not, so Télé<b>charger</b> reads "Télécharger".
+  const breakCache = new Map();
+  function breaksText(el) {
+    if (breakCache.has(el)) return breakCache.get(el);
+    const tag = tagOf(el);
+    let breaks = tag === 'br' || isControlTag(tag);
+    if (!breaks) {
+      let display = '';
+      try {
+        const view = dom.ownerDocument(el) && dom.defaultView(dom.ownerDocument(el));
+        if (view && typeof view.getComputedStyle === 'function') {
+          display = String(view.getComputedStyle(el).display || '');
+        }
+      } catch {
+        display = '';
+      }
+      breaks = /^(block|list-item|flex|grid|flow-root|table)/.test(display);
+    }
+    breakCache.set(el, breaks);
+    return breaks;
+  }
+
   // The text a person sees in `container`, in document order. With
   // `visibleOnly` false, hidden text counts too (the content of a source).
+  // Text nodes are joined as the browser renders them: with a space where the
+  // source has whitespace or a block boundary, line break or control comes
+  // between them, and with none between inline siblings.
   function textUnder(container, visibleOnly) {
     if (!container) return { text: '', elements: [] };
     if (visibleOnly && (!isDomVisible(container) || isVisuallyHidden(container))) {
@@ -271,21 +304,34 @@ function runInPage(ctx) {
     }
     let walker;
     try {
-      walker = dom.createTreeWalker(document, container, SHOW_TEXT, null);
+      walker = dom.createTreeWalker(document, container, SHOW_ELEMENT | SHOW_TEXT, null);
     } catch {
       walker = null;
     }
     if (!walker) return { text: '', elements: [] };
-    const parts = [];
+    let text = '';
     const elements = [];
+    // A space is due before the next text.
+    let gap = false;
+    let last = null;
     let n;
     while ((n = walker.nextNode())) {
-      const t = String(dom.nodeValue(n) || '')
-        .replace(/\s+/g, ' ')
-        .trim();
-      if (!t) continue;
+      if (dom.nodeType(n) === 1) {
+        if (breaksText(n)) gap = true;
+        continue;
+      }
+      const raw = String(dom.nodeValue(n) || '').replace(/\s+/g, ' ');
+      if (!raw) continue;
       const p = dom.parentElement(n);
       if (!p) continue;
+      const t = raw.trim();
+      if (!t) {
+        // Whitespace between two runs of text, unless a control or a
+        // non-rendered element holds it.
+        const tag = tagOf(p);
+        if (!isNonRenderedTag(tag) && !isControlTag(tag)) gap = true;
+        continue;
+      }
       let skip = false;
       for (let a = p; a && a !== container; a = dom.parentElement(a)) {
         const tag = tagOf(a);
@@ -296,10 +342,23 @@ function runInPage(ctx) {
       }
       if (skip || isNonRenderedTag(tagOf(p))) continue;
       if (visibleOnly && (!isAccEligible(p) || srOnly(p, container))) continue;
-      parts.push(t);
+      // A block that closed after the last text separates it from this one.
+      if (last && !gap) {
+        for (let a = dom.parentElement(last); a && a !== container; a = dom.parentElement(a)) {
+          if (dom.contains(a, n)) break;
+          if (breaksText(a)) {
+            gap = true;
+            break;
+          }
+        }
+      }
+      if (text && (gap || raw[0] === ' ')) text += ' ';
+      text += t;
+      gap = raw[raw.length - 1] === ' ';
+      last = n;
       if (!elements.includes(p)) elements.push(p);
     }
-    return { text: parts.join(' ').replace(/\s+/g, ' ').trim(), elements };
+    return { text, elements };
   }
 
   function labelsOf(el) {

@@ -35,10 +35,7 @@ test(`${RULE_ID}: a title that does not contain the visible label fails (6.1.5 c
   const occ = rule.occurrences[0];
   assert.equal(occ.i18n.summaryKey, 'linkLabelInNameSources_summary_fail_source');
   assert.equal(occ.i18n.hintKey, 'linkLabelInNameSources_hint_fail_source');
-  assert.equal(
-    occ.summary,
-    'a: the title of this link does not contain its visible label "Contact".'
-  );
+  assert.equal(occ.summary, 'The title of this link does not contain its visible label "Contact".');
   assert.deepEqual(occ.data.details.sources, [
     { source: 'title', text: 'Ouvre une nouvelle fenêtre', verdict: 'no' }
   ]);
@@ -269,4 +266,34 @@ test(`${RULE_ID}: visually hidden text is not part of the visible label`, () => 
   ]) {
     assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, outcome);
   }
+});
+
+// The visible label is read as the browser renders it: a word split across
+// inline elements stays one word, and a line break, a block boundary or
+// whitespace in the source separates words.
+test(`${RULE_ID}: a word split across inline elements is one word of the visible label`, () => {
+  for (const body of [
+    '<a href="/a" aria-label="Télécharger le rapport">Télé<b>charger</b> le rapport</a>',
+    '<a href="/a" title="Télécharger le rapport"><span>Télé</span><span>charger</span> le <em>rapport</em></a>',
+    '<a href="/a" aria-label="Lire la suite">Lire<br>la suite</a>',
+    '<a href="/a" aria-label="Plan du site"><span>Plan</span> <span>du site</span></a>',
+    '<a href="/a" aria-label="Page 2"><span>Page</span><div>2</div></a>'
+  ]) {
+    assertRule(run(body), RULE_ID, 'pass', { maxOccurrences: 0 });
+  }
+  const rule = assertRule(
+    run('<a href="/a" aria-label="Télé charger">Télé<b>charger</b></a>'),
+    RULE_ID,
+    'fail'
+  );
+  assert.equal(rule.occurrences[0].data.details.visibleLabel, 'Télécharger');
+  // Screen-reader-only text stays out of the visible label.
+  assertRule(
+    run(
+      '<style>.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}</style><a href="/a" aria-label="Lire la suite">Lire la suite<span class="sr"> de l’article</span></a>'
+    ),
+    RULE_ID,
+    'pass',
+    { maxOccurrences: 0 }
+  );
 });

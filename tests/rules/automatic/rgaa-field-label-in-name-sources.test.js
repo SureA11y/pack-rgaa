@@ -271,3 +271,24 @@ test(`${RULE_ID}: a switch whose only text is its state has no visible label`, (
     'fail'
   );
 });
+
+// The visible label is read as the browser renders it: a word split across
+// inline elements stays one word.
+test(`${RULE_ID}: a word split across inline elements is one word of the visible label`, () => {
+  for (const body of [
+    '<label for="x">Pré<b>nom</b></label><input id="x" aria-label="Prénom">',
+    '<span id="l">Code <em>post</em>al</span><input aria-labelledby="l" title="Code postal">'
+  ]) {
+    assertRule(run(body), RULE_ID, 'pass', { maxOccurrences: 0 });
+  }
+  const rule = assertRule(
+    run('<label for="x">Pré<b>nom</b></label><input id="x" aria-label="Pré nom">'),
+    RULE_ID,
+    'fail'
+  );
+  assert.equal(rule.occurrences[0].data.details.visibleLabel, 'Prénom');
+  assert.equal(
+    rule.occurrences[0].summary,
+    'The accessible name of this form field (from aria-label) does not contain its visible label "Prénom".'
+  );
+});

@@ -237,3 +237,26 @@ test(`${RULE_ID}: visually hidden text is not part of the visible label`, () => 
     assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, outcome);
   }
 });
+
+// The visible label is read as the browser renders it: a word split across
+// inline elements stays one word.
+test(`${RULE_ID}: a word split across inline elements is one word of the visible label`, () => {
+  assertRule(
+    run(
+      '<form><button aria-label="Envoyer maintenant">Env<span>oyer</span> maintenant</button></form>'
+    ),
+    RULE_ID,
+    'pass',
+    { maxOccurrences: 0 }
+  );
+  const rule = assertRule(
+    run('<form><button aria-label="Valider">Env<span>oyer</span></button></form>'),
+    RULE_ID,
+    'fail'
+  );
+  assert.equal(rule.occurrences[0].data.details.visibleLabel, 'Envoyer');
+  assert.equal(
+    rule.occurrences[0].summary,
+    'The accessible name of this button (from aria-label) does not contain its visible label "Envoyer".'
+  );
+});
