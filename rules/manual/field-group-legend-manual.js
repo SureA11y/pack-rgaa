@@ -111,7 +111,7 @@ function runInPage(ctx) {
 
   function hasField(group) {
     if (dom.querySelector(group, NATIVE_FIELDS)) return true;
-    return Array.from(dom.querySelectorAll(group, ROLE_FIELDS)).some((el) =>
+    return [...dom.querySelectorAll(group, ROLE_FIELDS)].some((el) =>
       FIELD_ROLES.includes(explicitRole(el))
     );
   }
@@ -156,7 +156,7 @@ function runInPage(ctx) {
     // aria-labelledby for role="group"/"radiogroup".
     if (isAriaGroup && hasAriaName(group)) continue;
     if (isFieldset) {
-      const legend = Array.from(dom.querySelectorAll(group, ':scope > *')).find(
+      const legend = [...dom.querySelectorAll(group, ':scope > *')].find(
         (c) => String(dom.tagName(c)).toLowerCase() === 'legend'
       );
       if (legend && hasText(dom.textContent(legend))) continue;

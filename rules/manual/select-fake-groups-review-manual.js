@@ -78,7 +78,7 @@ function runInPage(ctx) {
   for (const select of nodes) {
     if (!select || !dom.get(select, 'getAttribute')) continue;
     if (dom.querySelectorAll(select, 'optgroup').length) continue;
-    const options = Array.from(dom.querySelectorAll(select, 'option')).slice(1);
+    const options = [...dom.querySelectorAll(select, 'option')].slice(1);
     // One disabled option is often an item out of stock; headings come in
     // sets, so disabled options count from two.
     const disabled = options.filter(

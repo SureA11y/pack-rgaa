@@ -523,7 +523,7 @@ function runInPage(ctx) {
     }
     if (label.elements.some(isIconFontElement)) return 'symbol';
     const whole = label.text.toLowerCase();
-    if (Array.from(whole).length === 1 && sourceText.toLowerCase().indexOf(whole) === -1) {
+    if ([...whole].length === 1 && sourceText.toLowerCase().indexOf(whole) === -1) {
       return 'symbol';
     }
     return 'no';

@@ -168,7 +168,7 @@ function runInPage(ctx) {
   // non-breaking spaces only), 'content'.
   function contentOf(el) {
     const kinds = new Set();
-    for (const n of Array.from(dom.childNodes(el) || [])) {
+    for (const n of [...(dom.childNodes(el) || [])]) {
       const type = dom.nodeType(n);
       if (type === 3) {
         const v = String(dom.nodeValue(n) || '');

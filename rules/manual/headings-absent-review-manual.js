@@ -70,9 +70,9 @@ function runInPage(ctx) {
 
   const body = dom.body(document);
   if (!body) return na;
-  const headings = Array.from(
-    dom.querySelectorAll(document, 'h1, h2, h3, h4, h5, h6, [role~="heading" i]')
-  ).filter((el) => {
+  const headings = [
+    ...dom.querySelectorAll(document, 'h1, h2, h3, h4, h5, h6, [role~="heading" i]')
+  ].filter((el) => {
     const tag = String(dom.localName(el) || '').toLowerCase();
     if (/^h[1-6]$/.test(tag)) return true;
     try {

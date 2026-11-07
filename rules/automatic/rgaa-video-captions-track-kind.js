@@ -104,7 +104,7 @@ function runInPage(ctx) {
 
   for (const video of videos) {
     if (!video) continue;
-    const tracks = Array.from(dom.querySelectorAll(video, ':scope > *'))
+    const tracks = [...dom.querySelectorAll(video, ':scope > *')]
       .filter((c) => String(dom.tagName(c)).toLowerCase() === 'track')
       .filter((t) => String(dom.getAttribute(t, 'src') || '').trim())
       .map((t) => {

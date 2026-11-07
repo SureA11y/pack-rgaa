@@ -115,7 +115,7 @@ function runInPage(ctx) {
   };
   const all = (root, sel) => {
     try {
-      return Array.from(dom.querySelectorAll(root, sel));
+      return [...dom.querySelectorAll(root, sel)];
     } catch {
       return [];
     }

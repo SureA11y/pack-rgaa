@@ -183,10 +183,10 @@ function runInPage(ctx) {
     if (tag === 'img') return norm(attr(el, 'alt')) || norm(attr(el, 'title'));
     if (tag === 'svg') {
       const parts = [];
-      for (const child of Array.from(dom.querySelectorAll(el, ':scope > *'))) {
+      for (const child of [...dom.querySelectorAll(el, ':scope > *')]) {
         if (tagOf(child) === 'title') parts.push(norm(dom.textContent(child)));
       }
-      for (const t of Array.from(dom.querySelectorAll(el, 'text'))) {
+      for (const t of [...dom.querySelectorAll(el, 'text')]) {
         parts.push(norm(dom.textContent(t)));
       }
       return norm(parts.join(' '));
@@ -196,13 +196,13 @@ function runInPage(ctx) {
   function renderedChildren(node) {
     try {
       const shadow = dom.nodeType(node) === 1 ? dom.shadowRoot(node) : null;
-      if (shadow) return Array.from(dom.childNodes(shadow) || []);
+      if (shadow) return [...(dom.childNodes(shadow) || [])];
       if (dom.nodeType(node) === 1 && tagOf(node) === 'slot') {
-        const assigned = Array.from(dom.assignedNodes(node, { flatten: true }) || []);
+        const assigned = [...(dom.assignedNodes(node, { flatten: true }) || [])];
         if (assigned.length) return assigned;
       }
     } catch {}
-    return Array.from(dom.childNodes(node) || []);
+    return [...(dom.childNodes(node) || [])];
   }
 
   const EMBEDDED = new Set([

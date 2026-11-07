@@ -101,7 +101,7 @@ function runInPage(ctx) {
     if (tag === 'input' || tag === 'textarea') return ownText(el);
     const parts = [];
     const visit = (node) => {
-      for (const n of Array.from(dom.childNodes(node) || [])) {
+      for (const n of [...(dom.childNodes(node) || [])]) {
         const type = dom.nodeType(n);
         if (type === 3) parts.push(String(dom.nodeValue(n) || ''));
         else if (type === 1) {

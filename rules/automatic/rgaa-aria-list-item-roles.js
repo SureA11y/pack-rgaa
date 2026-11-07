@@ -104,7 +104,7 @@ function runInPage(ctx) {
     const tag = String(dom.tagName(el)).toLowerCase();
     if (tag === 'ul' || tag === 'ol') continue;
 
-    const items = Array.from(dom.querySelectorAll(el, ':scope > *')).filter((c) => {
+    const items = [...dom.querySelectorAll(el, ':scope > *')].filter((c) => {
       const t = String(dom.tagName(c)).toLowerCase();
       return t !== 'script' && t !== 'template';
     });

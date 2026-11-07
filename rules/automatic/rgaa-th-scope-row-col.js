@@ -81,13 +81,13 @@ function runInPage(ctx) {
 
   // The table's own rows, not those of a table nested in it.
   function rowsOf(table) {
-    return Array.from(dom.querySelectorAll(table, 'tr')).filter(
+    return [...dom.querySelectorAll(table, 'tr')].filter(
       (tr) => dom.closest(tr, 'table') === table
     );
   }
-  const cellsOf = (tr) => Array.from(dom.querySelectorAll(tr, ':scope > th, :scope > td'));
+  const cellsOf = (tr) => [...dom.querySelectorAll(tr, ':scope > th, :scope > td')];
   const spans = (table) =>
-    Array.from(dom.querySelectorAll(table, 'th, td')).some(
+    [...dom.querySelectorAll(table, 'th, td')].some(
       (c) =>
         dom.closest(c, 'table') === table &&
         (Number(dom.getAttribute(c, 'rowspan') || 1) > 1 ||

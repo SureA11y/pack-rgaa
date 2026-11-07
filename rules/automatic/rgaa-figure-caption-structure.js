@@ -115,13 +115,13 @@ function runInPage(ctx) {
 
   for (const figure of figures) {
     if (!figure || !dom.get(figure, 'getAttribute')) continue;
-    const caption = Array.from(dom.querySelectorAll(figure, ':scope > *')).find(
+    const caption = [...dom.querySelectorAll(figure, ':scope > *')].find(
       (c) => String(dom.tagName(c)).toLowerCase() === 'figcaption' && shown(c)
     );
     const captionText = caption ? collapse(dom.textContent(caption)) : '';
     // Every element, not a selector list: jsdom returns a list's matches out
     // of tree order, and the first image decides the test.
-    const image = Array.from(dom.querySelectorAll(figure, '*')).find(
+    const image = [...dom.querySelectorAll(figure, '*')].find(
       (el) => dom.closest(el, 'figure') === figure && imageKind(el) && shown(el)
     );
     if (!captionText || !image) continue;

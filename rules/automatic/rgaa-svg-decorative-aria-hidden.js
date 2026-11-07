@@ -112,12 +112,12 @@ function runInPage(ctx) {
     'marker'
   ]);
   const drawsNothing = (svg) =>
-    Array.from(dom.querySelectorAll(svg, ':scope > *')).every((c) => NOT_DRAWN.has(tagOf(c)));
+    [...dom.querySelectorAll(svg, ':scope > *')].every((c) => NOT_DRAWN.has(tagOf(c)));
 
   function hasCaption(el) {
     const figure = dom.get(el, 'closest') ? dom.closest(el, 'figure') : null;
     if (!figure) return false;
-    return Array.from(dom.querySelectorAll(figure, ':scope > *')).some(
+    return [...dom.querySelectorAll(figure, ':scope > *')].some(
       (c) => tagOf(c) === 'figcaption' && trim(dom.textContent(c))
     );
   }
@@ -137,9 +137,7 @@ function runInPage(ctx) {
     }
     if (!control) return false;
     if (
-      Array.from(dom.querySelectorAll(control, 'img, svg')).some(
-        (n) => n !== svg && !dom.contains(svg, n)
-      )
+      [...dom.querySelectorAll(control, 'img, svg')].some((n) => n !== svg && !dom.contains(svg, n))
     ) {
       return false;
     }

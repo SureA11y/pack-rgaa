@@ -63,7 +63,7 @@ function runInPage(ctx) {
   const { document, helpers, rule } = ctx;
 
   const body = dom.body(document);
-  const nodes = body ? Array.from(dom.querySelectorAll(body, 'noscript')) : [];
+  const nodes = body ? [...dom.querySelectorAll(body, 'noscript')] : [];
 
   const occurrences = [];
   for (const el of nodes) {

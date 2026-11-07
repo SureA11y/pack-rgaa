@@ -118,9 +118,7 @@ function runInPage(ctx) {
     const figure = dom.closest(svg, 'figure');
     return !!(
       figure &&
-      Array.from(dom.querySelectorAll(figure, ':scope > figcaption')).some((c) =>
-        trim(dom.textContent(c))
-      )
+      [...dom.querySelectorAll(figure, ':scope > figcaption')].some((c) => trim(dom.textContent(c)))
     );
   }
 
@@ -138,7 +136,7 @@ function runInPage(ctx) {
       }
     }
     if (!control) return false;
-    const others = Array.from(dom.querySelectorAll(control, 'img, svg')).filter(
+    const others = [...dom.querySelectorAll(control, 'img, svg')].filter(
       (n) => n !== svg && !dom.contains(svg, n)
     );
     if (others.length) return false;
@@ -157,7 +155,7 @@ function runInPage(ctx) {
   }
 
   function titleChildText(el) {
-    for (const child of Array.from(dom.querySelectorAll(el, ':scope > *'))) {
+    for (const child of [...dom.querySelectorAll(el, ':scope > *')]) {
       if (tagOf(child) === 'title') return trim(dom.textContent(child));
     }
     return '';

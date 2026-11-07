@@ -106,7 +106,7 @@ function runInPage(ctx) {
 
   function svgTitleChildText(el) {
     if (dom.namespaceURI(el) !== SVG_NS) return '';
-    for (const child of Array.from(dom.querySelectorAll(el, ':scope > *'))) {
+    for (const child of [...dom.querySelectorAll(el, ':scope > *')]) {
       if (tagOf(child) === 'title') return trim(dom.textContent(child));
     }
     return '';
@@ -138,7 +138,7 @@ function runInPage(ctx) {
     }
     if (!control) return false;
     if (String(dom.textContent(control) || '').trim()) return false;
-    return !Array.from(dom.querySelectorAll(control, 'img, svg, canvas, object, embed')).some(
+    return ![...dom.querySelectorAll(control, 'img, svg, canvas, object, embed')].some(
       (n) => n !== el && !dom.contains(el, n)
     );
   }

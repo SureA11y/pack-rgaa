@@ -199,7 +199,7 @@ function runInPage(ctx) {
   function associatedLabels(el) {
     if (!isLabelable(el) || typeof helpers.getAssociatedLabelElements !== 'function') return null;
     try {
-      return Array.from(helpers.getAssociatedLabelElements(el) || []);
+      return [...(helpers.getAssociatedLabelElements(el) || [])];
     } catch {
       return null;
     }
@@ -360,7 +360,7 @@ function runInPage(ctx) {
     }
     const first = dom.getElementById(root, idValue);
     if (!first || first === el) return false;
-    return Array.from(dom.querySelectorAll(root, 'label[for]')).some(
+    return [...dom.querySelectorAll(root, 'label[for]')].some(
       (label) => dom.getAttribute(label, 'for') === idValue
     );
   }
@@ -384,9 +384,10 @@ function runInPage(ctx) {
   // In document order: jsdom returns an element's querySelectorAll in
   // selector-list order when the list has a case-insensitive attribute
   // selector.
-  const nodes = Array.from(
-    (helpers.queryAllSmart ? helpers.queryAllSmart(SELECTOR) : helpers.queryAll(SELECTOR)) || []
-  ).sort((a, b) => (dom.call(a, 'compareDocumentPosition', b) & 2 ? 1 : -1));
+  const nodes = [
+    ...((helpers.queryAllSmart ? helpers.queryAllSmart(SELECTOR) : helpers.queryAll(SELECTOR)) ||
+      [])
+  ].sort((a, b) => (dom.call(a, 'compareDocumentPosition', b) & 2 ? 1 : -1));
 
   for (const el of nodes) {
     if (!el || !dom.get(el, 'getAttribute')) continue;

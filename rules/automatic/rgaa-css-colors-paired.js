@@ -201,11 +201,11 @@ function runInPage(ctx) {
     }
   }
   function matchAll(list, key) {
-    const valid = Array.from(list).filter(isValid);
+    const valid = [...list].filter(isValid);
     for (let i = 0; i < valid.length; i += CHUNK) {
       let matched = [];
       try {
-        matched = Array.from(dom.querySelectorAll(document, valid.slice(i, i + CHUNK).join(', ')));
+        matched = [...dom.querySelectorAll(document, valid.slice(i, i + CHUNK).join(', '))];
       } catch {
         matched = [];
       }
@@ -216,7 +216,7 @@ function runInPage(ctx) {
   let unreadable = 0;
   function walk(rules, depth) {
     if (!rules || depth > MAX_DEPTH) return;
-    for (const cssRule of Array.from(rules)) {
+    for (const cssRule of [...rules]) {
       if (!cssRule) continue;
       if (cssRule.type === CSS_STYLE_RULE) {
         const d = declares(cssRule.style);
@@ -297,7 +297,7 @@ function runInPage(ctx) {
       // A DOM without cascade layers (jsdom) ignores the sentinel, and so
       // does a page whose own rule sets a color on every element.
       if (prop(view.getComputedStyle(sentinel), 'color') !== SENTINEL.color) return false;
-      for (const el of Array.from(dom.querySelectorAll(document, '*'))) {
+      for (const el of [...dom.querySelectorAll(document, '*')]) {
         // Not helpers.computedStyle: it keeps what it reads for the rest of
         // the scan, and these are the sentinel's values.
         const cs = view.getComputedStyle(el);
@@ -328,9 +328,9 @@ function runInPage(ctx) {
   }
 
   // Style attributes and presentational attributes.
-  for (const el of Array.from(
-    dom.querySelectorAll(document, '[style], [bgcolor], [background], font[color], body[text]')
-  )) {
+  for (const el of [
+    ...dom.querySelectorAll(document, '[style], [bgcolor], [background], font[color], body[text]')
+  ]) {
     const d = el.style ? declares(el.style) : { fg: false, bg: false, img: false };
     const tag = String(dom.localName(el) || '').toLowerCase();
     if (trim(dom.getAttribute(el, 'bgcolor'))) d.bg = true;
@@ -435,7 +435,7 @@ function runInPage(ctx) {
   const asking = unreadable > 0 && !byCascade;
   const fails = [];
   const questions = [];
-  for (const { code, el } of Array.from(findings.values()).slice(0, MAX_OCCURRENCES)) {
+  for (const { code, el } of [...findings.values()].slice(0, MAX_OCCURRENCES)) {
     const msg = MESSAGES[code];
     const element = String(dom.localName(el) || '').toLowerCase();
     const occ = helpers.reportOccurrence(el, {

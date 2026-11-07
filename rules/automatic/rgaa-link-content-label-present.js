@@ -203,12 +203,12 @@ function runInPage(ctx) {
     }
     if (tag === 'svg') {
       const parts = [];
-      for (const child of Array.from(dom.querySelectorAll(el, ':scope > *'))) {
+      for (const child of [...dom.querySelectorAll(el, ':scope > *')]) {
         if (tagOf(child) === 'title') parts.push(norm(dom.textContent(child)));
       }
-      for (const t of Array.from(
-        dom.get(el, 'querySelectorAll') ? dom.querySelectorAll(el, 'text') : []
-      )) {
+      for (const t of [
+        ...(dom.get(el, 'querySelectorAll') ? dom.querySelectorAll(el, 'text') : [])
+      ]) {
         parts.push(norm(dom.textContent(t)));
       }
       return norm(parts.join(' '));
@@ -237,13 +237,13 @@ function runInPage(ctx) {
   function renderedChildren(node) {
     try {
       const shadow = dom.nodeType(node) === 1 ? dom.shadowRoot(node) : null;
-      if (shadow) return Array.from(dom.childNodes(shadow) || []);
+      if (shadow) return [...(dom.childNodes(shadow) || [])];
       if (dom.nodeType(node) === 1 && tagOf(node) === 'slot') {
-        const assigned = Array.from(dom.assignedNodes(node, { flatten: true }) || []);
+        const assigned = [...(dom.assignedNodes(node, { flatten: true }) || [])];
         if (assigned.length) return assigned;
       }
     } catch {}
-    return Array.from(dom.childNodes(node) || []);
+    return [...(dom.childNodes(node) || [])];
   }
 
   function analyse(root) {
@@ -263,10 +263,10 @@ function runInPage(ctx) {
     function childrenOf(node) {
       if (helpers && typeof helpers.flatChildNodes === 'function') {
         try {
-          return Array.from(helpers.flatChildNodes(node) || []);
+          return [...(helpers.flatChildNodes(node) || [])];
         } catch {}
       }
-      return Array.from(dom.childNodes(node) || []);
+      return [...(dom.childNodes(node) || [])];
     }
 
     function walk(node, atHidden, depth) {

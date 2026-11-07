@@ -96,9 +96,7 @@ function runInPage(ctx) {
   function hasCaption(el) {
     const figure = dom.get(el, 'closest') ? dom.closest(el, 'figure') : null;
     if (!figure) return false;
-    return Array.from(dom.querySelectorAll(figure, ':scope > *')).some(
-      (c) => tagOf(c) === 'figcaption'
-    );
+    return [...dom.querySelectorAll(figure, ':scope > *')].some((c) => tagOf(c) === 'figcaption');
   }
 
   const nodes = helpers.queryAllSmart ? helpers.queryAllSmart('img') : helpers.queryAll('img');

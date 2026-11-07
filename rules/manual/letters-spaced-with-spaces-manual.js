@@ -138,7 +138,7 @@ function runInPage(ctx) {
   // order. Any other child (a block, <br>, <img>) separates the text.
   function inlineText(el, depth) {
     let out = '';
-    for (const n of Array.from(dom.childNodes(el))) {
+    for (const n of [...dom.childNodes(el)]) {
       if (dom.nodeType(n) === 3) out += dom.nodeValue(n);
       else if (dom.nodeType(n) === 1 && depth < 20 && isInline(n) && !dom.matches(n, SKIP)) {
         out += inlineText(n, depth + 1);
@@ -229,7 +229,7 @@ function runInPage(ctx) {
   }
   for (const el of nodes) {
     if (!el || dom.closest(el, SKIP) || dom.closest(el, 'pre') || flagged.has(el)) continue;
-    for (const n of Array.from(dom.childNodes(el) || [])) {
+    for (const n of [...(dom.childNodes(el) || [])]) {
       if (dom.nodeType(n) !== 3) continue;
       const t = String(dom.nodeValue(n) || '');
       if ((t.match(NBSP_RUN) || []).length >= 2) {

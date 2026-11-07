@@ -138,7 +138,7 @@ function runInPage(ctx) {
 
   function linesOf(el) {
     const lines = [''];
-    for (const node of Array.from(dom.childNodes(el))) {
+    for (const node of [...dom.childNodes(el)]) {
       if (dom.nodeType(node) === 1 && String(dom.tagName(node)).toLowerCase() === 'br')
         lines.push('');
       else lines[lines.length - 1] += ' ' + (dom.textContent(node) || '');
@@ -190,7 +190,7 @@ function runInPage(ctx) {
   for (const el of candidates) {
     if (!el || !dom.get(el, 'querySelector') || isSkipped(el)) continue;
     if (
-      !Array.from(dom.querySelectorAll(el, ':scope > *')).some(
+      ![...dom.querySelectorAll(el, ':scope > *')].some(
         (c) => String(dom.tagName(c)).toLowerCase() === 'br'
       )
     )

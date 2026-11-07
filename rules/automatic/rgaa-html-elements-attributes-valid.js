@@ -541,9 +541,7 @@ function runInPage(ctx) {
       } else {
         const table = nearestTable(el);
         const ths = table
-          ? Array.from(dom.querySelectorAll(table, 'th[id]')).filter(
-              (th) => nearestTable(th) === table
-            )
+          ? [...dom.querySelectorAll(table, 'th[id]')].filter((th) => nearestTable(th) === table)
           : [];
         const ids = new Set(ths.map((th) => dom.getAttribute(th, 'id')));
         const missing = tokens.find((t) => !ids.has(t));
@@ -552,9 +550,7 @@ function runInPage(ctx) {
     }
 
     if (tag === 'optgroup' && !dom.hasAttribute(el, 'label')) {
-      const legend = Array.from(dom.querySelectorAll(el, ':scope > *')).some(
-        (c) => tagOf(c) === 'legend'
-      );
+      const legend = [...dom.querySelectorAll(el, ':scope > *')].some((c) => tagOf(c) === 'legend');
       if (!legend) report(el, 'optgroupLabel', {});
     }
 

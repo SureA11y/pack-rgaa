@@ -96,9 +96,7 @@ function runInPage(ctx) {
   function hasCaption(el) {
     const figure = dom.get(el, 'closest') ? dom.closest(el, 'figure') : null;
     if (!figure) return false;
-    return Array.from(dom.querySelectorAll(figure, ':scope > *')).some(
-      (c) => tagOf(c) === 'figcaption'
-    );
+    return [...dom.querySelectorAll(figure, ':scope > *')].some((c) => tagOf(c) === 'figcaption');
   }
 
   // The alternatives 1.2.5 forbids, on the canvas and its children.
@@ -107,7 +105,7 @@ function runInPage(ctx) {
     for (const name of ['aria-labelledby', 'aria-label', 'title']) {
       if (trim(attr(el, name))) found.push(name);
     }
-    const children = Array.from(dom.querySelectorAll(el, '*'));
+    const children = [...dom.querySelectorAll(el, '*')];
     const childAlt = children.some((c) =>
       ['alt', 'aria-label', 'aria-labelledby', 'title'].some((n) => trim(attr(c, n)))
     );

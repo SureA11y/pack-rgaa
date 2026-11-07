@@ -112,7 +112,7 @@ function runInPage(ctx) {
     return false;
   };
   // Every element, shown or not: a tooltip is usually hidden until needed.
-  const query = (sel) => Array.from(dom.querySelectorAll(document, sel));
+  const query = (sel) => [...dom.querySelectorAll(document, sel)];
 
   const occurrences = [];
   const seen = new Set();

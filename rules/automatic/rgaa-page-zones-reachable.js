@@ -256,7 +256,7 @@ function runInPage(ctx) {
   // role is a fallback list matched in any case: [role~="searchbox" i] also
   // matches role="textbox searchbox", which is a textbox.
   function hasSearchField(el) {
-    return Array.from(dom.querySelectorAll(el, SEARCH_FIELD)).some(
+    return [...dom.querySelectorAll(el, SEARCH_FIELD)].some(
       (n) =>
         String(dom.localName(n) || '').toLowerCase() === 'input' ||
         helpers.aria.getExplicitRole(n) === 'searchbox'
@@ -318,9 +318,7 @@ function runInPage(ctx) {
 
   function headingOpens(el) {
     try {
-      const h = Array.from(
-        dom.querySelectorAll(el, 'h1, h2, h3, h4, h5, h6, [role~="heading" i]')
-      ).find(
+      const h = [...dom.querySelectorAll(el, 'h1, h2, h3, h4, h5, h6, [role~="heading" i]')].find(
         (n) =>
           /^h[1-6]$/.test(String(dom.localName(n) || '').toLowerCase()) ||
           helpers.aria.getExplicitRole(n) === 'heading'

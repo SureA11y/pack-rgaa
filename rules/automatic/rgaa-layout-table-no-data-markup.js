@@ -120,7 +120,7 @@ function runInPage(ctx) {
   // A full header row or column over a real grid of data suggests the
   // table holds data, whatever its role says.
   function looksLikeDataTable(table) {
-    const rows = Array.from(table.rows || []).map((row) => Array.from(row.cells || []));
+    const rows = [...(table.rows || [])].map((row) => [...(row.cells || [])]);
     if (rows.length < 2) return false;
     if (!rows.some((cells) => cells.length >= 2)) return false;
     if (!rows.some((cells) => cells.some((cell) => !isHeaderCell(cell)))) return false;
@@ -144,7 +144,7 @@ function runInPage(ctx) {
     const found = [];
     if (String(dom.getAttribute(table, 'summary') || '').trim()) found.push('summary');
     for (const [selector, label, role] of MARKUP) {
-      const own = Array.from(dom.querySelectorAll(table, selector)).some(
+      const own = [...dom.querySelectorAll(table, selector)].some(
         (el) => dom.closest(el, 'table') === table && (!role || explicitRole(el) === role)
       );
       if (own) found.push(label);

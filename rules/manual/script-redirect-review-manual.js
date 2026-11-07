@@ -69,7 +69,7 @@ function runInPage(ctx) {
   const DATA = /json|template|text\/x-|text\/html/i;
 
   const occurrences = [];
-  for (const script of Array.from(dom.querySelectorAll(document, 'script:not([src])'))) {
+  for (const script of [...dom.querySelectorAll(document, 'script:not([src])')]) {
     const type = String(dom.getAttribute(script, 'type') || '');
     if (DATA.test(type)) continue;
     const code = String(dom.textContent(script) || '');

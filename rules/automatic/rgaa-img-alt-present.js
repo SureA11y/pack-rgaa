@@ -161,9 +161,7 @@ function runInPage(ctx) {
   function hasCaption(el) {
     const figure = dom.get(el, 'closest') ? dom.closest(el, 'figure') : null;
     if (!figure) return false;
-    return Array.from(dom.querySelectorAll(figure, ':scope > *')).some(
-      (c) => tagOf(c) === 'figcaption'
-    );
+    return [...dom.querySelectorAll(figure, ':scope > *')].some((c) => tagOf(c) === 'figcaption');
   }
 
   // Whether the image is the only content of a link or button.
@@ -179,7 +177,7 @@ function runInPage(ctx) {
     }
     if (!control) return false;
     if (trim(dom.textContent(control))) return false;
-    return !Array.from(dom.querySelectorAll(control, 'img, svg, [role~="img" i]')).some(
+    return ![...dom.querySelectorAll(control, 'img, svg, [role~="img" i]')].some(
       (n) =>
         n !== el && (['img', 'svg'].includes(tagOf(n)) || helpers.aria.getExplicitRole(n) === 'img')
     );

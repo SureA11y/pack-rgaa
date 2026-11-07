@@ -93,7 +93,7 @@ function runInPage(ctx) {
   const SKIP = ['input', 'select', 'textarea', 'datalist', 'script', 'style', 'template'];
   function ownText(node) {
     let out = '';
-    for (const child of Array.from(dom.childNodes(node) || [])) {
+    for (const child of [...(dom.childNodes(node) || [])]) {
       const type = dom.nodeType(child);
       if (type === 3) out += dom.textContent(child) || '';
       else if (type === 1 && !SKIP.includes(tagOf(child))) out += ' ' + ownText(child) + ' ';

@@ -240,23 +240,22 @@ function runInPage(ctx) {
     } catch {}
     const props = new Set();
     const walk = (rules) => {
-      for (const r of Array.from(rules || [])) {
+      for (const r of [...(rules || [])]) {
         if (r.type === 7 && r.name === name) {
-          for (const f of Array.from(r.cssRules || [])) {
+          for (const f of [...(r.cssRules || [])]) {
             for (let i = 0; i < f.style.length; i += 1) props.add(f.style[i]);
           }
         } else if (r.cssRules) walk(r.cssRules);
       }
     };
     try {
-      for (const sheet of Array.from(dom.get(document, 'styleSheets') || [])) {
+      for (const sheet of [...(dom.get(document, 'styleSheets') || [])]) {
         walk(helpers.cssRulesOf ? helpers.cssRulesOf(sheet) : sheet.cssRules);
       }
     } catch {}
     return props;
   }
-  const isBlinking = (props) =>
-    props.size > 0 && Array.from(props).every((p) => BLINK_PROPS.has(p));
+  const isBlinking = (props) => props.size > 0 && [...props].every((p) => BLINK_PROPS.has(p));
 
   let started = null;
   try {
