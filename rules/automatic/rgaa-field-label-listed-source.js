@@ -424,11 +424,50 @@ function runInPage(ctx) {
     FIELD_ROLES.map((r) => `[role~="${r}" i]`).join(', ');
   // In document order: jsdom returns an element's querySelectorAll in
   // selector-list order when the list has a case-insensitive attribute
-  // selector.
-  const nodes = [
+  // selector. Each element is sorted by its path of child indexes from its
+  // root, each parent's children being counted once, since comparing
+  // document positions costs as much as the siblings between two elements
+  // and grew with the square of the fields of one form. Elements of different
+  // trees (a shadow root) keep the order in which their trees first come.
+  const childIndex = new Map();
+  function indexOf(node, parent) {
+    if (!childIndex.has(node)) {
+      let i = 0;
+      for (let c = dom.firstChild(parent); c; c = dom.nextSibling(c)) childIndex.set(c, i++);
+    }
+    return childIndex.has(node) ? childIndex.get(node) : 0;
+  }
+  function pathOf(el) {
+    const path = [];
+    for (let n = el, parent = dom.parentNode(n); parent; n = parent, parent = dom.parentNode(n)) {
+      path.push(indexOf(n, parent));
+    }
+    return path.reverse();
+  }
+  function rootOf(el) {
+    try {
+      return dom.get(el, 'getRootNode') ? dom.getRootNode(el) : null;
+    } catch {
+      return null;
+    }
+  }
+  const queried = [
     ...((helpers.queryAllSmart ? helpers.queryAllSmart(SELECTOR) : helpers.queryAll(SELECTOR)) ||
       [])
-  ].sort((a, b) => (dom.call(a, 'compareDocumentPosition', b) & 2 ? 1 : -1));
+  ];
+  const rootRank = new Map();
+  const keyed = queried.map((el) => {
+    const root = rootOf(el);
+    if (!rootRank.has(root)) rootRank.set(root, rootRank.size);
+    return { el, rank: rootRank.get(root), path: pathOf(el) };
+  });
+  keyed.sort((a, b) => {
+    if (a.rank !== b.rank) return a.rank - b.rank;
+    const n = Math.min(a.path.length, b.path.length);
+    for (let i = 0; i < n; i++) if (a.path[i] !== b.path[i]) return a.path[i] - b.path[i];
+    return a.path.length - b.path.length;
+  });
+  const nodes = keyed.map((k) => k.el);
 
   for (const el of nodes) {
     if (!el || !dom.get(el, 'getAttribute')) continue;

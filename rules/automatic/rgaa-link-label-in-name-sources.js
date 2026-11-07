@@ -299,8 +299,17 @@ function runInPage(ctx) {
   // Text nodes are joined as the browser renders them: with a space where the
   // source has whitespace or a block boundary, line break or control comes
   // between them, and with none between inline siblings.
+  // Each container is read once per mode: a label or aria-labelledby target
+  // that many fields share is walked once, not once per field.
+  const textCache = { true: new Map(), false: new Map() };
   function textUnder(container, visibleOnly) {
     if (!container) return { text: '', elements: [] };
+    const cache = textCache[!!visibleOnly];
+    if (!cache.has(container)) cache.set(container, readTextUnder(container, visibleOnly));
+    return cache.get(container);
+  }
+
+  function readTextUnder(container, visibleOnly) {
     if (visibleOnly && (!isDomVisible(container) || isVisuallyHidden(container))) {
       return { text: '', elements: [] };
     }
