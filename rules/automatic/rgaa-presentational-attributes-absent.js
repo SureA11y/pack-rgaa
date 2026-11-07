@@ -17,10 +17,12 @@
  *   vlink or vspace; size is allowed only on <select>, and width and height
  *   only on <img>, <object>, <embed>, <canvas> and <svg>. That is RGAA
  *   10.1.2's list as written, so width and height on an <iframe> or a
- *   <video>, and size on an <input>, are reported too, as are width and
- *   height on a <source> in a <picture>, which HTML added after the list
- *   was written: the list of exceptions is closed. One occurrence per
- *   element, naming every such attribute it carries.
+ *   <video>, and size on an <input>, are reported too. Width and height on
+ *   a <source> in a <picture> are allowed like those on <img>: they give
+ *   the dimensions of that image candidate, which HTML added in 2021, after
+ *   RGAA's list was written; this is the pack's reading of a list that
+ *   predates them. On any other <source> they are reported. One occurrence
+ *   per element, naming every such attribute it carries.
  * @implementation-notes
  * - Metadata and script elements (<head>, <title>, <base>, <link>, <meta>,
  *   <style>, <script>) are left out: they present no information, so a
@@ -101,6 +103,14 @@ function runInPage(ctx) {
   // on <script> is ignored by browsers.
   const NOT_PRESENTED = ['head', 'title', 'base', 'link', 'meta', 'style', 'script'];
   const DIMENSIONS_ALLOWED_ON = ['img', 'object', 'embed', 'canvas', 'svg'];
+  // A <source> in a <picture> gives its image candidate's dimensions, as
+  // the <img> does: HTML added them in 2021, after RGAA's list.
+  const dimensionsAllowed = (el, element) => {
+    if (DIMENSIONS_ALLOWED_ON.includes(element)) return true;
+    if (element !== 'source') return false;
+    const parent = dom.parentElement(el);
+    return !!parent && String(dom.localName(parent) || '').toLowerCase() === 'picture';
+  };
 
   const selector = ALWAYS.concat(['size', 'width', 'height'])
     .map((a) => '[' + a + ']')
@@ -118,7 +128,7 @@ function runInPage(ctx) {
     if (NOT_PRESENTED.includes(element) || element.includes('-')) continue;
     const found = ALWAYS.filter((a) => dom.hasAttribute(el, a));
     if (dom.hasAttribute(el, 'size') && !SIZE_ALLOWED_ON.includes(element)) found.push('size');
-    if (!DIMENSIONS_ALLOWED_ON.includes(element)) {
+    if (!dimensionsAllowed(el, element)) {
       if (dom.hasAttribute(el, 'width')) found.push('width');
       if (dom.hasAttribute(el, 'height')) found.push('height');
     }
