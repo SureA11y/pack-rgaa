@@ -365,15 +365,25 @@ function runInPage(ctx) {
     return false;
   }
 
+  // Whether the parent has text of its own: a text node child that is not
+  // only whitespace. The link is an element, so it never is one. Read once
+  // per parent, as links often share one.
+  const parentHasText = new Map();
   function hasSurroundingText(el, parent) {
-    if (!parent || !dom.childNodes(parent)) return false;
-    for (let i = 0; i < dom.childNodes(parent).length; i++) {
-      const n = dom.childNodes(parent)[i];
+    if (!parent) return false;
+    if (parentHasText.has(parent)) return parentHasText.get(parent);
+    let found = false;
+    const children = dom.childNodes(parent);
+    const count = children ? children.length : 0;
+    for (let i = 0; i < count && !found; i++) {
+      const n = children[i];
       if (n === el) continue;
-      if (dom.nodeType(n) === 3 && dom.nodeValue(n) && dom.nodeValue(n).trim().length > 0)
-        return true;
+      if (dom.nodeType(n) === 3 && dom.nodeValue(n) && dom.nodeValue(n).trim().length > 0) {
+        found = true;
+      }
     }
-    return false;
+    parentHasText.set(parent, found);
+    return found;
   }
 
   // A background color of the link's own, different from the one behind
