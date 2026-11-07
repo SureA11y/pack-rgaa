@@ -57,7 +57,7 @@ None — every rule has a fixture.
 | rgaa-heading-content-present | automatic | `tests/fixtures/rgaa-heading-content-present-all-scenarios.html` | 11 | 3 | 3 | 4 | 1 |
 | rgaa-heading-role-level-present | automatic | `tests/fixtures/rgaa-heading-role-level-present-all-scenarios.html` | 6 | 1 | 3 | 0 | 2 |
 | rgaa-headings-absent-review | manual | `tests/fixtures/rgaa-headings-absent-review-all-scenarios.html` | 0 | 0 | 0 | 0 | 0 |
-| rgaa-html-elements-attributes-valid | automatic | `tests/fixtures/rgaa-html-elements-attributes-valid-all-scenarios.html` | 16 | 4 | 12 | 0 | 0 |
+| rgaa-html-elements-attributes-valid | automatic | `tests/fixtures/rgaa-html-elements-attributes-valid-all-scenarios.html` | 17 | 4 | 13 | 0 | 0 |
 | rgaa-html-lang-code-valid | automatic | `tests/fixtures/rgaa-html-lang-code-valid-all-scenarios.html` | 1 | 0 | 1 | 0 | 0 |
 | rgaa-html-nesting-valid | automatic | `tests/fixtures/rgaa-html-nesting-valid-all-scenarios.html` | 17 | 5 | 12 | 0 | 0 |
 | rgaa-image-alt-long | manual | `tests/fixtures/rgaa-image-alt-long-all-scenarios.html` | 6 | 0 | 0 | 0 | 6 |

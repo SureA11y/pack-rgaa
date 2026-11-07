@@ -916,7 +916,7 @@ Checks, hidden content included, for obsolete or unknown elements and for invali
 - langValue: a lang value that is not a well-formed BCP 47 language tag (en_US, en-US-US, fr-FR-!!, " en"). An empty lang is allowed; whether the language subtag is registered is left to rgaa-html-lang-code-valid (8.4.1) and valid-lang (8.8.1);
 - xmlLangMismatch: xml:lang without lang, or with a different value (case aside);
 - scopeValue: a scope on th other than row, col, rowgroup or colgroup (case aside), spaces or empty value included;
-- scopeElement: scope on an element other than th or td (on td it is only a validator warning);
+- scopeElement: scope on an element other than th, td included: scope on td is obsolete in HTML, so not conforming, although the validator only warns about it;
 - headersTarget / headersEmpty: a headers token that names no th of the same table (a td, a caption, an element outside the table or in a nested table), or an empty headers attribute;
 - optgroupLabel: an optgroup with no label attribute and no legend child;
 - typeValue: a type on input or button that is not one of its keywords (case aside), spaces included (type="bouton");
