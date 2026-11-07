@@ -1383,66 +1383,101 @@ function runInPage(ctx) {
   const marginCandidates = [];
   let judgedCount = 0;
 
-  for (const el of candidates) {
-    if (!el || dom.nodeType(el) !== 1) continue;
-    if (!isTabbable(el) || !isRendered(el)) continue;
-    let res;
+  // Focus makes the browser's focus ring appear, and an outline that
+  // appears costs Chromium a layout of the whole page, for each element
+  // focused. While the elements are focused, the candidates are given the
+  // ring's style (outline-style: auto) at rest, in a cascade layer declared
+  // before any other: below every author rule, as the browser's own ring
+  // is, so an author outline overrides both alike, and the browser's focus
+  // rule still gives the ring its width and color. Focus then draws no new
+  // outline. An element whose focused outline-style is auto is the
+  // browser's outline either way, and one an author rule sets otherwise
+  // differs from its resting style either way, so the verdicts are the
+  // same. Ancestors of candidates and labels, read as related elements to
+  // find a ring drawn around the element, are left out. Shadow trees are
+  // not reached: a style sheet of the document does not apply there.
+  function drawRings() {
+    if (!layout) return () => {};
+    let sheet = null;
     try {
-      res = layout ? evaluateRendered(el) : undefined;
-      if (res === undefined) res = evaluate(el);
+      const host = dom.head(document) || dom.documentElement(document);
+      sheet = dom.createElement(document, 'style');
+      sheet.textContent = `@layer surea11y-focus-ring{:is(${CANDIDATES}):not(label, :has(:is(${CANDIDATES}))){outline-style:auto}}`;
+      dom.insertBefore(host, sheet, dom.firstChild(host));
     } catch {
-      res = { verdict: 'cantTell', reasonCode: 'notComputable', details: { cause: 'error' } };
+      sheet = null;
     }
-    if (!res) continue;
-    judgedCount += 1;
-    if (res.verdict === 'pass') {
-      passCount += 1;
-      if (Number.isFinite(res.ratio)) {
-        marginCandidates.push({
-          el,
-          value: res.ratio,
-          threshold: MIN_RATIO,
-          context: { property: (res.details && res.details.property) || '' }
-        });
+    return () => {
+      try {
+        if (sheet && dom.parentNode(sheet)) dom.removeChild(dom.parentNode(sheet), sheet);
+      } catch {}
+    };
+  }
+  const removeRings = drawRings();
+  try {
+    for (const el of candidates) {
+      if (!el || dom.nodeType(el) !== 1) continue;
+      if (!isTabbable(el) || !isRendered(el)) continue;
+      let res;
+      try {
+        res = layout ? evaluateRendered(el) : undefined;
+        if (res === undefined) res = evaluate(el);
+      } catch {
+        res = { verdict: 'cantTell', reasonCode: 'notComputable', details: { cause: 'error' } };
       }
-      continue;
+      if (!res) continue;
+      judgedCount += 1;
+      if (res.verdict === 'pass') {
+        passCount += 1;
+        if (Number.isFinite(res.ratio)) {
+          marginCandidates.push({
+            el,
+            value: res.ratio,
+            threshold: MIN_RATIO,
+            context: { property: (res.details && res.details.property) || '' }
+          });
+        }
+        continue;
+      }
+      const d = res.details || {};
+      const ratios = Array.isArray(d.ratios) ? d.ratios : [];
+      const ratio = ratios.length
+        ? String(res.reasonCode === 'oneSide' ? Math.min(...ratios) : Math.max(...ratios))
+        : '';
+      const params = { property: d.property || '', color: d.color || '', ratio };
+      const msg = MESSAGES[res.reasonCode];
+      const uncertainty =
+        res.verdict !== 'cantTell'
+          ? null
+          : res.reasonCode === 'notComputable'
+            ? {
+                code: 'not-computable',
+                needed: 'The rendered color of the focus indicator and of the colors next to it.',
+                evidence: { reasonCode: res.reasonCode, cause: d.cause || null }
+              }
+            : {
+                code: 'judgement-required',
+                needed: 'Whether the focus style is visible with a contrast ratio of at least 3:1.',
+                evidence: { reasonCode: res.reasonCode }
+              };
+      const occ = helpers.reportOccurrence(el, {
+        summary: msg.summary(params),
+        hint: msg.hint,
+        i18n: {
+          summaryKey: `focusIndicatorContrast_summary_${res.verdict}_${res.reasonCode}`,
+          hintKey: `focusIndicatorContrast_hint_${res.verdict}_${res.reasonCode}`,
+          params
+        },
+        ...(uncertainty ? { uncertainty } : {}),
+        data: {
+          details: { reasonCode: res.reasonCode, ...d },
+          visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
+        }
+      });
+      (res.verdict === 'fail' ? failOccurrences : cantTellOccurrences).push(occ);
     }
-    const d = res.details || {};
-    const ratios = Array.isArray(d.ratios) ? d.ratios : [];
-    const ratio = ratios.length
-      ? String(res.reasonCode === 'oneSide' ? Math.min(...ratios) : Math.max(...ratios))
-      : '';
-    const params = { property: d.property || '', color: d.color || '', ratio };
-    const msg = MESSAGES[res.reasonCode];
-    const uncertainty =
-      res.verdict !== 'cantTell'
-        ? null
-        : res.reasonCode === 'notComputable'
-          ? {
-              code: 'not-computable',
-              needed: 'The rendered color of the focus indicator and of the colors next to it.',
-              evidence: { reasonCode: res.reasonCode, cause: d.cause || null }
-            }
-          : {
-              code: 'judgement-required',
-              needed: 'Whether the focus style is visible with a contrast ratio of at least 3:1.',
-              evidence: { reasonCode: res.reasonCode }
-            };
-    const occ = helpers.reportOccurrence(el, {
-      summary: msg.summary(params),
-      hint: msg.hint,
-      i18n: {
-        summaryKey: `focusIndicatorContrast_summary_${res.verdict}_${res.reasonCode}`,
-        hintKey: `focusIndicatorContrast_hint_${res.verdict}_${res.reasonCode}`,
-        params
-      },
-      ...(uncertainty ? { uncertainty } : {}),
-      data: {
-        details: { reasonCode: res.reasonCode, ...d },
-        visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
-      }
-    });
-    (res.verdict === 'fail' ? failOccurrences : cantTellOccurrences).push(occ);
+  } finally {
+    removeRings();
   }
 
   if (!failOccurrences.length && !cantTellOccurrences.length && !passCount) {
