@@ -23,10 +23,13 @@
  *   - For each rendered text, the nearest element declaring a text color, a
  *     background color and a background image are looked for, from the
  *     text's element up to <html>. A text color with no background color
- *     fails COLOR_WITHOUT_BACKGROUND, a background color with no text color
- *     BACKGROUND_WITHOUT_COLOR, and a background image with no background
- *     color BACKGROUND_IMAGE_WITHOUT_COLOR. One occurrence per element that
- *     declares the unpaired color, however much text it reaches.
+ *     fails COLOR_WITHOUT_BACKGROUND, and a background image with no
+ *     background color BACKGROUND_IMAGE_WITHOUT_COLOR. A background color
+ *     with no text color is asked about (BACKGROUND_WITHOUT_COLOR): 10.5.2's
+ *     test asks for the color property, but its methodology only for « une
+ *     valeur calculée pour la propriété color », which the browser's
+ *     default gives. One occurrence per element that declares the unpaired
+ *     color, however much text it reaches.
  *   - Without a browser's cascade layers (jsdom), a style sheet that cannot
  *     be read (another origin's, with no text given in
  *     engineOptions.styleSheetTexts) may declare the missing half: the same
@@ -110,7 +113,7 @@ const meta = {
       passWhen:
         'A text color is declared on the element or on an ancestor, along with the background color.',
       failWhen:
-        "No author style declares a text color for the text, so a user's own text color can make it unreadable on that background, which fails RGAA 10.5.2."
+        "No author style declares a text color for the text, which keeps the browser's default color on this background. Decide whether that fails RGAA 10.5.2: its test asks for the color property with each background color, while its methodology looks only for « une valeur calculée pour la propriété color », which the default gives."
     },
     BACKGROUND_IMAGE_WITHOUT_COLOR: {
       steps: [
@@ -453,6 +456,14 @@ function runInPage(ctx) {
       key: 'backgroundWithoutColor',
       summary: (e) =>
         `This <${e}> declares a background color, but neither it nor any ancestor declares a text color.`,
+      // Asked about even when every style sheet was read (see the header).
+      question: {
+        key: 'cssColorsPaired_summary_cantTell_backgroundDefaultColor',
+        summary: (e) =>
+          `This <${e}> declares a background color, but neither it nor any ancestor declares a text color, so its text keeps the browser's default color.`,
+        needed:
+          "Whether the browser's default text color on this background meets RGAA 10.5.2, whose test asks for a declared text color and whose methodology for a computed one."
+      },
       hint: 'Declare a text color with the background color, on this element or an ancestor such as <body> (RGAA 10.5.2).'
     },
     BACKGROUND_IMAGE_WITHOUT_COLOR: {
@@ -471,31 +482,42 @@ function runInPage(ctx) {
   for (const { code, el } of [...findings.values()].slice(0, MAX_OCCURRENCES)) {
     const msg = MESSAGES[code];
     const element = String(dom.localName(el) || '').toLowerCase();
+    const question = !asking && msg.question;
+    let summary = msg.summary(element);
+    let summaryKey = `cssColorsPaired_summary_fail_${msg.key}`;
+    let uncertainty;
+    if (asking) {
+      summary = `${summary} A style sheet could not be read and may declare it.`;
+      summaryKey = `cssColorsPaired_summary_cantTell_${msg.key}`;
+      uncertainty = {
+        code: 'not-computable',
+        needed: 'Whether a style sheet the scan could not read declares the missing color.',
+        evidence: { reasonCode: code, unreadableStyleSheets: unreadable }
+      };
+    } else if (question) {
+      summary = question.summary(element);
+      summaryKey = question.key;
+      uncertainty = {
+        code: 'judgement-required',
+        needed: question.needed,
+        evidence: { reasonCode: code }
+      };
+    }
     const occ = helpers.reportOccurrence(el, {
-      summary: asking
-        ? `${msg.summary(element)} A style sheet could not be read and may declare it.`
-        : msg.summary(element),
+      summary,
       hint: msg.hint,
       i18n: {
-        summaryKey: `cssColorsPaired_summary_${asking ? 'cantTell' : 'fail'}_${msg.key}`,
+        summaryKey,
         hintKey: `cssColorsPaired_hint_${msg.key}`,
         params: { element }
       },
-      ...(asking
-        ? {
-            uncertainty: {
-              code: 'not-computable',
-              needed: 'Whether a style sheet the scan could not read declares the missing color.',
-              evidence: { reasonCode: code, unreadableStyleSheets: unreadable }
-            }
-          }
-        : {}),
+      ...(uncertainty ? { uncertainty } : {}),
       data: {
         details: { reasonCode: code, element },
         visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
       }
     });
-    (asking ? questions : fails).push(occ);
+    (asking || question ? questions : fails).push(occ);
   }
 
   if (!fails.length && !questions.length) {

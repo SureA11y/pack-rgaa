@@ -544,7 +544,7 @@
   "cssColorsPaired_summary_fail_colorWithoutBackground": "This <{{element}}> declares a text color, but neither it nor any ancestor declares a background color.",
   "cssColorsPaired_summary_cantTell_colorWithoutBackground": "This <{{element}}> declares a text color, but neither it nor any ancestor declares a background color. A style sheet could not be read and may declare it.",
   "cssColorsPaired_hint_colorWithoutBackground": "Declare a background color with the text color, on this element or an ancestor such as <body> (RGAA 10.5.1).",
-  "cssColorsPaired_summary_fail_backgroundWithoutColor": "This <{{element}}> declares a background color, but neither it nor any ancestor declares a text color.",
+  "cssColorsPaired_summary_cantTell_backgroundDefaultColor": "This <{{element}}> declares a background color, but neither it nor any ancestor declares a text color, so its text keeps the browser's default color.",
   "cssColorsPaired_summary_cantTell_backgroundWithoutColor": "This <{{element}}> declares a background color, but neither it nor any ancestor declares a text color. A style sheet could not be read and may declare it.",
   "cssColorsPaired_hint_backgroundWithoutColor": "Declare a text color with the background color, on this element or an ancestor such as <body> (RGAA 10.5.2).",
   "cssColorsPaired_summary_fail_imageWithoutColor": "This <{{element}}> has a background image, but neither it nor any ancestor declares a background color.",
