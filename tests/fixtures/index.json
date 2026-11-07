@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 113,
-    "withFixture": 113,
+    "total": 111,
+    "withFixture": 111,
     "withoutFixture": 0
   },
   "rows": [
@@ -133,11 +133,11 @@
       "testFile": "tests/rules/automatic/rgaa-canvas-role-img.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-canvas-role-img-all-scenarios.html",
-      "totalCases": 9,
+      "totalCases": 10,
       "caseCounts": {
         "PASS": 2,
         "FAIL": 4,
-        "CANTTELL": 1,
+        "CANTTELL": 2,
         "OTHER": 2
       }
     },
@@ -155,23 +155,6 @@
         "PASS": 0,
         "FAIL": 0,
         "CANTTELL": 2,
-        "OTHER": 1
-      }
-    },
-    {
-      "ruleId": "rgaa-color-declarations-paired",
-      "title": "Text and background colours are declared together",
-      "type": "automatic",
-      "wcagSc": [],
-      "ruleFile": "rules/automatic/rgaa-color-declarations-paired.js",
-      "testFile": "tests/rules/automatic/rgaa-color-declarations-paired.test.js",
-      "hasFixture": true,
-      "fixtureFile": "tests/fixtures/rgaa-color-declarations-paired-all-scenarios.html",
-      "totalCases": 5,
-      "caseCounts": {
-        "PASS": 1,
-        "FAIL": 2,
-        "CANTTELL": 1,
         "OTHER": 1
       }
     },
@@ -291,6 +274,23 @@
         "PASS": 0,
         "FAIL": 0,
         "CANTTELL": 1,
+        "OTHER": 1
+      }
+    },
+    {
+      "ruleId": "rgaa-css-colors-paired",
+      "title": "CSS text and background colors are declared together",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-css-colors-paired.js",
+      "testFile": "tests/rules/automatic/rgaa-css-colors-paired.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-css-colors-paired-all-scenarios.html",
+      "totalCases": 6,
+      "caseCounts": {
+        "PASS": 2,
+        "FAIL": 3,
+        "CANTTELL": 0,
         "OTHER": 1
       }
     },
@@ -533,23 +533,6 @@
       }
     },
     {
-      "ruleId": "rgaa-field-label-empty",
-      "title": "A field's label sources are not all empty",
-      "type": "automatic",
-      "wcagSc": [],
-      "ruleFile": "rules/automatic/rgaa-field-label-empty.js",
-      "testFile": "tests/rules/automatic/rgaa-field-label-empty.test.js",
-      "hasFixture": true,
-      "fixtureFile": "tests/fixtures/rgaa-field-label-empty-all-scenarios.html",
-      "totalCases": 2,
-      "caseCounts": {
-        "PASS": 1,
-        "FAIL": 1,
-        "CANTTELL": 0,
-        "OTHER": 0
-      }
-    },
-    {
       "ruleId": "rgaa-field-label-in-name-sources",
       "title": "Every label source of a form field contains its visible label",
       "type": "automatic",
@@ -558,9 +541,9 @@
       "testFile": "tests/rules/automatic/rgaa-field-label-in-name-sources.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-field-label-in-name-sources-all-scenarios.html",
-      "totalCases": 11,
+      "totalCases": 12,
       "caseCounts": {
-        "PASS": 3,
+        "PASS": 4,
         "FAIL": 2,
         "CANTTELL": 3,
         "OTHER": 3
@@ -578,8 +561,8 @@
       "totalCases": 15,
       "caseCounts": {
         "PASS": 4,
-        "FAIL": 7,
-        "CANTTELL": 3,
+        "FAIL": 8,
+        "CANTTELL": 2,
         "OTHER": 1
       }
     },
@@ -592,12 +575,12 @@
       "testFile": "tests/rules/automatic/rgaa-figure-caption-structure.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-figure-caption-structure-all-scenarios.html",
-      "totalCases": 8,
+      "totalCases": 12,
       "caseCounts": {
         "PASS": 2,
-        "FAIL": 4,
+        "FAIL": 7,
         "CANTTELL": 0,
-        "OTHER": 2
+        "OTHER": 3
       }
     },
     {
@@ -618,23 +601,6 @@
       }
     },
     {
-      "ruleId": "rgaa-focus-not-removed",
-      "title": "Scripts do not remove focus from an element that receives it",
-      "type": "automatic",
-      "wcagSc": [],
-      "ruleFile": "rules/automatic/rgaa-focus-not-removed.js",
-      "testFile": "tests/rules/automatic/rgaa-focus-not-removed.test.js",
-      "hasFixture": true,
-      "fixtureFile": "tests/fixtures/rgaa-focus-not-removed-all-scenarios.html",
-      "totalCases": 2,
-      "caseCounts": {
-        "PASS": 0,
-        "FAIL": 1,
-        "CANTTELL": 0,
-        "OTHER": 1
-      }
-    },
-    {
       "ruleId": "rgaa-form-button-label-in-name-sources",
       "title": "The accessible name of a button in a form contains its visible label",
       "type": "automatic",
@@ -643,9 +609,9 @@
       "testFile": "tests/rules/automatic/rgaa-form-button-label-in-name-sources.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-form-button-label-in-name-sources-all-scenarios.html",
-      "totalCases": 9,
+      "totalCases": 10,
       "caseCounts": {
-        "PASS": 2,
+        "PASS": 3,
         "FAIL": 3,
         "CANTTELL": 2,
         "OTHER": 2
@@ -907,23 +873,6 @@
       }
     },
     {
-      "ruleId": "rgaa-invalid-field-message",
-      "title": "Fields marked invalid have their error message in their label or a linked passage",
-      "type": "manual",
-      "wcagSc": [],
-      "ruleFile": "rules/manual/invalid-field-message-manual.js",
-      "testFile": "tests/rules/manual/rgaa-invalid-field-message.test.js",
-      "hasFixture": true,
-      "fixtureFile": "tests/fixtures/rgaa-invalid-field-message-all-scenarios.html",
-      "totalCases": 2,
-      "caseCounts": {
-        "PASS": 0,
-        "FAIL": 0,
-        "CANTTELL": 1,
-        "OTHER": 1
-      }
-    },
-    {
       "ruleId": "rgaa-keyboard-only-event-handlers",
       "title": "Keyboard-only inline event handlers should have a pointer equivalent",
       "type": "manual",
@@ -1000,9 +949,9 @@
       "testFile": "tests/rules/automatic/rgaa-layout-table-no-data-markup.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-layout-table-no-data-markup-all-scenarios.html",
-      "totalCases": 11,
+      "totalCases": 12,
       "caseCounts": {
-        "PASS": 4,
+        "PASS": 5,
         "FAIL": 5,
         "CANTTELL": 1,
         "OTHER": 1
@@ -1085,9 +1034,9 @@
       "testFile": "tests/rules/automatic/rgaa-link-label-in-name-sources.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-link-label-in-name-sources-all-scenarios.html",
-      "totalCases": 13,
+      "totalCases": 14,
       "caseCounts": {
-        "PASS": 3,
+        "PASS": 4,
         "FAIL": 4,
         "CANTTELL": 3,
         "OTHER": 3
@@ -1478,8 +1427,8 @@
       "fixtureFile": "tests/fixtures/rgaa-presentational-attributes-absent-all-scenarios.html",
       "totalCases": 11,
       "caseCounts": {
-        "PASS": 0,
-        "FAIL": 8,
+        "PASS": 1,
+        "FAIL": 7,
         "CANTTELL": 0,
         "OTHER": 3
       }
@@ -1563,9 +1512,9 @@
       "fixtureFile": "tests/fixtures/rgaa-role-img-aria-name-all-scenarios.html",
       "totalCases": 9,
       "caseCounts": {
-        "PASS": 2,
+        "PASS": 3,
         "FAIL": 3,
-        "CANTTELL": 1,
+        "CANTTELL": 0,
         "OTHER": 3
       }
     },
@@ -1750,9 +1699,9 @@
       "fixtureFile": "tests/fixtures/rgaa-svg-role-img-all-scenarios.html",
       "totalCases": 10,
       "caseCounts": {
-        "PASS": 2,
+        "PASS": 3,
         "FAIL": 1,
-        "CANTTELL": 4,
+        "CANTTELL": 3,
         "OTHER": 3
       }
     },
@@ -1872,6 +1821,23 @@
         "PASS": 0,
         "FAIL": 0,
         "CANTTELL": 2,
+        "OTHER": 1
+      }
+    },
+    {
+      "ruleId": "rgaa-valid-lang",
+      "title": "Language code of a change of language is valid",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-valid-lang.js",
+      "testFile": "tests/rules/automatic/rgaa-valid-lang.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-valid-lang-all-scenarios.html",
+      "totalCases": 7,
+      "caseCounts": {
+        "PASS": 4,
+        "FAIL": 2,
+        "CANTTELL": 0,
         "OTHER": 1
       }
     },

@@ -126,21 +126,44 @@ test(`${RULE_ID}: a label for pointing at an element a label cannot name is aske
   }
 });
 
-test(`${RULE_ID}: an empty source is asked about and named`, () => {
+// An étiquette is a « texte » (glossary « Étiquette de champ de formulaire »):
+// an empty source gives the field none (insee.fr and univ-nantes.fr search
+// fields with title="" and a placeholder).
+test(`${RULE_ID}: a field whose sources are all empty fails, naming the source`, () => {
   for (const [body, source] of [
     ['<input aria-label="">', 'aria-label'],
     ['<input title=" ">', 'title'],
     ['<label for="e"></label><input id="e">', 'label-for'],
     ['<span id="z"></span><input aria-labelledby="z">', 'aria-labelledby']
   ]) {
-    const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'cantTell', {
+    const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'fail', {
       maxOccurrences: 1
     });
     const occ = rule.occurrences[0];
     assert.equal(occ.data.details.reasonCode, 'emptySource', body);
     assert.equal(occ.data.details.source, source);
     assert.deepEqual(occ.i18n.params, { source });
-    assert.equal(occ.summary, `This form field has a ${source} label source, but it is empty.`);
+    assert.equal(
+      occ.summary,
+      `This form field has a ${source} label source, but it is empty, so it has no label.`
+    );
+  }
+  // A placeholder does not make up for it.
+  const nantes = assertRule(
+    runa11yCoreOnHtml(page('<input type="text" placeholder="Mot-clé" title="">'), RUN),
+    RULE_ID,
+    'fail'
+  );
+  assert.deepEqual(reasons(nantes), [['fail', 'emptySource']]);
+});
+
+test(`${RULE_ID}: one source with text is enough, whatever the others hold`, () => {
+  for (const body of [
+    '<input title="" aria-label="Rechercher">',
+    '<label for="e"></label><input id="e" title="Nom">',
+    '<label for="e"><img src="x.png" alt="Nom"></label><input id="e">'
+  ]) {
+    assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'pass');
   }
 });
 
@@ -319,9 +342,9 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-field-label-listed-sourc
     ['flls_case_05', 'fail', 'noLabel'],
     ['flls_case_06', 'fail', 'noLabel'],
     ['flls_case_07', 'fail', 'noLabel'],
+    ['flls_case_10', 'fail', 'emptySource'],
     ['flls_case_08', 'cantTell', 'wrappingLabel'],
-    ['flls_case_09', 'cantTell', 'labelForNotLabelable'],
-    ['flls_case_10', 'cantTell', 'emptySource']
+    ['flls_case_09', 'cantTell', 'labelForNotLabelable']
   ]);
 });
 
