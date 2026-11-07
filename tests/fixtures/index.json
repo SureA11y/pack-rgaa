@@ -745,10 +745,10 @@
       "testFile": "tests/rules/automatic/rgaa-html-elements-attributes-valid.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-html-elements-attributes-valid-all-scenarios.html",
-      "totalCases": 16,
+      "totalCases": 17,
       "caseCounts": {
         "PASS": 4,
-        "FAIL": 12,
+        "FAIL": 13,
         "CANTTELL": 0,
         "OTHER": 0
       }

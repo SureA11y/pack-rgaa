@@ -18,7 +18,8 @@
 
   <p class="note">
     Each target has a stable <code>id</code> of the form <code>heav_case_NN</code>. Every FAIL
-    case is an error of the W3C validator (Nu checker 26.9.27); every PASS case has none. Hidden
+    case is an error of the W3C validator (Nu checker 26.9.27), except case 17, which it only
+    warns about but HTML makes obsolete; every PASS case has none. Hidden
     content counts, as it does for the validator.
   </p>
 
@@ -84,6 +85,11 @@
   <div class="case" id="case_12">
     <div class="case-title">12 — FAIL: an email field name on a number input</div>
     <input id="heav_case_12" type="number" autocomplete="email" aria-label="Quantity">
+  </div>
+
+  <div class="case" id="case_17">
+    <div class="case-title">17 — FAIL: scope on a td, obsolete in HTML</div>
+    <table><tr><th>Price</th></tr><tr><td id="heav_case_17" scope="row">10</td></tr></table>
   </div>
 
   <h2>C. Valid markup (PASS)</h2>

@@ -158,8 +158,13 @@ test(`${RULE_ID}: scope must be row, col, rowgroup or colgroup on th`, () => {
   expectFail('<table><tr><th scope="auto">a</th></tr><tr><td>1</td></tr></table>', 'scopeValue');
   expectFail('<div scope="row">x</div>', 'scopeElement');
   expectPass('<table><tr><th scope="COL">a</th><th scope="rowgroup">b</th></tr></table>');
-  // scope on td is obsolete, but the validator only warns.
-  expectPass('<table><tr><th>a</th></tr><tr><td scope="row">1</td></tr></table>');
+  // scope on td is obsolete in HTML, so not conforming; the validator only
+  // warns, but 8.2.1 asks for conforming attributes.
+  const occ = expectFail(
+    '<table><tr><th>a</th></tr><tr><td scope="row">1</td></tr></table>',
+    'scopeElement'
+  );
+  assert.deepEqual(occ.i18n.params, { element: 'td' });
 });
 
 test(`${RULE_ID}: headers must name th cells of the same table`, () => {
@@ -411,14 +416,14 @@ test(`${RULE_ID}: the WCAG attribute rules no longer carry 8.2.1`, () => {
 test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html)`, () => {
   const fixturePath = path.join(__dirname, '../..', 'fixtures', `${RULE_ID}-all-scenarios.html`);
   const rule = assertRule(run(fs.readFileSync(fixturePath, 'utf8')), RULE_ID, 'fail', {
-    minOccurrences: 12,
-    maxOccurrences: 12
+    minOccurrences: 13,
+    maxOccurrences: 13
   });
   const ids = rule.occurrences.map((o) => (o.html.match(/id="([^"]+?) ?"/) || [])[1]).sort();
-  assert.deepEqual(
-    ids,
-    Array.from({ length: 12 }, (_, i) => `heav_case_${String(i + 1).padStart(2, '0')}`)
-  );
+  assert.deepEqual(ids, [
+    ...Array.from({ length: 12 }, (_, i) => `heav_case_${String(i + 1).padStart(2, '0')}`),
+    'heav_case_17'
+  ]);
 });
 
 // Nu: « Bad value bouton for attribute type on element button ».

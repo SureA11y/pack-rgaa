@@ -34,8 +34,9 @@
  *     (case aside);
  *   - scopeValue: a scope on th other than row, col, rowgroup or colgroup
  *     (case aside), spaces or empty value included;
- *   - scopeElement: scope on an element other than th or td (on td it is
- *     only a validator warning);
+ *   - scopeElement: scope on an element other than th, td included: scope
+ *     on td is obsolete in HTML, so not conforming, although the validator
+ *     only warns about it;
  *   - headersTarget / headersEmpty: a headers token that names no th of
  *     the same table (a td, a caption, an element outside the table or in
  *     a nested table), or an empty headers attribute;
@@ -67,7 +68,8 @@
  * - Where the validator is stricter than the HTML standard, the rule does
  *   not report: on and off written in capitals, street-address on a search
  *   input, and extension or variant subtags that are well formed but not
- *   registered. It never reports what the validator accepts.
+ *   registered. It reports nothing the validator accepts, except scope on
+ *   td, which the validator only warns about but HTML makes obsolete.
  * - RGAA 8.2.1 judges the source "selon le type de document spécifié".
  *   center, font and scope on td are valid HTML 4.01 Transitional, and an
  *   XHTML page uses xml:lang, so on a page whose doctype is neither HTML5
@@ -498,7 +500,10 @@ function runInPage(ctx) {
         if (!['row', 'col', 'rowgroup', 'colgroup'].includes(value.toLowerCase())) {
           report(el, 'scopeValue', { value });
         }
-      } else if (tag !== 'td') {
+      } else {
+        // On td, scope is obsolete in HTML: a non-conforming attribute, which
+        // the validator reports as a warning only, but 8.2.1 asks for
+        // conforming attributes.
         report(el, 'scopeElement', { element: tag });
       }
     }
