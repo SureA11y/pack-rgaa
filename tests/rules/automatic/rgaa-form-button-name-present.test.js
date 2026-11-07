@@ -79,12 +79,27 @@ test(`${RULE_ID}: an image button with no alt is asked about`, () => {
   );
 });
 
-test(`${RULE_ID}: a nameless button that joins a form from outside is asked about`, () => {
+// Its form attribute makes it a button of that form (glossary « Bouton
+// (formulaire) »), so 11.9.1 applies.
+test(`${RULE_ID}: a nameless button that joins a form from outside fails`, () => {
   const html = page('<form id="f" action="/send"></form><button form="f"></button>');
-  const rule = assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'cantTell', {
+  const rule = assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'fail', {
     maxOccurrences: 1
   });
-  assert.deepEqual(reasons(rule), [['cantTell', 'formAttributeOnly']]);
+  assert.deepEqual(reasons(rule), [['fail', 'formAttributeOnly']]);
+  assert.equal(
+    rule.occurrences[0].i18n.summaryKey,
+    'formButtonNamePresent_summary_fail_formAttributeOnly'
+  );
+  // An image button with no alt joined this way gets the browser's generic
+  // name, which is asked about.
+  const image = assertRule(
+    runa11yCoreOnHtml(page('<form id="f"></form><input type="image" src="x.png" form="f">'), RUN),
+    RULE_ID,
+    'cantTell',
+    { maxOccurrences: 1 }
+  );
+  assert.deepEqual(reasons(image), [['cantTell', 'imageButtonNoAlt']]);
   // Named, it passes; a form attribute that names no form leaves it out.
   assertRule(
     runa11yCoreOnHtml(page('<form id="f"></form><button form="f">Envoyer</button>'), RUN),
@@ -207,6 +222,7 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-form-button-name-present
     ['fbnp_case_02', 'fail', 'nameMissing'],
     ['fbnp_case_03', 'fail', 'nameMissing'],
     ['fbnp_case_04', 'cantTell', 'imageButtonNoAlt'],
-    ['fbnp_case_05', 'cantTell', 'formAttributeOnly']
+    ['fbnp_case_05', 'fail', 'formAttributeOnly'],
+    ['fbnp_case_10', 'cantTell', 'imageButtonNoAlt']
   ]);
 });

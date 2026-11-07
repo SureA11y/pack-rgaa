@@ -21,14 +21,14 @@
  *   alt of an image button, the value of an <input> button, the content of
  *   a <button> or role="button" element (an image's alt, an <svg>'s
  *   <title> and the like count), or a title. A button with none of them
- *   has no label to be relevant, and fails 11.9.1 step 2. A submit or
+ *   has no label to be relevant, and fails 11.9.1 step 2. A button outside
+ *   the form element that joins a form through its form attribute is a
+ *   button of that form (glossary « Bouton (formulaire) »), and fails the
+ *   same way with no label (formAttributeOnly). A submit or
  *   reset <input> with no value shows the browser's own label ("Submit",
  *   "Reset") and passes; whether the label is relevant is left to a
  *   person, as the rest of 11.9.1 is.
  * @implementation-notes
- * - Asks (cantTell) about a button outside the form element that joins a
- *   form through its form attribute: it submits the form, but is not
- *   « au sein » of it.
  * - Asks (cantTell) about an <input type="image"> with no alt,
  *   aria-label, aria-labelledby or title: the browser names it with a
  *   generic "Submit", which is not one of the label sources the glossary
@@ -71,16 +71,6 @@ const meta = {
       passWhen: 'The generic name the browser gives says what the button does.',
       failWhen:
         'The generic name does not say what the button does, so the button has no relevant label, which fails RGAA 11.9.1.'
-    },
-    formAttributeOnly: {
-      steps: [
-        'Find the button the report names: it sits outside the form it submits, joined to it by its form attribute.',
-        "Read its accessible name in the browser's accessibility tree, and look at what it shows on screen."
-      ],
-      passWhen:
-        'The button has a label after all (visible content, an aria-label, an aria-labelledby, a value or a title), and it says what the button does.',
-      failWhen:
-        'The button has no label. Its form attribute makes it a button of the form it submits (glossary « Bouton (formulaire) »), so it fails RGAA 11.9.1.'
     }
   }
 };
@@ -214,11 +204,10 @@ function runInPage(ctx) {
       needed: "Whether the browser's generic name describes what the image button does."
     },
     formAttributeOnly: {
-      outcome: 'cantTell',
+      outcome: 'fail',
       summary:
         'This button has no label and sits outside the form it submits, which it joins through its form attribute.',
-      hint: 'Its form attribute makes it a button of that form: give it a label that describes its action.',
-      needed: 'Whether the button has a label after all, and whether it says what the button does.'
+      hint: 'Its form attribute makes it a button of that form: give it visible text that describes its action, or an aria-label, aria-labelledby or title.'
     }
   };
   const MESSAGES = outsideForms ? MESSAGES_OUTSIDE : MESSAGES_IN_FORMS;
@@ -250,12 +239,11 @@ function runInPage(ctx) {
     const { label, defaulted } = labelOf(el);
     if (label) continue;
 
-    const reasonCode =
-      !outsideForms && !inside
+    const reasonCode = defaulted
+      ? 'imageButtonNoAlt'
+      : !outsideForms && !inside
         ? 'formAttributeOnly'
-        : defaulted
-          ? 'imageButtonNoAlt'
-          : 'nameMissing';
+        : 'nameMissing';
     const msg = MESSAGES[reasonCode];
     const occurrence = helpers.reportOccurrence(el, {
       summary: msg.summary,

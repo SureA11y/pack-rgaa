@@ -45,9 +45,9 @@ test(`${RULE_ID}: a checkbox, radio or switch named by its content fails`, () =>
   }
 });
 
-test(`${RULE_ID}: native meter, progress and output with no label fail`, () => {
+test(`${RULE_ID}: native meter, progress and output in a form with no label fail`, () => {
   const html = page(
-    '<meter value="0.5"></meter><progress value="1" max="2"></progress><output>5</output>'
+    '<meter value="0.5"></meter><progress value="1" max="2"></progress><form><output>5</output></form>'
   );
   const rule = assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'fail', {
     minOccurrences: 3,
@@ -97,33 +97,75 @@ test(`${RULE_ID}: each source 11.1.1 lists passes`, () => {
   }
 });
 
-test(`${RULE_ID}: a wrapping label without for is asked about`, () => {
+// 11.1.1 names « une balise <label> ayant un attribut for ».
+test(`${RULE_ID}: a wrapping label without for fails`, () => {
   for (const body of [
     '<label>Nom <input type="text"></label>',
-    '<label><select><option></option></select> Pays</label>'
+    '<label><select><option></option></select> Pays</label>',
+    // A button elsewhere in the form, beside another field, is not adjacent.
+    '<form><label>Nom <input type="text"></label><div><input aria-label="Ville"><button>OK</button></div></form>'
   ]) {
-    const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'cantTell', {
+    const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'fail', {
       maxOccurrences: 1
     });
-    assert.deepEqual(reasons(rule), [['cantTell', 'wrappingLabel']], body);
-    assert.equal(rule.occurrences[0].uncertainty.code, 'judgement-required');
+    assert.deepEqual(reasons(rule), [['fail', 'wrappingLabel']], body);
     assert.equal(
       rule.occurrences[0].i18n.summaryKey,
-      'fieldLabelListedSource_summary_cantTell_wrappingLabel'
+      'fieldLabelListedSource_summary_fail_wrappingLabel'
+    );
+    assert.equal(
+      rule.occurrences[0].i18n.hintKey,
+      'fieldLabelListedSource_hint_fail_wrappingLabel'
     );
   }
 });
 
-test(`${RULE_ID}: a label for pointing at an element a label cannot name is asked about`, () => {
+// The fifth condition of 11.1.1, an adjacent button with a visually hidden
+// <label>, does not name for.
+test(`${RULE_ID}: a wrapping label without for, with a button next to it, is asked about`, () => {
   for (const body of [
-    '<label for="l">Pays</label><div role="listbox" id="l" tabindex="0"><div role="option" aria-selected="true">France</div></div>',
-    '<label for="t">Nom</label><div role="textbox" contenteditable="true" id="t"></div>'
+    '<form><label><span class="sr">Rechercher</span><input type="search"></label><button>Rechercher</button></form>',
+    '<form><label>Rechercher <input type="search"><button>OK</button></label></form>',
+    '<form><div class="f"><label>Rechercher <input type="search"></label></div><div class="b"><input type="submit" value="OK"></div></form>'
   ]) {
     const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'cantTell', {
       maxOccurrences: 1
     });
-    assert.deepEqual(reasons(rule), [['cantTell', 'labelForNotLabelable']], body);
+    assert.deepEqual(reasons(rule), [['cantTell', 'wrappingLabelAdjacentButton']], body);
+    assert.equal(rule.occurrences[0].uncertainty.code, 'judgement-required');
   }
+});
+
+test(`${RULE_ID}: a label for pointing at an element a label cannot name fails`, () => {
+  for (const body of [
+    '<label for="l">Pays</label><div role="listbox" id="l" tabindex="0"><div role="option" aria-selected="true">France</div></div>',
+    '<label for="t">Nom</label><div role="textbox" contenteditable="true" id="t"></div>'
+  ]) {
+    const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'fail', {
+      maxOccurrences: 1
+    });
+    assert.deepEqual(reasons(rule), [['fail', 'labelForNotLabelable']], body);
+    assert.equal(
+      rule.occurrences[0].i18n.summaryKey,
+      'fieldLabelListedSource_summary_fail_labelForNotLabelable'
+    );
+  }
+});
+
+// A form-associated custom element is labelable, so the label may name it.
+test(`${RULE_ID}: a label for pointing at a custom element is asked about`, () => {
+  const rule = assertRule(
+    runa11yCoreOnHtml(
+      page(
+        '<label for="q">Quantité</label><x-stepper role="spinbutton" id="q" tabindex="0"></x-stepper>'
+      ),
+      RUN
+    ),
+    RULE_ID,
+    'cantTell',
+    { maxOccurrences: 1 }
+  );
+  assert.deepEqual(reasons(rule), [['cantTell', 'labelForCustomElement']]);
 });
 
 // An étiquette is a « texte » (glossary « Étiquette de champ de formulaire »):
@@ -168,11 +210,13 @@ test(`${RULE_ID}: one source with text is enough, whatever the others hold`, () 
 });
 
 test(`${RULE_ID}: a fail and a question on one page give fail with both occurrences`, () => {
-  const html = page('<input type="text"><label>Nom <input type="text"></label>');
+  const html = page(
+    '<input type="text"><form><label>Nom <input type="text"></label><button>OK</button></form>'
+  );
   const rule = assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'fail');
   assert.deepEqual(reasons(rule), [
     ['fail', 'noLabel'],
-    ['cantTell', 'wrappingLabel']
+    ['cantTell', 'wrappingLabelAdjacentButton']
   ]);
 });
 
@@ -303,12 +347,12 @@ test(`${RULE_ID}: WCAG fails a role="meter" named by <label for>, RGAA 11.1 does
   assert.equal(r.rgaa, 'passedInPart');
 });
 
-test(`${RULE_ID}: WCAG fails a <label for> on a role="listbox", RGAA 11.1 asks`, () => {
+test(`${RULE_ID}: WCAG and RGAA 11.1 both fail a <label for> on a role="listbox"`, () => {
   const r = rollups(
     '<label for="l">Pays</label><div role="listbox" id="l" tabindex="0"><div role="option" aria-selected="true">France</div></div>'
   );
   assert.equal(r.wcagName, 'fail');
-  assert.equal(r.rgaa, 'cantTell');
+  assert.equal(r.rgaa, 'fail');
 });
 
 test(`${RULE_ID}: WCAG and RGAA agree on an unlabelled field and on a <label for>`, () => {
@@ -342,9 +386,11 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-field-label-listed-sourc
     ['flls_case_05', 'fail', 'noLabel'],
     ['flls_case_06', 'fail', 'noLabel'],
     ['flls_case_07', 'fail', 'noLabel'],
+    ['flls_case_08', 'fail', 'wrappingLabel'],
+    ['flls_case_09', 'fail', 'labelForNotLabelable'],
     ['flls_case_10', 'fail', 'emptySource'],
-    ['flls_case_08', 'cantTell', 'wrappingLabel'],
-    ['flls_case_09', 'cantTell', 'labelForNotLabelable']
+    ['flls_case_16', 'cantTell', 'wrappingLabelAdjacentButton'],
+    ['flls_case_17', 'cantTell', 'labelForCustomElement']
   ]);
 });
 
@@ -369,26 +415,33 @@ test(`${RULE_ID}: a label that goes to an earlier element with the same id fails
   );
 });
 
-// An <output> announcing a status (insee.fr: an empty aria-live region) is
-// not a field anyone fills in; one in a form, tied to its fields, still fails.
-test(`${RULE_ID}: an unlabelled <output> that looks like a status message is asked about`, () => {
+// An <output> outside any form (insee.fr: an empty aria-live region) is
+// no « objet d'un formulaire »: its message is judged under 7.5, not 11.1.
+// One that belongs to a form, inside it or through its form attribute,
+// needs a label.
+test(`${RULE_ID}: an <output> outside any form is not applicable, one in a form needs a label`, () => {
   for (const body of [
     '<output aria-live="polite"></output>',
-    '<output role="status">3 résultats</output>'
+    '<output role="status">3 résultats</output>',
+    '<output>5</output>',
+    '<output form="nowhere">5</output>'
   ]) {
-    const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'cantTell', {
-      minOccurrences: 1,
-      maxOccurrences: 1
+    assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'notApplicable', {
+      maxOccurrences: 0
     });
-    assert.deepEqual(reasons(rule), [['cantTell', 'outputStatus']], body);
   }
-  const inForm = assertRule(
-    runa11yCoreOnHtml(
-      page('<form><input id="a" aria-label="A"><output for="a">12</output></form>'),
-      RUN
-    ),
+  for (const body of [
+    '<form><input id="a" aria-label="A"><output for="a">12</output></form>',
+    '<form><output aria-live="polite"></output></form>',
+    '<div role="form" aria-label="Calcul"><output>12</output></div>',
+    '<form id="f"></form><output form="f">12</output>'
+  ]) {
+    const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'fail');
+    assert.deepEqual(reasons(rule), [['fail', 'noLabel']], body);
+  }
+  assertRule(
+    runa11yCoreOnHtml(page('<form><output aria-label="Total">12</output></form>'), RUN),
     RULE_ID,
-    'fail'
+    'pass'
   );
-  assert.deepEqual(reasons(inForm), [['fail', 'noLabel']]);
 });

@@ -553,7 +553,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-field-label-listed-source': {
       tests: ['11.1.1'],
-      note: 'Fails a form field (those of the glossary entry "Champ de saisie de formulaire", native and ARIA, without option, optgroup and datalist) that has none of the sources 11.1.1 lists: an aria-labelledby pointing to text, an aria-label, a <label for> or a title. A placeholder, the field\'s own content and an <output>\'s value do not count. Asks instead when the only label is a <label> wrapping the field without for (the glossary "Étiquette de champ de formulaire" accepts any <label>, while 11.1.1 names a <label> with for), or when a <label for> points at an element a label cannot name. A field whose sources are all empty (an empty aria-label or title, a <label for> or aria-labelledby passage with no text) fails too: the glossary « Étiquette de champ de formulaire » makes the label a « texte », so an empty source is no label, and 11.2\'s tests on each source\'s relevance apply only to a label that is there. It takes over 11.1.1 from the WCAG field-name rules, which accept a wrapping label, a placeholder or a name from content.'
+      note: 'Fails a form field (those of the glossary entry "Champ de saisie de formulaire", native and ARIA, without option, optgroup and datalist) that has none of the sources 11.1.1 lists: an aria-labelledby pointing to text, an aria-label, a <label for> or a title. A placeholder, the field\'s own content and an <output>\'s value do not count. A field whose only label is a <label> wrapping it without for fails too, as 11.1.1 names « une balise <label> ayant un attribut for » (the glossary "Étiquette de champ de formulaire" defines a label, the test the sources it accepts); it is asked about when a button sits next to the field or its label, since the fifth condition (an adjacent button with a visually hidden <label>) does not name for. A <label for> pointing at an element a label cannot name fails, as it gives the field no label, except on a custom element, which is asked about since a form-associated one is labelable. An <output> that belongs to no form (no <form> or role="form" ancestor, no form owner) is left out: the glossary makes a field an « objet d\'un formulaire », and its message is judged under 7.5. A field whose sources are all empty (an empty aria-label or title, a <label for> or aria-labelledby passage with no text) fails too: the glossary « Étiquette de champ de formulaire » makes the label a « texte », so an empty source is no label, and 11.2\'s tests on each source\'s relevance apply only to a label that is there. It takes over 11.1.1 from the WCAG field-name rules, which accept a wrapping label, a placeholder or a name from content.'
     },
     'rgaa-figure-caption-structure': {
       tests: ['1.9.1', '1.9.2', '1.9.3', '1.9.4', '1.9.5'],
@@ -609,7 +609,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-form-button-name-present': {
       tests: ['11.9.1'],
-      note: 'Fails a button (<button>, input submit/reset/button/image, role=button) inside a <form> or role="form" that has no label from the sources the glossary "Bouton (formulaire)" lists: it has nothing whose relevance 11.9.1 step 2 could judge. Buttons outside a form are out of scope, since 11.9.1 step 1 covers only « les boutons présents au sein d\'un formulaire ». Asks about a nameless button that joins a form through its form attribute from outside it, and about an image button with no alt, which the browser names with a generic "Submit". A pass says only that a label exists; its relevance is left to a person.'
+      note: 'Fails a button (<button>, input submit/reset/button/image, role=button) inside a <form> or role="form" that has no label from the sources the glossary "Bouton (formulaire)" lists: it has nothing whose relevance 11.9.1 step 2 could judge. Buttons outside a form are out of scope, since 11.9.1 step 1 covers only « les boutons présents au sein d\'un formulaire ». A nameless button that joins a form through its form attribute from outside it fails too, as that attribute makes it a button of the form (glossary « Bouton (formulaire) »). Asks about an image button with no alt, in a form or joined to one, which the browser names with a generic "Submit". A pass says only that a label exists; its relevance is left to a person.'
     },
     'form-control-label-quality': {
       tests: ['11.2.1', '11.2.4'],
@@ -1263,7 +1263,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-required-field-indication': {
       tests: ['11.10.1', '11.10.2'],
-      note: 'Checks the required fields of each form with two or more fields that does not mark its optional ones (the 11.10 particular case). Fails a field with required or aria-required="true" whose visible label and linked passages show no indication (11.10.2), with none next to it, no image, icon or generated content that could be one, and no « tous les champs sont obligatoires » sentence; asks in those cases. Fails a field whose « * » the page explains only after its first use, or never when the field has required or aria-required (glossary « Indication de champ obligatoire »: the explanation comes « avant la première utilisation »); asks when such a field has neither, since the sign may mean something else.',
+      note: 'Checks the required fields of each form with two or more fields that does not mark its optional ones (the 11.10 particular case). A field\'s own label (its <label> or aria-labelledby passage) counts as a place to mark it optional. Fails a field with required or aria-required="true" whose visible label and linked passages show no indication (11.10.2), with none next to it and no image, icon or generated content that could be one; asks in those cases. A « tous les champs sont obligatoires » sentence not linked to the field fails too, as the particular case keeps 11.10 applicable when all the fields are required (linked by aria-describedby or aria-labelledby, it is an indication in a linked passage and passes); one with an exception (« sauf mention contraire ») is asked about, since the form may mark its optional fields in words the rule does not read. Fails a field whose « * » the page explains only after its first use, or never when the field has required or aria-required (glossary « Indication de champ obligatoire »: the explanation comes « avant la première utilisation »); asks when such a field has neither, since the sign may mean something else.',
       reasonCodes: {
         indicationInLegend: {
           tests: ['11.10.2']
@@ -1278,6 +1278,9 @@ const RGAA_RULE_TESTS = {
           tests: ['11.10.2']
         },
         allFieldsRequiredSentence: {
+          tests: ['11.10.2']
+        },
+        allFieldsRequiredWithException: {
           tests: ['11.10.2']
         },
         stylesNotRead: {

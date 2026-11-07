@@ -649,7 +649,7 @@ A `<label>` with a `for` attribute that matches the field's `id`, one of the fou
 ```html
 <input type="text" placeholder="Nom">
 ```
-A placeholder is not one of the sources 11.1.1 lists, so the field has no label under RGAA, although browsers use the placeholder as its accessible name. A field named only by a `<label>` that wraps it, without `for`, is asked about (cantTell) instead.
+A placeholder is not one of the sources 11.1.1 lists, so the field has no label under RGAA, although browsers use the placeholder as its accessible name. A field named only by a `<label>` that wraps it, without `for`, fails too, since 11.1.1 names « une balise `<label>` ayant un attribut `for` »; it is asked about (cantTell) when a button sits next to it, as the fifth condition (an adjacent button with a visually hidden `<label>`) may apply.
 
 **Failed**
 ```html

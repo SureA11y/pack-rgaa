@@ -16,7 +16,11 @@
  *   optgroup and datalist are left out: a literal reading would ask for a
  *   label on every option. An element with role="button", and a field
  *   hidden from assistive technologies (aria-hidden, hidden content) are
- *   out of scope. A page with no such field is notApplicable.
+ *   out of scope. An <output> that belongs to no form (no <form> or
+ *   role="form" ancestor, no form owner through its form attribute) is out
+ *   of scope too: the glossary makes a field an « objet d'un formulaire »,
+ *   and such an output's message is judged under 7.5. A page with no such
+ *   field is notApplicable.
  * @expectation
  *   The field meets one of the conditions of RGAA 11.1.1: an aria-labelledby
  *   that points to a passage of text, an aria-label, a <label for> pointing
@@ -29,17 +33,20 @@
  *   glossary entry « Étiquette de champ de formulaire » makes the label a
  *   « texte », and an empty source gives none, so the field has no label,
  *   the fifth condition included, which also needs a name.
+ *   A field whose only label is a <label> wrapping it, without for, fails
+ *   (wrappingLabel): 11.1.1 names « une balise <label> ayant un attribut
+ *   for ». A <label for> pointing at an element a label cannot name (a
+ *   role="textbox" <div>) fails too (labelForNotLabelable): the label is
+ *   not associated with it and gives it no name.
  * @implementation-notes
  * - Asks (cantTell) instead of failing when:
- *   - the only label is a <label> wrapping the field, without for: 11.1.1
- *     names "une balise <label> ayant un attribut for", but the glossary
- *     entry "Étiquette de champ de formulaire" accepts any <label>;
- *   - a <label for> points at a field that cannot be labelled (a
- *     role="textbox" <div>): the condition is met to the letter, but the
- *     label gives the field no accessible name;
- *   - an <output> with no label has no for attribute and is announced
- *     (aria-live, role status, log or alert): it is more likely a status
- *     message than a field showing a result;
+ *   - the only label is a <label> wrapping the field, without for, and a
+ *     button sits next to the field or its label
+ *     (wrappingLabelAdjacentButton): 11.1.1's fifth condition, an adjacent
+ *     button with a visually hidden <label>, does not name for;
+ *   - a <label for> points at a custom element (a tag with a hyphen) that
+ *     is not a native field (labelForCustomElement): a form-associated
+ *     custom element is labelable, so the label may name it;
  * - An aria-labelledby that points to no element in the page counts as
  *   absent.
  * - A field whose id an earlier element also has fails with its own reason
@@ -74,43 +81,34 @@ const meta = {
     'placeholderOnly',
     'contentOnly',
     'wrappingLabel',
+    'wrappingLabelAdjacentButton',
     'labelForNotLabelable',
+    'labelForCustomElement',
     'emptySource',
-    'duplicateId',
-    'outputStatus'
+    'duplicateId'
   ],
   review: {
-    wrappingLabel: {
+    wrappingLabelAdjacentButton: {
       steps: [
-        'Find the form field the report names: a <label> without a for attribute wraps it.',
-        'Inspect the field: check that it has no aria-labelledby, aria-label or title with text, and no <label for> matching its id.'
+        'Find the form field the report names: a <label> without a for attribute wraps it, and a button sits next to it.',
+        'Look at the button on screen: check whether its visible text says what to enter in the field.',
+        'Check whether the text of the <label> is visually hidden, while the field and the button stay visible.'
       ],
       passWhen:
-        'The field has one of the label sources RGAA 11.1.1 lists, with text: an aria-labelledby, an aria-label, a <label for> matching its id, or a title.',
+        'The adjacent button gives the field a visible label and the visually hidden <label> gives it its accessible name, which meets the fifth condition of RGAA 11.1.1.',
       failWhen:
-        "The field's only label is a <label> without for. RGAA 11.1.1 names « une balise <label> ayant un attribut for », so the field fails RGAA 11.1.1."
+        "The <label>'s text is visible, or the button does not label the field: the field's only label is a <label> without for, and RGAA 11.1.1 names « une balise <label> ayant un attribut for », so it fails RGAA 11.1.1."
     },
-    labelForNotLabelable: {
+    labelForCustomElement: {
       steps: [
-        'Find the form field the report names: a <label for> points at it, but it is not an element a <label> can name (an ARIA field such as role="textbox").',
-        "Read its accessible name in the browser's accessibility tree, or listen to it with a screen reader: the label gives it none.",
+        'Find the form field the report names: a <label for> points at it, and it is a custom element (its tag has a hyphen).',
+        "Read its accessible name in the browser's accessibility tree, or listen to it with a screen reader.",
         'Check that the field has no aria-labelledby, aria-label or title with text.'
       ],
       passWhen:
-        "The field's accessible name comes from the <label> after all, or from an aria-labelledby, an aria-label or a title.",
+        'The custom element is form-associated, so the <label for> is associated with it and gives it its accessible name.',
       failWhen:
-        'The <label for> is not associated with the field, since a <label> cannot name such an element, and the field has no other source RGAA 11.1.1 lists, so it fails RGAA 11.1.1.'
-    },
-    outputStatus: {
-      steps: [
-        'Find the <output> the report names: it has no label.',
-        'Inspect it: check whether it is inside a <form> or an element with role="form", or joined to a form by its form attribute.',
-        'Use the page, and see what the <output> shows.'
-      ],
-      passWhen:
-        'The <output> belongs to no form (it sits outside any form and no form attribute joins it to one), so it is not a form field under the glossary « Champ de saisie de formulaire »; its message is judged under criterion 7.5.',
-      failWhen:
-        'The <output> belongs to a form and has no label from a source RGAA 11.1.1 lists, which fails RGAA 11.1.1.'
+        'The <label for> gives the field no accessible name, since a <label> cannot name such an element, and the field has no other source RGAA 11.1.1 lists, so it fails RGAA 11.1.1.'
     }
   }
 };
@@ -303,33 +301,38 @@ function runInPage(ctx) {
       hint: 'Give the field an aria-labelledby that points to the visible text, or an aria-label or title attribute.'
     },
     wrappingLabel: {
+      outcome: 'fail',
+      summary:
+        'This form field is labelled only by a <label> that wraps it, without a for attribute, which RGAA 11.1.1 does not list.',
+      hint: 'RGAA 11.1.1 names a <label> with a for attribute: add for and a matching id, or give the field another source 11.1.1 lists.'
+    },
+    wrappingLabelAdjacentButton: {
       outcome: 'cantTell',
       summary:
-        'This form field is labelled only by a <label> that wraps it, without a for attribute.',
-      hint: 'RGAA 11.1.1 names a <label> with a for attribute: add for and a matching id, or give the field another source 11.1.1 lists.',
-      needed: 'Whether the field has a label source 11.1.1 lists after all.'
+        'This form field is labelled only by a <label> that wraps it, without a for attribute, and a button sits next to it.',
+      hint: 'RGAA 11.1.1 names a <label> with a for attribute: add for and a matching id. If the button labels the field, its <label> must be visually hidden (fifth condition of 11.1.1).',
+      needed:
+        'Whether the adjacent button labels the field visibly and its <label> is visually hidden (fifth condition of RGAA 11.1.1).'
     },
     labelForNotLabelable: {
+      outcome: 'fail',
+      summary:
+        'A <label for> points at this field, but this element cannot be labelled by a <label>, so it has no label.',
+      hint: 'The label gives the field no accessible name. Use aria-labelledby pointing to the label text, or a native form field.'
+    },
+    labelForCustomElement: {
       outcome: 'cantTell',
       summary:
-        'A <label for> points at this field, but this element cannot be labelled by a <label>.',
-      hint: 'The label gives the field no accessible name. Use aria-labelledby pointing to the label text, or a native form field.',
+        'A <label for> points at this custom element, which a <label> names only if it is form-associated.',
+      hint: 'Check that the <label> gives the field its accessible name; otherwise use aria-labelledby pointing to the label text.',
       needed:
-        'Whether the field gets an accessible name from the <label> or another source 11.1.1 lists.'
+        'Whether the custom element is form-associated, so that the <label for> gives it its name.'
     },
     duplicateId: {
       outcome: 'fail',
       summary:
         "A <label for> names this field's id, but an element earlier in the page has the same id, so the label goes to that element.",
       hint: 'Give this field an id of its own, and point the <label for> at it.'
-    },
-    outputStatus: {
-      outcome: 'cantTell',
-      summary:
-        'This <output> has no label, and looks like a status message rather than a field: it has no for attribute, and is announced as a status.',
-      hint: 'If the <output> belongs to a form (inside it, or joined by its form attribute), give it a <label for>, an aria-labelledby, an aria-label or a title: RGAA counts an <output> as a form field. Outside any form, its message is judged under 7.5.',
-      needed:
-        'Whether this <output> belongs to a form, which makes it a form field that needs a label.'
     },
     emptySource: {
       outcome: 'fail',
@@ -355,13 +358,61 @@ function runInPage(ctx) {
     );
   }
 
-  // An <output> that is a status message rather than a field: no for, and
-  // announced (aria-live, or role status, log or alert).
-  function isStatusOutput(el, kind) {
-    if (kind !== 'output' || dom.hasAttribute(el, 'for')) return false;
-    const live = norm(dom.getAttribute(el, 'aria-live')).toLowerCase();
-    if (live && live !== 'off') return true;
-    return ['status', 'log', 'alert'].includes(firstRoleToken(el));
+  function parentOf(node) {
+    if (helpers.composedParent) return helpers.composedParent(node);
+    const p = dom.parentNode(node);
+    return p && dom.host(p) ? dom.host(p) : p;
+  }
+
+  // An element that belongs to a form: a <form> or role="form" ancestor,
+  // across shadow roots, or a form owner through its form attribute.
+  function belongsToForm(el) {
+    if (dom.get(el, 'form')) return true;
+    for (let p = parentOf(el); p && dom.nodeType(p) === 1; p = parentOf(p)) {
+      if (tagOf(p) === 'form' || firstRoleToken(p) === 'form') return true;
+    }
+    return false;
+  }
+
+  function isButtonEl(el) {
+    if (!el || dom.nodeType(el) !== 1) return false;
+    const role = firstRoleToken(el);
+    if (role === 'button') return true;
+    if (role) return false;
+    const tag = tagOf(el);
+    if (tag === 'button') return true;
+    return (
+      tag === 'input' &&
+      ['submit', 'button', 'image', 'reset'].includes(
+        norm(dom.getAttribute(el, 'type')).toLowerCase()
+      )
+    );
+  }
+
+  const BUTTONS =
+    'button, input[type="submit" i], input[type="button" i], input[type="image" i], [role~="button" i]';
+  const FIELDS =
+    'input:not([type="hidden" i]):not([type="submit" i]):not([type="button" i]):not([type="image" i]):not([type="reset" i]), select, textarea';
+
+  // A button next to the field or its wrapping label: a sibling that is a
+  // button, or holds one and no field, at the label's level or that of an
+  // ancestor holding no other field (11.1.1, fifth condition).
+  function adjacentButton(el, label) {
+    const holdsButton = (n) =>
+      isButtonEl(n) ||
+      (dom.querySelectorAll(n, BUTTONS).length > 0 && !dom.querySelectorAll(n, FIELDS).length);
+    const near = (n) =>
+      [dom.previousElementSibling(n), dom.nextElementSibling(n)].some((s) => s && holdsButton(s));
+    if (near(el)) return true;
+    let box = label;
+    for (let i = 0; box && i < 4; i += 1) {
+      if (near(box)) return true;
+      const up = dom.parentElement(box);
+      if (!up || tagOf(up) === 'form' || tagOf(up) === 'body') break;
+      if ([...dom.querySelectorAll(up, FIELDS)].some((f) => f !== el)) break;
+      box = up;
+    }
+    return false;
   }
 
   const failOccurrences = [];
@@ -383,6 +434,7 @@ function runInPage(ctx) {
     if (!el || !dom.get(el, 'getAttribute')) continue;
     const kind = fieldKind(el);
     if (!kind) continue;
+    if (kind === 'output' && !belongsToForm(el)) continue;
     if (!inAccTree(el)) continue;
     applicableCount += 1;
 
@@ -391,21 +443,20 @@ function runInPage(ctx) {
 
     let reasonCode;
     let source = '';
+    let wrap = null;
     if (forLabels.length && !isLabelable(el)) {
-      reasonCode = 'labelForNotLabelable';
+      reasonCode = tagOf(el).includes('-') ? 'labelForCustomElement' : 'labelForNotLabelable';
     } else if (labelGoesElsewhere(el)) {
       reasonCode = 'duplicateId';
     } else if (found.empty.length) {
       reasonCode = 'emptySource';
       source = found.empty[0];
-    } else if (wrappingLabel(el)) {
-      reasonCode = 'wrappingLabel';
+    } else if ((wrap = wrappingLabel(el))) {
+      reasonCode = adjacentButton(el, wrap) ? 'wrappingLabelAdjacentButton' : 'wrappingLabel';
     } else if (norm(dom.getAttribute(el, 'placeholder'))) {
       reasonCode = 'placeholderOnly';
     } else if (hasOwnContent(el, kind)) {
       reasonCode = 'contentOnly';
-    } else if (isStatusOutput(el, kind)) {
-      reasonCode = 'outputStatus';
     } else {
       reasonCode = 'noLabel';
     }

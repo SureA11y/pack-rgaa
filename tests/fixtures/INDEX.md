@@ -46,11 +46,11 @@ None — every rule has a fixture.
 | rgaa-field-hidden-label-review | manual | `tests/fixtures/rgaa-field-hidden-label-review-all-scenarios.html` | 2 | 0 | 0 | 1 | 1 |
 | rgaa-field-label-consistency-review | manual | `tests/fixtures/rgaa-field-label-consistency-review-all-scenarios.html` | 3 | 0 | 0 | 1 | 2 |
 | rgaa-field-label-in-name-sources | automatic | `tests/fixtures/rgaa-field-label-in-name-sources-all-scenarios.html` | 12 | 4 | 2 | 3 | 3 |
-| rgaa-field-label-listed-source | automatic | `tests/fixtures/rgaa-field-label-listed-source-all-scenarios.html` | 15 | 4 | 8 | 2 | 1 |
+| rgaa-field-label-listed-source | automatic | `tests/fixtures/rgaa-field-label-listed-source-all-scenarios.html` | 18 | 4 | 10 | 2 | 2 |
 | rgaa-figure-caption-structure | automatic | `tests/fixtures/rgaa-figure-caption-structure-all-scenarios.html` | 12 | 2 | 7 | 0 | 3 |
 | rgaa-focus-indicator-contrast | automatic | `tests/fixtures/rgaa-focus-indicator-contrast-all-scenarios.html` | 11 | 2 | 3 | 4 | 2 |
 | rgaa-form-button-label-in-name-sources | automatic | `tests/fixtures/rgaa-form-button-label-in-name-sources-all-scenarios.html` | 10 | 3 | 3 | 2 | 2 |
-| rgaa-form-button-name-present | automatic | `tests/fixtures/rgaa-form-button-name-present-all-scenarios.html` | 9 | 3 | 3 | 2 | 1 |
+| rgaa-form-button-name-present | automatic | `tests/fixtures/rgaa-form-button-name-present-all-scenarios.html` | 10 | 3 | 4 | 2 | 1 |
 | rgaa-format-hint-review | manual | `tests/fixtures/rgaa-format-hint-review-all-scenarios.html` | 5 | 0 | 0 | 2 | 3 |
 | rgaa-frame-title-attribute-present | automatic | `tests/fixtures/rgaa-frame-title-attribute-present-all-scenarios.html` | 10 | 1 | 6 | 0 | 3 |
 | rgaa-frame-title-relevant | manual | `tests/fixtures/rgaa-frame-title-relevant-all-scenarios.html` | 5 | 0 | 0 | 2 | 3 |
@@ -101,7 +101,7 @@ None — every rule has a fixture.
 | rgaa-presentational-elements-absent | automatic | `tests/fixtures/rgaa-presentational-elements-absent-all-scenarios.html` | 9 | 0 | 7 | 0 | 2 |
 | rgaa-quotation-review | manual | `tests/fixtures/rgaa-quotation-review-all-scenarios.html` | 4 | 0 | 0 | 2 | 2 |
 | rgaa-radio-group-present | manual | `tests/fixtures/rgaa-radio-group-present-all-scenarios.html` | 6 | 0 | 0 | 0 | 6 |
-| rgaa-required-field-indication | automatic | `tests/fixtures/rgaa-required-field-indication-all-scenarios.html` | 5 | 1 | 2 | 1 | 1 |
+| rgaa-required-field-indication | automatic | `tests/fixtures/rgaa-required-field-indication-all-scenarios.html` | 8 | 2 | 3 | 2 | 1 |
 | rgaa-role-img-aria-name | automatic | `tests/fixtures/rgaa-role-img-aria-name-all-scenarios.html` | 9 | 3 | 3 | 0 | 3 |
 | rgaa-same-name-checkboxes-review | manual | `tests/fixtures/rgaa-same-name-checkboxes-review-all-scenarios.html` | 5 | 0 | 0 | 2 | 3 |
 | rgaa-script-button-name-present | automatic | `tests/fixtures/rgaa-script-button-name-present-all-scenarios.html` | 3 | 1 | 1 | 0 | 1 |

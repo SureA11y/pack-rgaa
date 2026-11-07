@@ -38,6 +38,12 @@
     <form action="/search"><button id="fbnp_case_03"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt=""></button></form>
   </div>
 
+  <div class="case" id="case_05">
+    <div class="case-title">05 — FAIL: empty button outside the form, joined by its form attribute</div>
+    <form action="/send" id="fbnp_form_05"></form>
+    <button form="fbnp_form_05" id="fbnp_case_05"></button>
+  </div>
+
   <h2>B. Asked about (CANTTELL)</h2>
 
   <div class="case" id="case_04">
@@ -45,10 +51,10 @@
     <form action="/search"><input type="image" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" id="fbnp_case_04"></form>
   </div>
 
-  <div class="case" id="case_05">
-    <div class="case-title">05 — CANTTELL: empty button outside the form, joined by its form attribute</div>
-    <form action="/send" id="fbnp_form_05"></form>
-    <button form="fbnp_form_05" id="fbnp_case_05"></button>
+  <div class="case" id="case_10">
+    <div class="case-title">10 — CANTTELL: image button with no alt outside the form, joined by its form attribute</div>
+    <form action="/search" id="fbnp_form_10"></form>
+    <input type="image" form="fbnp_form_10" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" id="fbnp_case_10">
   </div>
 
   <h2>C. Button in a form with a label (PASS)</h2>
