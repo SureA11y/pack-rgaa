@@ -23,7 +23,12 @@
  *   at it, or a title. The fifth condition (an adjacent button) also needs
  *   one of these as the field's name. A field with none of them fails:
  *   a placeholder, the field's own content (a role="checkbox" named by its
- *   text) and an <output>'s value do not count.
+ *   text) and an <output>'s value do not count. A field whose sources are
+ *   all empty (an empty aria-label or title, a <label for> with no text, an
+ *   aria-labelledby whose passage has no text) fails too (emptySource): the
+ *   glossary entry « Étiquette de champ de formulaire » makes the label a
+ *   « texte », and an empty source gives none, so the field has no label,
+ *   the fifth condition included, which also needs a name.
  * @implementation-notes
  * - Asks (cantTell) instead of failing when:
  *   - the only label is a <label> wrapping the field, without for: 11.1.1
@@ -35,10 +40,6 @@
  *   - an <output> with no label has no for attribute and is announced
  *     (aria-live, role status, log or alert): it is more likely a status
  *     message than a field showing a result;
- *   - the only source present is empty: an empty aria-label or title, a
- *     <label for> with no text, or an aria-labelledby whose passage has no
- *     text. The attribute is there, as 11.1.1 asks; whether it labels the
- *     field is 11.2.
  * - An aria-labelledby that points to no element in the page counts as
  *   absent.
  * - A field whose id an earlier element also has fails with its own reason
@@ -100,16 +101,6 @@ const meta = {
         'Another source names the field, or the audit counts the <label for>, which meets the wording of 11.1.1, as enough.',
       failWhen:
         'The field has no name from any source 11.1.1 lists, which assistive technologies can read, so it fails RGAA 11.1.1.'
-    },
-    emptySource: {
-      steps: [
-        'Find the form field the report names: one of its label sources (aria-labelledby, aria-label, <label for> or title) is there but empty.',
-        'Look at the field on screen: is there a button right next to it whose text says what to enter (a search field and its "Search" button)?',
-        'Check whether the field gets a label some other way that 11.1.1 lists.'
-      ],
-      passWhen:
-        'An adjacent button gives the field a visible label and another source a name, or the field has a label 11.1.1 accepts elsewhere.',
-      failWhen: 'The field has no label that 11.1.1 lists, which fails RGAA 11.1.1.'
     },
     outputStatus: {
       steps: [
@@ -341,11 +332,10 @@ function runInPage(ctx) {
         'Whether this <output> is a form field showing a result, which needs a label, or a status message.'
     },
     emptySource: {
-      outcome: 'cantTell',
-      summary: 'This form field has a {{source}} label source, but it is empty.',
-      hint: 'Check whether the field has a label; if not, put the label text in that source.',
-      needed:
-        'Whether the field has a label elsewhere that 11.1.1 accepts, such as an adjacent button.'
+      outcome: 'fail',
+      summary:
+        'This form field has a {{source}} label source, but it is empty, so it has no label.',
+      hint: 'Put the text that says what to enter in that source, or give the field a <label for>.'
     }
   };
 
