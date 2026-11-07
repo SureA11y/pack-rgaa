@@ -177,7 +177,9 @@ test(`${RULE_ID}: under the rgaa-4.1.2 profile, a caption fails and a data-like 
   const tests = failed.meta.normativeMappings
     .filter((m) => m.standard === 'RGAA')
     .map((m) => m.requirement);
-  assert.deepEqual(tests, ['5.8.1']);
+  // The rule maps to 5.8.1; its data-like question also covers 5.6.1 and
+  // 5.6.2 (rule-map.js reasonCodes).
+  assert.deepEqual(tests, ['5.6.1', '5.6.2', '5.8.1']);
   assertRule(run(DATA_LIKE), RULE_ID, 'cantTell');
   // Opt-in: a WCAG profile does not run it.
   const wcag = runa11yCoreOnHtml(page(DATA_LIKE), { engineOptions: { profile: 'wcag22-aa' } });

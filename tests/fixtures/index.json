@@ -65,11 +65,11 @@
       "testFile": "tests/rules/automatic/rgaa-aria-list-item-roles.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-aria-list-item-roles-all-scenarios.html",
-      "totalCases": 6,
+      "totalCases": 7,
       "caseCounts": {
         "PASS": 1,
         "FAIL": 0,
-        "CANTTELL": 3,
+        "CANTTELL": 4,
         "OTHER": 2
       }
     },
@@ -1765,9 +1765,9 @@
       "testFile": "tests/rules/automatic/rgaa-th-association-present.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-th-association-present-all-scenarios.html",
-      "totalCases": 3,
+      "totalCases": 4,
       "caseCounts": {
-        "PASS": 1,
+        "PASS": 2,
         "FAIL": 1,
         "CANTTELL": 1,
         "OTHER": 0

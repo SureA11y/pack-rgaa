@@ -72,7 +72,7 @@ const meta = {
       steps: [
         'This finding is about the page: the report lists the navigation systems found on it.',
         'Work out which set of pages it belongs to, and go through a few other pages of that set.',
-        'Look for a navigation menu, a site map and a search engine: on these pages, at every screen width.',
+        'Look for a navigation menu, a site map and a search engine: on these pages, at every screen width. Footer links do not count as a navigation menu; the search engine must search the whole site, not one catalogue; from the site map, every page must be reachable.',
         'Decide whether the site is so small that this does not apply: very few pages, all reachable from the home page. A step of a process, such as a payment, does not need them either.'
       ],
       passWhen:

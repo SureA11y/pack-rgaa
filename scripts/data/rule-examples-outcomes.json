@@ -13,6 +13,12 @@
       "example": "<html lang=\"fr\"> <!DOCTYPE html> …</html>"
     },
     {
+      "ruleId": "rgaa-doctype-valid",
+      "label": "Failed",
+      "engine": "cantTell",
+      "example": "<!DOCTYPE html PUBLIC \"-//Example//DTD Custom HTML//EN\"> <html lang=\"en\"> <head><title>Quarterly rep…"
+    },
+    {
       "ruleId": "rgaa-field-hidden-label-review",
       "label": "Flagged (cantTell)",
       "engine": "notApplicable",

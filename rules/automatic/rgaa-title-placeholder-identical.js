@@ -56,9 +56,9 @@ const meta = {
         'With a screen reader, move to the field and listen to what is announced as its label or description.'
       ],
       passWhen:
-        'The title and the placeholder say the same thing, and whichever the screen reader reads tells the field’s function.',
+        "The title and the placeholder differ only in wording, and each tells the field's exact function, so the label read out is relevant whichever is read.",
       failWhen:
-        'The title and the placeholder differ, so a screen reader may read the placeholder in place of the title and give another label than the one meant: RGAA’s glossary « Étiquette de champ de formulaire » asks for them to be identical, which the audit records under RGAA 11.2.2.'
+        "The title, or the placeholder a screen reader may read in place of it (the glossary « Étiquette de champ de formulaire » asks for the two to be identical), does not tell the field's exact function, so the label read out is not relevant, which fails RGAA 11.2.2."
     }
   }
 };
@@ -133,7 +133,7 @@ function runInPage(ctx) {
         uncertainty: {
           code: 'judgement-required',
           needed:
-            'Which RGAA test the audit records this under; the glossary requires the two values to be identical.',
+            "Whether the title and the placeholder each tell the field's exact function; the glossary requires the two values to be identical.",
           evidence: { title, placeholder }
         },
         data: {

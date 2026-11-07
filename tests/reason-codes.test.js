@@ -23,7 +23,7 @@ const outcomes = (result) => ({
   rule: (id) => (result.checksResults.find((r) => r.ruleId === id) || {}).outcome
 });
 
-test('9.3 asks about <li role="presentation"> in a list, and still fails other stray children', () => {
+test('9.3 asks about <li role="presentation"> in a list, and about other stray children', () => {
   const pager = page(
     '<main><ul><li role="presentation"><a href="/1">1</a></li><li role="presentation"><a href="/2">2</a></li></ul></main>'
   );
@@ -31,7 +31,7 @@ test('9.3 asks about <li role="presentation"> in a list, and still fails other s
   assert.equal(r.rule('list-children-valid'), 'fail');
   assert.equal(r.rollup('9.3'), 'cantTell');
   const stray = page('<main><ul><div><a href="/1">1</a></div><li>2</li></ul></main>');
-  assert.equal(outcomes(runa11yCoreOnHtml(stray, RGAA)).rollup('9.3'), 'fail');
+  assert.equal(outcomes(runa11yCoreOnHtml(stray, RGAA)).rollup('9.3'), 'cantTell');
 });
 
 test('9.3 asks about a plain <li> in a list with a widget role', () => {

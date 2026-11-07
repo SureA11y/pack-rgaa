@@ -51,7 +51,7 @@ const meta = {
   review: {
     legendRelevance: {
       steps: [
-        'Find the group of fields the report names, and read its legend in the report.',
+        'Find the group of fields the report names, and read its legend on the page: its <legend>, or the aria-label or aria-labelledby text of an ARIA group.',
         'Read the labels of the fields of the group.',
         'Decide whether the legend says what they have in common, such as the question a set of choices answers, or the person an address belongs to.'
       ],

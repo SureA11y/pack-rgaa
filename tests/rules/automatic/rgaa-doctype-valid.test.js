@@ -12,6 +12,8 @@ const RULE_ID = 'rgaa-doctype-valid';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };
 const RGAA = { engineOptions: { profile: 'rgaa-4.1.2' } };
 const BODY = '<html lang="en"><head><title>t</title></head><body><p>x</p></body></html>';
+// A doctype that cannot be valid: the HTML5 form with another system id.
+const BAD = '<!DOCTYPE html SYSTEM "http://example.com/custom.dtd">';
 
 const scan = (html, options = {}) => runa11yCoreOnHtml(html, { ...RUN, ...options });
 const rollup = (result, id) => result.rulesResults.find((r) => r.ruleId === id);
@@ -22,8 +24,15 @@ test(`${RULE_ID}: the HTML5 doctype passes, with or without about:legacy-compat`
   }
 });
 
-test(`${RULE_ID}: the W3C recommended doctypes pass`, () => {
+// RGAA names no list of valid doctypes: a published HTML or XHTML
+// document type passes, HTML 4.0, ISO HTML and XHTML Mobile Profile too.
+test(`${RULE_ID}: the published HTML and XHTML doctypes pass`, () => {
   for (const doctype of [
+    '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">',
+    '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">',
+    '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Frameset//EN">',
+    '<!DOCTYPE HTML PUBLIC "ISO/IEC 15445:2000//DTD HTML//EN">',
+    '<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">',
     '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">',
     '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
     '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd">',
@@ -34,11 +43,11 @@ test(`${RULE_ID}: the W3C recommended doctypes pass`, () => {
   }
 });
 
-test(`${RULE_ID}: an unknown doctype fails, naming what was declared`, () => {
+test(`${RULE_ID}: a doctype that names no HTML document type fails, naming what was declared`, () => {
   for (const doctype of [
-    '<!DOCTYPE html PUBLIC "-//FOO//DTD X//EN">',
     '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">',
-    '<!DOCTYPE html SYSTEM "http://example.com/custom.dtd">'
+    '<!DOCTYPE math SYSTEM "http://www.w3.org/Math/DTD/mathml2/mathml2.dtd">',
+    BAD
   ]) {
     const rule = assertRule(scan(doctype + BODY), RULE_ID, 'fail', {
       minOccurrences: 1,
@@ -52,30 +61,42 @@ test(`${RULE_ID}: an unknown doctype fails, naming what was declared`, () => {
   }
 });
 
+test(`${RULE_ID}: any other public identifier is asked about`, () => {
+  for (const doctype of [
+    '<!DOCTYPE html PUBLIC "-//FOO//DTD X//EN">',
+    '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitionnal//EN">'
+  ]) {
+    const rule = assertRule(scan(doctype + BODY), RULE_ID, 'cantTell', {
+      minOccurrences: 1,
+      maxOccurrences: 1
+    });
+    const occ = rule.occurrences[0];
+    assert.equal(occ.data.details.reasonCode, 'unknownPublicId');
+    assert.equal(occ.i18n.summaryKey, 'doctypeValid_summary_cantTell');
+    assert.equal(occ.uncertainty.code, 'judgement-required');
+  }
+});
+
 test(`${RULE_ID}: a page with no doctype is not applicable (rgaa-doctype-present fails it)`, () => {
   assertRule(scan(BODY), RULE_ID, 'notApplicable', { maxOccurrences: 0 });
 });
 
 test(`${RULE_ID}: notApplicable on a scoped run or a fragment`, () => {
-  const html = '<!DOCTYPE html PUBLIC "-//FOO//DTD X//EN">' + BODY;
+  const html = BAD + BODY;
   assertRule(scan(html, { contextSelector: 'body' }), RULE_ID, 'notApplicable');
   assertRule(scan(html, { engineOptions: { fragment: true } }), RULE_ID, 'notApplicable');
 });
 
 test(`${RULE_ID}: messages follow the scan locale`, () => {
-  const rule = assertRule(
-    scan('<!DOCTYPE html PUBLIC "-//FOO//DTD X//EN">' + BODY, { engineOptions: { locale: 'fr' } }),
-    RULE_ID,
-    'fail'
-  );
+  const rule = assertRule(scan(BAD + BODY, { engineOptions: { locale: 'fr' } }), RULE_ID, 'fail');
   assert.equal(
     rule.occurrences[0].summary,
-    'La page déclare un doctype qui n’est ni HTML5 ni recommandé par le W3C.'
+    'La page déclare un doctype qui ne désigne aucun type de document HTML : son nom n’est pas html, ou il a la forme du doctype HTML5 avec un identifiant système autre que about:legacy-compat.'
   );
 });
 
 test(`${RULE_ID}: opt-in, so a default, WCAG or EN 301 549 run does not include it`, () => {
-  const html = '<!DOCTYPE html PUBLIC "-//FOO//DTD X//EN">' + BODY;
+  const html = BAD + BODY;
   for (const engineOptions of [{}, { profile: 'wcag22-aa' }, { profile: 'en301549-v4.1.1' }]) {
     const result = runa11yCoreOnHtml(html, { engineOptions });
     assert.ok(
@@ -86,7 +107,7 @@ test(`${RULE_ID}: opt-in, so a default, WCAG or EN 301 549 run does not include 
 });
 
 test(`${RULE_ID}: the RGAA profile, the rgaa tag and the 8.1 rollup id run it`, () => {
-  const html = '<!DOCTYPE html PUBLIC "-//FOO//DTD X//EN">' + BODY;
+  const html = BAD + BODY;
   for (const opts of [
     RGAA,
     { engineOptions: { tags: { include: 'rgaa' } } },
@@ -109,7 +130,7 @@ test(`${RULE_ID}: RGAA 8.1 reports a missing doctype under 8.1.1 and an invalid 
       .map((m) => m.requirement);
   };
 
-  const invalid = runa11yCoreOnHtml('<!DOCTYPE html PUBLIC "-//FOO//DTD X//EN">' + BODY, RGAA);
+  const invalid = runa11yCoreOnHtml(BAD + BODY, RGAA);
   assert.equal(rollupOutcome(rollup(invalid, 'rgaa-4.1.2-8.1')), 'fail');
   assert.equal(
     invalid.checksResults.find((r) => r.ruleId === 'rgaa-doctype-present').outcome,

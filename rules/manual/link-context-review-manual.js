@@ -70,9 +70,9 @@ const meta = {
         'Check whether one of those, not the text aria-describedby points to, says where the link goes.'
       ],
       passWhen:
-        'The sentence, paragraph, list item, preceding heading, table header or cell around the link makes its destination clear.',
+        'The sentence, paragraph, list item, preceding heading, table header or cell around the link makes its destination clear, or the link is ambiguous for everyone (no reader could know where it leads before activating it), in which case criterion 6.1 is not applicable.',
       failWhen:
-        'Only the text aria-describedby points to says where the link goes, which RGAA’s glossary « Contexte du lien » does not count, so the link fails RGAA 6.1 (6.1.1 to 6.1.4 by the kind of link).'
+        'Only the text aria-describedby points to says where the link goes, which RGAA’s glossary « Contexte du lien » does not count, so the link fails RGAA 6.1.1 if it is a text link, 6.1.2 an image link, 6.1.3 a composite link, or 6.1.4 an SVG link.'
     },
     CONTAINER_CONTEXT_ONLY: {
       steps: [
@@ -81,9 +81,9 @@ const meta = {
         'Check whether one of those says where the link goes, rather than only the <dd>, <dt>, <blockquote> or <figcaption> that contains it.'
       ],
       passWhen:
-        'The sentence around the link, the heading before it, or a table header or cell makes its destination clear.',
+        'The sentence around the link, the heading before it, or a table header or cell makes its destination clear, or the link is ambiguous for everyone (no reader could know where it leads before activating it), in which case criterion 6.1 is not applicable.',
       failWhen:
-        'Only the enclosing <dd>, <dt>, <blockquote> or <figcaption> says where the link goes, which RGAA’s glossary « Contexte du lien » does not count, so the link fails RGAA 6.1 (6.1.1 to 6.1.4 by the kind of link).'
+        'Only the enclosing <dd>, <dt>, <blockquote> or <figcaption> says where the link goes, which RGAA’s glossary « Contexte du lien » does not count, so the link fails RGAA 6.1.1 if it is a text link, 6.1.2 an image link, 6.1.3 a composite link, or 6.1.4 an SVG link.'
     }
   }
 };

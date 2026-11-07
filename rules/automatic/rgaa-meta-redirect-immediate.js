@@ -66,7 +66,7 @@ const meta = {
         'Compare the page with the one it leads to: is this an obsolete address sending visitors on to the new version of the page?'
       ],
       passWhen:
-        'The page is an obsolete address redirecting to its new version, which the particular cases of RGAA 13.1 make not applicable; or the redirect is made immediate (a delay of 0).',
+        'The page is an obsolete address redirecting to its new version, which the particular cases of RGAA 13.1 make not applicable.',
       failWhen:
         'The page redirects after a delay and is not an obsolete address of the page it leads to, which fails RGAA 13.1.2.'
     }

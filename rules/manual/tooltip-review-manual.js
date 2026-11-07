@@ -23,8 +23,11 @@
  *   user without moving the pointer or the focus (10.13.1), can be hovered
  *   without disappearing (10.13.2), and stays visible until the pointer or
  *   focus leaves, the user hides it, or it is no longer valid (10.13.3).
- *   Each is behaviour a script decides, so every tooltip is asked about
- *   (tooltipRole, tooltipAttribute), one occurrence per element.
+ *   Each is behaviour a script decides, so every tooltip is asked about,
+ *   once per test, so that each answer is filed under its own test:
+ *   tooltipRoleDismiss, tooltipRoleHover and tooltipRolePersist for a
+ *   role="tooltip" (10.13.1, 10.13.2, 10.13.3), and the same for a library
+ *   attribute (tooltipAttribute…).
  * @implementation-notes
  * - Manual (cantTell).
  * - A role="tooltip" is reported whether or not it is shown, since a
@@ -34,6 +37,50 @@
  */
 
 const id = 'rgaa-tooltip-review';
+
+// The steps for each test of 10.13, for a role="tooltip" or, with
+// `attribute`, a library attribute, where nothing may appear at all.
+const NOTHING = 'Nothing appears on hover or focus; or ';
+const either = (attribute, text) =>
+  attribute ? NOTHING + text[0].toLowerCase() + text.slice(1) : text;
+const TESTS = {
+  dismiss: (attribute) => ({
+    steps: [
+      'Find the element the report names, and show its tooltip by hovering it, then by reaching it with the Tab key.',
+      'Check whether the tooltip covers informative content, the element that triggered it included, also with the page zoomed.',
+      'If it does, try to hide it with the keyboard (Escape or a key the page documents) without moving the pointer or the focus.'
+    ],
+    passWhen: either(
+      attribute,
+      'The tooltip covers no informative content, whatever the viewing conditions (zoom included), or a keyboard action hides it without moving the pointer or the focus.'
+    ),
+    failWhen:
+      'The tooltip covers informative content and no keyboard action hides it without moving the pointer or the focus, which fails RGAA 10.13.1.'
+  }),
+  hover: (attribute) => ({
+    steps: [
+      'Find the element the report names, and show its tooltip by hovering it.',
+      'Move the pointer from the element onto the tooltip.'
+    ],
+    passWhen: either(
+      attribute,
+      'The tooltip stays visible while the pointer moves onto it and over it.'
+    ),
+    failWhen: 'The tooltip disappears when the pointer moves onto it, which fails RGAA 10.13.2.'
+  }),
+  persist: (attribute) => ({
+    steps: [
+      'Find the element the report names, and show its tooltip by hovering it, then by reaching it with the Tab key.',
+      'Each time, wait without moving the pointer or the focus.'
+    ],
+    passWhen: either(
+      attribute,
+      'The tooltip stays visible until the pointer or the focus leaves it and the element that triggered it, until the user hides it, or until its information is no longer valid.'
+    ),
+    failWhen:
+      'The tooltip disappears by itself while the pointer or the focus is still on it or on its trigger and its information is still valid, which fails RGAA 10.13.3.'
+  })
+};
 
 const meta = {
   title: 'Content shown on hover or focus can be dismissed, hovered and stays visible',
@@ -52,32 +99,23 @@ const meta = {
   type: 'manual',
   defaultConfidence: 'high',
   coverage: {},
-  reasonCodes: ['tooltipRole', 'tooltipAttribute'],
+  // One code per test for each kind of tooltip: role="tooltip", or a
+  // library attribute. Each element is asked about once per test.
+  reasonCodes: [
+    'tooltipRoleDismiss',
+    'tooltipRoleHover',
+    'tooltipRolePersist',
+    'tooltipAttributeDismiss',
+    'tooltipAttributeHover',
+    'tooltipAttributePersist'
+  ],
   review: {
-    tooltipRole: {
-      steps: [
-        'Find the element the report names, and move the pointer over it, then reach it with the Tab key: a tooltip appears.',
-        'With the tooltip shown, press Escape, without moving the pointer or the focus.',
-        'Show it again with the pointer, and move the pointer onto the tooltip.',
-        'Show it again, and wait: it should stay until you leave, hide it, or it stops being true.'
-      ],
-      passWhen:
-        'The tooltip hides on Escape or covers nothing else, you can move the pointer onto it, and it stays visible.',
-      failWhen:
-        'It covers other content and cannot be hidden without moving, which fails RGAA 10.13.1; it disappears when the pointer moves onto it, which fails RGAA 10.13.2; or it disappears by itself, which fails RGAA 10.13.3.'
-    },
-    tooltipAttribute: {
-      steps: [
-        'Find the element the report names, and move the pointer over it, then reach it with the Tab key: a tooltip or popover may appear.',
-        'With it shown, press Escape, without moving the pointer or the focus.',
-        'Show it again with the pointer, and move the pointer onto it.',
-        'Show it again, and wait: it should stay until you leave, hide it, or it stops being true.'
-      ],
-      passWhen:
-        'Nothing appears on hover or focus; or what appears hides on Escape or covers nothing else, you can move the pointer onto it, and it stays visible.',
-      failWhen:
-        'It covers other content and cannot be hidden without moving, which fails RGAA 10.13.1; it disappears when the pointer moves onto it, which fails RGAA 10.13.2; or it disappears by itself, which fails RGAA 10.13.3.'
-    }
+    tooltipRoleDismiss: TESTS.dismiss(false),
+    tooltipRoleHover: TESTS.hover(false),
+    tooltipRolePersist: TESTS.persist(false),
+    tooltipAttributeDismiss: TESTS.dismiss(true),
+    tooltipAttributeHover: TESTS.hover(true),
+    tooltipAttributePersist: TESTS.persist(true)
   }
 };
 
@@ -119,6 +157,9 @@ function runInPage(ctx) {
   function ask(el, kind, params) {
     if (seen.has(el)) return;
     seen.add(el);
+    for (const test of ['Dismiss', 'Hover', 'Persist']) askOne(el, kind, params, kind + test);
+  }
+  function askOne(el, kind, params, reasonCode) {
     occurrences.push(
       helpers.reportOccurrence(el, {
         summary:
@@ -136,7 +177,7 @@ function runInPage(ctx) {
           needed: 'Whether the content can be dismissed, hovered, and stays visible.'
         },
         data: {
-          details: { reasonCode: kind, ...params },
+          details: { reasonCode, ...params },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })

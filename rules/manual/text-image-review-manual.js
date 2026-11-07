@@ -57,36 +57,36 @@ const meta = {
         'Find the image button the report names, and look at it on screen.',
         'Decide whether the image shows text.',
         'If it does, decide whether styled text could look the same, or whether the effect cannot be done with CSS.',
-        'Look for a control on the page that replaces the image with text.'
+        'Look on the page for a replacement mechanism that lets the user replace images of text with styled text.'
       ],
       passWhen:
-        'The image shows no text, a control replaces it with text, or its effect cannot be done with CSS.',
+        'The image shows no text; or its text is part of a logo, a brand name, a CAPTCHA or an image test, or its exact rendering is essential to the information (RGAA 1.8’s particular cases); or a replacement mechanism exists; or its effect cannot be done with CSS.',
       failWhen:
-        'The image shows text that styled text could replace, with no control to replace it, which fails RGAA 1.8.2.'
+        'The image button shows text that styled text could replace, outside those particular cases and with no replacement mechanism, which fails RGAA 1.8.2.'
     },
     imageInHeading: {
       steps: [
         'Find the image the report names, inside a heading, and look at it on screen.',
         'Decide whether the image shows text.',
         'If it does, decide whether styled text could look the same, or whether the effect cannot be done with CSS.',
-        'Look for a control on the page that replaces the image with text.'
+        'Look on the page for a replacement mechanism that lets the user replace images of text with styled text.'
       ],
       passWhen:
-        'The image shows no text, a control replaces it with text, or its effect cannot be done with CSS.',
+        'The image shows no text; or its text is part of a logo, a brand name, a CAPTCHA or an image test, or its exact rendering is essential to the information (RGAA 1.8’s particular cases); or a replacement mechanism exists; or its effect cannot be done with CSS.',
       failWhen:
-        'The image shows text that styled text could replace, with no control to replace it, which fails RGAA 1.8.1.'
+        'The image shows text that styled text could replace, outside those particular cases and with no replacement mechanism, which fails RGAA 1.8.1.'
     },
     textImageName: {
       steps: [
         'Find the image the report names, and look at it on screen: its file name, class or id suggests it shows text.',
         'Decide whether the image shows text, leaving out logos and brand names.',
         'If it does, decide whether styled text could look the same, or whether the effect cannot be done with CSS.',
-        'Look for a control on the page that replaces the image with text.'
+        'Look on the page for a replacement mechanism that lets the user replace images of text with styled text.'
       ],
       passWhen:
-        'The image shows no text, a control replaces it with text, or its effect cannot be done with CSS.',
+        'The image shows no text; or its text is part of a logo, a brand name, a CAPTCHA or an image test, or its exact rendering is essential to the information (RGAA 1.8’s particular cases); or a replacement mechanism exists; or its effect cannot be done with CSS.',
       failWhen:
-        'The image shows text that styled text could replace, with no control to replace it, which fails RGAA 1.8.1.'
+        'The image shows text that styled text could replace, outside those particular cases and with no replacement mechanism, which fails RGAA 1.8.1.'
     }
   }
 };

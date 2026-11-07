@@ -69,9 +69,9 @@ const meta = {
         'If it lays out content, list the header markup it still holds.'
       ],
       passWhen:
-        'The table lays out content and holds no caption, th, thead, tfoot, summary, scope, headers or axis; or it is a data table, and its role is removed so its headers are exposed (RGAA 5.6 and 5.7 then apply).',
+        'The table lays out content and holds no caption, th, thead, tfoot, non-empty summary, role="rowheader" or "columnheader", and no cell with scope, headers or axis.',
       failWhen:
-        'The table lays out content but keeps markup meant for data tables, which fails RGAA 5.8.1; or it is a data table hidden as layout by its role, so its headers are not exposed.'
+        'The table lays out content but keeps markup meant for data tables, which fails RGAA 5.8.1; or it is a data table whose role="presentation" or "none" removes its headers from assistive technologies, so 5.8.1 does not apply but its headers fail RGAA 5.6.1 (column) or 5.6.2 (row).'
     }
   }
 };

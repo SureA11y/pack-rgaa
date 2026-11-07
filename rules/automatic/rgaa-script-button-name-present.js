@@ -57,10 +57,13 @@ const meta = {
       steps: [
         'Find the image button the report names: it has no alt, aria-label, aria-labelledby or title.',
         'Listen to it with a screen reader, or read its name in the browser’s accessibility tree: the browser gives it a generic name such as "Submit".',
-        'Activate the button, and see what it does.'
+        'Activate the button, and see what it does.',
+        'Look at the image: note any text it shows.'
       ],
-      passWhen: 'The generic name says what the button does.',
-      failWhen: 'The generic name does not say what the button does, which fails RGAA 7.1.3.'
+      passWhen:
+        'The generic name says what the button does and contains any text the image shows, punctuation and capital letters aside.',
+      failWhen:
+        'The generic name does not say what the button does, or does not contain the text the image shows, which fails RGAA 7.1.3.'
     }
   }
 };

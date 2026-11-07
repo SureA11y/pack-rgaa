@@ -67,12 +67,12 @@ const meta = {
       steps: [
         'Find the heading the report names, and look at what it shows on screen.',
         'Inspect it: its text comes only from a title, aria-label or aria-labelledby on it, or from an aria-label on an element inside it, not from its content.',
-        'Listen to the heading with a screen reader, and compare what is read with what is shown.'
+        'Listen to the heading with a screen reader, and note what is read.'
       ],
       passWhen:
-        'What the heading shows, and what assistive technologies read, say what the section is about, so its content is relevant.',
+        'Both what the heading shows and what a screen reader reads for it say what the section is about.',
       failWhen:
-        'The heading shows nothing that says what the section is about, or what is read differs from what is shown, which fails RGAA 9.1.2.'
+        'What the heading shows, or what a screen reader reads for it, does not say what the section is about, which fails RGAA 9.1.2.'
     },
     contentNotReadable: {
       steps: [

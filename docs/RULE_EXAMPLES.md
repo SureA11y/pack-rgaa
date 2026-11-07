@@ -2098,11 +2098,20 @@ A logo is a particular case of 1.8.
 ```
 The table has headers on both axes, and its `<th>` have no `scope`, `id` or header role (RGAA 5.7.1).
 
-**Flagged (cantTell)**
+**Passed**
 ```html
 <table><tr><th>Nom</th><th>Âge</th></tr><tr><td>Ana</td><td>31</td></tr></table>
 ```
-With headers on one axis only, browsers tie them to their cells and an auditor may accept it: the table is asked about once.
+All the headers sit in a single row, which criterion 5.7's particular case lets be `<th>` without `scope`.
+
+**Flagged (cantTell)**
+```html
+<table>
+  <tr><th colspan="2">Population</th></tr>
+  <tr><th>Paris</th><td>2</td></tr>
+</table>
+```
+With headers on two axes and a span, a header may cover only part of a row or column (5.7.3): the table is asked about once.
 
 ## rgaa-th-scope-row-col
 

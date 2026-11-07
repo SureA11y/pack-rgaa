@@ -89,14 +89,14 @@ const meta = {
   review: {
     adjacentLinkOrButton: {
       steps: [
-        'Find the <canvas> the report names, and the link or button right after it in the code.',
-        'Activate the link or button.',
-        'Compare what it gives access to with what the canvas shows.'
+        'Find the <canvas> the report names, and the link or button right after it in the code; check that it also sits next to it on screen.',
+        'Decide whether the image carries information or only decorates.',
+        'If it carries information, activate the link or button and compare what it gives access to with what the image shows.'
       ],
       passWhen:
-        'The link or button leads to an alternative content that gives the same information as the canvas, or the canvas is decorative and hidden with aria-hidden="true".',
+        'The image carries information, and the link or button sits next to it on screen and leads to an alternative content that gives the same information.',
       failWhen:
-        'The link or button does not lead to an alternative, so the informative canvas has none, which fails RGAA 1.1.8.'
+        'The image carries information, the link or button is not next to it on screen or does not lead to an alternative content, and no mechanism replaces the image, which fails RGAA 1.1.8; or it only decorates and has no aria-hidden="true", which fails RGAA 1.2.5.'
     },
     noAlternativeMayBeDecorative: {
       steps: [

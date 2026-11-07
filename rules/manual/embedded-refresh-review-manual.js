@@ -62,7 +62,7 @@ const meta = {
         'If it does, look for a way to stop or restart the updates, to lengthen the delay, or a warning before it updates.'
       ],
       passWhen:
-        'The content never refreshes by itself, or the user can stop and restart the refresh, lengthen its delay tenfold, is warned in time to lengthen it, or the delay is twenty hours or more.',
+        'The content never refreshes by itself; or the user can stop and restart the refresh, or lengthen its delay at least tenfold; or is warned beforehand and has at least 20 seconds to lengthen it; or the delay is 20 hours or more; or the refresh is essential to the content, which the particular cases of RGAA 13.1 make not applicable.',
       failWhen: 'The content refreshes by itself with none of those means, which fails RGAA 13.1.1.'
     }
   }

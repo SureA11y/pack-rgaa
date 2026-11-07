@@ -108,12 +108,12 @@ const meta = {
       steps: [
         'Find the link the report names, in a run of text and shown only by its color.',
         'Put it in each state the report lists: hover it with the mouse, tab to it, press it, and follow it so it shows as visited.',
-        'In each state, measure the contrast between the link color and the surrounding text with a contrast checker.'
+        'In each state, measure the contrast between the link color and the surrounding text with a contrast checker, and, on hover and on focus, check for a mark other than color.'
       ],
       passWhen:
-        'In each state the link either has a mark other than color (an underline, a weight) or its color contrasts at least 3:1 with the surrounding text.',
+        'The link has a mark other than color in its normal state, so RGAA 10.6.1 does not apply; or, in each state where it is shown in a different color (unvisited, visited, active, hover, focus), its color contrasts at least 3:1 with the surrounding text, and hovering it and focusing it each add a visual mark other than a color change (an underline, a border, a weight).',
       failWhen:
-        'In a state, the link is shown only by a color that contrasts below 3:1 with the surrounding text, which fails RGAA 10.6.1.'
+        "In a state, the link's color contrasts below 3:1 with the surrounding text, or hover or focus changes only its color, which fails RGAA 10.6.1."
     },
     BROWSER_STATE_COLORS: {
       steps: [
@@ -130,12 +130,12 @@ const meta = {
       steps: [
         'Find the link the report names, in a run of text and shown only by its color.',
         'Put it in each state: visited, hovered, focused with the keyboard and pressed.',
-        'In each state where its color changes and no other mark appears, measure the contrast between the link color and the surrounding text.'
+        'In each state where its color changes and no other mark appears, measure the contrast between the link color and the surrounding text, and, on hover and on focus, check for a mark other than color.'
       ],
       passWhen:
-        'In each state the link has a mark other than color, or a color that contrasts at least 3:1 with the surrounding text.',
+        'The link has a mark other than color in its normal state, so RGAA 10.6.1 does not apply; or, in each state where it is shown in a different color (unvisited, visited, active, hover, focus), its color contrasts at least 3:1 with the surrounding text, and hovering it and focusing it each add a visual mark other than a color change (an underline, a border, a weight).',
       failWhen:
-        'In a state, the link is shown only by a color that contrasts below 3:1 with the surrounding text, which fails RGAA 10.6.1.'
+        "In a state, the link's color contrasts below 3:1 with the surrounding text, or hover or focus changes only its color, which fails RGAA 10.6.1."
     }
   }
 };

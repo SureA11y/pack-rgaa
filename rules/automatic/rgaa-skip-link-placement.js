@@ -132,7 +132,7 @@ const meta = {
     SKIP_LINK_ORDER_DIFFERS: {
       steps: [
         'Open the page the report names and the other pages it lists.',
-        'On each, press Tab from the top of the page and note what comes before the skip link.',
+        "On each, inspect the generated source (the browser's element panel) and note what comes before the skip link; pressing Tab from the top gives the same order unless a positive tabindex changes it.",
         'Compare: the skip link comes at the same place relative to the rest of the page (first, or right after the same elements).'
       ],
       passWhen:
@@ -142,23 +142,25 @@ const meta = {
     },
     SKIP_LINK_VIEWPORT_DIFFERS: {
       steps: [
-        'Open the page the report names and several other pages of the site, in windows of the same width.',
+        'Open the page the report names and several other pages of the same set of pages (the home page may be a set on its own), in windows of the same width.',
         'Find the skip link on each, pressing Tab from the top of the page if it shows only on focus.',
         'Compare where it shows.'
       ],
-      passWhen: 'The skip link is at the same place on every page.',
-      failWhen: 'The skip link is at another place on some pages, which fails RGAA 12.7.2.'
+      passWhen:
+        'Across the pages of the set, the skip link is at the same place, or the page forms a set on its own.',
+      failWhen:
+        'The skip link is at another place on some pages of the set, which fails RGAA 12.7.2.'
     },
     SKIP_LINK_SINGLE_PAGE: {
       steps: [
-        'Open the page the report names and several other pages of the site, in windows of the same width.',
+        'Open the page the report names and several other pages of the same set of pages (the home page may be a set on its own), in windows of the same width.',
         'On each, press Tab from the top of the page until the skip link takes focus, and note where it shows and what comes before it.',
         'Compare the pages.'
       ],
       passWhen:
-        'On every page the skip link is at the same place and comes in the same order, or the site has a single page.',
+        'Across the pages of the set, the skip link is at the same place and comes in the same order, or the page forms a set on its own (as a home page, or the only page of a site, may).',
       failWhen:
-        'The skip link is at another place, or comes in another order, on some pages, which fails RGAA 12.7.2.'
+        'The skip link is at another place, or comes in another order, on some pages of the set, which fails RGAA 12.7.2.'
     }
   }
 };

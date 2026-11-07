@@ -54,7 +54,7 @@ const meta = {
       steps: [
         'Find the text the report names: it refers to a colour, such as "the fields in red".',
         'Find what it refers to on the page.',
-        'Check whether something other than colour identifies it: a word, a sign such as an asterisk, an icon, a shape, a position or a title.'
+        'Check whether something other than colour identifies it: a visible text or sign (such as an asterisk explained in the page), or an icon, shape or style that also comes with a text in the code (aria-label, title, hidden text, aria-current).'
       ],
       passWhen:
         'Something other than colour gives the same information, or the text gives no information by colour.',

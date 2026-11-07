@@ -66,12 +66,12 @@ const meta = {
       steps: [
         'Find the image the report names; it is marked decorative (alt="" or role="presentation") but has an aria-label, aria-labelledby or title.',
         'Look at the image on the page and decide whether it carries information a user needs, or only decorates.',
-        'If it carries information, read the text its aria-label, aria-labelledby or title gives and check that it says what the image conveys.'
+        'If it carries information, listen to it with a screen reader and check that the text of its aria-label, aria-labelledby or title is read out and says what the image conveys.'
       ],
       passWhen:
-        'The image carries information and the aria-label, aria-labelledby or title gives it a relevant alternative (RGAA 1.1.1 accepts them), or it is decorative once those attributes are removed.',
+        'The image carries information, and a screen reader reads its aria-label, aria-labelledby or title as a relevant alternative, so RGAA 1.2.1 does not apply to it.',
       failWhen:
-        'The image is decorative but keeps an aria-label, aria-labelledby or title, which fails RGAA 1.2.1; or it carries information that no alternative gives, which fails RGAA 1.1.1.'
+        'The image only decorates but keeps an aria-label, aria-labelledby or title, which fails RGAA 1.2.1; or it carries information and the text read out does not say what it conveys, which fails RGAA 1.3.1, or nothing is read out, which fails RGAA 1.1.1.'
     }
   }
 };

@@ -54,7 +54,7 @@ const meta = {
       steps: [
         'Find the image the report names, and read each text alternative it lists.',
         'Look at the image and decide what information it carries.',
-        'Check whether the alternative is short and concise, or a detailed description that belongs in a separate long description.'
+        'Check whether the alternative is short and concise, or a description that belongs in a detailed description (RGAA 1.6) tied to the image.'
       ],
       passWhen:
         'The alternative is as short as the information allows, or the image is one of RGAA 1.3’s particular cases.',

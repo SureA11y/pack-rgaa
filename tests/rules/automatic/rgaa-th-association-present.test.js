@@ -43,12 +43,24 @@ test(`${RULE_ID}: a scope, an id or a header role passes`, () => {
   }
 });
 
-// Browsers tie the headers of a one-axis table to its cells, and an
-// auditor may accept it; with spans, a header may cover part of a row.
-test(`${RULE_ID}: a one-axis table, or one with spans, is asked about once`, () => {
+// 5.7's particular case: headers on a single row or a single column may be
+// <th> without scope.
+test(`${RULE_ID}: headers on a single row or a single column pass`, () => {
   for (const body of [
     '<table><tr><th>Nom</th><th>Âge</th></tr><tr><td>Ana</td><td>31</td></tr></table>',
-    '<table><tr><th colspan="2">Population</th></tr><tr><th>Paris</th><td>2</td></tr><tr><th>Lyon</th><td>1</td></tr></table>'
+    '<table><tr><th colspan="2">Population</th></tr><tr><td>2</td><td>1</td></tr></table>',
+    '<table><tr><th>Paris</th><td>2</td></tr><tr><th>Lyon</th><td>1</td></tr></table>'
+  ]) {
+    assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'pass', { maxOccurrences: 0 });
+  }
+});
+
+// With spans, or headers off a first row and column, a header may cover
+// only part of a row or column.
+test(`${RULE_ID}: a table with headers on two axes and spans is asked about once`, () => {
+  for (const body of [
+    '<table><tr><th colspan="2">Population</th></tr><tr><th>Paris</th><td>2</td></tr><tr><th>Lyon</th><td>1</td></tr></table>',
+    '<table><tr><th>Ville</th><th>2023</th></tr><tr><td>Paris</td><td>2</td></tr><tr><th colspan="2">Sud</th></tr><tr><td>Nice</td><td>1</td></tr></table>'
   ]) {
     const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'cantTell', {
       minOccurrences: 1,

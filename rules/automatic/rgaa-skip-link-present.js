@@ -136,9 +136,9 @@ const meta = {
         'Check whether the site has other pages with the same header or menu.'
       ],
       passWhen:
-        'The site is a single page, the particular case of RGAA 12.7, so no skip link is needed.',
+        'The site is a single page whose context (no navigation or additional content to skip) makes a quick-access link useless, which the particular case of RGAA 12.7 makes not applicable.',
       failWhen:
-        'Repeated content, such as a header or a menu not marked as navigation, comes before the main content with no link to skip it, which fails RGAA 12.7.1.'
+        'The site has other pages, or links and controls come before the main content, and no link lets users skip to or reach the main content, which fails RGAA 12.7.1.'
     },
     skipLinkAriaHidden: {
       steps: [
@@ -148,7 +148,7 @@ const meta = {
       ],
       passWhen: 'The link reaches the main content, and a screen reader announces it.',
       failWhen:
-        'The link is hidden from screen reader users, so they cannot use it to skip to the main content, which fails RGAA 12.7.1.'
+        'The link is hidden from assistive technologies, so screen reader users have no link to skip to the main content, and the link is not functional in the sense of the RGAA glossary « Liens d’évitement ou d’accès rapide », which fails RGAA 12.7.1.'
     }
   }
 };

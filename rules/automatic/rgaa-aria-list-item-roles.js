@@ -19,9 +19,12 @@
  *   role="listitem" (step 2). A role="list" whose items are <li> elements
  *   without role="listitem", or other elements, is neither.
  *   Such a list is asked about (cantTell), never failed: 9.3.1 and 9.3.2
- *   judge information "regroupées visuellement sous forme de liste", and
- *   whether the list reads as ordered (9.3.2) or unordered (9.3.1) is
- *   visual. A list whose children all have role="listitem" passes.
+ *   judge information "regroupées visuellement sous forme de liste", which
+ *   is visual. A list whose children all have role="listitem" passes.
+ *   Each finding is filed under one test: a list whose items are numbered
+ *   (a numeric list-style-type, a CSS counter, or a text starting with a
+ *   number) reads as an ordered list, under 9.3.2 (the `…Ordered` codes);
+ *   any other under 9.3.1.
  * @implementation-notes
  * - aria-required-children asks about the same role="list" for WCAG 1.3.1
  *   and no longer carries 9.3.1 and 9.3.2, since most of its findings are
@@ -36,6 +39,29 @@
  */
 
 const id = 'rgaa-aria-list-item-roles';
+
+// The steps for one code: an ordered list (numbered items) is filed under
+// 9.3.2, any other under 9.3.1; <li> items, or other children.
+function listReview(kind, li) {
+  const ordered = kind === 'ordered';
+  const test = ordered ? '9.3.2' : '9.3.1';
+  const html = ordered ? '<ol>' : '<ul>';
+  return {
+    steps: [
+      'Find the role="list" element the report names, and look at it on screen.',
+      ordered
+        ? 'Decide whether its items read as an ordered list: grouped visually one after another and numbered, as the rule found them.'
+        : 'Decide whether its items read as an unordered list: grouped visually one after another, with bullets or a clear common layout, and not numbered.',
+      li
+        ? 'Inspect its children: they are <li> elements, but without role="listitem".'
+        : 'Inspect its children: some are neither <li> nor role="listitem".'
+    ],
+    passWhen: `The content is not presented as a list, so RGAA ${test} does not apply to it; or each item is given role="listitem".`,
+    failWhen: li
+      ? `The content reads as an ${kind} list, but its <li> items have no role="listitem" under the role="list" container, which fails RGAA ${test}.`
+      : `The content reads as an ${kind} list, but some of its items are neither <li> in a ${html} nor role="listitem" in the role="list" container, which fails RGAA ${test}.`
+  };
+}
 
 const meta = {
   title: 'ARIA lists use role="listitem" for their items',
@@ -54,30 +80,17 @@ const meta = {
   type: 'automatic',
   defaultConfidence: 'medium',
   coverage: {},
-  reasonCodes: ['liWithoutListitemRole', 'childWithoutListitemRole'],
+  reasonCodes: [
+    'liWithoutListitemRole',
+    'childWithoutListitemRole',
+    'liWithoutListitemRoleOrdered',
+    'childWithoutListitemRoleOrdered'
+  ],
   review: {
-    liWithoutListitemRole: {
-      steps: [
-        'Find the role="list" element the report names, and look at it on screen.',
-        'Decide whether its items read as a list: grouped visually one after another, with bullets, numbers or a clear common layout.',
-        'Inspect its children: they are <li> elements, but without role="listitem".'
-      ],
-      passWhen:
-        'The content is not presented as a list, so 9.3 does not apply to it; or each item is given role="listitem".',
-      failWhen:
-        'The content reads as a list, but its <li> items have no role="listitem" under a role="list" container (nor a <ul> or <ol>), which fails RGAA 9.3.1 (unordered) or 9.3.2 (ordered).'
-    },
-    childWithoutListitemRole: {
-      steps: [
-        'Find the role="list" element the report names, and look at it on screen.',
-        'Decide whether its items read as a list, and whether their order matters (ordered) or not (unordered).',
-        'Inspect its children: some are neither <li> nor role="listitem".'
-      ],
-      passWhen:
-        'The content is not presented as a list, so 9.3 does not apply to it; or each item is given role="listitem".',
-      failWhen:
-        'The content reads as a list, but its items are not structured with role="listitem" (nor with <ul> or <ol> and <li>), which fails RGAA 9.3.1 (unordered) or 9.3.2 (ordered).'
-    }
+    liWithoutListitemRole: listReview('unordered', true),
+    childWithoutListitemRole: listReview('unordered', false),
+    liWithoutListitemRoleOrdered: listReview('ordered', true),
+    childWithoutListitemRoleOrdered: listReview('ordered', false)
   }
 };
 
@@ -89,6 +102,37 @@ function runInPage(ctx) {
   // in any case.
   function firstRole(el) {
     return helpers.aria.getExplicitRole(el);
+  }
+
+  // Numbered items: a numeric list-style-type on an item shown as a list
+  // item, a CSS counter on the items or their ::before, or every item's text
+  // starting with a number (1. 2) 3 -).
+  const NUMERIC =
+    /^(decimal|decimal-leading-zero|(lower|upper)-(roman|alpha|latin|greek)|lower-greek|armenian|georgian|cjk-decimal|hebrew|arabic-indic|devanagari)$/;
+  function styleOf(el, pseudo) {
+    try {
+      const view = dom.ownerDocument(el) && dom.defaultView(dom.ownerDocument(el));
+      return view && typeof view.getComputedStyle === 'function'
+        ? view.getComputedStyle(el, pseudo || null)
+        : null;
+    } catch {
+      return null;
+    }
+  }
+  function numbered(items) {
+    const counted = items.some((c) => {
+      const cs = styleOf(c);
+      if (!cs) return false;
+      if (cs.display === 'list-item' && NUMERIC.test(String(cs.listStyleType || ''))) return true;
+      if (cs.counterIncrement && cs.counterIncrement !== 'none') return true;
+      const before = styleOf(c, '::before');
+      return !!before && /counter\(/.test(String(before.content || ''));
+    });
+    if (counted) return true;
+    return (
+      items.length > 1 &&
+      items.every((c) => /^\s*\d+\s*[.)\-–]/.test(String(dom.textContent(c) || '')))
+    );
   }
 
   const nodes = helpers.queryAllSmart
@@ -117,7 +161,9 @@ function runInPage(ctx) {
     const liOnly = others.every(
       (c) => String(dom.tagName(c)).toLowerCase() === 'li' && !dom.hasAttribute(c, 'role')
     );
-    const reasonCode = liOnly ? 'liWithoutListitemRole' : 'childWithoutListitemRole';
+    const reasonCode =
+      (liOnly ? 'liWithoutListitemRole' : 'childWithoutListitemRole') +
+      (numbered(items) ? 'Ordered' : '');
 
     occurrences.push(
       helpers.reportOccurrence(el, {

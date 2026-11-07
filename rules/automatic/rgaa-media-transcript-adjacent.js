@@ -74,15 +74,14 @@ const meta = {
   review: {
     noAdjacentTranscript: {
       steps: [
-        'Find the audio or video the report names and play it.',
-        'Decide whether it needs a transcript: it does unless it is decorative, is itself an alternative to content on the page, or is a CAPTCHA; a video may have audio description instead.',
-        'Look right before and right after it, in the code and on screen, for the transcript or a link or button to it.',
-        'Read the transcript and check that it gives the information the media carries.'
+        'Find the audio or video the report names and play it; note whether it is audio only, video only, or both.',
+        'Decide whether it needs a transcript. It does not when it is decorative, is itself an alternative to content of the page, gives access to an enlarged version, is a CAPTCHA or part of a test the transcript would give away, or falls under RGAA 4.1’s publication-date exemptions.',
+        'Look right before and right after it, in the code and on screen, for a clearly identifiable transcript, or a link or button to one. For a video, also look for synchronised audio description, or a link or button to a version with it; for a video with no sound, also an "audio only" version.'
       ],
       passWhen:
-        'The media needs no transcript, or a relevant transcript, or a link or button to one, sits right before or after it (or, for a video, audio description covers it).',
+        'The media needs no transcript; or a clearly identifiable transcript, or a link or button to one, sits right before or after it; or, for a video, one of the other forms RGAA 4.1.2 or 4.1.3 accepts is there.',
       failWhen:
-        'The media needs a transcript and none sits right next to it, or it does not give the media’s information, which fails RGAA 4.1.1, 4.1.2 or 4.1.3 (4.2 for its relevance).'
+        'The media needs a transcript and none of these sits next to it, which fails RGAA 4.1.1 (audio only), 4.1.2 (video only) or 4.1.3 (synchronised).'
     },
     describedTranscriptNotAdjacent: {
       steps: [
@@ -91,9 +90,9 @@ const meta = {
         'Check whether it is the transcript, and whether it sits right before or after the media in the code and on screen.'
       ],
       passWhen:
-        'The media needs no transcript, or its transcript, or a link or button to it, sits right before or after it.',
+        'The media needs no transcript (RGAA 4.1’s particular cases); or its transcript, or a link or button to it, sits right before or after it; or, for a video, synchronised audio description (or a link or button right next to it to a version with it) is there.',
       failWhen:
-        'The transcript is elsewhere on the page and nothing next to the media leads to it, which fails RGAA 4.1.1, 4.1.2 or 4.1.3.'
+        'The media needs a transcript, the transcript is elsewhere on the page, nothing next to the media leads to it and, for a video, there is no audio description, which fails RGAA 4.1.1 (audio only), 4.1.2 (video only) or 4.1.3 (synchronised).'
     }
   }
 };

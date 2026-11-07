@@ -64,9 +64,9 @@ const meta = {
         'Inspect the element for its role, aria-live and aria-atomic attributes.'
       ],
       passWhen:
-        'The text is not a status message, or the element has the matching role: status, alert, or log, progressbar or status for a progress. The RGAA methodology also accepts aria-live with aria-atomic="true", polite for status and assertive for alert, and aria-live="polite" for log.',
+        'The text is not a status message, or the element has the matching role: status, alert, or log, progressbar or status for a progress. The RGAA methodology also accepts aria-live with aria-atomic="true", polite for status and assertive for alert, and aria-live="polite" for log. A progress shown as a progress bar needs an explicit role="progressbar".',
       failWhen:
-        'The status message has neither, which fails RGAA 7.5.1 for a success, a result or a state, RGAA 7.5.2 for an error or a suggestion, and RGAA 7.5.3 for a progress.'
+        'The status message has neither the role nor the attributes that match its nature, which fails RGAA 7.5.1 for a success, a result or a state, RGAA 7.5.2 for an error or a suggestion, and RGAA 7.5.3 for a progress.'
     },
     possibleStatusMessage: {
       steps: [
@@ -76,9 +76,9 @@ const meta = {
         'Inspect the element for its role, aria-live and aria-atomic attributes.'
       ],
       passWhen:
-        'The text is not a status message, or the element has the matching role: status, alert, or log, progressbar or status for a progress. The RGAA methodology also accepts aria-live with aria-atomic="true", polite for status and assertive for alert, and aria-live="polite" for log.',
+        'The text is not a status message, or the element has the matching role: status, alert, or log, progressbar or status for a progress. The RGAA methodology also accepts aria-live with aria-atomic="true", polite for status and assertive for alert, and aria-live="polite" for log. A progress shown as a progress bar needs an explicit role="progressbar".',
       failWhen:
-        'The status message has neither, which fails RGAA 7.5.1 for a success, a result or a state, RGAA 7.5.2 for an error or a suggestion, and RGAA 7.5.3 for a progress.'
+        'The status message has neither the role nor the attributes that match its nature, which fails RGAA 7.5.1 for a success, a result or a state, RGAA 7.5.2 for an error or a suggestion, and RGAA 7.5.3 for a progress.'
     }
   }
 };

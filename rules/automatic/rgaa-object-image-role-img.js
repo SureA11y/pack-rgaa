@@ -33,9 +33,11 @@
  *   (noAlternativeMayBeDecorative): it may be decorative, and then it fails
  *   1.2.3 instead.
  *   Asks (cantTell):
- *   - a text alternative without role="img". The test wording requires
- *     both, but the methodology validates on the alternative alone (steps 3
- *     to 5), so RGAA does not say which reading wins;
+ *   - a text alternative without role="img". The test's first condition
+ *     and step 3 of its methodology ask for both, so the
+ *     alternative alone does not meet it: an informative image passes only
+ *     through a link or button right after it or a replacement mechanism,
+ *     and a decorative one fails 1.2.3, as it keeps an alternative;
  *   - no text alternative, but a link or button right after the <object>
  *     (does it lead to an alternative content?);
  *   - no text alternative, but fallback content inside the <object>, which
@@ -87,34 +89,36 @@ const meta = {
   review: {
     alternativeWithoutRoleImg: {
       steps: [
-        'Find the <object> the report names; it has an aria-label, aria-labelledby or title but no role="img".',
-        'Read that text alternative and check that it says what the image conveys.',
-        'Decide, with the audit’s rules, whether the alternative without role="img" is accepted: the 1.1.6 wording asks for both, its methodology checks the alternative alone.'
+        'Find the <object> image the report names: it has a text alternative (aria-labelledby, aria-label or title) but no role="img".',
+        'Look at the image with the text around it, and decide whether it carries information or only decorates.',
+        'If it carries information, look right after it, in the code and on screen, for a link or button that leads to an alternative content, and on the page for a mechanism that replaces the image with an alternative content.'
       ],
       passWhen:
-        'The text alternative is relevant, and role="img" is added or the audit accepts it without.',
+        'The image carries information and a link or button right after it, or a mechanism on the page, gives access to an alternative content.',
       failWhen:
-        'The image has no usable text alternative for assistive technologies, which fails RGAA 1.1.6.'
+        'The image carries information and its alternative comes without role="img", with no adjacent link or button and no replacement mechanism, which fails RGAA 1.1.6; or it only decorates but keeps an alternative and has no aria-hidden="true", which fails RGAA 1.2.3.'
     },
     adjacentLinkOrButton: {
       steps: [
-        'Find the <object> the report names and the link or button right after it.',
-        'Activate that link or button and see where it leads.'
+        'Find the <object> image the report names, and the link or button right after it in the code; check that it also sits next to it on screen.',
+        'Decide whether the image carries information or only decorates.',
+        'If it carries information, activate the link or button and compare what it gives access to with what the image shows.'
       ],
-      passWhen: 'It leads to an alternative content that gives the information the image conveys.',
+      passWhen:
+        'The image carries information, and the link or button sits next to it on screen and leads to an alternative content that gives the same information.',
       failWhen:
-        'It does not lead to an alternative to the image, and the image has no other, which fails RGAA 1.1.6.'
+        'The image carries information, the link or button is not next to it on screen or does not lead to an alternative content, and no mechanism replaces the image, which fails RGAA 1.1.6; or it only decorates and has no aria-hidden="true", which fails RGAA 1.2.3.'
     },
     fallbackOnly: {
       steps: [
         'Find the <object> the report names; its only alternative is the content between <object> and </object>.',
-        'Read that content, and check with a screen reader whether it is read out while the image displays.',
-        'Give the <object> role="img" and an aria-label, aria-labelledby or title, or a link or button right after it, if the audit does not accept fallback content.'
+        'Decide whether the image carries information or only decorates.',
+        'If it carries information, look on the page for a mechanism that replaces the image with an alternative content.'
       ],
       passWhen:
-        'The <object> has role="img" and a text alternative, or a link or button right after it that leads to an alternative content.',
+        'The image carries information and a mechanism on the page replaces it with an alternative content.',
       failWhen:
-        'The image keeps only fallback content, which RGAA 1.1.6 does not list as an alternative for an <object> image, and fails it.'
+        'The image carries information and has only content between its tags, which RGAA 1.1.6 does not count as an alternative for an <object> image, so it fails RGAA 1.1.6; or it only decorates and has content between its tags and no aria-hidden="true", which fails RGAA 1.2.3.'
     },
     noAlternativeMayBeDecorative: {
       steps: [
@@ -276,7 +280,7 @@ function runInPage(ctx) {
       cantTells.push(
         helpers.reportOccurrence(el, {
           summary: `This image object has a text alternative (${source}) but no role="img".`,
-          hint: 'RGAA 1.1.6 asks for a text alternative and role="img". Add role="img", or check that the alternative is rendered by assistive technologies.',
+          hint: 'RGAA 1.1.6 asks for a text alternative and role="img". Add role="img" if the image carries information, or aria-hidden="true" in place of the alternative if it is decorative.',
           i18n: {
             summaryKey: 'objectImageRoleImg_summary_cantTell_noRole',
             hintKey: 'objectImageRoleImg_hint_cantTell_noRole',

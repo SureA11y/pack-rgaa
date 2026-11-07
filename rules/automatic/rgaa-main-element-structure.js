@@ -80,12 +80,12 @@ const meta = {
   review: {
     noMain: {
       steps: [
-        'Look at the page and find its main content, the part that differs from one page of the site to the next.',
+        'Look at the page and find its main content zone: where its main information and features are, outside menus, search and secondary zones such as ads or related news. On this page it may be a frame, a canvas or a component.',
         'Inspect the code around it for a <main> element.'
       ],
-      passWhen:
-        'The page has no main content of its own, or its main content is inside a <main> element.',
-      failWhen: 'The main content is not structured with a <main> element, which fails RGAA 9.2.1.'
+      passWhen: 'The main content zone is inside a <main> element.',
+      failWhen:
+        'The main content zone is not structured with a <main> element, which fails RGAA 9.2.1.'
     },
     hiddenByAncestor: {
       steps: [
@@ -95,7 +95,7 @@ const meta = {
       passWhen:
         'Only one <main> is shown, and every other one carries the hidden attribute itself.',
       failWhen:
-        'A <main> other than the one shown lacks its own hidden attribute, which fails RGAA 9.2.1: hiding it another way does not count.'
+        'A <main> other than the one shown lacks its own hidden attribute, which RGAA 9.2.1 step 5 asks of every other <main>: this fails RGAA 9.2.1.'
     },
     allHidden: {
       steps: [
