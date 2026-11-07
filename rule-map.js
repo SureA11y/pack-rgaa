@@ -549,7 +549,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-field-label-in-name-sources': {
       tests: ['11.2.5'],
-      note: 'Fails a form field (glossary "Champ de saisie de formulaire", native and ARIA) with a visible label when the source that gives its accessible name (aria-labelledby, aria-label, <label> or title, in the glossary\'s order) does not contain that label. Asks when another source present does not: 11.2.5\'s conditions name each source, but the glossary « Étiquette de champ de formulaire » has the étiquette, the source that gives the name, judged under 11.2, and the pack reads the test so: such a finding passes once a person confirms the name source contains the label. Punctuation and capital letters are ignored (particular cases of 11.2). Asks when the visible label may be a symbol, or when a source differs only by an abbreviation, by text in parentheses, or by the ending of a word of 4 letters or more ("Recherche" for "Rechercher"), which a person compares: the pack reads « contient » as the text shown, punctuation and capital letters aside, so another form of a word fails. The visible label is read from the <label>, else from aria-labelledby, else from the field\'s own text for the checkbox, radio and switch roles.'
+      note: 'Fails a form field (glossary "Champ de saisie de formulaire", native and ARIA) with a visible label when the source that gives its accessible name (aria-labelledby, aria-label, <label> or title, in the glossary\'s order) does not contain that label. Another source that does not contain it is not judged: 11.2.5\'s conditions name each source, but its methodology and the glossary « Étiquette de champ de formulaire » judge the étiquette, the source that gives the name, so such a field passes. Punctuation and capital letters are ignored (particular cases of 11.2), which excuse nothing else: « contient » is read as words, so an abbreviation written out, a word with another ending ("Rechercher" for "Recherche") or text in parentheses left out fails. Asks only when the visible label may be a symbol. The visible label is read from the <label>, else from aria-labelledby, else from the field\'s own text for the checkbox, radio and switch roles.'
     },
     'rgaa-field-label-listed-source': {
       tests: ['11.1.1'],
@@ -605,7 +605,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-form-button-label-in-name-sources': {
       tests: ['11.9.2'],
-      note: 'Fails a button inside a <form> or role="form" whose accessible name does not contain its visible label (its text, or the value of an <input> button), which is 11.9.2 methodology step 2. Asks when a title, or an aria-label that loses to aria-labelledby, does not contain it: the test\'s conditions check every source, but its methodology and the glossary « Bouton (formulaire) » judge the accessible name alone, which the pack follows: such a finding passes once a person confirms the accessible name contains the label. Buttons outside a form are out of scope (step 1 covers « les boutons présents au sein d\'un formulaire »), and an image button shows its label inside the image. Punctuation and capital letters are ignored (particular cases of 11.2).'
+      note: 'Fails a button inside a <form> or role="form" whose accessible name does not contain its visible label (its text, or the value of an <input> button), which is 11.9.2 methodology step 2. A title, or an aria-label that loses to aria-labelledby, that does not contain it is not judged: the test\'s conditions check every source, but its methodology and the glossary « Bouton (formulaire) » judge the accessible name alone, so such a button passes. Buttons outside a form are out of scope (step 1 covers « les boutons présents au sein d\'un formulaire »), and an image button shows its label inside the image. Punctuation and capital letters are ignored (particular cases of 11.2), and nothing else: an abbreviation written out, a word with another ending or text in parentheses left out fails. Asks only when the visible label may be a symbol.'
     },
     'rgaa-form-button-name-present': {
       tests: ['11.9.1'],
@@ -904,7 +904,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-link-content-label-present': {
       tests: ['6.2.1'],
-      note: 'Fails a[href] and role=link elements whose content has no text and no image with a text alternative, even when aria-label, aria-labelledby or title names them: 6.2.1 step 2 checks that the content of the link contains a label (text or alternative), and the glossary "Intitulé de lien", Note 4, fails a link with no content under 6.2. A <canvas>, or an <object> or <embed> of an image type, with no aria-label, aria-labelledby, title or fallback text counts as an image with no alternative. Asks when the content is CSS-generated text, another embedded element, or hidden text beside a name from an attribute. <area> is left to 1.1.2.'
+      note: 'Fails a[href] and role=link elements whose content has no text and no image with a text alternative, even when aria-label, aria-labelledby or title names them: 6.2.1 step 2 checks that the content of the link contains a label (text or alternative), and the glossary "Intitulé de lien", Note 4, fails a link with no content under 6.2. A <canvas>, or an <object> or <embed> of an image type, with no aria-label, aria-labelledby, title or fallback text counts as an image with no alternative. A link whose only content is text generated by CSS (::before, ::after) fails too (generatedTextOnly, in a browser): the glossary "Intitulé de lien", note 5, does not count such text as content between <a> and </a>. Asks when the content is another embedded element, an element named by its own aria-label, or hidden text beside a name from an attribute. <area> is left to 1.1.2.'
     },
     'rgaa-link-context-review': {
       tests: ['6.1.1', '6.1.2', '6.1.3', '6.1.4'],
@@ -921,7 +921,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-link-label-in-name-sources': {
       tests: ['6.1.5'],
-      note: 'Fails a link (a[href] or role="link", not an SVG link) with visible text when its title, its aria-label or the text its aria-labelledby points to does not contain that text. That is 6.1.5 steps 1 and 2, which check the content of each of these sources; the glossary "Intitulé (ou nom accessible) de lien", note 2, says the same of the title. Punctuation and capital letters are ignored (particular cases of 6.1.5). Asks when the visible label may be a symbol, or when a source differs only by an abbreviation or by text in parentheses.'
+      note: 'Fails a link (a[href] or role="link", not an SVG link) with visible text when its title, its aria-label or the text its aria-labelledby points to does not contain that text. That is 6.1.5 steps 1 and 2, which check the content of each of these sources; the glossary "Intitulé (ou nom accessible) de lien", note 2, says the same of the title. Punctuation and capital letters are ignored (particular cases of 6.1.5), and nothing else: a source that writes out an abbreviation, gives a word another ending or leaves out text in parentheses fails. Asks only when the visible label may be a symbol.'
     },
     'link-name-present': {
       tests: [],
@@ -937,9 +937,12 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-link-title-content-name': {
       tests: ['6.1.2', '6.1.3'],
-      note: 'Fails an image link (6.1.2) whose title does not contain the text alternative of its images, and asks about a composite link (6.1.3) whose title contains its text but not its images\' alternative, or an image link whose one-character alternative may be a symbol. Glossary « Intitulé (ou nom accessible) de lien », note 2: a link is « non-explicite » when it « possède un attribut title dont la valeur ne reprendrait pas au moins le "nom accessible" issu du contenu du lien », since assistive technologies can be set to read the title. Punctuation and capital letters are ignored, as 6.1.5\'s particular cases allow. Text links are left to rgaa-link-label-in-name-sources (6.1.5), and links whose content holds hidden, generated or embedded content are left out.',
+      note: 'Fails an image link (6.1.2) whose title does not contain the text alternative of its images, and a composite link (6.1.3) whose title contains its text but not the alternative of each of its images, as whole words in any order. Asks when every alternative the title leaves out is one character, which may be a symbol (symbolAlternative for an image link, compositeSymbolAlternative for a composite link). Glossary « Intitulé (ou nom accessible) de lien », note 2: a link is « non-explicite » when it « possède un attribut title dont la valeur ne reprendrait pas au moins le "nom accessible" issu du contenu du lien », since assistive technologies can be set to read the title. Punctuation and capital letters are ignored, as 6.1.5\'s particular cases allow. Text links are left to rgaa-link-label-in-name-sources (6.1.5), and links whose content holds hidden, generated or embedded content are left out.',
       reasonCodes: {
         compositeLinkTitle: {
+          tests: ['6.1.3']
+        },
+        compositeSymbolAlternative: {
           tests: ['6.1.3']
         },
         symbolAlternative: {
@@ -1549,7 +1552,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-widget-label-in-name': {
       tests: ['7.1.3'],
-      note: "Fails an element with an ARIA widget role other than link, button or form field (tab, menuitem, menuitemcheckbox, menuitemradio, treeitem, gridcell, option), or a button outside a form, whose accessible name, from aria-labelledby or aria-label, does not contain its visible text. That is 7.1.3 step 2: the component's name contains at least the visible label. An explicit widget role marks a component built with a script, and a button outside a form does nothing unless a script drives it; 11.9.2 takes the buttons inside a form. Punctuation and capital letters are ignored (particular cases of 7.1.3). A title is not checked, since 7.1.3 judges only the accessible name."
+      note: "Fails an element with an ARIA widget role other than link, button or form field (tab, menuitem, menuitemcheckbox, menuitemradio, treeitem, gridcell, option), or a button outside a form, whose accessible name, from aria-labelledby or aria-label, does not contain its visible text. That is 7.1.3 step 2: the component's name contains at least the visible label. An explicit widget role marks a component built with a script, and a button outside a form does nothing unless a script drives it; 11.9.2 takes the buttons inside a form. Punctuation and capital letters are ignored (particular cases of 7.1.3), and nothing else: an abbreviation written out, a word with another ending or text in parentheses left out fails. Asks only when the visible label may be a symbol. A title is not checked, since 7.1.3 judges only the accessible name."
     }
   }
 };

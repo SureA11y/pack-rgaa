@@ -541,11 +541,11 @@
       "testFile": "tests/rules/automatic/rgaa-field-label-in-name-sources.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-field-label-in-name-sources-all-scenarios.html",
-      "totalCases": 12,
+      "totalCases": 15,
       "caseCounts": {
-        "PASS": 4,
-        "FAIL": 2,
-        "CANTTELL": 3,
+        "PASS": 6,
+        "FAIL": 5,
+        "CANTTELL": 1,
         "OTHER": 3
       }
     },
@@ -609,11 +609,11 @@
       "testFile": "tests/rules/automatic/rgaa-form-button-label-in-name-sources.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-form-button-label-in-name-sources-all-scenarios.html",
-      "totalCases": 10,
+      "totalCases": 13,
       "caseCounts": {
-        "PASS": 3,
-        "FAIL": 3,
-        "CANTTELL": 2,
+        "PASS": 5,
+        "FAIL": 5,
+        "CANTTELL": 1,
         "OTHER": 2
       }
     },
@@ -1000,10 +1000,10 @@
       "testFile": "tests/rules/automatic/rgaa-link-content-label-present.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-link-content-label-present-all-scenarios.html",
-      "totalCases": 9,
+      "totalCases": 10,
       "caseCounts": {
         "PASS": 3,
-        "FAIL": 4,
+        "FAIL": 5,
         "CANTTELL": 1,
         "OTHER": 1
       }
@@ -1037,8 +1037,8 @@
       "totalCases": 14,
       "caseCounts": {
         "PASS": 4,
-        "FAIL": 4,
-        "CANTTELL": 3,
+        "FAIL": 6,
+        "CANTTELL": 1,
         "OTHER": 3
       }
     },
@@ -1068,10 +1068,10 @@
       "testFile": "tests/rules/automatic/rgaa-link-title-content-name.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-link-title-content-name-all-scenarios.html",
-      "totalCases": 3,
+      "totalCases": 5,
       "caseCounts": {
-        "PASS": 1,
-        "FAIL": 1,
+        "PASS": 2,
+        "FAIL": 2,
         "CANTTELL": 1,
         "OTHER": 0
       }
@@ -1884,10 +1884,10 @@
       "testFile": "tests/rules/automatic/rgaa-widget-label-in-name.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-widget-label-in-name-all-scenarios.html",
-      "totalCases": 7,
+      "totalCases": 9,
       "caseCounts": {
         "PASS": 1,
-        "FAIL": 3,
+        "FAIL": 5,
         "CANTTELL": 1,
         "OTHER": 2
       }

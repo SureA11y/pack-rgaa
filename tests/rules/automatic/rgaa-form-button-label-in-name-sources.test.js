@@ -40,23 +40,38 @@ test(`${RULE_ID}: a button in a form whose accessible name does not contain its 
   }
 });
 
-test(`${RULE_ID}: a title or a losing aria-label without the label is asked about, not failed (11.9.2 methodology checks the name only)`, () => {
-  for (const [body, source] of [
-    ['<form><button title="Envoyer le formulaire">OK</button></form>', 'title'],
-    [
-      '<form><button aria-labelledby="l" aria-label="Fermer">Annuler</button><span id="l">Annuler la commande</span></form>',
-      'aria-label'
-    ],
-    ['<form><input type="reset" value="Effacer" title="Remettre à zéro"></form>', 'title']
+// The conditions of 11.9.2 list every source, but its methodology and the
+// glossary « Bouton (formulaire) » judge the accessible name alone: a title,
+// or an aria-label that loses to aria-labelledby, is not judged.
+test(`${RULE_ID}: a title or a losing aria-label without the label is not judged, and the button passes`, () => {
+  for (const body of [
+    '<form><button title="Envoyer le formulaire">OK</button></form>',
+    '<form><button aria-labelledby="l" aria-label="Fermer">Annuler</button><span id="l">Annuler la commande</span></form>',
+    '<form><input type="reset" value="Effacer" title="Remettre à zéro"></form>',
+    '<form><button title="Fermer">X</button></form>'
   ]) {
-    const rule = assertRule(run(body), RULE_ID, 'cantTell', { maxOccurrences: 1 });
-    assert.deepEqual(reasons(rule), [['cantTell', 'SOURCE_LACKS_VISIBLE_LABEL']], body);
-    const occ = rule.occurrences[0];
-    assert.equal(occ.i18n.summaryKey, 'formButtonLabelInNameSources_summary_cantTell_source');
-    assert.equal(occ.i18n.hintKey, 'formButtonLabelInNameSources_hint_cantTell_source');
-    assert.equal(occ.i18n.params.sources, source);
-    assert.equal(occ.uncertainty.code, 'judgement-required');
+    assertRule(run(body), RULE_ID, 'pass', { maxOccurrences: 0 });
   }
+});
+
+// The particular cases of 11.2, which 11.9.2 refers to, excuse only
+// punctuation, capital letters and symbols.
+test(`${RULE_ID}: a name that leaves out text in parentheses, changes an ending or writes out an abbreviation fails`, () => {
+  for (const body of [
+    '<form><button aria-label="Télécharger">Télécharger (PDF)</button></form>',
+    '<form><button aria-label="Rechercher">Recherche</button></form>',
+    '<form><button aria-label="Envoyer le formulaire">Env.</button></form>'
+  ]) {
+    const rule = assertRule(run(body), RULE_ID, 'fail', { maxOccurrences: 1 });
+    assert.deepEqual(reasons(rule), [['fail', 'NAME_LACKS_VISIBLE_LABEL']], body);
+  }
+  const rule = assertRule(
+    run('<form><button aria-label="Fermer">X</button></form>'),
+    RULE_ID,
+    'cantTell',
+    { maxOccurrences: 1 }
+  );
+  assert.deepEqual(reasons(rule), [['cantTell', 'POSSIBLE_SYMBOL']]);
 });
 
 test(`${RULE_ID}: a failing name outranks a failing title on the same button`, () => {
@@ -166,10 +181,13 @@ test(`${RULE_ID}: WCAG fails a replaced name outside a form, RGAA 11.9 does not 
   assert.deepEqual(r.others, ['notApplicable', 'notApplicable', 'fail']);
 });
 
-test(`${RULE_ID}: a title without the label is outside WCAG 2.5.3, RGAA 11.9 asks`, () => {
+test(`${RULE_ID}: a title without the label is outside WCAG 2.5.3 and not judged under RGAA 11.9`, () => {
   const r = rollups('<form><button title="Envoyer le formulaire">OK</button></form>');
   assert.equal(r.wcag, 'notApplicable');
-  assert.equal(r.rgaa, 'cantTell');
+  assert.notEqual(r.rgaa, 'fail');
+  assert.notEqual(r.rgaa, 'cantTell');
+  const own = r.result.checksResults.find((x) => x.ruleId === RULE_ID);
+  assert.equal(own.outcome, 'pass');
 });
 
 test(`${RULE_ID}: WCAG and RGAA agree on a replaced name in a form, reported under 11.9.2 only`, () => {
@@ -201,8 +219,9 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-form-button-label-in-nam
     ['fblins_case_01', 'fail', 'NAME_LACKS_VISIBLE_LABEL'],
     ['fblins_case_02', 'fail', 'NAME_LACKS_VISIBLE_LABEL'],
     ['fblins_case_03', 'fail', 'NAME_LACKS_VISIBLE_LABEL'],
-    ['fblins_case_04', 'cantTell', 'SOURCE_LACKS_VISIBLE_LABEL'],
-    ['fblins_case_05', 'cantTell', 'SOURCE_LACKS_VISIBLE_LABEL']
+    ['fblins_case_11', 'fail', 'NAME_LACKS_VISIBLE_LABEL'],
+    ['fblins_case_12', 'fail', 'NAME_LACKS_VISIBLE_LABEL'],
+    ['fblins_case_13', 'cantTell', 'POSSIBLE_SYMBOL']
   ]);
 });
 

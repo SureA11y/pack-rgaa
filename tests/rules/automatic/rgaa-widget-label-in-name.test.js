@@ -40,6 +40,20 @@ test(`${RULE_ID}: a widget whose accessible name does not contain its visible te
   }
 });
 
+// The particular cases of 7.1.3 excuse only punctuation, capital letters and
+// symbols.
+test(`${RULE_ID}: a name that leaves out text in parentheses, changes an ending or writes out an abbreviation fails`, () => {
+  for (const body of [
+    '<div role="tablist"><div role="tab" tabindex="0" aria-label="Messages">Messages (3)</div></div>',
+    '<ul role="menu"><li role="menuitem" tabindex="-1" aria-label="Paramètres avancés">Param. avancés</li></ul>',
+    '<ul role="menu"><li role="menuitem" tabindex="-1" aria-label="Imprimer">Impression</li></ul>',
+    '<button aria-label="Rechercher">Recherche</button>'
+  ]) {
+    const rule = assertRule(run(body), RULE_ID, 'fail', { maxOccurrences: 1 });
+    assert.deepEqual(reasons(rule), [['fail', 'NAME_LACKS_VISIBLE_LABEL']], body);
+  }
+});
+
 test(`${RULE_ID}: a single letter that may be a symbol is asked about`, () => {
   const rule = assertRule(
     run(
@@ -185,7 +199,9 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-widget-label-in-name-all
     ['wlin_case_01', 'fail', 'NAME_LACKS_VISIBLE_LABEL'],
     ['wlin_case_02', 'fail', 'NAME_LACKS_VISIBLE_LABEL'],
     ['wlin_case_03', 'cantTell', 'POSSIBLE_SYMBOL'],
-    ['wlin_case_06', 'fail', 'NAME_LACKS_VISIBLE_LABEL']
+    ['wlin_case_06', 'fail', 'NAME_LACKS_VISIBLE_LABEL'],
+    ['wlin_case_08', 'fail', 'NAME_LACKS_VISIBLE_LABEL'],
+    ['wlin_case_09', 'fail', 'NAME_LACKS_VISIBLE_LABEL']
   ]);
 });
 

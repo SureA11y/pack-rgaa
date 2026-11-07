@@ -45,11 +45,11 @@ None — every rule has a fixture.
 | rgaa-field-group-legend | manual | `tests/fixtures/rgaa-field-group-legend-all-scenarios.html` | 10 | 0 | 0 | 0 | 10 |
 | rgaa-field-hidden-label-review | manual | `tests/fixtures/rgaa-field-hidden-label-review-all-scenarios.html` | 2 | 0 | 0 | 1 | 1 |
 | rgaa-field-label-consistency-review | manual | `tests/fixtures/rgaa-field-label-consistency-review-all-scenarios.html` | 3 | 0 | 0 | 1 | 2 |
-| rgaa-field-label-in-name-sources | automatic | `tests/fixtures/rgaa-field-label-in-name-sources-all-scenarios.html` | 12 | 4 | 2 | 3 | 3 |
+| rgaa-field-label-in-name-sources | automatic | `tests/fixtures/rgaa-field-label-in-name-sources-all-scenarios.html` | 15 | 6 | 5 | 1 | 3 |
 | rgaa-field-label-listed-source | automatic | `tests/fixtures/rgaa-field-label-listed-source-all-scenarios.html` | 18 | 4 | 10 | 2 | 2 |
 | rgaa-figure-caption-structure | automatic | `tests/fixtures/rgaa-figure-caption-structure-all-scenarios.html` | 12 | 2 | 7 | 0 | 3 |
 | rgaa-focus-indicator-contrast | automatic | `tests/fixtures/rgaa-focus-indicator-contrast-all-scenarios.html` | 11 | 2 | 3 | 4 | 2 |
-| rgaa-form-button-label-in-name-sources | automatic | `tests/fixtures/rgaa-form-button-label-in-name-sources-all-scenarios.html` | 10 | 3 | 3 | 2 | 2 |
+| rgaa-form-button-label-in-name-sources | automatic | `tests/fixtures/rgaa-form-button-label-in-name-sources-all-scenarios.html` | 13 | 5 | 5 | 1 | 2 |
 | rgaa-form-button-name-present | automatic | `tests/fixtures/rgaa-form-button-name-present-all-scenarios.html` | 10 | 3 | 4 | 2 | 1 |
 | rgaa-format-hint-review | manual | `tests/fixtures/rgaa-format-hint-review-all-scenarios.html` | 5 | 0 | 0 | 2 | 3 |
 | rgaa-frame-title-attribute-present | automatic | `tests/fixtures/rgaa-frame-title-attribute-present-all-scenarios.html` | 10 | 1 | 6 | 0 | 3 |
@@ -72,11 +72,11 @@ None — every rule has a fixture.
 | rgaa-layout-table-no-data-markup | automatic | `tests/fixtures/rgaa-layout-table-no-data-markup-all-scenarios.html` | 12 | 5 | 5 | 1 | 1 |
 | rgaa-legend-relevance-review | manual | `tests/fixtures/rgaa-legend-relevance-review-all-scenarios.html` | 4 | 0 | 0 | 2 | 2 |
 | rgaa-letters-spaced-with-spaces | manual | `tests/fixtures/rgaa-letters-spaced-with-spaces-all-scenarios.html` | 8 | 0 | 0 | 0 | 8 |
-| rgaa-link-content-label-present | automatic | `tests/fixtures/rgaa-link-content-label-present-all-scenarios.html` | 9 | 3 | 4 | 1 | 1 |
+| rgaa-link-content-label-present | automatic | `tests/fixtures/rgaa-link-content-label-present-all-scenarios.html` | 10 | 3 | 5 | 1 | 1 |
 | rgaa-link-context-review | manual | `tests/fixtures/rgaa-link-context-review-all-scenarios.html` | 6 | 0 | 0 | 3 | 3 |
-| rgaa-link-label-in-name-sources | automatic | `tests/fixtures/rgaa-link-label-in-name-sources-all-scenarios.html` | 14 | 4 | 4 | 3 | 3 |
+| rgaa-link-label-in-name-sources | automatic | `tests/fixtures/rgaa-link-label-in-name-sources-all-scenarios.html` | 14 | 4 | 6 | 1 | 3 |
 | rgaa-link-state-colors-review | automatic | `tests/fixtures/rgaa-link-state-colors-review-all-scenarios.html` | 7 | 0 | 0 | 3 | 4 |
-| rgaa-link-title-content-name | automatic | `tests/fixtures/rgaa-link-title-content-name-all-scenarios.html` | 3 | 1 | 1 | 1 | 0 |
+| rgaa-link-title-content-name | automatic | `tests/fixtures/rgaa-link-title-content-name-all-scenarios.html` | 5 | 2 | 2 | 1 | 0 |
 | rgaa-listbox-option-groups-absent | automatic | `tests/fixtures/rgaa-listbox-option-groups-absent-all-scenarios.html` | 4 | 1 | 2 | 0 | 1 |
 | rgaa-main-element-structure | automatic | `tests/fixtures/rgaa-main-element-structure-all-scenarios.html` | 1 | 0 | 1 | 0 | 0 |
 | rgaa-markup-for-presentation | automatic | `tests/fixtures/rgaa-markup-for-presentation-all-scenarios.html` | 4 | 0 | 2 | 1 | 1 |
@@ -124,5 +124,5 @@ None — every rule has a fixture.
 | rgaa-valid-lang | automatic | `tests/fixtures/rgaa-valid-lang-all-scenarios.html` | 7 | 4 | 2 | 0 | 1 |
 | rgaa-video-captions-track-kind | automatic | `tests/fixtures/rgaa-video-captions-track-kind-all-scenarios.html` | 9 | 2 | 4 | 1 | 2 |
 | rgaa-viewport-zoom-review | manual | `tests/fixtures/rgaa-viewport-zoom-review-all-scenarios.html` | 1 | 0 | 0 | 1 | 0 |
-| rgaa-widget-label-in-name | automatic | `tests/fixtures/rgaa-widget-label-in-name-all-scenarios.html` | 7 | 1 | 3 | 1 | 2 |
+| rgaa-widget-label-in-name | automatic | `tests/fixtures/rgaa-widget-label-in-name-all-scenarios.html` | 9 | 1 | 5 | 1 | 2 |
 

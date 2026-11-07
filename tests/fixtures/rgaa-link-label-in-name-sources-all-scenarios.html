@@ -19,7 +19,8 @@
   <p class="note">
     Each target has a stable <code>id</code> of the form <code>lins_case_NN</code>. RGAA 6.1.5 checks that the
     title, the aria-label and the aria-labelledby text of a link each contain its visible label. Punctuation and
-    capital letters are ignored.
+    capital letters are ignored, and nothing else: an abbreviation written out, a word with another ending or
+    text in parentheses left out fails.
   </p>
 
   <h2>A. A source does not contain the visible label (FAIL)</h2>
@@ -45,21 +46,21 @@
     <span role="link" tabindex="0" aria-labelledby="lins_ref_04" id="lins_case_04">Accès rapide</span>
   </div>
 
+  <div class="case" id="case_06">
+    <div class="case-title">06 — FAIL: the title writes out a word the visible label abbreviates</div>
+    <a href="/plan" title="Plan de l’avenue Foch" id="lins_case_06">Plan de l’av. Foch</a>
+  </div>
+
+  <div class="case" id="case_07">
+    <div class="case-title">07 — FAIL: the title leaves out the text in parentheses shown in the link</div>
+    <a href="/rapport.pdf" title="Rapport annuel" id="lins_case_07">Rapport annuel (PDF)</a>
+  </div>
+
   <h2>B. Asked about (CANTTELL)</h2>
 
   <div class="case" id="case_05">
     <div class="case-title">05 — CANTTELL: a single character that may be a symbol</div>
     <a href="/" aria-label="Fermer le menu" id="lins_case_05">X</a>
-  </div>
-
-  <div class="case" id="case_06">
-    <div class="case-title">06 — CANTTELL: a word the visible label abbreviates</div>
-    <a href="/plan" title="Plan de l’avenue Foch" id="lins_case_06">Plan de l’av. Foch</a>
-  </div>
-
-  <div class="case" id="case_07">
-    <div class="case-title">07 — CANTTELL: the source leaves out the text in parentheses</div>
-    <a href="/rapport.pdf" title="Rapport annuel" id="lins_case_07">Rapport annuel (PDF)</a>
   </div>
 
   <h2>C. Every source contains the visible label (PASS)</h2>

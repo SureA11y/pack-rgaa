@@ -96,27 +96,38 @@ test(`${RULE_ID}: the visible label's words must be adjacent in the source`, () 
   );
 });
 
-test(`${RULE_ID}: a possible symbol, an abbreviation or text in parentheses is asked about`, () => {
-  const cases = [
-    ['<a href="/" aria-label="Fermer le menu">X</a>', 'POSSIBLE_SYMBOL', 'cantTell_symbol'],
+// The particular cases of 6.1.5 excuse only punctuation, capital letters
+// and symbols: a source that writes out an abbreviation, gives a word
+// another ending or leaves out text in parentheses fails.
+test(`${RULE_ID}: an abbreviation written out, another word ending or text in parentheses left out fails`, () => {
+  for (const [body, code] of [
     [
       '<a href="/p" title="Plan de l’avenue Foch">Plan de l’av. Foch</a>',
-      'POSSIBLE_ABBREVIATION',
-      'cantTell_nearMatch'
+      'SOURCE_LACKS_VISIBLE_LABEL'
     ],
     [
       '<a href="/r.pdf" title="Rapport annuel">Rapport annuel (PDF)</a>',
-      'PARENTHESISED_TEXT_MISSING',
-      'cantTell_nearMatch'
-    ]
-  ];
-  for (const [body, code, key] of cases) {
-    const rule = assertRule(run(body), RULE_ID, 'cantTell', { maxOccurrences: 1 });
-    assert.deepEqual(reasons(rule), [['cantTell', code]], body);
-    const occ = rule.occurrences[0];
-    assert.equal(occ.i18n.summaryKey, `linkLabelInNameSources_summary_${key}`);
-    assert.equal(occ.uncertainty.code, 'equivalence-unknown');
+      'SOURCE_LACKS_VISIBLE_LABEL'
+    ],
+    ['<a href="/r.pdf" aria-label="Rapport">Rapport (PDF)</a>', 'NAME_LACKS_VISIBLE_LABEL'],
+    ['<a href="/s" aria-label="Rechercher">Recherche</a>', 'NAME_LACKS_VISIBLE_LABEL']
+  ]) {
+    const rule = assertRule(run(body), RULE_ID, 'fail', { maxOccurrences: 1 });
+    assert.deepEqual(reasons(rule), [['fail', code]], body);
   }
+});
+
+test(`${RULE_ID}: a visible label that may be a symbol is asked about`, () => {
+  const rule = assertRule(
+    run('<a href="/" aria-label="Fermer le menu">X</a>'),
+    RULE_ID,
+    'cantTell',
+    { maxOccurrences: 1 }
+  );
+  assert.deepEqual(reasons(rule), [['cantTell', 'POSSIBLE_SYMBOL']]);
+  const occ = rule.occurrences[0];
+  assert.equal(occ.i18n.summaryKey, 'linkLabelInNameSources_summary_cantTell_symbol');
+  assert.equal(occ.uncertainty.code, 'equivalence-unknown');
 });
 
 test(`${RULE_ID}: a sure failure and a question on one page give fail with both`, () => {
@@ -200,10 +211,10 @@ test(`${RULE_ID}: a title without the link text is outside WCAG 2.5.3 but fails 
   assert.ok(!rgaa.data.details.checksIds.includes('label-in-name'));
 });
 
-test(`${RULE_ID}: WCAG passes a name that drops the parenthesised text, RGAA asks`, () => {
+test(`${RULE_ID}: WCAG passes a name that drops the parenthesised text, RGAA fails it`, () => {
   const r = rollups('<a href="/r.pdf" aria-label="Rapport">Rapport (PDF)</a>');
   assert.equal(r.wcag, 'passedInPart');
-  assert.equal(r.rgaa, 'cantTell');
+  assert.equal(r.rgaa, 'fail');
 });
 
 test(`${RULE_ID}: WCAG asks about a hyphenation difference, RGAA ignores punctuation and passes`, () => {
@@ -242,8 +253,8 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-link-label-in-name-sourc
     ['lins_case_03', 'fail', 'SOURCE_LACKS_VISIBLE_LABEL'],
     ['lins_case_04', 'fail', 'NAME_LACKS_VISIBLE_LABEL'],
     ['lins_case_05', 'cantTell', 'POSSIBLE_SYMBOL'],
-    ['lins_case_06', 'cantTell', 'POSSIBLE_ABBREVIATION'],
-    ['lins_case_07', 'cantTell', 'PARENTHESISED_TEXT_MISSING']
+    ['lins_case_06', 'fail', 'SOURCE_LACKS_VISIBLE_LABEL'],
+    ['lins_case_07', 'fail', 'SOURCE_LACKS_VISIBLE_LABEL']
   ]);
 });
 

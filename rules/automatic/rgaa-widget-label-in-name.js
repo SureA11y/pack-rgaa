@@ -21,7 +21,9 @@
  *   RGAA 7.1.3 methodology step 2: the component's accessible name contains
  *   its visible label. Punctuation and capital letters are ignored (the
  *   particular cases of 7.1.3); accents are not folded. An accessible name
- *   that does not contain it fails. Only the accessible name is checked; a
+ *   that does not contain its words, in order, fails: an abbreviation
+ *   written out, a word with another ending or text in parentheses left
+ *   out gets no exception. Only the accessible name is checked; a
  *   title is not.
  * @implementation-notes
  * - Screen-reader-only text inside the element or its label (clipped
@@ -32,9 +34,8 @@
  *   that one element is reported under one test.
  * - Its runInPage is the one of rgaa-link-label-in-name-sources, apart from the
  *   `family` constant and the messages; the four label-in-name files are
- *   changed together. That file documents the comparison and the cases
- *   asked about instead of failed (a possible symbol, an abbreviation, text
- *   in parentheses).
+ *   changed together. That file documents the comparison and the case
+ *   asked about instead of failed (a visible label that may be a symbol).
  * - Opt-in (tag `rgaa`): WCAG 2.5.3 is checked by label-in-name; this rule
  *   reports the same finding under the one RGAA test it belongs to, and
  *   runs only under the rgaa-4.1.2 profile, the `rgaa` tag or its own id.
@@ -59,15 +60,9 @@ const meta = {
   type: 'automatic',
   defaultConfidence: 'high',
   coverage: {},
-  // The reason codes the rule gives, SOURCE_LACKS_VISIBLE_LABEL built at
-  // runtime: the finding identities a baseline holds include them.
-  reasonCodes: [
-    'NAME_LACKS_VISIBLE_LABEL',
-    'SOURCE_LACKS_VISIBLE_LABEL',
-    'POSSIBLE_SYMBOL',
-    'POSSIBLE_ABBREVIATION',
-    'PARENTHESISED_TEXT_MISSING'
-  ],
+  // The reason codes the rule gives, so definePack can check that `review`
+  // names only these.
+  reasonCodes: ['NAME_LACKS_VISIBLE_LABEL', 'POSSIBLE_SYMBOL'],
   review: {
     POSSIBLE_SYMBOL: {
       steps: [
@@ -79,28 +74,6 @@ const meta = {
         'The visible text is a symbol, and the accessible name says what it does (close, next).',
       failWhen:
         'The visible text is literal text that the accessible name does not contain, or it is a symbol and the name does not say what it does, which fails RGAA 7.1.3.'
-    },
-    POSSIBLE_ABBREVIATION: {
-      steps: [
-        'Find the component the report names and read its visible text.',
-        'With a screen reader, or the browser’s accessibility inspector, read its accessible name.',
-        'Compare the two: the visible text abbreviates a word that the name spells out.'
-      ],
-      passWhen:
-        'The accessible name contains the visible text as displayed, ignoring only punctuation and capital letters.',
-      failWhen:
-        'The name spells the abbreviation out or changes it, so it does not contain the visible text as displayed, which fails RGAA 7.1.3: its particular cases excuse only punctuation, capital letters and symbols.'
-    },
-    PARENTHESISED_TEXT_MISSING: {
-      steps: [
-        'Find the component the report names and read its visible text, including the part in parentheses.',
-        'With a screen reader, or the browser’s accessibility inspector, read its accessible name.',
-        'Check whether the text in parentheses is displayed within the component, and whether the name contains it.'
-      ],
-      passWhen:
-        'The accessible name contains the whole visible text, the text in parentheses included (the brackets themselves may be left out), or the text in parentheses is not displayed within the component.',
-      failWhen:
-        'The name leaves out text displayed within the component, in parentheses or not, which fails RGAA 7.1.3: its particular cases excuse only punctuation, capital letters and symbols.'
     }
   }
 };
@@ -426,30 +399,12 @@ function runInPage(ctx) {
       .filter(Boolean);
   }
 
-  function containsWordRun(needle, hay, prefixable) {
+  function containsWordRun(needle, hay) {
     if (!needle.length) return true;
     for (let i = 0; i + needle.length <= hay.length; i++) {
-      let ok = true;
-      for (let j = 0; j < needle.length; j++) {
-        const want = needle[j];
-        const got = hay[i + j];
-        if (got === want) continue;
-        if (prefixable && prefixable.has(want) && got.indexOf(want) === 0) continue;
-        ok = false;
-        break;
-      }
-      if (ok) return true;
+      if (needle.every((w, j) => w === hay[i + j])) return true;
     }
     return false;
-  }
-
-  function abbreviatedWords(s) {
-    // A word directly followed by a period that ends it ("av." in "l'av. Foch").
-    const found = new Set();
-    const re = /([\p{L}\p{N}\p{M}]+)\.(?=\s|$)/gu;
-    let m;
-    while ((m = re.exec(String(s == null ? '' : s))) !== null) found.add(m[1].toLowerCase());
-    return found;
   }
 
   const ICON_FONT_FAMILIES = new Set([
@@ -502,25 +457,16 @@ function runInPage(ctx) {
       .some((n) => ICON_FONT_FAMILIES.has(n));
   }
 
-  // 'yes' when the source contains the visible label; otherwise why it may
-  // still be acceptable ('abbreviation', 'parentheses', 'symbol'), or 'no'.
+  // 'yes' when the source contains the words of the visible label, in order,
+  // punctuation and capital letters aside; 'symbol' when the visible label
+  // may be a symbol, which the name may express by its function; else 'no'.
+  // An abbreviation written out ("Avenue" for "Av."), a word with another
+  // ending ("Rechercher" for "Recherche") or text in parentheses left out is
+  // 'no': the particular cases excuse only punctuation, capital letters and
+  // symbols.
   function compare(label, sourceText) {
-    const labelTokens = tokenize(label.text, false);
-    const sourceTokens = tokenize(sourceText, false);
-    if (containsWordRun(labelTokens, sourceTokens, null)) return 'yes';
-    if (containsWordRun(tokenize(label.text, true), tokenize(sourceText, true), null)) return 'yes';
-    const abbreviated = abbreviatedWords(label.text);
-    if (abbreviated.size && containsWordRun(labelTokens, sourceTokens, abbreviated)) {
-      return 'abbreviation';
-    }
-    const withoutParentheses = tokenize(label.text.replace(/\([^)]*\)/g, ' '), false);
-    if (
-      withoutParentheses.length &&
-      withoutParentheses.length < labelTokens.length &&
-      containsWordRun(withoutParentheses, sourceTokens, null)
-    ) {
-      return 'parentheses';
-    }
+    if (containsWordRun(tokenize(label.text, false), tokenize(sourceText, false))) return 'yes';
+    if (containsWordRun(tokenize(label.text, true), tokenize(sourceText, true))) return 'yes';
     if (label.elements.some(isIconFontElement)) return 'symbol';
     const whole = label.text.toLowerCase();
     if ([...whole].length === 1 && sourceText.toLowerCase().indexOf(whole) === -1) {
@@ -543,12 +489,6 @@ function runInPage(ctx) {
     return v.length <= 80 ? v : v.slice(0, 77) + '...';
   }
 
-  const UNCERTAIN_CODES = {
-    abbreviation: 'POSSIBLE_ABBREVIATION',
-    parentheses: 'PARENTHESISED_TEXT_MISSING',
-    symbol: 'POSSIBLE_SYMBOL'
-  };
-
   const MESSAGES = {
     NAME_LACKS_VISIBLE_LABEL: {
       reasonCode: 'NAME_LACKS_VISIBLE_LABEL',
@@ -567,26 +507,6 @@ function runInPage(ctx) {
         'The visible label of this component may be a symbol, and a label source does not contain it.',
       hint: 'If the visible text is a symbol (an icon glyph, "X" for close, ">" for next), check that the name says what the symbol means. If it is literal text, the name must contain it.',
       needed: 'Whether the visible text is a symbol whose function the name expresses.'
-    },
-    POSSIBLE_ABBREVIATION: {
-      reasonCode: 'POSSIBLE_ABBREVIATION',
-      outcome: 'cantTell',
-      summaryKey: 'widgetLabelInName_summary_cantTell_nearMatch',
-      hintKey: 'widgetLabelInName_hint_cantTell_nearMatch',
-      summary:
-        'A label source of this component differs from its visible label only by an abbreviation or by text in parentheses.',
-      hint: 'Check whether the source still contains the visible label as a user would say it. RGAA excuses only punctuation and capital letters.',
-      needed: 'Whether the source says the visible label, abbreviation or parenthesised text aside.'
-    },
-    PARENTHESISED_TEXT_MISSING: {
-      reasonCode: 'PARENTHESISED_TEXT_MISSING',
-      outcome: 'cantTell',
-      summaryKey: 'widgetLabelInName_summary_cantTell_nearMatch',
-      hintKey: 'widgetLabelInName_hint_cantTell_nearMatch',
-      summary:
-        'A label source of this component differs from its visible label only by an abbreviation or by text in parentheses.',
-      hint: 'Check whether the source still contains the visible label as a user would say it. RGAA excuses only punctuation and capital letters.',
-      needed: 'Whether the source says the visible label, abbreviation or parenthesised text aside.'
     }
   };
 
@@ -635,6 +555,12 @@ function runInPage(ctx) {
     if (!checked.length) continue;
 
     applicableCount += 1;
+    // 11.2.5 and 11.9.2 judge only the source that gives the accessible name
+    // (glossary « Étiquette de champ de formulaire », 11.9.2 methodology);
+    // 6.1.5 checks each source present.
+    if (family === 'field' || family === 'button') {
+      checked = checked.filter((s) => s === winning);
+    }
 
     const failing = [];
     for (const s of checked) {
@@ -654,7 +580,7 @@ function runInPage(ctx) {
       reasonCode = 'SOURCE_LACKS_VISIBLE_LABEL';
       reported = definite;
     } else {
-      reasonCode = UNCERTAIN_CODES[failing[0].verdict];
+      reasonCode = 'POSSIBLE_SYMBOL';
       reported = failing;
     }
     const msg = MESSAGES[reasonCode] || MESSAGES.NAME_LACKS_VISIBLE_LABEL;

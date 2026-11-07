@@ -26,34 +26,19 @@ function run(body) {
 
 // 11.2.5's conditions name every source present, but its methodology and
 // the glossary « Étiquette de champ de formulaire » judge only the étiquette,
-// the source that gives the name: another source is asked about, as 11.9.2
-// does for buttons.
-test(`${RULE_ID}: a source that does not give the name and lacks the label is asked about`, () => {
+// the source that gives the name: another source that lacks the label is not
+// judged, and the field passes.
+test(`${RULE_ID}: a source that does not give the name is not judged, and the field passes`, () => {
   for (const body of [
     '<label for="x">E-mail</label><input id="x" title="Adresse électronique">',
     '<label for="x">Nom</label><input id="x" aria-labelledby="y" title="Famille"><span id="y">Nom de famille</span>',
-    '<span id="l">Recherche</span><input aria-labelledby="l" title="Chercher sur le site">'
+    '<span id="l">Recherche</span><input aria-labelledby="l" title="Chercher sur le site">',
+    '<span id="l">Recherche</span><label for="x" hidden>Mots</label><input id="x" aria-labelledby="l">',
+    '<label for="x">B</label><input type="checkbox" id="x" title="Mettre en gras">',
+    '<label for="x">Téléphone (facultatif)</label><input id="x" title="Téléphone">'
   ]) {
-    const rule = assertRule(run(body), RULE_ID, 'cantTell', { maxOccurrences: 1 });
-    assert.deepEqual(reasons(rule), [['cantTell', 'SOURCE_LACKS_VISIBLE_LABEL']], body);
-    assert.equal(rule.occurrences[0].i18n.params.sources, 'title');
-    assert.equal(
-      rule.occurrences[0].i18n.summaryKey,
-      'fieldLabelInNameSources_summary_cantTell_source'
-    );
+    assertRule(run(body), RULE_ID, 'pass', { maxOccurrences: 0 });
   }
-});
-
-test(`${RULE_ID}: a <label> that does not contain the visible label read from aria-labelledby is asked about`, () => {
-  const rule = assertRule(
-    run(
-      '<span id="l">Recherche</span><label for="x" hidden>Mots</label><input id="x" aria-labelledby="l">'
-    ),
-    RULE_ID,
-    'cantTell'
-  );
-  assert.deepEqual(reasons(rule), [['cantTell', 'SOURCE_LACKS_VISIBLE_LABEL']]);
-  assert.equal(rule.occurrences[0].i18n.params.sources, '<label>');
 });
 
 test(`${RULE_ID}: an accessible name that does not contain the label fails as the name`, () => {
@@ -85,13 +70,30 @@ test(`${RULE_ID}: punctuation and capital letters are ignored, accents are not`,
   assert.deepEqual(reasons(rule), [['fail', 'NAME_LACKS_VISIBLE_LABEL']]);
 });
 
-test(`${RULE_ID}: a source that leaves out the text in parentheses is asked about`, () => {
+// The particular cases of 11.2 excuse only punctuation, capital letters and
+// symbols: a name that leaves out text in parentheses shown in the label, or
+// writes out an abbreviation shown, does not contain the visible label.
+test(`${RULE_ID}: a name that leaves out text in parentheses or writes out an abbreviation fails`, () => {
+  for (const body of [
+    '<label for="t">Téléphone (facultatif)</label><input type="tel" id="t" aria-label="Téléphone">',
+    '<label for="t">N° de dossier</label><input id="t" aria-label="Numéro de dossier">',
+    '<label for="t">Tél.</label><input type="tel" id="t" aria-label="Téléphone">'
+  ]) {
+    const rule = assertRule(run(body), RULE_ID, 'fail', { maxOccurrences: 1 });
+    assert.deepEqual(reasons(rule), [['fail', 'NAME_LACKS_VISIBLE_LABEL']], body);
+  }
+});
+
+// A visible label that may be a symbol is still asked about: the name may
+// say what the symbol means.
+test(`${RULE_ID}: a one-character visible label is asked about as a possible symbol`, () => {
   const rule = assertRule(
-    run('<label for="t">Téléphone (facultatif)</label><input type="tel" id="t" title="Téléphone">'),
+    run('<label for="m">B</label><input type="checkbox" id="m" aria-label="Mettre en gras">'),
     RULE_ID,
-    'cantTell'
+    'cantTell',
+    { maxOccurrences: 1 }
   );
-  assert.deepEqual(reasons(rule), [['cantTell', 'PARENTHESISED_TEXT_MISSING']]);
+  assert.deepEqual(reasons(rule), [['cantTell', 'POSSIBLE_SYMBOL']]);
 });
 
 test(`${RULE_ID}: fields with one source, no visible label, and buttons are not applicable`, () => {
@@ -154,10 +156,13 @@ function rollups(body) {
   return { rgaa: outcome('rgaa-4.1.2-11.2'), wcag: outcome('wcag-2.5.3-label-in-name'), result };
 }
 
-test(`${RULE_ID}: a title without the label is outside WCAG 2.5.3 and asked about under RGAA 11.2`, () => {
+test(`${RULE_ID}: a title without the label is outside WCAG 2.5.3 and not judged under RGAA 11.2`, () => {
   const r = rollups('<label for="x">E-mail</label><input id="x" title="Adresse électronique">');
   assert.equal(r.wcag, 'notApplicable');
-  assert.equal(r.rgaa, 'cantTell');
+  assert.notEqual(r.rgaa, 'fail');
+  assert.notEqual(r.rgaa, 'cantTell');
+  const own = r.result.checksResults.find((x) => x.ruleId === RULE_ID);
+  assert.equal(own.outcome, 'pass');
   const rgaa = r.result.rulesResults.find((x) => x.ruleId === 'rgaa-4.1.2-11.2');
   assert.ok(!rgaa.data.details.checksIds.includes('label-in-name'));
 });
@@ -189,11 +194,12 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-field-label-in-name-sour
   ]);
   got.sort((a, b) => a[0].localeCompare(b[0]));
   assert.deepEqual(got, [
-    ['fins_case_01', 'cantTell', 'SOURCE_LACKS_VISIBLE_LABEL'],
     ['fins_case_02', 'fail', 'NAME_LACKS_VISIBLE_LABEL'],
-    ['fins_case_03', 'cantTell', 'SOURCE_LACKS_VISIBLE_LABEL'],
     ['fins_case_04', 'fail', 'NAME_LACKS_VISIBLE_LABEL'],
-    ['fins_case_05', 'cantTell', 'PARENTHESISED_TEXT_MISSING']
+    ['fins_case_05', 'fail', 'NAME_LACKS_VISIBLE_LABEL'],
+    ['fins_case_13', 'fail', 'NAME_LACKS_VISIBLE_LABEL'],
+    ['fins_case_14', 'fail', 'NAME_LACKS_VISIBLE_LABEL'],
+    ['fins_case_15', 'cantTell', 'POSSIBLE_SYMBOL']
   ]);
 });
 
@@ -223,34 +229,26 @@ test(`${RULE_ID}: screen-reader-only text is left out of the visible label`, () 
   assert.ok(rule && rule.outcome !== 'fail', rule && JSON.stringify(reasons(rule)));
 });
 
-// « Contient au moins l'intitulé visible » may be read as a string, which
-// "Rechercher" contains "Recherche" as, or as words, which it does not: a
-// word that differs only by its ending is asked about (nantes: "Recherche"
-// shown, "Rechercher" as the name).
-test(`${RULE_ID}: a word that differs only by its ending is asked about`, () => {
+// « Contient au moins l'intitulé visible » is read as words: each visible
+// word must appear as a word of the source that gives the name, so a word
+// with another ending fails either way (nantes: "Recherche" shown,
+// "Rechercher" as the name), and short words are not stretched ("Nom" is not
+// "Nombre"). A title that does not give the name is not judged.
+test(`${RULE_ID}: a word that differs only by its ending fails`, () => {
   for (const body of [
     '<label for="q">Recherche</label><input id="q" aria-label="Rechercher">',
-    '<label for="q">Recherche</label><input id="q" title="Rechercher">'
-  ]) {
-    const rule = assertRule(run(body), RULE_ID, 'cantTell', {
-      minOccurrences: 1,
-      maxOccurrences: 1
-    });
-    assert.deepEqual(reasons(rule), [['cantTell', 'POSSIBLE_INFLECTION']], body);
-    assert.equal(
-      rule.occurrences[0].i18n.summaryKey,
-      'fieldLabelInNameSources_summary_cantTell_inflection'
-    );
-  }
-  // A name that does not hold the visible word fails, and short words are
-  // not stretched: "Nom" is not "Nombre".
-  for (const body of [
     '<label for="q">Rechercher</label><input id="q" aria-label="Recherche sur le site">',
     '<label for="n">Nom</label><input id="n" aria-label="Nombre">'
   ]) {
     const rule = assertRule(run(body), RULE_ID, 'fail', { minOccurrences: 1, maxOccurrences: 1 });
     assert.deepEqual(reasons(rule), [['fail', 'NAME_LACKS_VISIBLE_LABEL']], body);
   }
+  assertRule(
+    run('<label for="q">Recherche</label><input id="q" title="Rechercher">'),
+    RULE_ID,
+    'pass',
+    { maxOccurrences: 0 }
+  );
 });
 
 // A state word is the field's state, not its étiquette (glossary « Intitulé
