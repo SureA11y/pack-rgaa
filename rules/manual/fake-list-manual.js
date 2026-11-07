@@ -211,22 +211,29 @@ function runInPage(ctx) {
       next = dom.nextElementSibling(next);
     }
     run.forEach((p) => seen.add(p));
-    // Within a run, keep the longest stretch that reads as one list.
+    // Within a run, keep the longest stretch that reads as one list. Every
+    // start of a list is a list, so one walk along the run finds it.
+    const markers = run.map((p) => markerOf(collapse(dom.textContent(p))));
     let start = 0;
     while (start < run.length) {
-      let best = 0;
-      for (let end = run.length; end >= start + MIN_ITEMS; end -= 1) {
-        const slice = run.slice(start, end);
-        if (slice.some((p) => reported.has(p))) continue;
-        if (listKind(slice.map((p) => collapse(dom.textContent(p))))) {
-          best = end;
-          break;
+      const first = markers[start];
+      let end = start;
+      if (first && !reported.has(run[start])) {
+        end += 1;
+        while (
+          end < run.length &&
+          !reported.has(run[end]) &&
+          markers[end] &&
+          markers[end].kind === first.kind &&
+          markers[end].key === first.key &&
+          (first.kind !== 'ordered' || markers[end].n === first.n + (end - start))
+        ) {
+          end += 1;
         }
       }
-      if (best) {
-        const slice = run.slice(start, best);
-        report(slice[0], listKind(slice.map((p) => collapse(dom.textContent(p)))), slice.length);
-        start = best;
+      if (end - start >= MIN_ITEMS) {
+        report(run[start], first.kind, end - start);
+        start = end;
       } else {
         start += 1;
       }
