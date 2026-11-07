@@ -149,3 +149,26 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
     ['ccp_case_03', 'BACKGROUND_IMAGE_WITHOUT_COLOR']
   ]);
 });
+
+test(`${RULE_ID}: screen-reader-only text is never drawn, so its colors are not judged`, () => {
+  const SR =
+    'position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap';
+  // bordeaux-metropole.fr: the cookie panel's visually hidden heading
+  // declared a text color with no background anywhere.
+  for (const [css, body] of [
+    [
+      `.sr{${SR};color:#555}`,
+      '<div class="sr" role="heading" aria-level="2">Panneau</div><p>Texte</p>'
+    ],
+    [`.sr{${SR}} .sr span{color:#555}`, '<div class="sr"><span>Panneau</span></div><p>Texte</p>']
+  ]) {
+    assertRule(run(css, body), RULE_ID, 'notApplicable');
+  }
+  // The same color on shown text still fails.
+  const rule = assertRule(
+    run(`.sr{${SR};color:#555} p{color:#555}`, '<div class="sr">Panneau</div><p>Texte</p>'),
+    RULE_ID,
+    'fail'
+  );
+  assert.deepEqual(found(rule), [['p', 'COLOR_WITHOUT_BACKGROUND']]);
+});

@@ -55,7 +55,9 @@
  *   (inherit, initial, unset, currentcolor, transparent) do not count.
  * - Text inside a shadow root is not judged: its style sheets are not the
  *   document's, so half a pair could be missed and the other half reported.
- * - Only text nodes are judged, not the values of form fields.
+ * - Only text nodes are judged, not the values of form fields, and not
+ *   screen-reader-only text (helpers.isVisuallyHidden on the text's element
+ *   or an ancestor), which is never drawn.
  * - WCAG lists the same pattern as failure F24, an informative technique
  *   whose premise, a browser that overrides only some of the colors, no
  *   success criterion states, so the rule is RGAA's only.
@@ -365,6 +367,34 @@ function runInPage(ctx) {
     return true;
   }
 
+  // Screen-reader-only text (clipped, 1px with its overflow hidden,
+  // transparent) is never drawn, so it shows no color to pair: on
+  // bordeaux-metropole.fr a visually hidden heading of the cookie panel
+  // failed every page.
+  const hiddenCache = new Map();
+  function srOnly(el) {
+    if (typeof helpers.isVisuallyHidden !== 'function') return false;
+    const seen = [];
+    let hidden = false;
+    for (let a = el; a && dom.nodeType(a) === 1; a = dom.parentElement(a)) {
+      if (hiddenCache.has(a)) {
+        hidden = hiddenCache.get(a);
+        break;
+      }
+      seen.push(a);
+      let h = false;
+      try {
+        h = !!helpers.isVisuallyHidden(a);
+      } catch {}
+      if (h) {
+        hidden = true;
+        break;
+      }
+    }
+    for (const a of seen) hiddenCache.set(a, hidden);
+    return hidden;
+  }
+
   const SKIP = new Set(['script', 'style', 'noscript', 'template', 'textarea', 'title']);
   const findings = new Map(); // `${code} ${index}` -> { code, el }
   const indexOf = new Map(); // origin element -> its index
@@ -379,7 +409,10 @@ function runInPage(ctx) {
     const judge = (el) => {
       if (!judged.has(el)) {
         const tag = String(dom.localName(el) || '').toLowerCase();
-        judged.set(el, !SKIP.has(tag) && !dom.closest(el, 'svg, math') && isShown(el));
+        judged.set(
+          el,
+          !SKIP.has(tag) && !dom.closest(el, 'svg, math') && isShown(el) && !srOnly(el)
+        );
       }
       return judged.get(el);
     };
