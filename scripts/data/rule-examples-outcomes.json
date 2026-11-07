@@ -56,6 +56,12 @@
     },
     {
       "ruleId": "rgaa-link-title-content-name",
+      "label": "Fails",
+      "engine": "unknown label",
+      "example": "<a href=\"/rapport.pdf\" title=\"Rapport annuel\">Rapport annuel <img src=\"pdf.png\" alt=\"PDF\"></a>"
+    },
+    {
+      "ruleId": "rgaa-link-title-content-name",
       "label": "Passes",
       "engine": "unknown label",
       "example": "<a href=\"/\" title=\"Retour à la page d'accueil du site\"><img src=\"home.png\" alt=\"Retour à la page d'a…"

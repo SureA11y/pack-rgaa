@@ -187,20 +187,24 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-link-content-label-prese
     'rgaa-link-content-label-present-all-scenarios.html'
   );
   const result = runa11yCoreOnHtml(fs.readFileSync(fixturePath, 'utf8'), RUN);
-  const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 5, maxOccurrences: 5 });
+  const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 6, maxOccurrences: 6 });
   const ids = rule.occurrences.map((o) => (o.html.match(/id="([^"]+)"/) || [])[1]);
   assert.deepEqual(ids, [
     'lcl_case_01',
     'lcl_case_02',
     'lcl_case_03',
     'lcl_case_04',
+    'lcl_case_10',
     'lcl_case_05'
   ]);
+  // jsdom computes no ::before content, so case 10 fails as an empty link
+  // here; a browser reports it as generatedTextOnly (see the Chromium test).
   assert.deepEqual(reasons(rule), [
     ['fail', 'nameOutsideContent'],
     ['fail', 'nameOutsideContent'],
     ['fail', 'noContentLabel'],
     ['fail', 'nameOutsideContent'],
+    ['fail', 'noContentLabel'],
     ['cantTell', 'contentNotReadable']
   ]);
 });

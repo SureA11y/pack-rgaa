@@ -51,19 +51,58 @@ test(`${RULE_ID}: a title that contains the name passes, ignoring case and punct
   }
 });
 
-test(`${RULE_ID}: a composite link whose title keeps the text but drops the image is asked about`, () => {
-  const rule = assertRule(
-    runa11yCoreOnHtml(
-      page(`<a href="/r.pdf" title="Rapport annuel">Rapport annuel ${img('PDF')}</a>`),
-      RUN
-    ),
+// A composite link's title must hold its text and the alternative of each
+// of its images, in any order, punctuation and capital letters aside.
+test(`${RULE_ID}: a composite link whose title keeps the text but drops the image fails 6.1.3`, () => {
+  for (const [body, name] of [
+    [`<a href="/r.pdf" title="Rapport annuel">Rapport annuel ${img('PDF')}</a>`, 'PDF'],
+    [
+      `<a href="/r.pdf" title="Rapport annuel (PDF)">Rapport annuel ${img('Fichier PDF')}</a>`,
+      'Fichier PDF'
+    ],
+    [
+      `<a href="/p" title="Plan d'accès, PDF">${img('PDF')} Plan d'accès ${img('Nouvelle fenêtre')}</a>`,
+      'Nouvelle fenêtre'
+    ]
+  ]) {
+    const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'fail', {
+      minOccurrences: 1,
+      maxOccurrences: 1
+    });
+    const d = rule.occurrences[0].data.details;
+    assert.deepEqual([d.reasonCode, d.name, d.test], ['compositeLinkTitle', name, '6.1.3'], body);
+  }
+});
+
+test(`${RULE_ID}: a composite link whose title holds its text and each alternative in any order passes`, () => {
+  for (const body of [
+    `<a href="/r.pdf" title="Rapport annuel, PDF">${img('PDF')} Rapport annuel</a>`,
+    `<a href="/r.pdf" title="PDF : rapport annuel">Rapport annuel ${img('PDF')}</a>`,
+    `<a href="/p" title="Plan d'accès (PDF, nouvelle fenêtre)">${img('Nouvelle fenêtre')} Plan d'accès ${img('PDF')}</a>`
+  ]) {
+    assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'pass', body);
+  }
+});
+
+test(`${RULE_ID}: a composite link whose title drops only a one-character alternative is asked about`, () => {
+  for (const alt of ['i', 'B']) {
+    const rule = assertRule(
+      runa11yCoreOnHtml(page(`<a href="/aide" title="Aide">Aide ${img(alt)}</a>`), RUN),
+      RULE_ID,
+      'cantTell',
+      { minOccurrences: 1, maxOccurrences: 1 }
+    );
+    const d = rule.occurrences[0].data.details;
+    assert.deepEqual([d.reasonCode, d.test], ['compositeSymbolAlternative', '6.1.3'], alt);
+    assert.equal(rule.occurrences[0].uncertainty.code, 'judgement-required');
+  }
+  // A punctuation alternative ("»") is set aside with punctuation: the
+  // title holds the rest of the name, and the link passes.
+  assertRule(
+    runa11yCoreOnHtml(page(`<a href="/s" title="Suivant">Suivant ${img('»')}</a>`), RUN),
     RULE_ID,
-    'cantTell',
-    { minOccurrences: 1, maxOccurrences: 1 }
+    'pass'
   );
-  const d = rule.occurrences[0].data.details;
-  assert.deepEqual([d.reasonCode, d.name, d.test], ['compositeLinkTitle', 'PDF', '6.1.3']);
-  assert.equal(rule.occurrences[0].uncertainty.code, 'judgement-required');
 });
 
 test(`${RULE_ID}: a one-character alternative is asked about`, () => {
@@ -121,7 +160,15 @@ test(`${RULE_ID}: opt-in, and RGAA 6.1 fails under the profile`, () => {
 test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html)`, () => {
   const fixturePath = path.join(__dirname, '../..', 'fixtures', `${RULE_ID}-all-scenarios.html`);
   const result = runa11yCoreOnHtml(fs.readFileSync(fixturePath, 'utf8'), RUN);
-  const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 2, maxOccurrences: 2 });
-  const ids = rule.occurrences.map((o) => (o.html.match(/id="([^"]+)"/) || [])[1]);
-  assert.deepEqual(ids, ['ltc_case_01', 'ltc_case_02']);
+  const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 3, maxOccurrences: 3 });
+  const got = rule.occurrences.map((o) => [
+    (o.html.match(/id="([^"]+)"/) || [])[1],
+    o.occurrenceOutcome,
+    o.data.details.reasonCode
+  ]);
+  assert.deepEqual(got, [
+    ['ltc_case_01', 'fail', 'imageLinkTitle'],
+    ['ltc_case_02', 'fail', 'compositeLinkTitle'],
+    ['ltc_case_05', 'cantTell', 'compositeSymbolAlternative']
+  ]);
 });
