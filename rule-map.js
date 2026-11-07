@@ -56,8 +56,7 @@
  * as heading hierarchy and landmarks.
  *
  * REVIEW STATUS: drafted from the RGAA 4.1.2 tests and methodology (data/),
- * then checked row by row against them (bench/AUDIT.md). Not yet reviewed by
- * an RGAA auditor.
+ * then checked row by row against them. Not yet reviewed by an RGAA auditor.
  */
 
 const RGAA_RULE_TESTS = {

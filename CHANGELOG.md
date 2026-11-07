@@ -18,7 +18,7 @@ All notable changes to this package are documented here. This project adheres to
 - `@surea11y/pack-rgaa/public` adds `RGAA_GLOSSARY`, `rgaaGlossaryFor`, `rgaaCriteriaStatus` (a scan as an audit grid records it, `C`, `NC`, `NA` or `NT`, for all 106 criteria) and `rgaaConformityRate` (DINUM's rate for a sample of pages).
 - A scan can judge a page by RGAA and another profile at once (core 1.15).
 - The rules' steps come in English, French, German, Spanish and Japanese, and core's undecided findings read in RGAA's terms under the RGAA profile, in French (`standard.review`). `rgaa-contrast-minimum`'s steps give RGAA's thresholds.
-- The rules of the audit against RGAA's tests, methodology and glossary (`bench/AUDIT.md`), taking the pack to 80 of 106 criteria and 167 of 258 tests: among them questions for CAPTCHAs, embedded players, navigation systems, unmarked quotations, status messages, tooltips, changes of context and of language, consequential forms and label placement, and rules for images of each kind that may be decorative, table headers, required fields and text direction.
+- The rules of the audit against RGAA's tests, methodology and glossary, taking the pack to 80 of 106 criteria and 167 of 258 tests: among them questions for CAPTCHAs, embedded players, navigation systems, unmarked quotations, status messages, tooltips, changes of context and of language, consequential forms and label placement, and rules for images of each kind that may be decorative, table headers, required fields and text direction.
 
 ### Changed
 

@@ -6,3 +6,6 @@ test-results/
 *.tgz
 .DS_Store
 .idea/
+
+# Local engine comparison, kept out of the repository
+bench/
