@@ -227,13 +227,25 @@ function runInPage(ctx) {
   const SEARCH_NAME = /^(?:q|s|query|search|recherche|rechercher|keywords?|mots?-?cl[ée]s?)$/i;
   const SEARCH_WORD = /\b(?:search|recherche|rechercher)\b/i;
   const TEXTUAL = new Set(['', 'text', 'search']);
+  // The page's <label for> elements by the id they name, gathered once
+  // rather than for each field.
+  let labelsByFor = null;
+  const labelsFor = (fid) => {
+    if (!labelsByFor) {
+      labelsByFor = new Map();
+      for (const l of all(body, 'label[for]')) {
+        const target = attr(l, 'for');
+        if (!labelsByFor.has(target)) labelsByFor.set(target, []);
+        labelsByFor.get(target).push(l);
+      }
+    }
+    return labelsByFor.get(fid) || [];
+  };
   const fieldLabel = (el) => {
     const parts = [attr(el, 'aria-label'), attr(el, 'placeholder'), attr(el, 'title')];
     const fid = attr(el, 'id');
     if (fid) {
-      for (const l of all(document, 'label')) {
-        if (attr(l, 'for') === fid) parts.push(dom.textContent(l));
-      }
+      for (const l of labelsFor(fid)) parts.push(dom.textContent(l));
     }
     for (let a = dom.parentElement(el); a && dom.nodeType(a) === 1; a = dom.parentElement(a)) {
       if (tagOf(a) === 'label') parts.push(dom.textContent(a));

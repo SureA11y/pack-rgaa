@@ -165,20 +165,30 @@ function runInPage(ctx) {
     } catch {}
     return true;
   }
-  // Clipped, transparent or off-screen: not seen though it takes space.
+  // Clipped, transparent or off-screen: not seen though it takes space. An
+  // element is unseen when it or an ancestor is; each element's answer is
+  // kept, so many fields sharing one large label climb its ancestors once.
+  const unseenCache = new Map();
   function unseen(el) {
-    for (let a = el; a && dom.nodeType(a) === 1; a = dom.parentElement(a)) {
-      try {
-        if (typeof helpers.isVisuallyHidden === 'function' && helpers.isVisuallyHidden(a)) {
-          return true;
-        }
-      } catch {}
-      const s = styleOf(a);
-      if (s && parseFloat(s.opacity) === 0) return true;
+    if (!el || dom.nodeType(el) !== 1) return false;
+    if (unseenCache.has(el)) return unseenCache.get(el);
+    let hidden = false;
+    try {
+      hidden = typeof helpers.isVisuallyHidden === 'function' && !!helpers.isVisuallyHidden(el);
+    } catch {}
+    if (!hidden) {
+      const s = styleOf(el);
+      hidden = !!(s && parseFloat(s.opacity) === 0);
     }
-    return false;
+    if (!hidden) hidden = unseen(dom.parentElement(el));
+    unseenCache.set(el, hidden);
+    return hidden;
   }
-  const seen = (el) => visible(el) && !unseen(el);
+  const seenCache = new Map();
+  function seen(el) {
+    if (!seenCache.has(el)) seenCache.set(el, visible(el) && !unseen(el));
+    return seenCache.get(el);
+  }
 
   function boxOf(el) {
     try {
@@ -314,6 +324,27 @@ function runInPage(ctx) {
     };
   }
 
+  // What a label shows: its text, the box of that text, its direction and
+  // line height; null when it shows no text.
+  function labelInfo(label, field) {
+    const t = textBox(label, field);
+    if (!t || !t.text) return null;
+    return {
+      el: label,
+      box: t.box,
+      text: t.text,
+      dir: directionOf(label, t.text),
+      line: lineHeightOf(label)
+    };
+  }
+  // A label outside its field reads the same for every field it names, so
+  // one that many fields share (aria-labelledby) is measured once.
+  const sharedLabels = new Map();
+  function sharedLabelInfo(label) {
+    if (!sharedLabels.has(label)) sharedLabels.set(label, labelInfo(label, null));
+    return sharedLabels.get(label);
+  }
+
   const CHOICE_ROLES = new Set(['checkbox', 'radio', 'switch']);
   const FIELD_ROLES = new Set([
     'textbox',
@@ -357,16 +388,10 @@ function runInPage(ctx) {
     const labels = [];
     for (const l of labelsOf(el)) {
       if (!seen(l)) continue;
-      const t = textBox(l, el);
-      if (!t || !t.text) continue;
-      labels.push({
-        el: l,
-        box: t.box,
-        text: t.text,
-        wraps: contains(l, el),
-        dir: directionOf(l, t.text),
-        line: lineHeightOf(l)
-      });
+      const wraps = contains(l, el);
+      const t = wraps ? labelInfo(l, el) : sharedLabelInfo(l);
+      if (!t) continue;
+      labels.push({ ...t, wraps });
     }
     if (!labels.length) continue;
     let form = null;
