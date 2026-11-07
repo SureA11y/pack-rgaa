@@ -35,15 +35,46 @@ test(`${RULE_ID}: a text color with no background anywhere fails 10.5.1`, () => 
   }
 });
 
-test(`${RULE_ID}: a background color with no text color anywhere fails 10.5.2`, () => {
-  const rule = assertRule(run('body{background-color:white}'), RULE_ID, 'fail'); // F24 example 1
+// 10.5.2's test asks for the color property, its methodology only for a
+// computed color, which the browser's default gives: the map asks, and so
+// does the rule.
+test(`${RULE_ID}: a background color with no text color anywhere is asked about under 10.5.2`, () => {
+  const rule = assertRule(run('body{background-color:white}'), RULE_ID, 'cantTell'); // F24 example 1
   assert.deepEqual(found(rule), [['body', 'BACKGROUND_WITHOUT_COLOR']]);
+  const occ = rule.occurrences[0];
+  assert.equal(occ.occurrenceOutcome, 'cantTell');
+  assert.equal(occ.uncertainty.code, 'judgement-required');
+  assert.equal(occ.i18n.summaryKey, 'cssColorsPaired_summary_cantTell_backgroundDefaultColor');
   const td = assertRule(
     run('', '<table><tr><td bgcolor="#eee">Texte</td></tr></table>'),
     RULE_ID,
-    'fail'
+    'cantTell'
   );
   assert.deepEqual(found(td), [['td', 'BACKGROUND_WITHOUT_COLOR']]);
+  // The other two still fail beside it.
+  const both = assertRule(
+    run('.a{background-color:#eee} .b{color:#555}', '<div class="a">A</div><div class="b">B</div>'),
+    RULE_ID,
+    'fail'
+  );
+  assert.deepEqual(
+    both.occurrences.map((o) => [o.data.details.reasonCode, o.occurrenceOutcome]).sort(),
+    [
+      ['BACKGROUND_WITHOUT_COLOR', 'cantTell'],
+      ['COLOR_WITHOUT_BACKGROUND', 'fail']
+    ]
+  );
+});
+
+test(`${RULE_ID}: the RGAA verdict is the same alone and beside another profile`, () => {
+  const html = page('', '<div style="background-color:yellow">Hi</div>');
+  for (const profile of ['rgaa-4.1.2', ['rgaa-4.1.2', 'wcag22-aa'], ['wcag22-aa', 'rgaa-4.1.2']]) {
+    const result = runa11yCoreOnHtml(html, { engineOptions: { profile } });
+    const check = result.checksResults.find((r) => r.ruleId === RULE_ID);
+    assert.equal(check.outcome, 'cantTell', JSON.stringify(profile));
+    const rollup = result.rulesResults.find((r) => r.ruleId === 'rgaa-4.1.2-10.5');
+    assert.equal(rollup.outcome, 'cantTell', JSON.stringify(profile));
+  }
 });
 
 test(`${RULE_ID}: a background image with no background color fails 10.5.3`, () => {
@@ -141,12 +172,13 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
   const rule = assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'fail');
   const got = rule.occurrences.map((o) => [
     (o.html.match(/id="([^"]+)"/) || [])[1],
-    o.data.details.reasonCode
+    o.data.details.reasonCode,
+    o.occurrenceOutcome
   ]);
   assert.deepEqual(got, [
-    ['ccp_case_01', 'COLOR_WITHOUT_BACKGROUND'],
-    ['ccp_case_02', 'BACKGROUND_WITHOUT_COLOR'],
-    ['ccp_case_03', 'BACKGROUND_IMAGE_WITHOUT_COLOR']
+    ['ccp_case_01', 'COLOR_WITHOUT_BACKGROUND', 'fail'],
+    ['ccp_case_03', 'BACKGROUND_IMAGE_WITHOUT_COLOR', 'fail'],
+    ['ccp_case_02', 'BACKGROUND_WITHOUT_COLOR', 'cantTell']
   ]);
 });
 

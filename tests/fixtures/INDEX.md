@@ -30,7 +30,7 @@ None — every rule has a fixture.
 | rgaa-context-change-review | manual | `tests/fixtures/rgaa-context-change-review-all-scenarios.html` | 2 | 0 | 0 | 1 | 1 |
 | rgaa-contrast-minimum | automatic | `tests/fixtures/rgaa-contrast-minimum-all-scenarios.html` | 7 | 4 | 3 | 0 | 0 |
 | rgaa-cryptic-content-review | manual | `tests/fixtures/rgaa-cryptic-content-review-all-scenarios.html` | 2 | 0 | 0 | 1 | 1 |
-| rgaa-css-colors-paired | automatic | `tests/fixtures/rgaa-css-colors-paired-all-scenarios.html` | 6 | 2 | 3 | 0 | 1 |
+| rgaa-css-colors-paired | automatic | `tests/fixtures/rgaa-css-colors-paired-all-scenarios.html` | 6 | 2 | 2 | 1 | 1 |
 | rgaa-current-item-review | manual | `tests/fixtures/rgaa-current-item-review-all-scenarios.html` | 2 | 0 | 0 | 1 | 1 |
 | rgaa-data-table-headers-review | manual | `tests/fixtures/rgaa-data-table-headers-review-all-scenarios.html` | 7 | 0 | 0 | 3 | 4 |
 | rgaa-default-language-review | manual | `tests/fixtures/rgaa-default-language-review-all-scenarios.html` | 3 | 0 | 0 | 1 | 2 |
