@@ -46,3 +46,21 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
   const result = runa11yCoreOnHtml(fs.readFileSync(fixturePath, 'utf8'), RUN);
   assertRule(result, RULE_ID, 'notApplicable');
 });
+
+// A page-level question cannot be asked of part of a page: a scan with a
+// contextSelector or a fragment leaves it alone, as the pack's other
+// page-level rules do.
+test(`${RULE_ID}: notApplicable on a scoped run or a fragment`, () => {
+  const html = page(TEXT);
+  assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'cantTell');
+  assertRule(
+    runa11yCoreOnHtml(html, { ...RUN, contextSelector: 'body' }),
+    RULE_ID,
+    'notApplicable'
+  );
+  assertRule(
+    runa11yCoreOnHtml(html, { ...RUN, engineOptions: { fragment: true } }),
+    RULE_ID,
+    'notApplicable'
+  );
+});

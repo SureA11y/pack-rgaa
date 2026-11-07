@@ -11,7 +11,8 @@
  *   Applies to a page with no heading at all (no <h1>-<h6> and no
  *   role="heading", hidden ones included) whose visible text holds 30
  *   words or more. A page with a heading, or with less text, is
- *   notApplicable.
+ *   notApplicable, and so is a scan of part of a page (a contextSelector or
+ *   a fragment), which cannot see the whole page.
  * @expectation
  *   RGAA 9.1.3: « chaque passage de texte constituant un titre est-il
  *   structuré à l'aide d'une balise <hx> » or role="heading" with
@@ -57,10 +58,13 @@ const meta = {
   }
 };
 
-// A document shown in a frame is no web page of its own (RGAA's « page web »).
+// A document shown in a frame is no web page of its own (RGAA's « page web »),
+// and a scan of part of a page (a contextSelector or a fragment) cannot say
+// what the whole page holds.
 function applicability(ctx) {
-  if (ctx.helpers.isTopLevelDocument && !ctx.helpers.isTopLevelDocument()) return false;
-  return true;
+  const { helpers } = ctx;
+  if (helpers.isTopLevelDocument && !helpers.isTopLevelDocument()) return false;
+  return helpers.isWholeDocumentScope ? helpers.isWholeDocumentScope() : true;
 }
 
 function runInPage(ctx) {
