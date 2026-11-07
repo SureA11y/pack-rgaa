@@ -123,6 +123,10 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
       ['a:active{color:#222}', ['active']],
       ['a:focus{color:#222;outline:none}', ['focus']],
       ['a:focus-visible{color:#222;outline:none}', ['focus']],
+      // An author outline removed at rest, or in a cascade layer, removes
+      // the browser's focus ring too.
+      ['a{outline:0} a:focus{color:#222}', ['focus']],
+      ['@layer base{a:focus{outline:none}} a:focus{color:#222}', ['focus']],
       // :hover on an ancestor matches while the link is hovered.
       ['p:hover a{color:#222}', ['hover']],
       // In the visited state :link no longer matches, wherever it sits.

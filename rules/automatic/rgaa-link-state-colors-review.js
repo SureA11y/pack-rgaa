@@ -52,10 +52,14 @@
  *   order and @media conditions stay as they were. The attribute is set on
  *   the link for :visited, and on the link and its ancestors for :hover and
  *   :active, which match ancestors too. Focus is real focus (`focusVisible`)
- *   so the browser's own focus ring counts as a mark. The selectors, the
- *   attributes and focus are put back afterwards. Browsers hide the
- *   visited color from scripts, which is why it is emulated rather than
- *   read, and why the browser's own visited color stays a question.
+ *   so the browser's own focus ring counts as a mark. For the time of the
+ *   focus pass every link is given that ring's style (outline-style: auto)
+ *   at rest, in a cascade layer below every author rule, as the browser's
+ *   own ring is: an outline appearing on focus costs the browser a layout
+ *   of the page per link, and the outline read in focus is the same. The
+ *   selectors, the attributes and focus are put back afterwards. Browsers
+ *   hide the visited color from scripts, which is why it is emulated rather
+ *   than read, and why the browser's own visited color stays a question.
  * - A state adds a mark when it brings an underline, a border, an outline,
  *   a box-shadow, a background image or color, or a weight or style that
  *   differs from the surrounding text.
@@ -774,20 +778,50 @@ function runInPage(ctx) {
     return r < 3 && rounded >= 3 ? 2.99 : rounded;
   }
 
-  // What every link looks like in one state. Visited, hover and active are
-  // put on all the links at once, so the page's styles are worked out once
-  // per state rather than once per link; focus is real focus, link by link.
-  function looksInState(list, state) {
+  // What every link looks like in focus: real focus, link by link, so a
+  // script reacting to focus, :focus-within and shadow styles all show.
+  // Focus makes the browser's focus ring appear, and an outline that
+  // appears costs the browser a layout of the whole page (each link's first
+  // time at least). So, for the time of the pass, every link is given the
+  // style of the ring the browser draws on focus (outline-style: auto) at
+  // rest, from the freeze sheet's cascade layer: below every author rule,
+  // as the browser's own ring is, so an author outline overrides both
+  // alike. Focus then leaves an outline in place, the browser's focus rule
+  // still gives its width and color, and the look read in focus has the
+  // outline it would have had.
+  function looksInFocus(list) {
     const looks = new Map();
-    if (state === 'focus') {
+    const saved = new Map();
+    try {
+      for (const [el] of list) {
+        const before = dom.hasAttribute(el, STATE_ATTR) ? dom.getAttribute(el, STATE_ATTR) : null;
+        saved.set(el, before);
+        dom.setAttribute(el, STATE_ATTR, ((before || '') + ' ring').trim());
+      }
       for (const [el, parent, rest] of list) {
         looks.set(
           el,
           inState(el, 'focus', () => lookOf(el, parent, rest))
         );
       }
-      return looks;
+    } catch {
+      // the states left unread are not judged
+    } finally {
+      for (const [el, before] of saved) {
+        if (before == null) dom.removeAttribute(el, STATE_ATTR);
+        else dom.setAttribute(el, STATE_ATTR, before);
+      }
     }
+    return looks;
+  }
+
+  // What every link looks like in one state. Visited, hover and active are
+  // put on all the links at once, so the page's styles are worked out once
+  // per state rather than once per link; focus is read link by link
+  // (looksInFocus).
+  function looksInState(list, state) {
+    if (state === 'focus') return looksInFocus(list);
+    const looks = new Map();
     const targets = new Set();
     for (const [el] of list) {
       targets.add(el);
@@ -897,16 +931,17 @@ function runInPage(ctx) {
   }
 
   // Transitions held off for the time of the check, so a state put on the
-  // page is read at once rather than at the start of its transition. The
-  // sheet is a cascade layer declared before any other, which wins over the
-  // page's own !important as a user style sheet would. The page's state is
-  // put back before the sheet goes, so nothing animates on the way back.
+  // page is read at once rather than at the start of its transition; and
+  // the focus ring drawn at rest on the links marked "ring" (looksInFocus).
+  // The sheet is a cascade layer declared before any other, which wins over
+  // the page's own !important as a user style sheet would, and whose normal
+  // declarations lose to every author rule. The page's state is put back
+  // before the sheet goes, so nothing animates on the way back.
   function freezeTransitions(doc) {
     let sheet = null;
     try {
       sheet = dom.createElement(doc, 'style');
-      sheet.textContent =
-        '@layer surea11y-no-transitions{*,*::before,*::after{transition:none!important}}';
+      sheet.textContent = `@layer surea11y-no-transitions{*,*::before,*::after{transition:none!important}[${STATE_ATTR}~="ring"]{outline-style:auto}}`;
       const host = dom.head(doc) || dom.documentElement(doc);
       dom.insertBefore(host, sheet, dom.firstChild(host));
     } catch {
