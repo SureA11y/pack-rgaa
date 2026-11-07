@@ -204,6 +204,8 @@
   "mainElementStructure_hint_fail_roleMainOnly": "Use a <main> element for the main content.",
   "mainElementStructure_summary_cantTell_noMain": "The page has no <main> element and no role=\"main\".",
   "mainElementStructure_hint_cantTell_noMain": "Check where the main content is, and wrap it in a <main> element.",
+  "mainElementStructure_summary_cantTell_mainMayBeInFrame": "The page has no <main> element, and this frame may hold its main content.",
+  "mainElementStructure_hint_cantTell_mainMayBeInFrame": "Check whether the frame holds the main content zone of the page. If it does, the document it shows must structure that zone with a <main> element; if it does not, wrap the main content of the page in a <main> element.",
   "mainElementStructure_summary_cantTell_hiddenByAncestor": "This <main> element is hidden by an ancestor but has no hidden attribute of its own.",
   "mainElementStructure_hint_cantTell_hiddenByAncestor": "Check that only one <main> can ever be visible, and give the others the hidden attribute.",
   "mainElementStructure_summary_fail_revealableMain": "This <main> element has no hidden attribute of its own, and the user can show it beside the other <main>: it is only inside a closed <details> or under hidden=\"until-found\".",

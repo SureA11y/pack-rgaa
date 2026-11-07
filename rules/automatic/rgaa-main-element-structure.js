@@ -21,7 +21,12 @@
  *     whether or not it has role="main". A page with neither and no text
  *     of its own (only frames, a canvas or shadow DOM content) is asked
  *     about (cantTell), since only a person can say where its main
- *     content is;
+ *     content is. So is a page with text of its own that shows a visible
+ *     <iframe> of 100 by 100 pixels or more (mainMayBeInFrame): its
+ *     header, navigation and footer may sit around a frame that holds the
+ *     main content, and the document the frame shows may structure it
+ *     with <main>. A hidden frame, or a tracker of a few pixels, does not
+ *     count, and such a page fails;
  *   - when there are several <main> elements, all but one carry the hidden
  *     attribute. Every <main> is counted, hidden or not: CSS or
  *     aria-hidden alone does not do (« l'utilisation d'un style seul
@@ -79,6 +84,7 @@ const meta = {
   reasonCodes: [
     'roleMainOnly',
     'noMain',
+    'mainMayBeInFrame',
     'extraMain',
     'hiddenByAncestor',
     'revealableMain',
@@ -97,6 +103,17 @@ const meta = {
       passWhen: 'The main content zone is inside a <main> element.',
       failWhen:
         'The main content zone is not structured with a <main> element, which fails RGAA 9.2.1.'
+    },
+    mainMayBeInFrame: {
+      steps: [
+        'Find the frame the report names, and look at what it shows beside the rest of the page.',
+        'Decide whether the frame holds the main content zone of the page: its main information and features, outside menus, search and secondary zones such as ads or related news.',
+        'If it does, open the document the frame shows and inspect the code around that content for a <main> element.'
+      ],
+      passWhen:
+        'The frame holds the main content zone, and the document it shows structures that zone with a <main> element.',
+      failWhen:
+        'The main content zone is outside the frame and not in a <main> element, or it is in the frame and the document the frame shows has no <main> around it, which fails RGAA 9.2.1.'
     },
     hiddenByAncestor: {
       steps: [
@@ -204,6 +221,62 @@ function runInPage(ctx) {
     return false;
   }
 
+  // The largest visible <iframe> big enough to hold a page's main content,
+  // or null: a hidden frame, or a tracker or widget frame of a few pixels,
+  // is not one. Without layout (no box has a size), a frame counts unless
+  // its width or height attribute makes it smaller than that.
+  const FRAME_MIN_PX = 100;
+  function hasLayout() {
+    try {
+      const r = dom.getBoundingClientRect(dom.documentElement(document));
+      return r.width > 0 || r.height > 0;
+    } catch {
+      return false;
+    }
+  }
+  function contentFrame() {
+    const layout = hasLayout();
+    let best = null;
+    let bestArea = -1;
+    for (const el of query('iframe')) {
+      if (dom.hasAttribute(el, 'hidden') || hiddenByAncestor(el)) continue;
+      try {
+        if (
+          helpers.isDomVisibleEligible &&
+          !helpers.isDomVisibleEligible(el, ctx, { targetSet: 'dom' }).eligible
+        ) {
+          continue;
+        }
+      } catch {}
+      let width;
+      let height;
+      if (layout) {
+        try {
+          const r = dom.getBoundingClientRect(el);
+          width = r.width;
+          height = r.height;
+        } catch {
+          continue;
+        }
+      } else {
+        const size = (name, fallback) => {
+          const v = parseFloat(String(dom.getAttribute(el, name) || ''));
+          return Number.isFinite(v) && !/%\s*$/.test(String(dom.getAttribute(el, name)))
+            ? v
+            : fallback;
+        };
+        width = size('width', 300);
+        height = size('height', 150);
+      }
+      if (!(width >= FRAME_MIN_PX && height >= FRAME_MIN_PX)) continue;
+      if (width * height > bestArea) {
+        best = el;
+        bestArea = width * height;
+      }
+    }
+    return best;
+  }
+
   function occurrence(el, reasonCode, outcome) {
     const texts = {
       extraMain: [
@@ -228,6 +301,10 @@ function runInPage(ctx) {
         'This <main> element has no hidden attribute of its own, and the user can show it beside the other <main>: it is only inside a closed <details> or under hidden="until-found".',
         'Give this <main> the hidden attribute, or keep a single <main> and show other content in another element.'
       ],
+      mainMayBeInFrame: [
+        'The page has no <main> element, and this frame may hold its main content.',
+        'Check whether the frame holds the main content zone of the page. If it does, the document it shows must structure that zone with a <main> element; if it does not, wrap the main content of the page in a <main> element.'
+      ],
       allHidden: [
         'Every <main> element on the page has the hidden attribute.',
         'Check that one <main> element is shown when the page is used.'
@@ -247,7 +324,7 @@ function runInPage(ctx) {
           ? {
               code: 'judgement-required',
               needed:
-                reasonCode === 'noMain'
+                reasonCode === 'noMain' || reasonCode === 'mainMayBeInFrame'
                   ? 'Where the main content zone of the page is.'
                   : 'Whether only one <main> element is ever visible.'
             }
@@ -314,8 +391,12 @@ function runInPage(ctx) {
     const roleMain = query('[role]').find((el) => helpers.aria.getExplicitRole(el) === 'main');
     if (roleMain) return result('fail', [occurrence(roleMain, 'roleMainOnly', 'fail')]);
     const body = dom.body(document) || dom.documentElement(document);
-    const outcome = hasOwnText(body) ? 'fail' : 'cantTell';
-    return result(outcome, [occurrence(body, 'noMain', outcome)]);
+    if (!hasOwnText(body)) return result('cantTell', [occurrence(body, 'noMain', 'cantTell')]);
+    // Header, navigation and footer in the page and the main content in a
+    // frame: the page's text is not its main content, so ask.
+    const frame = contentFrame();
+    if (frame) return result('cantTell', [occurrence(frame, 'mainMayBeInFrame', 'cantTell')]);
+    return result('fail', [occurrence(body, 'noMain', 'fail')]);
   }
 
   const withoutOwnHidden = mains.filter((el) => !dom.hasAttribute(el, 'hidden'));
