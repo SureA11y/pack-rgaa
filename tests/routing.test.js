@@ -59,6 +59,16 @@ test('an invalid list child names the test of its own list', () => {
   assert.deepEqual(tests(ol), ['9.3.2']);
 });
 
+// Core asks where only HTML breaks; RGAA 9.3 names the elements a list is
+// structured with, so these stay failures of the standard.
+test('a broken description list fails 9.3.3', () => {
+  for (const html of ['<dl><dd>b</dd><dt>a</dt></dl>', '<dl><p>a</p></dl>', '<dt>a</dt>']) {
+    const rollup = criterion(scan(html), '9.3');
+    assert.equal(rollup.outcome, 'fail', html);
+    assert.deepEqual(tests(rollup), ['9.3.3'], html);
+  }
+});
+
 test('a list item outside a list names 9.3.1, and one in an <ol> made something else 9.3.2', () => {
   const orphan = criterion(scan('<div><li>a</li></div>'), '9.3');
   assert.equal(orphan.outcome, 'fail');
@@ -70,17 +80,20 @@ test('a list item outside a list names 9.3.1, and one in an <ol> made something 
   assert.deepEqual(contributor(ol, 'listitem-parent-valid').requirements, ['9.3.2']);
 });
 
-test('an unnamed widget fails the criterion of its role, and a progress bar neither', () => {
+test('an unnamed widget is a question under the criterion of its role, and a progress bar neither', () => {
   const grid = scan('<div role="grid"><div role="row"><div role="gridcell">a</div></div></div>');
-  assert.equal(contributor(criterion(grid, '7.1'), 'aria-role-name-present').outcome, 'fail');
+  assert.equal(contributor(criterion(grid, '7.1'), 'aria-role-name-present').outcome, 'cantTell');
   const radios = scan(
     '<div role="radiogroup"><label><input type="radio" name="a"> Oui</label><label><input type="radio" name="a"> Non</label></div>'
   );
-  assert.equal(contributor(criterion(radios, '11.6'), 'aria-role-name-present').outcome, 'fail');
+  assert.equal(
+    contributor(criterion(radios, '11.6'), 'aria-role-name-present').outcome,
+    'cantTell'
+  );
   assert.equal(contributor(criterion(radios, '7.1'), 'aria-role-name-present').outcome, 'pass');
   const bar = scan('<div role="progressbar" aria-valuenow="5"></div>');
   const name = bar.checksResults.find((c) => c.ruleId === 'aria-role-name-present');
-  assert.equal(name.outcome, 'fail');
+  assert.equal(name.outcome, 'cantTell');
   for (const id of ['7.1', '11.6']) {
     const rollup = criterion(bar, id);
     if (rollup) assert.equal(contributor(rollup, 'aria-role-name-present').outcome, 'pass', id);

@@ -74,7 +74,7 @@ test(`${RULE_ID}: a player that starts by itself is asked about under 4.10 too`,
   const c = rgaaComposites().find((x) => x.id === 'rgaa-4.1.2-4.10');
   assert.deepEqual(c.meta.contributions[RULE_ID], {
     default: 'ignore',
-    codes: { embeddedPlayerAutoplay: 'count' }
+    codes: { embeddedPlayerAutoplay: { act: 'count', requirements: ['4.10.1'] } }
   });
 });
 

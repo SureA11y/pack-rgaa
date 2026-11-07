@@ -18,6 +18,7 @@ const fs = require('fs');
 const path = require('path');
 
 const { definePack } = require('@surea11y/core/pack');
+const { name, version } = require('./package.json');
 const { RGAA_VERSIONS } = require('./map');
 const { rgaaMappingsFor, rgaaComposites, validateRgaaRuleTests } = require('./mappings');
 
@@ -75,10 +76,11 @@ const dictionaries = Object.fromEntries(
 );
 
 module.exports = definePack({
-  name: '@surea11y/pack-rgaa',
-  version: '0.1.0',
+  name,
+  version,
   namespace: 'rgaa',
-  core: '^1.14.0',
+  // Certain failures in rule-map.js (outcome: 'fail') need core 1.15.
+  core: '^1.15.0',
   description: 'RGAA 4.1.2, the French accessibility standard',
   rules,
   standard,

@@ -312,9 +312,9 @@ test(`${RULE_ID}: under the RGAA profile, 7.1 asks on a page with script and not
   assert.deepEqual(tests, ['7.1.1', '7.1.2', '7.1.3']);
 });
 
-test(`${RULE_ID}: under the RGAA profile, an unnamed tree still fails 7.1`, () => {
+test(`${RULE_ID}: under the RGAA profile, an unnamed tree is asked about under 7.1`, () => {
   const main = '<main><h1>Files</h1><ul role="tree"><li role="treeitem">Docs</li></ul></main>';
-  assert.equal(rollup71(page(main, SCRIPT)).outcome, 'fail');
+  assert.equal(rollup71(page(main, SCRIPT)).outcome, 'cantTell');
 });
 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-scripted-components-review-all-scenarios.html)`, () => {

@@ -213,10 +213,10 @@ test(`${RULE_ID}: RGAA 8.2 fails role="heading" without aria-level, which WCAG 4
   assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-8.2')), 'fail');
 });
 
-test(`${RULE_ID}: WCAG 4.1.2 fails aria-expanded on a heading, which RGAA 8.2 does not fail`, () => {
+test(`${RULE_ID}: WCAG 4.1.2 asks about aria-expanded on a heading, which RGAA 8.2 does not fail`, () => {
   const result = runa11yCoreOnHtml(page('<h2 aria-expanded="true">Section</h2>'), RGAA);
-  assert.equal(check(result, 'aria-allowed-attr').outcome, 'fail');
-  assert.equal(rollupOutcome(rollup(result, 'wcag-4.1.2-aria-validity')), 'fail');
+  assert.equal(check(result, 'aria-allowed-attr').outcome, 'cantTell');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-4.1.2-aria-validity')), 'cantTell');
   assert.equal(check(result, RULE_ID).outcome, 'pass');
   // rgaa-markup-validation-review keeps 8.2 at cantTell: the rule's pass is not a
   // pass of the whole test.

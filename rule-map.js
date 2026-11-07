@@ -42,8 +42,10 @@
  *   whether it fails them takes a person.
  * A finding goes by the first `findings` entry it matches, else by its
  * reason code, else by the row; `outcome: 'cantTell'` makes a failing one a
- * question there. The criterion rollups judge such a rule by its findings
- * (core's meta.contributions, built in mappings.js).
+ * question there, and `outcome: 'fail'` makes a question a failure there,
+ * for what RGAA's text makes certain where WCAG leaves it to a person (the
+ * structure of a list, say). The criterion rollups judge such a rule by its
+ * findings (core's meta.contributions, built in mappings.js).
  *
  * The build rejects an unknown rule id or test id, a field other than tests,
  * asks, reasonCodes, findings, note and outsideCorrespondence, a malformed
@@ -53,9 +55,9 @@
  * map to any test: RGAA checks some things WCAG leaves to best practice, such
  * as heading hierarchy and landmarks.
  *
- * REVIEW STATUS: drafted from the RGAA 4.1.2 test wording and methodology
- * (data/), then checked row by row against how other RGAA tools
- * map and flag the same checks. Not yet reviewed by an RGAA auditor.
+ * REVIEW STATUS: drafted from the RGAA 4.1.2 tests and methodology (data/),
+ * then checked row by row against how other RGAA tools map and flag the same
+ * checks (bench/AUDIT.md). Not yet reviewed by an RGAA auditor.
  */
 
 const RGAA_RULE_TESTS = {
@@ -186,7 +188,7 @@ const RGAA_RULE_TESTS = {
           tests: []
         }
       ],
-      note: 'Fails when role grid, meter, progressbar, radiogroup or tree has no aria-label, aria-labelledby or title, and no name from its host element (the legend of a fieldset, the caption of a table, the label of a <progress> or <meter>). For radiogroup, this is 11.6.1 step 2 (group has aria-label or aria-labelledby); for grid and tree widgets, 7.1.1 step 2 (component has an explicit name), which no other test covers. 11.6.1 can still pass through per-field labels (step 3). Not mapped to 11.1.1: an unnamed meter or progressbar is a form field without a label, which rgaa-field-label-listed-source reports under 11.1.1 for every field, so a link here would count the same field twice. Each finding counts toward the test of its role: grid and tree 7.1.1, radiogroup 11.6.1, and an unnamed meter or progressbar toward neither, since it is not an interface component (7.1.1) or a group of fields (11.6.1).',
+      note: "Fails when role grid, meter, progressbar, radiogroup or tree has no aria-label, aria-labelledby or title, and no name from its host element (the legend of a fieldset, the caption of a table, the label of a <progress> or <meter>). For radiogroup, this is 11.6.1 step 2 (group has aria-label or aria-labelledby); for grid and tree widgets, 7.1.1 step 2 (component has an explicit name), which no other test covers. 11.6.1 can still pass through per-field labels (step 3). Not mapped to 11.1.1: an unnamed meter or progressbar is a form field without a label, which rgaa-field-label-listed-source reports under 11.1.1 for every field, so a link here would count the same field twice. Each finding counts toward the test of its role: grid and tree 7.1.1, radiogroup 11.6.1, and an unnamed meter or progressbar toward neither, since it is not an interface component (7.1.1) or a group of fields (11.6.1). A question since core 1.15, and left one here: 7.1.1 passes through another accessible component or alternative (steps 3 and 4), and 11.6.1 through each field's own label (step 3).",
       outsideCorrespondence: {
         '11.6.1':
           'For role="radiogroup" only: 11.6.1 step 2 requires a radiogroup to have aria-label or aria-labelledby. RGAA relates 11.6 to WCAG 1.3.1 and 3.3.2, while the engine files naming under 4.1.2.'
@@ -348,13 +350,14 @@ const RGAA_RULE_TESTS = {
           tests: ['10.5.1']
         },
         BACKGROUND_WITHOUT_COLOR: {
-          tests: ['10.5.2']
+          tests: ['10.5.2'],
+          outcome: 'cantTell'
         },
         BACKGROUND_IMAGE_WITHOUT_COLOR: {
           tests: ['10.5.3']
         }
       },
-      note: 'Fails an element whose CSS text color reaches rendered text with no background color declared on it or any ancestor (10.5.1), whose background color reaches text with no text color (10.5.2), or whose background image reaches text with no background color (10.5.3). Declarations are read from the style sheets, style and presentational attributes, so a browser default never counts as declared. Each finding counts toward the test of its reason code. It asks instead when a style sheet cannot be read, since the missing half may be there. Text inside a shadow root is not judged. Not mapped to WCAG: F24 describes the same pattern, but as an informative failure technique whose premise, a browser that overrides only some of the colors, WCAG states in no success criterion.'
+      note: 'Fails an element whose CSS text color reaches rendered text with no background color declared on it or any ancestor (10.5.1), or whose background image reaches text with no background color (10.5.3), and asks about a background color that reaches text with no text color (10.5.2). Declarations are read from the style sheets, style and presentational attributes, so a browser default never counts as declared. Each finding counts toward the test of its reason code. It asks instead when a style sheet cannot be read, since the missing half may be there. Text inside a shadow root is not judged. Not mapped to WCAG: F24 describes the same pattern, but as an informative failure technique whose premise, a browser that overrides only some of the colors, WCAG states in no success criterion.'
     },
     'css-focus-indicator-suppressed': {
       tests: ['10.7.1'],
@@ -386,7 +389,18 @@ const RGAA_RULE_TESTS = {
     },
     'definition-list-children-valid': {
       tests: ['9.3.3'],
-      note: 'Fails a <dl> whose children are not dt/dd groups (one wrapping div allowed), that has text directly inside it, or whose dt/dd set is unbalanced or out of order (a dd before the first dt, a dt after the last dd), so the description list is not correctly built from <dl>/<dt>/<dd>, which is step 2 of 9.3.3. Not linked to 8.2.1: the rule accepts some content the HTML content model rejects (such as a <style> child) and skips hidden lists; rgaa-html-nesting-valid reports the dl content model under 8.2.1.'
+      note: 'Fails a <dl> whose children are not dt/dd groups (one wrapping div allowed), that has text directly inside it, or whose dt/dd set is unbalanced or out of order (a dd before the first dt, a dt after the last dd), so the description list is not correctly built from <dl>/<dt>/<dd>, which is step 2 of 9.3.3. Not linked to 8.2.1: the rule accepts some content the HTML content model rejects (such as a <style> child) and skips hidden lists; rgaa-html-nesting-valid reports the dl content model under 8.2.1. Core asks, as only HTML breaks; 9.3.3 names <dl>, <dt> and <dd>, so it fails here.',
+      reasonCodes: {
+        DL_INVALID_CHILD: {
+          outcome: 'fail'
+        },
+        DL_NO_DT_DD: {
+          outcome: 'fail'
+        },
+        DL_DT_DD_ORDER: {
+          outcome: 'fail'
+        }
+      }
     },
     'deprecated-elements-not-used': {
       tests: [],
@@ -394,7 +408,7 @@ const RGAA_RULE_TESTS = {
     },
     'dialog-name-present': {
       tests: ['7.1.1'],
-      note: 'Checks that role=dialog/alertdialog (the first concrete token of the role attribute) and an open native <dialog> have a name from aria-label, aria-labelledby or title. A dialog is a script-driven interface component, and 7.1.1 step 2 requires it to have an explicit name. No other RGAA test covers dialog naming. Medium because 7.1.1 can still pass through an accessible alternative.'
+      note: 'Checks that role=dialog/alertdialog (the first concrete token of the role attribute) and an open native <dialog> have a name from aria-label, aria-labelledby or title. A dialog is a script-driven interface component, and 7.1.1 step 2 requires it to have an explicit name. No other RGAA test covers dialog naming. Medium because 7.1.1 can still pass through an accessible alternative. A question since core 1.15, and left one here: 7.1.1 passes through another accessible component or alternative (steps 3 and 4).'
     },
     'rgaa-dir-attribute-valid': {
       tests: ['8.10.2'],
@@ -402,7 +416,12 @@ const RGAA_RULE_TESTS = {
     },
     'dlitem-parent-valid': {
       tests: ['9.3.3'],
-      note: 'Fails a <dt>/<dd> that is not inside a <dl> (directly or via one div), so a description list is not structured with <dl>, <dt> and <dd> (9.3.3 step 2). Not linked to 8.2.1: rgaa-html-nesting-valid reports an orphan dt or dd there, hidden content included, so a link here would count it twice.'
+      note: 'Fails a <dt>/<dd> that is not inside a <dl> (directly or via one div), so a description list is not structured with <dl>, <dt> and <dd> (9.3.3 step 2). Not linked to 8.2.1: rgaa-html-nesting-valid reports an orphan dt or dd there, hidden content included, so a link here would count it twice. Core asks, as only HTML breaks; 9.3.3 names <dl>, <dt> and <dd>, so it fails here.',
+      reasonCodes: {
+        DLITEM_INVALID_PARENT: {
+          outcome: 'fail'
+        }
+      }
     },
     'rgaa-doctype-position': {
       tests: ['8.1.3'],
@@ -886,22 +905,25 @@ const RGAA_RULE_TESTS = {
           when: {
             element: 'ul'
           },
-          tests: ['9.3.1']
+          tests: ['9.3.1'],
+          outcome: 'fail'
         },
         {
           when: {
             element: 'menu'
           },
-          tests: ['9.3.1']
+          tests: ['9.3.1'],
+          outcome: 'fail'
         },
         {
           when: {
             element: 'ol'
           },
-          tests: ['9.3.2']
+          tests: ['9.3.2'],
+          outcome: 'fail'
         }
       ],
-      note: 'Fails a <ul>/<ol> (with no role other than list) with a direct child that is not an <li>/role=listitem (or script/template), so the list is not structured with ul/li (9.3.1) or ol/li (9.3.2), step 2. A finding counts toward the test of its list, by the element it names: <ul> and <menu> 9.3.1, <ol> 9.3.2. Not linked to 8.2.1: the rule accepts a child with role=listitem and skips hidden lists, while HTML accepts only li; rgaa-html-nesting-valid reports list nesting under 8.2.1. A list whose only stray children are <li> elements given another role (LIST_ITEM_ROLE_OVERRIDDEN: role="presentation" in pagers, role="group" in carousels) is asked about instead, under the test of its list: the items are written as a list, and whether the role makes them something else is for a person.'
+      note: 'Fails a <ul>/<ol> (with no role other than list) with a direct child that is not an <li>/role=listitem (or script/template), so the list is not structured with ul/li (9.3.1) or ol/li (9.3.2), step 2. A finding counts toward the test of its list, by the element it names: <ul> and <menu> 9.3.1, <ol> 9.3.2. Not linked to 8.2.1: the rule accepts a child with role=listitem and skips hidden lists, while HTML accepts only li; rgaa-html-nesting-valid reports list nesting under 8.2.1. A list whose only stray children are <li> elements given another role (LIST_ITEM_ROLE_OVERRIDDEN: role="presentation" in pagers, role="group" in carousels) is asked about instead, under the test of its list: the items are written as a list, and whether the role makes them something else is for a person. Core asks about the rest, as only HTML breaks and WCAG may hold; RGAA 9.3.1 and 9.3.2 name the elements a list is structured with, so they fail here.'
     },
     'listbox-name-present': {
       tests: [],
@@ -933,10 +955,16 @@ const RGAA_RULE_TESTS = {
           when: {
             parentElement: 'ol'
           },
-          tests: ['9.3.2']
+          tests: ['9.3.2'],
+          outcome: 'fail'
         }
       ],
-      note: 'Fails an <li> whose parent is not <ul>/<ol>/<menu> or role=list/none/presentation, so items grouped as a list are not structured with a ul/ol container. That is step 2 of 9.3.1 or 9.3.2. An <li> under an <ol> whose role replaces list counts toward 9.3.2; any other, toward 9.3.1: an <li> outside any list says nothing of an order, and unordered lists are far the more common. Not linked to 8.2.1: HTML does not accept an li in a role=list container, which this rule passes; rgaa-html-nesting-valid reports it under 8.2.1. An <li> whose <ul> or <ol> has a widget role (LIST_ROLE_OVERRIDDEN: role="tablist", "menu"…) is asked about instead, under the test of its list: 9.3\'s technical note says such roles are not lists, so whether the content is a list is for a person.'
+      note: 'Fails an <li> whose parent is not <ul>/<ol>/<menu> or role=list/none/presentation, so items grouped as a list are not structured with a ul/ol container. That is step 2 of 9.3.1 or 9.3.2. An <li> under an <ol> whose role replaces list counts toward 9.3.2; any other, toward 9.3.1: an <li> outside any list says nothing of an order, and unordered lists are far the more common. Not linked to 8.2.1: HTML does not accept an li in a role=list container, which this rule passes; rgaa-html-nesting-valid reports it under 8.2.1. An <li> whose <ul> or <ol> has a widget role (LIST_ROLE_OVERRIDDEN: role="tablist", "menu"…) is asked about instead, under the test of its list: 9.3\'s technical note says such roles are not lists, so whether the content is a list is for a person. Core asks about a loose <li>, as only HTML breaks; RGAA 9.3 names the elements a list is structured with, so it fails here.',
+      reasonCodes: {
+        LISTITEM_INVALID_PARENT: {
+          outcome: 'fail'
+        }
+      }
     },
     'live-region-announcements': {
       tests: ['7.5.1', '7.5.2', '7.5.3'],

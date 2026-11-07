@@ -197,14 +197,15 @@ test('only 2.1, 8.1, 8.3 and 8.5 pass on their rules alone; every other criterio
 // aria-role-name-present checks trees, grids and progressbars as well as
 // radiogroups, and a mapping applies to every finding of a rule: linked to
 // 11.6.1, an unnamed tree failed the criterion on field groups.
-test('an unnamed tree or progressbar fails 7.1 and leaves 11.6 alone', () => {
+test('an unnamed tree or progressbar is a question under 7.1 and leaves 11.6 alone', () => {
   const result = runa11yCoreOnHtml(
     '<html lang="en"><head><title>t</title></head><body><main>' +
       '<ul role="tree"><li role="treeitem" aria-selected="false">Reports</li></ul>' +
       '<div role="progressbar" aria-valuenow="40"></div></main></body></html>',
     { engineOptions: { profile: 'rgaa-4.1.2' } }
   );
-  assert.equal(rollup(result, 'rgaa-4.1.2-7.1').outcome, 'fail');
+  // 7.1.1 passes through another accessible component (steps 3 and 4).
+  assert.equal(rollup(result, 'rgaa-4.1.2-7.1').outcome, 'cantTell');
   const fields = rollup(result, 'rgaa-4.1.2-11.6');
   assert.ok(!fields || fields.outcome !== 'fail', fields && fields.outcome);
 });

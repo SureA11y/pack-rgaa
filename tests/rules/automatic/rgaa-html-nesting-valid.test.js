@@ -270,10 +270,10 @@ test(`${RULE_ID}: WCAG 4.1.2 fails ARIA-only nesting that RGAA 8.2 does not fail
   assert.notEqual(rollupOutcome(rollup(result, 'rgaa-4.1.2-8.2')), 'fail');
 });
 
-test(`${RULE_ID}: RGAA 8.2 and WCAG 1.3.1 agree on a misordered dl and on a valid list`, () => {
+test(`${RULE_ID}: RGAA 8.2 fails a misordered dl WCAG 1.3.1 asks about, and both accept a valid list`, () => {
   const bad = runa11yCoreOnHtml(page('<dl><dd>b</dd><dt>a</dt></dl>'), RGAA);
-  assert.equal(check(bad, 'definition-list-children-valid').outcome, 'fail');
-  assert.equal(rollupOutcome(rollup(bad, 'wcag-1.3.1-info-and-relationships')), 'fail');
+  assert.equal(check(bad, 'definition-list-children-valid').outcome, 'cantTell');
+  assert.equal(rollupOutcome(rollup(bad, 'wcag-1.3.1-info-and-relationships')), 'cantTell');
   assert.equal(rollupOutcome(rollup(bad, 'rgaa-4.1.2-8.2')), 'fail');
 
   const good = runa11yCoreOnHtml(page('<ul><li>a</li></ul>'), RGAA);

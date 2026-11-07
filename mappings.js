@@ -61,13 +61,15 @@ function testsOfRule(version, ruleId) {
 // What a finding that goes by `route` does in the rollup of a criterion
 // whose tests are `criterionTests`: counted toward the tests of the route it
 // shares with the criterion (a failing one as a question where the route
-// says outcome 'cantTell'), else a question in the tests the row asks about
-// there, else left out. The row itself is the route of a finding no other
+// says outcome 'cantTell', a question as a failure where it says 'fail'),
+// else a question in the tests the row asks about there, else left out. The row itself is the route of a finding no other
 // route takes, with its asks.
+const ACT_OF_OUTCOME = { cantTell: 'cantTell', fail: 'fail' };
+
 function actFor(route, asks, criterionTests) {
   const counted = listOf(route.tests).filter((t) => criterionTests.includes(t));
   if (counted.length) {
-    return { act: route.outcome === 'cantTell' ? 'cantTell' : 'count', requirements: counted };
+    return { act: ACT_OF_OUTCOME[route.outcome] || 'count', requirements: counted };
   }
   const asked = listOf(asks).filter((t) => criterionTests.includes(t));
   return asked.length ? { act: 'cantTell', requirements: asked } : 'ignore';
@@ -216,8 +218,8 @@ function routeProblems(row, at) {
     }
   };
   const outcomeField = (outcome, where) => {
-    if (outcome !== undefined && outcome !== 'cantTell') {
-      problems.push(`${at}: ${where}.outcome can only be 'cantTell'`);
+    if (outcome !== undefined && outcome !== 'cantTell' && outcome !== 'fail') {
+      problems.push(`${at}: ${where}.outcome can only be 'cantTell' or 'fail'`);
     }
   };
   testsField(row.asks, 'asks', false);
