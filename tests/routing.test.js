@@ -232,3 +232,24 @@ test('a skip link that leans fail fails 12.7.2, and is a question otherwise', ()
   const asked = skip(false);
   assert.deepEqual([asked.outcome, asked.requirements], ['cantTell', ['12.7.1', '12.7.2']]);
 });
+
+// A skip link whose target aria-hidden or inert takes out of the
+// accessibility tree, with no modal dialog open, leans fail in core: it
+// leads nowhere usable, which fails 12.7.2. A target hidden by display
+// depends on the window's width, gets no lean, and stays a question.
+test('a skip link to a target hidden from assistive technologies fails 12.7.2', () => {
+  const skip = (target) =>
+    contributor(
+      criterion(
+        scan(
+          `<a href="#contenu">Aller au contenu</a><h1>Page</h1><p>Texte</p><div id="contenu" ${target}><p>Suite</p></div>`
+        ),
+        '12.7'
+      ),
+      'skip-link'
+    );
+  const hidden = skip('aria-hidden="true"');
+  assert.deepEqual([hidden.outcome, hidden.requirements], ['fail', ['12.7.2']]);
+  const notShown = skip('style="display:none"');
+  assert.deepEqual([notShown.outcome, notShown.requirements], ['cantTell', ['12.7.1', '12.7.2']]);
+});
