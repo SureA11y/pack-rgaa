@@ -330,3 +330,27 @@ test(`${RULE_ID}: a working skip link inside aria-hidden="true" is asked about`,
   const rule = assertRule(run(body), RULE_ID, 'cantTell');
   assert.deepEqual(reasons(rule), [['cantTell', 'skipLinkAriaHidden']]);
 });
+
+// lcl.fr: a cookie dialog open as a modal makes the page inert, and its
+// « Aller au contenu » link points to #main-content, which is nowhere.
+test(`${RULE_ID}: while a modal dialog is open, only a skip link whose target does not exist is judged`, () => {
+  const DIALOG =
+    '<div role="dialog" aria-modal="true" aria-label="Cookies"><p>Cookies ?</p><button>Accepter</button></div>';
+  const broken = assertRule(
+    run(
+      `<a href="#main-content">Aller au contenu</a>${NAV}<main id="main"><p>Contenu</p></main>${DIALOG}`
+    ),
+    RULE_ID,
+    'fail',
+    { maxOccurrences: 1 }
+  );
+  assert.deepEqual(reasons(broken), [['fail', 'skipLinkTargetMissing']]);
+  // Nothing else is judged behind the dialog: no skip link at all, or one
+  // that works, leaves the rule not applicable.
+  for (const body of [
+    NAV + MAIN + DIALOG,
+    `<a href="#main">Aller au contenu</a>${NAV}${MAIN}${DIALOG}`
+  ]) {
+    assertRule(run(body), RULE_ID, 'notApplicable');
+  }
+});
