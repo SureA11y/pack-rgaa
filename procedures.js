@@ -13,7 +13,9 @@
  * What the methodology doesn't give is derived: when a test fails, which
  * RGAA only says of passing; which tools it needs, from its words; and how
  * much of it the rules decide, from rule-map.js. A rule that can only ask
- * decides nothing, so a test it looks at is still manual.
+ * decides nothing, so a test it looks at is still manual. Each facet names
+ * its test in mappedRequirements, so core lists under it the core rules
+ * rule-map.js links to the test, beside the pack's own.
  */
 
 const { RGAA_VERSIONS, RGAA_THEMES, RGAA_CRITERIA, RGAA_TESTS } = require('./map');
@@ -99,6 +101,9 @@ function requirementOf(version, criterion, decided) {
       const conditions = (entry.conditions || []).map((c) => `- ${c}`);
       return {
         id: facetOf(test),
+        // rule-map.js links rules to tests: core lists under the facet the
+        // core rules it sends to this one.
+        mappedRequirements: [test],
         label: [`Test ${test} : ${entry.title}`, ...conditions].join(' '),
         automation: !decided.has(test) ? 'manual' : complete ? 'full' : 'partial',
         tools: toolsOf(test, entry),
@@ -122,7 +127,7 @@ const notes = {
     'Un audit porte sur un échantillon représentatif de pages. Chaque critère y est conforme, non conforme ou non applicable : il est validé s’il l’est sur toutes les pages de l’échantillon, et applicable s’il l’est sur une seule. Le taux de conformité est la part des critères applicables qui sont validés.',
     'Un critère est non applicable à une page dans trois cas : le contenu ou la fonctionnalité dont il traite n’existe pas sur la page ; ce contenu est exempté de l’obligation d’accessibilité ; ou il est soumis à dérogation pour charge disproportionnée et accompagné d’une alternative numérique accessible. Un test dont la première étape ne trouve rien est donc non applicable, et non invalidé.',
     'Les tests de restitution se font sur les combinaisons de technologies d’assistance et de navigateurs de l’environnement de test du RGAA (https://accessibilite.numerique.gouv.fr/methode/environnement-de-test/).',
-    'Les facettes listent les règles propres à ce module. Les règles de @surea11y/core qui vérifient aussi un test figurent dans docs/RGAA_MAPPING.md.'
+    'Chaque facette liste les règles qui portent sur son test : celles de ce module et celles de @surea11y/core que la correspondance du module rattache à ce test (docs/RGAA_MAPPING.md).'
   ]
 };
 
