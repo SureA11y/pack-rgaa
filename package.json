@@ -1,8 +1,7 @@
 {
   "name": "@surea11y/pack-rgaa",
   "version": "0.1.0",
-  "private": true,
-  "description": "RGAA 4.1.2, the French accessibility standard, as a pack for @surea11y/core: its criteria and tests, one result per criterion, the rgaa-4.1.2 profile and rules for what RGAA requires beyond WCAG.",
+  "description": "RGAA 4.1.2, the French accessibility standard, as a pack for @surea11y/core: its criteria, tests, methodology and glossary, one result per criterion, the rgaa-4.1.2 profile and rules for what RGAA requires beyond WCAG.",
   "keywords": [
     "accessibility",
     "a11y",
@@ -38,7 +37,11 @@
     "index.js",
     "map.js",
     "mappings.js",
+    "glossary.js",
+    "conformity.js",
+    "procedures.js",
     "public.js",
+    "review.js",
     "rule-map.js",
     "rules/**/*.js",
     "i18n/*.json",
@@ -47,6 +50,9 @@
     "README.md",
     "LICENSE"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "engines": {
     "node": "^20.19.0 || ^22.13.0 || >=24.0.0"
   },
@@ -57,11 +63,13 @@
     "map:check": "node scripts/generate-map.js --check",
     "mapping-doc": "node scripts/generate-mapping-doc.js",
     "mapping-doc:check": "node scripts/generate-mapping-doc.js --check",
+    "review": "node scripts/generate-review.js",
+    "review:check": "node scripts/generate-review.js --check",
     "lint": "eslint .",
     "docs": "surea11y-pack docs",
     "docs:check": "surea11y-pack docs --check",
     "pretest": "playwright install chromium",
-    "test": "npm run format:check && npm run lint && npm run map:check && npm run mapping-doc:check && npm run docs:check && node scripts/run-tests.js"
+    "test": "npm run format:check && npm run lint && npm run map:check && npm run mapping-doc:check && npm run review:check && npm run docs:check && node scripts/run-tests.js"
   },
   "peerDependencies": {
     "@surea11y/core": "^1.15.0"

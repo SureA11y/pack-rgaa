@@ -9,6 +9,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
@@ -19,6 +20,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
+      # The npm release.yml publishes with, so a test can't pass here and fail there
+      - run: npm install -g npm@12
       - run: npm ci
       - run: npx playwright install --with-deps chromium
+        timeout-minutes: 5
       - run: npm test

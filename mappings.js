@@ -327,4 +327,18 @@ function validateRgaaRuleTests(rules) {
   return problems;
 }
 
-module.exports = { rgaaMappingsFor, rgaaComposites, validateRgaaRuleTests, COMPLETE_CHECK };
+// The tests of a version some rule's findings count toward or ask about.
+function testsWithRules(version) {
+  return new Set(
+    Object.keys(RGAA_RULE_TESTS[version] || {}).flatMap((ruleId) => testsOfRule(version, ruleId))
+  );
+}
+
+module.exports = {
+  rgaaMappingsFor,
+  rgaaComposites,
+  validateRgaaRuleTests,
+  testsOfRule,
+  testsWithRules,
+  COMPLETE_CHECK
+};

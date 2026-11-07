@@ -8,7 +8,8 @@
  * the standard (its criteria and tests, generated from data/), the tests each
  * rule checks (rule-map.js), one rollup per criterion (mappings.js), the
  * rgaa-4.1.2 profile, 112 rules for what RGAA requires beyond WCAG or judges
- * differently (rules/), and their messages in five languages (i18n/).
+ * differently (rules/), their messages in five languages (i18n/), and RGAA's
+ * own methodology as the procedures a person follows (procedures.js).
  *
  * RGAA does not restate WCAG criterion by criterion, so the standard is mapped
  * rule by rule: RGAA's criteria are its own, related to WCAG many to many.
@@ -20,7 +21,16 @@ const path = require('path');
 const { definePack } = require('@surea11y/core/pack');
 const { name, version } = require('./package.json');
 const { RGAA_VERSIONS } = require('./map');
-const { rgaaMappingsFor, rgaaComposites, validateRgaaRuleTests } = require('./mappings');
+const {
+  rgaaMappingsFor,
+  rgaaComposites,
+  validateRgaaRuleTests,
+  testsOfRule
+} = require('./mappings');
+const { procedures, groups, notes, facetOf } = require('./procedures');
+const { REVIEW } = require('./review');
+const { RGAA_TESTS } = require('./map');
+const { RGAA_RULE_TESTS } = require('./rule-map');
 
 // The WCAG version an RGAA version is built on.
 const wcagVersionOf = (version) => RGAA_VERSIONS.find((v) => v.version === version).wcagVersion;
@@ -50,8 +60,58 @@ const standard = {
   mappingsFor: rgaaMappingsFor,
   composites: rgaaComposites,
   validate: validateRgaaRuleTests,
-  report: { noteKey: 'report_rgaaRollup_note', titleLang: 'fr' }
+  report: { noteKey: 'report_rgaaRollup_note', titleLang: 'fr' },
+  // How a person assesses it, in RGAA's own words (procedures.js), and how
+  // they answer core's findings in RGAA's terms (review.js). The standard is
+  // French, so it is read in French in every locale.
+  lang: 'fr',
+  procedures,
+  groups,
+  notes,
+  review: REVIEW['4.1.2']
 };
+
+const LATEST = RGAA_VERSIONS.at(-1).version;
+
+// The test a reason code's findings count toward, so that a person reads a
+// rule's steps under that test's facet in the procedures.
+function firstTestOf(rule, code) {
+  const row = RGAA_RULE_TESTS[LATEST][rule.id];
+  const route = row.reasonCodes && row.reasonCodes[code];
+  const finding = (row.findings || []).find((f) => f.when.reasonCode === code);
+  return [
+    ...((route && route.tests) || []),
+    ...((finding && finding.tests) || []),
+    ...row.tests,
+    ...(row.asks || [])
+  ][0];
+}
+
+// A rule claims the facets of the tests rule-map.js links it to, so what a
+// rule checks and what the procedures list under each test can't disagree.
+function claimingItsTests(rule) {
+  const tests = testsOfRule(LATEST, rule.id);
+  if (!tests.length) return rule;
+  const facetsByRequirement = {};
+  for (const test of tests) {
+    const { criterion } = RGAA_TESTS[LATEST][test];
+    (facetsByRequirement[criterion] = facetsByRequirement[criterion] || []).push(facetOf(test));
+  }
+  const review = Object.fromEntries(
+    Object.entries(rule.meta.review || {}).map(([code, entry]) => [
+      code,
+      { ...entry, facet: facetOf(firstTestOf(rule, code) || tests[0]) }
+    ])
+  );
+  return {
+    ...rule,
+    meta: {
+      ...rule.meta,
+      ...(rule.meta.review ? { review } : {}),
+      coverage: { ...rule.meta.coverage, facetsBySc: {}, facetsByRequirement }
+    }
+  };
+}
 
 // Every rule module in rules/automatic and rules/manual, by file name.
 const RULES_DIR = path.join(__dirname, 'rules');
@@ -60,7 +120,7 @@ const rules = ['automatic', 'manual'].flatMap((type) =>
     .readdirSync(path.join(RULES_DIR, type))
     .filter((file) => file.endsWith('.js'))
     .sort()
-    .map((file) => require(path.join(RULES_DIR, type, file)))
+    .map((file) => claimingItsTests(require(path.join(RULES_DIR, type, file))))
 );
 
 // One dictionary per locale file in i18n/.

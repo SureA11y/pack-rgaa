@@ -22,7 +22,13 @@ const {
   RGAA_TESTS,
   rgaaCriteriaForSc
 } = require('../map');
-const { buildTables, renderModule, formatted, plainText } = require('../scripts/generate-map');
+const {
+  buildTables,
+  renderModule,
+  renderGlossary,
+  formatted,
+  plainText
+} = require('../scripts/generate-map');
 const { wcagCriteria } = require('@surea11y/core/wcag');
 
 const V = '4.1.2';
@@ -139,14 +145,18 @@ test('rgaaCriteriaForSc: every criterion RGAA relates to the WCAG criterion', ()
 
 // --- the public entry point ----------------------------------------------------
 
-test('@surea11y/core/rgaa exposes the tables, frozen', () => {
+test('public.js exposes the tables, frozen', () => {
   const pub = require('../public.js');
   assert.deepEqual(Object.keys(pub).sort(), [
     'RGAA_CRITERIA',
+    'RGAA_GLOSSARY',
     'RGAA_TESTS',
     'RGAA_THEMES',
     'RGAA_VERSIONS',
-    'rgaaCriteriaForSc'
+    'rgaaConformityRate',
+    'rgaaCriteriaForSc',
+    'rgaaCriteriaStatus',
+    'rgaaGlossaryFor'
   ]);
   assert.ok(Object.isFrozen(pub.RGAA_CRITERIA[V]['1.1'].wcagSc));
   assert.ok(Object.isFrozen(pub.RGAA_TESTS[V]['11.1.1'].conditions));
@@ -154,4 +164,26 @@ test('@surea11y/core/rgaa exposes the tables, frozen', () => {
     'use strict';
     pub.RGAA_CRITERIA[V]['1.1'].title = 'x';
   }, TypeError);
+});
+
+test('the glossary is what the generator makes of data/', async () => {
+  assert.equal(
+    fs.readFileSync(path.join(__dirname, '..', 'glossary.js'), 'utf8'),
+    await formatted(renderGlossary(buildTables()))
+  );
+});
+
+test("each test has RGAA's methodology, and each criterion its notes", () => {
+  for (const [id, t] of Object.entries(RGAA_TESTS[V])) {
+    assert.ok(t.methodology.steps.length >= 1 && t.methodology.steps.length <= 8, id);
+  }
+  // Every test says when it passes but 11.1.3, whose methodology leaves it out.
+  assert.deepEqual(
+    Object.keys(RGAA_TESTS[V]).filter((id) => !RGAA_TESTS[V][id].methodology.passWhen),
+    ['11.1.3']
+  );
+  const notes = (field) =>
+    Object.values(RGAA_CRITERIA[V]).filter((c) => (c[field] || []).length).length;
+  assert.equal(notes('particularCases'), 34);
+  assert.equal(notes('technicalNotes'), 21);
 });

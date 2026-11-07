@@ -80,3 +80,15 @@ test('the steps are given in English whatever the locale, as core gives a packâ€
   assert.match(en.failWhen, /RGAA 9\.3\.1/);
   assert.deepEqual(run('fr'), en);
 });
+
+test("core's steps in RGAA's terms are as generated, and name no WCAG", async () => {
+  const { REVIEW } = require('../review');
+  const generator = require('../scripts/generate-review');
+  const expected = await generator.formatted(generator.renderModule(generator.buildReview()));
+  assert.equal(
+    fs.readFileSync(path.join(__dirname, '..', 'review.js'), 'utf8'),
+    expected,
+    'run npm run review'
+  );
+  assert.doesNotMatch(JSON.stringify(REVIEW), /WCAG/);
+});
