@@ -1399,9 +1399,14 @@ const RGAA_RULE_TESTS = {
           when: { reasonCode: 'SKIP_LINK_TARGET_MISSING', lean: 'fail' },
           tests: ['12.7.2'],
           outcome: 'fail'
+        },
+        {
+          when: { reasonCode: 'SKIP_LINK_TARGET_UNUSABLE', lean: 'fail' },
+          tests: ['12.7.2'],
+          outcome: 'fail'
         }
       ],
-      note: "Flags skip links whose #fragment does not resolve to a usable target. A skip link is recognised by its wording in the shipped locales ('skip', 'aller au contenu', 'accès direct', 'zum Inhalt springen', 'saltar al contenido', '本文へ') or as the first link of the page placed before main. A dead skip link means the main zone cannot be skipped, which bears on 12.7.1, and it bears on the condition of 12.7.2 that the link works (« Le lien est fonctionnel »); the rule asks. A link that reads as a skip link, whose fragment is no route and matches nothing, with no script listening for its click, leans fail (lean, which core copies into the finding's details): it goes nowhere, so it fails 12.7.2. Other findings are questions about both tests. The rule does not check the link's visibility or its place across pages, which rgaa-skip-link-placement checks, and a skip link can target zones other than main."
+      note: "Flags skip links whose #fragment does not resolve to a usable target. A skip link is recognised by its wording in the shipped locales ('skip', 'aller au contenu', 'accès direct', 'zum Inhalt springen', 'saltar al contenido', '本文へ') or as the first link of the page placed before main. A dead skip link means the main zone cannot be skipped, which bears on 12.7.1, and it bears on the condition of 12.7.2 that the link works (« Le lien est fonctionnel »); the rule asks. A link that reads as a skip link, whose fragment is no route and matches nothing, with no script listening for its click, leans fail (lean, which core copies into the finding's details): it goes nowhere, so it fails 12.7.2. A target that aria-hidden or inert takes out of the accessibility tree, with no modal dialog open, leans fail too: the link leads nowhere usable, so it fails 12.7.2. Other findings are questions about both tests, and the steps of both codes name 12.7.2, the condition a link to nowhere fails. The rule does not check the link's visibility or its place across pages, which rgaa-skip-link-placement checks, and a skip link can target zones other than main."
     },
     'rgaa-skip-link-placement': {
       tests: ['12.7.2'],

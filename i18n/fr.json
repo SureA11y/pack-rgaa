@@ -2537,7 +2537,7 @@
   "rgaa_standardReview_skip-link_SKIP_LINK_TARGET_UNUSABLE_step2": "Observez si la page défile jusqu’à la cible et si la zone cible est visible.",
   "rgaa_standardReview_skip-link_SKIP_LINK_TARGET_UNUSABLE_step3": "Appuyez encore une fois sur Tab et voyez où arrive le focus.",
   "rgaa_standardReview_skip-link_SKIP_LINK_TARGET_UNUSABLE_pass": "La page se déplace vers le contenu principal visible, et la touche Tab suivante va au premier contrôle qu’il contient.",
-  "rgaa_standardReview_skip-link_SKIP_LINK_TARGET_UNUSABLE_fail": "La cible est masquée, non affichée ou sans dimension : le lien n’est pas fonctionnel, ce qui ne respecte pas les tests 12.7.1, 12.7.2 du RGAA.",
+  "rgaa_standardReview_skip-link_SKIP_LINK_TARGET_UNUSABLE_fail": "La cible est masquée, non affichée ou sans dimension : le lien n’est pas fonctionnel, ce qui ne respecte pas le test 12.7.2 du RGAA.",
   "rgaa_standardReview_svg-text-alternative-quality_TEXT_ALTERNATIVE_REVIEW_step1": "Regardez le graphique indiqué par le rapport et notez ce qu’il montre (une icône, un logo, un diagramme et ses données).",
   "rgaa_standardReview_svg-text-alternative-quality_TEXT_ALTERNATIVE_REVIEW_step2": "Lisez son alternative dans le rapport (title, aria-label ou texte de aria-labelledby ; desc ne compte pas pour ce test), ou dans le panneau Accessibilité des outils de développement.",
   "rgaa_standardReview_svg-text-alternative-quality_TEXT_ALTERNATIVE_REVIEW_step3": "Pour un graphique ou un schéma, il suffit que l’alternative identifie le graphique et dise ce qu’il apporte ; si elle ne fait que le nommer, l’absence de description détaillée relève du test 1.6.5, pas de celui-ci.",

@@ -1666,8 +1666,8 @@ const REVIEW = {
         passWhen:
           'The page moves to the visible main content and the next Tab goes to the first control in it.',
         failWhen:
-          'The target is hidden, not displayed or has no size: the link does not work, which fails RGAA tests 12.7.1, 12.7.2.',
-        facet: 'test-12-7-1'
+          'The target is hidden, not displayed or has no size: the link does not work, which fails RGAA test 12.7.2.',
+        facet: 'test-12-7-2'
       }
     },
     'svg-text-alternative-quality': {
