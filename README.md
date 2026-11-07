@@ -1,6 +1,6 @@
 # @surea11y/pack-rgaa
 
-RGAA 4.1.2, the French accessibility standard, as a pack for [`@surea11y/core`](https://github.com/SureA11y/core#readme): its criteria and tests, its methodology and glossary, the RGAA tests each of core's rules checks, one result per RGAA criterion, the `rgaa-4.1.2` profile, 111 rules for what RGAA requires beyond WCAG or judges differently, and their messages in English, French, German, Spanish and Japanese.
+RGAA 4.1.2, the French accessibility standard, as a pack for [`@surea11y/core`](https://github.com/SureA11y/core#readme): its criteria and tests, its methodology and glossary, the RGAA tests each of core's rules checks, one result per RGAA criterion, the `rgaa-4.1.2` profile, 111 rules for what RGAA requires beyond WCAG or judges differently, and their messages in English and French.
 
 It automates what can be checked in the page, not an RGAA audit: a scan gives results for 80 of RGAA's 106 criteria (167 of its 258 tests), many rules ask (`cantTell`) where only a person can judge, and 43 of the pack's rules are manual, finding what a person must review without ever failing it. A criterion passes only where its rules check all it asks, which four do; elsewhere rules that all pass leave it to a person (see [Reading the results](#reading-the-results)). For that person the pack gives RGAA's own methodology, test by test ([Assessing by hand](#assessing-by-hand)). A conformance claim still needs an auditor to check every criterion.
 
@@ -197,7 +197,7 @@ rgaaGlossaryFor('1.1.1');
 
 ### In French, and the other languages
 
-The pack's messages and steps come in English, French, German, Spanish and Japanese; choose one with core's `locale` option. RGAA itself, its criteria, tests and methodology, has one official language, so it is in French in every locale:
+The pack's messages and steps come in English and French; choose one with core's `locale` option. In another locale they are in English, while core's own messages follow the locale. RGAA itself, its criteria, tests and methodology, has one official language, so it is in French in every locale:
 
 ```js
 runDomRulesInPage(url, null, { packs: [rgaa], profile: 'rgaa-4.1.2', locale: 'fr' });
