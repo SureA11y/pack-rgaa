@@ -74,11 +74,10 @@ test(`${RULE_ID}: no text, or no computable text, is notApplicable`, () => {
     'font-size:16px;color:#888;background-image:linear-gradient(#fff,#000)',
     'Opening hours'
   );
+  // No occurrence: the text that couldn't be measured is contrast-computable's.
   const rule = assertRule(runa11yCoreOnHtml(gradient, RUN), RULE_ID, 'notApplicable');
-  assert.equal(
-    rule.occurrences[0].i18n.summaryKey,
-    'contrastMinimumRgaa_notApplicable_noComputableText'
-  );
+  assert.deepEqual(rule.occurrences, []);
+  assert.deepEqual(rule.data.details, { eligibleTextCount: 1, computableTextCount: 0 });
 });
 
 test(`${RULE_ID}: messages follow the scan locale`, () => {

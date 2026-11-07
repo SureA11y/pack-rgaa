@@ -159,7 +159,7 @@ function contrastInRgaaTerms({ steps, passWhen, failWhen }, code) {
     steps: steps.map((step) =>
       step
         .replace(
-          'Comparez le ratio à 4,5:1 (3:1 pour le texte de grande taille).',
+          'Comparez le ratio à 4,5:1 (3:1 pour le texte de grande taille) pour le contraste minimum, et à 7:1 (4,5:1 pour le texte de grande taille) pour le contraste renforcé.',
           CONTRAST_COMPARE
         )
         .replace(
