@@ -51,8 +51,15 @@ test("a facet's steps are RGAA's methodology, and it says which test fails", () 
   assert.match(facets[0].procedure.failWhen, /le test 8\.5\.1 n’est pas validé.*RGAA 8\.5/);
 });
 
-test('a test copying another takes its steps', () => {
+test('a test copying another takes its steps, and says which part is its own', () => {
   assert.deepEqual(RGAA_TESTS[V]['7.5.2'].methodology, RGAA_TESTS[V]['7.5.1'].methodology);
+  for (const [criterion, parts] of [
+    ['7.5', [/étape 3/, /étape 4/, /étape 5/]],
+    ['8.1', [/présence/, /validité/, /avant la balise <html>/]]
+  ]) {
+    const { facets } = core.proceduresFor(criterion, options);
+    facets.forEach((f, i) => assert.match(f.procedure.failWhen, parts[i], f.id));
+  }
 });
 
 test('how much the rules decide follows the mapping, and a rule that only asks decides nothing', () => {
