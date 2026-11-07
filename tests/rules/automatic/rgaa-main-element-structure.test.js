@@ -305,3 +305,35 @@ test(`${RULE_ID}: a header, navigation or footer zone marked by a role alone fai
     assertRule(run(page(body)), RULE_ID, 'pass', { maxOccurrences: 0 });
   }
 });
+
+// The page holds the header, navigation and footer, and a frame the main
+// content: the page's own text is not its main content zone, so a visible
+// frame big enough to hold it is asked about rather than failed.
+test(`${RULE_ID}: a page with no <main> and a frame that may hold the main content is asked about`, () => {
+  const AROUND = (frame) =>
+    `<header><p>Mairie de Lunel</p></header><nav><a href="/">Accueil</a></nav>${frame}<footer><p>Mentions légales</p></footer>`;
+  for (const frame of [
+    '<iframe src="contenu.html" title="Contenu"></iframe>',
+    '<iframe src="contenu.html" title="Contenu" width="100%" height="600"></iframe>'
+  ]) {
+    const rule = assertRule(run(page(AROUND(frame))), RULE_ID, 'cantTell', {
+      minOccurrences: 1,
+      maxOccurrences: 1
+    });
+    assert.deepEqual(reasons(rule), ['mainMayBeInFrame'], frame);
+    const occ = rule.occurrences[0];
+    assert.equal(occ.i18n.summaryKey, 'mainElementStructure_summary_cantTell_mainMayBeInFrame');
+    assert.match(occ.selector, /iframe/);
+    assert.equal(occ.uncertainty.code, 'judgement-required');
+  }
+  // A hidden frame, or a tracker of a pixel, holds no main content.
+  for (const frame of [
+    '<iframe src="t.html" width="1" height="1"></iframe>',
+    '<iframe src="t.html" hidden></iframe>',
+    '<iframe src="t.html" style="display:none"></iframe>',
+    '<div hidden><iframe src="t.html"></iframe></div>'
+  ]) {
+    const rule = assertRule(run(page(AROUND(frame))), RULE_ID, 'fail', { maxOccurrences: 1 });
+    assert.deepEqual(reasons(rule), ['noMain'], frame);
+  }
+});
