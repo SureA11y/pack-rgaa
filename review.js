@@ -1654,8 +1654,8 @@ const REVIEW = {
         passWhen:
           'Following the link moves to the main content and the next Tab goes to the first control in it.',
         failWhen:
-          "Nothing happens or focus stays at the top, because no element matches the link's target: the link does not work, which fails RGAA tests 12.7.1, 12.7.2.",
-        facet: 'test-12-7-1'
+          "Nothing happens or focus stays at the top, because no element matches the link's target: the link does not work, which fails RGAA test 12.7.2.",
+        facet: 'test-12-7-2'
       },
       SKIP_LINK_TARGET_UNUSABLE: {
         steps: [
