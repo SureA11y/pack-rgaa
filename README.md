@@ -27,8 +27,11 @@ const dom = new JSDOM(html, { url: 'https://example.com/', pretendToBeVisual: tr
 global.window = dom.window;
 global.document = dom.window.document;
 
-const result = runDomRulesInPage('https://example.com/', null, { packs: [rgaa], profile: 'rgaa-4.1.2' });
-result.engine.packs;   // ['@surea11y/pack-rgaa@1.0.0']
+const result = runDomRulesInPage('https://example.com/', null, {
+  packs: [rgaa],
+  profile: 'rgaa-4.1.2'
+});
+result.engine.packs; // ['@surea11y/pack-rgaa@1.0.0']
 result.engine.profile; // 'rgaa-4.1.2'
 dom.window.close();
 ```
@@ -104,10 +107,7 @@ module.exports = defineConfig({
 // in a spec
 const { A11yCoreBuilder } = require('@surea11y/cypress');
 
-new A11yCoreBuilder()
-  .withPacks('@surea11y/pack-rgaa')
-  .options({ profile: 'rgaa-4.1.2' })
-  .analyze();
+new A11yCoreBuilder().withPacks('@surea11y/pack-rgaa').options({ profile: 'rgaa-4.1.2' }).analyze();
 ```
 
 ### From the command line
@@ -139,7 +139,7 @@ const partlyChecked = criteria.filter(
 
 Each finding a rule can't decide comes with the steps to answer it: `howToCheck` on the occurrence, with a few `steps` from the element it names, then `passWhen` and `failWhen`. The pack's rules give them in the scan's locale. Core's rules give theirs in French under the RGAA profile alone, naming the RGAA test the finding bears on (`standard.review`); beside a WCAG profile they keep core's, which name WCAG. Some of core's undecided findings also `lean` toward pass or fail, with the evidence; the outcome stays `cantTell`. The HTML report groups them as "Likely fails", "Likely passes" and "Needs a person".
 
-`rgaaCriteriaStatus(result)` from `@surea11y/pack-rgaa/public` reads a scan as an audit grid does, with a row for each of the 106 criteria: `C`, `NC`, `NA`, or `NT` for what a person still has to assess and what no rule checks. Non applicable is said of a page, so a scan of part of one (a `contextSelector`, or `engineOptions.fragment` with `{ fragment: true }` passed here) gives `NT` where it would give `NA`.
+`rgaaCriteriaStatus(result)` from `@surea11y/pack-rgaa/public` reads a scan as an audit grid does, with a row for each of the 106 criteria: `C`, `NC`, `NA`, or `NT` for what a person still has to assess and what no rule checks. Non applicable is said of a page, so a scan of part of one (a `contextSelector`, or `engineOptions.fragment` with `{ fragment: true }` passed here) gives `NT` where it would give `NA`. A scan across frames (`{ topFrame, frames }`) is read through its `topFrame`, the top document's scan; each frame's scan is a document of its own and is not merged in, so what a frame's content fails reaches the grid through the auditor, or through a call on that frame's result.
 
 ```js
 const { rgaaCriteriaStatus, rgaaConformityRate } = require('@surea11y/pack-rgaa/public');
@@ -148,7 +148,7 @@ rgaaCriteriaStatus(result).find((row) => row.criterion === '8.5');
 // { criterion: '8.5', title: 'Chaque page web a-t-elle un titre de page ?', status: 'C', outcome: 'pass' }
 ```
 
-`rgaaConformityRate(pages)` works out DINUM's rate from a sample of pages once an auditor has completed them: a criterion is validated if it is on every page, and applicable if it is on one, and a page of a process (`{ rows, process }`) fails what any page of that process fails. `complete` is `true` only when every page gives `C`, `NC` or `NA` for all 106 criteria; until then the rate is no claim of conformity.
+`rgaaConformityRate(pages)` works out DINUM's rate from a sample of pages once an auditor has completed them: a criterion is validated if it is on every page, and applicable if it is on one, and a page of a process (`{ rows, process }`) fails what any page of that process fails. `complete` is `true` only when every page gives `C`, `NC` or `NA` for all 106 criteria; until then the rate is no claim of conformity. It throws a `RangeError` for what it can't read: a page that is not a list of rows or `{ rows, process }`, a criterion the version doesn't have, an unknown status, or a criterion given twice on one page.
 
 Without the profile, a scan that targets WCAG runs none of the pack's rules: add `engineOptions.optInRules: ['rgaa']` to run them, or `engineOptions.mappings: ['rgaa']` for RGAA's tests to be named on core's rules.
 
@@ -157,7 +157,10 @@ Without the profile, a scan that targets WCAG runs none of the pack's rules: add
 A scan can judge a page by RGAA and by another profile at once. Each judges it as it would alone, and `verdicts` says what each makes of a rule:
 
 ```js
-const result = runDomRulesInPage(url, null, { packs: [rgaa], profile: ['wcag22-aa', 'rgaa-4.1.2'] });
+const result = runDomRulesInPage(url, null, {
+  packs: [rgaa],
+  profile: ['wcag22-aa', 'rgaa-4.1.2']
+});
 
 result.checksResults.find((c) => c.ruleId === 'duplicate-id').verdicts;
 // { 'wcag22-aa': 'cantTell', 'rgaa-4.1.2': 'fail' }
@@ -170,17 +173,25 @@ result.checksResults.find((c) => c.ruleId === 'duplicate-id').verdicts;
 RGAA says how each test is checked, and the pack gives that methodology through core's procedures: each criterion with a procedure for each of its tests, in RGAA's French, in its 13 themes, with its particular cases, technical notes and glossary terms, and the pack's rules that check it.
 
 ```js
-const { listProcedures, procedureChecklist, proceduresFor, renderProcedures } = require('@surea11y/core');
+const {
+  listProcedures,
+  procedureChecklist,
+  proceduresFor,
+  renderProcedures
+} = require('@surea11y/core');
 
 const options = { packs: [rgaa], standard: 'rgaa' };
 
-proceduresFor('8.5', options);    // one criterion
-listProcedures(options);          // all 106
+proceduresFor('8.5', options); // one criterion
+listProcedures(options); // all 106
 
 // A worksheet to record each test's result, with a JSON or CSV export.
 require('fs').writeFileSync(
   'grille-rgaa.html',
-  renderProcedures(procedureChecklist(options), { packs: [rgaa], title: 'Audit RGAA : example.com' })
+  renderProcedures(procedureChecklist(options), {
+    packs: [rgaa],
+    title: 'Audit RGAA : example.com'
+  })
 );
 ```
 
@@ -220,12 +231,12 @@ require('fs').writeFileSync('rapport.html', renderHtmlReport(result, { title: 'A
 
 Five rules read evidence the host collects, through four probes, and passes in `engineOptions.probes`. Without it, they judge from the page alone, and ask where it can't tell:
 
-| Probe | What it holds | Read by |
-|---|---|---|
-| `crawl.pageTitles` | The other pages' titles, `{ pages: [{ url, title }] }` | `rgaa-page-title-unique` (RGAA 8.6) |
-| `crawl.skipLinks` | Where each page places its skip link, measured at one window width, and the « ensemble de pages » each belongs to | `rgaa-skip-link-placement` (RGAA 12.7) |
-| `page.source` | The start of the response body as sent, `{ url, start }` | `rgaa-doctype-present`, `rgaa-doctype-position` (RGAA 8.1) |
-| `validator.report` | The W3C Nu HTML Checker's JSON messages | `rgaa-markup-validation-review` (RGAA 8.2) |
+| Probe              | What it holds                                                                                                     | Read by                                                    |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `crawl.pageTitles` | The other pages' titles, `{ pages: [{ url, title }] }`                                                            | `rgaa-page-title-unique` (RGAA 8.6)                        |
+| `crawl.skipLinks`  | Where each page places its skip link, measured at one window width, and the « ensemble de pages » each belongs to | `rgaa-skip-link-placement` (RGAA 12.7)                     |
+| `page.source`      | The start of the response body as sent, `{ url, start }`                                                          | `rgaa-doctype-present`, `rgaa-doctype-position` (RGAA 8.1) |
+| `validator.report` | The W3C Nu HTML Checker's JSON messages                                                                           | `rgaa-markup-validation-review` (RGAA 8.2)                 |
 
 ```js
 runDomRulesInPage(url, null, {
