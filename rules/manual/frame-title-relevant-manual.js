@@ -91,10 +91,12 @@ function runInPage(ctx) {
   for (const el of nodes) {
     if (!el || !dom.tagName(el)) continue;
     if (isAriaHidden(el)) continue;
-    const title = String(dom.getAttribute(el, 'title') || '')
+    const full = String(dom.getAttribute(el, 'title') || '')
       .replace(/\s+/g, ' ')
       .trim();
-    if (!title) continue;
+    if (!full) continue;
+    // Quoted cut to 80 characters, as the pack's other rules quote text.
+    const title = full.length <= 80 ? full : full.slice(0, 77) + '...';
 
     const element = String(dom.tagName(el)).toLowerCase();
     const src = String(dom.getAttribute(el, 'src') || '').trim();

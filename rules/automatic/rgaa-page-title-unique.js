@@ -164,8 +164,11 @@ function runInPage(ctx) {
     dom.parentElement(titleEl) && dom.localName(dom.parentElement(titleEl)) === 'head'
       ? 'head > title'
       : undefined;
+  // The title as quoted, cut to 80 characters as the pack's other rules
+  // quote text; the comparison above reads it whole.
+  const quoted = title.length <= 80 ? title : title.slice(0, 77) + '...';
   function report(reasonCode, key, summary, hint, pages, uncertainty) {
-    const params = { title, pages: pages.map((p) => p.url).join(', ') };
+    const params = { title: quoted, pages: pages.map((p) => p.url).join(', ') };
     return helpers.reportOccurrence(titleEl, {
       ...(selector ? { selector } : {}),
       summary,
@@ -176,7 +179,7 @@ function runInPage(ctx) {
         params
       },
       ...(uncertainty ? { uncertainty } : {}),
-      data: { details: { reasonCode, title, pages: pages.map((p) => p.url) } }
+      data: { details: { reasonCode, title: quoted, pages: pages.map((p) => p.url) } }
     });
   }
 
@@ -188,7 +191,7 @@ function runInPage(ctx) {
       report(
         'TITLE_DUPLICATE',
         'fail_duplicate',
-        `Other pages of the site have the same title, "${title}": ${otherPath.map((p) => p.url).join(', ')}. RGAA asks that a page title identify the page ${GLOSSARY}.`,
+        `Other pages of the site have the same title, "${quoted}": ${otherPath.map((p) => p.url).join(', ')}. RGAA asks that a page title identify the page ${GLOSSARY}.`,
         'Give each page a title of its own that says what this page holds, for instance the page’s subject followed by the site’s name (RGAA 8.6.1).',
         otherPath
       )
@@ -198,7 +201,7 @@ function runInPage(ctx) {
       report(
         'TITLE_DUPLICATE_SAME_PATH',
         'cantTell_samePath',
-        `A page whose address differs from this one only by its query string has the same title, "${title}": ${samePath.map((p) => p.url).join(', ')}.`,
+        `A page whose address differs from this one only by its query string has the same title, "${quoted}": ${samePath.map((p) => p.url).join(', ')}.`,
         `Check whether these addresses show different pages. If they do, give each its own title: RGAA asks that a page title identify the page ${GLOSSARY} (RGAA 8.6.1).`,
         samePath,
         {
@@ -213,7 +216,7 @@ function runInPage(ctx) {
       report(
         'TITLE_SINGLE_PAGE',
         'cantTell_singlePage',
-        `Only this page was available, so whether its title, "${title}", is unique across the site could not be checked.`,
+        `Only this page was available, so whether its title, "${quoted}", is unique across the site could not be checked.`,
         `Scan several pages of the site and pass their titles as the crawl.pageTitles probe, or check that no other page has this title: RGAA asks that a page title identify the page ${GLOSSARY} (RGAA 8.6.1).`,
         [],
         {

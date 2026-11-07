@@ -65,3 +65,18 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
   const byId = rule.occurrences.map((o) => (o.html.match(/id="([^"]+)"/) || [])[1]);
   assert.deepEqual(byId, ['ftr_case_01', 'ftr_case_02']);
 });
+
+test(`${RULE_ID}: a long title is quoted cut to 80 characters`, () => {
+  const long = 'Carte '.repeat(2000).trim();
+  const rule = assertRule(
+    runa11yCoreOnHtml(page(`<iframe src="map.html" title="${long}"></iframe>`), RUN),
+    RULE_ID,
+    'cantTell',
+    { minOccurrences: 1, maxOccurrences: 1 }
+  );
+  const occ = rule.occurrences[0];
+  const quoted = `${long.slice(0, 77)}...`;
+  assert.equal(occ.i18n.params.title, quoted);
+  assert.equal(occ.data.details.title, quoted);
+  assert.equal(occ.summary, `This <iframe> has the title "${quoted}".`);
+});
