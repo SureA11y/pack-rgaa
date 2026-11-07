@@ -10,10 +10,13 @@
  * @applicability
  *   Applies to elements with an explicit ARIA widget role that is neither a
  *   link, a button nor a form field (tab, menuitem, menuitemcheckbox,
- *   menuitemradio, treeitem, gridcell, option), whose visible text is their
- *   visible label, and that carry an aria-label or an aria-labelledby. Such
- *   a role marks a component built with a script (glossary "Composant
- *   d'interface"). A page with no such element is notApplicable.
+ *   menuitemradio, treeitem, gridcell, option), and to buttons outside a
+ *   form, whose visible text (or value) is their visible label, and that
+ *   carry an aria-label or an aria-labelledby. Such a role marks a
+ *   component built with a script (glossary "Composant d'interface"), and a
+ *   button outside a form does nothing unless a script drives it; the
+ *   buttons inside a form are 11.9.2's. A page with no such element is
+ *   notApplicable.
  * @expectation
  *   RGAA 7.1.3 methodology step 2: the component's accessible name contains
  *   its visible label. Punctuation and capital letters are ignored (the
@@ -21,6 +24,9 @@
  *   that does not contain it fails. Only the accessible name is checked; a
  *   title is not.
  * @implementation-notes
+ * - Screen-reader-only text inside the element or its label (clipped
+ *   away, 1x1 px with its overflow hidden, transparent:
+ *   helpers.isVisuallyHidden) is not part of the visible label.
  * - role="option" is also a form field in the glossary "Champ de saisie de
  *   formulaire". It is checked here, as part of the scripted listbox, so
  *   that one element is reported under one test.
@@ -39,7 +45,7 @@ const id = 'rgaa-widget-label-in-name';
 const meta = {
   title: 'The accessible name of a scripted component contains its visible label',
   description:
-    'Checks that an element with an ARIA widget role (tab, menu item, tree item, grid cell, option) has an accessible name that contains its visible label, as RGAA 7.1.3 requires.',
+    'Checks that an element with an ARIA widget role (tab, menu item, tree item, grid cell, option), or a button outside a form, has an accessible name that contains its visible label, as RGAA 7.1.3 requires.',
   i18n: {
     titleKey: 'widgetLabelInName_title',
     descriptionKey: 'widgetLabelInName_description'
@@ -139,7 +145,7 @@ function runInPage(ctx) {
       'input, select, textarea, output, progress, meter, [role~="textbox" i], [role~="searchbox" i], [role~="combobox" i], [role~="spinbutton" i], [role~="slider" i], [role~="listbox" i], [role~="checkbox" i], [role~="radio" i], [role~="switch" i], [role~="progressbar" i]',
     button: 'button, input, [role~="button" i]',
     widget:
-      '[role~="tab" i], [role~="menuitem" i], [role~="menuitemcheckbox" i], [role~="menuitemradio" i], [role~="treeitem" i], [role~="gridcell" i], [role~="option" i]'
+      '[role~="tab" i], [role~="menuitem" i], [role~="menuitemcheckbox" i], [role~="menuitemradio" i], [role~="treeitem" i], [role~="gridcell" i], [role~="option" i], button, input, [role~="button" i]'
   };
 
   function tagOf(el) {
@@ -240,6 +246,28 @@ function runInPage(ctx) {
     );
   }
 
+  // Screen-reader-only text (clipped away, 1x1 px with its overflow hidden,
+  // transparent) is in the accessibility tree but not on screen, so it is
+  // no part of the visible label: on unistra.fr, "Page" in
+  // <span class="sr-only">Page</span>2 made "Page2" the visible label.
+  const hiddenCache = new Map();
+  function srOnly(el, container) {
+    if (typeof helpers.isVisuallyHidden !== 'function') return false;
+    // The container itself is left alone: a skip link is screen-reader-only
+    // until it is focused, and its text is its visible label then.
+    for (let a = el; a && a !== container; a = dom.parentElement(a)) {
+      if (!hiddenCache.has(a)) {
+        let hidden = false;
+        try {
+          hidden = !!helpers.isVisuallyHidden(a);
+        } catch {}
+        hiddenCache.set(a, hidden);
+      }
+      if (hiddenCache.get(a)) return true;
+    }
+    return false;
+  }
+
   const SHOW_TEXT = 4;
 
   // The text a person sees in `container`, in document order. With
@@ -273,7 +301,7 @@ function runInPage(ctx) {
         }
       }
       if (skip || isNonRenderedTag(tagOf(p))) continue;
-      if (visibleOnly && !isAccEligible(p)) continue;
+      if (visibleOnly && (!isAccEligible(p) || srOnly(p, container))) continue;
       parts.push(t);
       if (!elements.includes(p)) elements.push(p);
     }
@@ -319,7 +347,7 @@ function runInPage(ctx) {
   function visibleLabelOf(el) {
     const tag = tagOf(el);
     const role = explicitRole(el);
-    if (family === 'button' && tag === 'input') {
+    if (tag === 'input' && classify(el) === 'button') {
       if (inputType(el) === 'image') return { text: '', origin: '', elements: [] };
       const value = String(dom.getAttribute(el, 'value') || '')
         .replace(/\s+/g, ' ')
@@ -577,7 +605,11 @@ function runInPage(ctx) {
 
   for (const el of nodes) {
     if (!el || !dom.get(el, 'getAttribute')) continue;
-    if (classify(el) !== family) continue;
+    const kind = classify(el);
+    // A button outside a form is a component a script drives: 7.1.3 covers
+    // it, and 11.9.2 only the buttons inside a form.
+    const asComponent = family === 'widget' && kind === 'button' && !insideForm(el);
+    if (kind !== family && !asComponent) continue;
     if (family === 'button' && !insideForm(el)) continue;
     if (!isDomVisible(el)) continue;
 

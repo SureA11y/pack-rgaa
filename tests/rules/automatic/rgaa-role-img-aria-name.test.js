@@ -152,3 +152,16 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-role-img-aria-name-all-s
     ]
   );
 });
+
+// Glossary « Image porteuse d'information », notes 1 and 2: the only image of
+// a link or a button is judged as the control's label, under Links (6.1),
+// Forms (11.9) or Scripts (7.1), not under theme 1.
+test(`${RULE_ID}: the only content of a link or a button is left out`, () => {
+  for (const body of [
+    '<a href="/plan"><span role="img"></span></a>',
+    '<button type="button"><span role="img"></span></button>',
+    '<form><button><span role="img"></span></button></form>'
+  ]) {
+    assertRule(run(body), RULE_ID, 'notApplicable');
+  }
+});

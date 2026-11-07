@@ -123,3 +123,22 @@ test(`${RULE_ID}: under the rgaa-4.1.2 profile, a long svg label is asked about 
   const wcag = runa11yCoreOnHtml(html, { engineOptions: { profile: 'wcag22-aa' } });
   assert.ok(!wcag.checksResults.some((r) => r.ruleId === RULE_ID));
 });
+
+// 1.3.9 covers images whose alternative is restituted: a hidden image has none.
+test(`${RULE_ID}: an image hidden from assistive technologies is left out`, () => {
+  for (const body of [
+    `<img src="a.png" aria-hidden="true" alt="${LONG}">`,
+    `<div aria-hidden="true"><img src="a.png" alt="${LONG}"></div>`,
+    `<img src="a.png" role="presentation" alt="${LONG}">`
+  ]) {
+    assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'notApplicable');
+  }
+  assertRule(
+    runa11yCoreOnHtml(
+      page(`<img src="a.png" role="presentation" tabindex="0" alt="${LONG}">`),
+      RUN
+    ),
+    RULE_ID,
+    'cantTell'
+  );
+});

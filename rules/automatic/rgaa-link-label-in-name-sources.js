@@ -152,7 +152,7 @@ function runInPage(ctx) {
       'input, select, textarea, output, progress, meter, [role~="textbox" i], [role~="searchbox" i], [role~="combobox" i], [role~="spinbutton" i], [role~="slider" i], [role~="listbox" i], [role~="checkbox" i], [role~="radio" i], [role~="switch" i], [role~="progressbar" i]',
     button: 'button, input, [role~="button" i]',
     widget:
-      '[role~="tab" i], [role~="menuitem" i], [role~="menuitemcheckbox" i], [role~="menuitemradio" i], [role~="treeitem" i], [role~="gridcell" i], [role~="option" i]'
+      '[role~="tab" i], [role~="menuitem" i], [role~="menuitemcheckbox" i], [role~="menuitemradio" i], [role~="treeitem" i], [role~="gridcell" i], [role~="option" i], button, input, [role~="button" i]'
   };
 
   function tagOf(el) {
@@ -253,6 +253,28 @@ function runInPage(ctx) {
     );
   }
 
+  // Screen-reader-only text (clipped away, 1x1 px with its overflow hidden,
+  // transparent) is in the accessibility tree but not on screen, so it is
+  // no part of the visible label: on unistra.fr, "Page" in
+  // <span class="sr-only">Page</span>2 made "Page2" the visible label.
+  const hiddenCache = new Map();
+  function srOnly(el, container) {
+    if (typeof helpers.isVisuallyHidden !== 'function') return false;
+    // The container itself is left alone: a skip link is screen-reader-only
+    // until it is focused, and its text is its visible label then.
+    for (let a = el; a && a !== container; a = dom.parentElement(a)) {
+      if (!hiddenCache.has(a)) {
+        let hidden = false;
+        try {
+          hidden = !!helpers.isVisuallyHidden(a);
+        } catch {}
+        hiddenCache.set(a, hidden);
+      }
+      if (hiddenCache.get(a)) return true;
+    }
+    return false;
+  }
+
   const SHOW_TEXT = 4;
 
   // Rendered and in the accessibility tree but drawn so that nothing can be
@@ -300,7 +322,7 @@ function runInPage(ctx) {
         }
       }
       if (skip || isNonRenderedTag(tagOf(p))) continue;
-      if (visibleOnly && !isAccEligible(p)) continue;
+      if (visibleOnly && (!isAccEligible(p) || srOnly(p, container))) continue;
       parts.push(t);
       if (!elements.includes(p)) elements.push(p);
     }
@@ -346,7 +368,7 @@ function runInPage(ctx) {
   function visibleLabelOf(el) {
     const tag = tagOf(el);
     const role = explicitRole(el);
-    if (family === 'button' && tag === 'input') {
+    if (tag === 'input' && classify(el) === 'button') {
       if (inputType(el) === 'image') return { text: '', origin: '', elements: [] };
       const value = String(dom.getAttribute(el, 'value') || '')
         .replace(/\s+/g, ' ')
@@ -612,7 +634,11 @@ function runInPage(ctx) {
 
   for (const el of nodes) {
     if (!el || !dom.get(el, 'getAttribute')) continue;
-    if (classify(el) !== family) continue;
+    const kind = classify(el);
+    // A button outside a form is a component a script drives: 7.1.3 covers
+    // it, and 11.9.2 only the buttons inside a form.
+    const asComponent = family === 'widget' && kind === 'button' && !insideForm(el);
+    if (kind !== family && !asComponent) continue;
     if (family === 'button' && !insideForm(el)) continue;
     if (!isDomVisible(el)) continue;
 

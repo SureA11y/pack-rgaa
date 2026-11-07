@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>rgaa-field-label-consistency-review — scenario fixture</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.4; margin: 24px; }
+    h1 { font-size: 20px; margin: 0 0 16px; }
+    h2 { font-size: 16px; margin: 22px 0 10px; }
+    .note { font-size: 12px; opacity: 0.85; margin: 8px 0 16px; }
+    .case { border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin: 10px 0; }
+    .case-title { font-weight: 700; margin: 0 0 8px; }
+  </style>
+</head>
+<body>
+  <h1>Scenario fixture: <code>rgaa-field-label-consistency-review</code> (RGAA 11.3.1)</h1>
+
+  <p class="note">
+    Each target has a stable <code>id</code> of the form <code>flc_case_NN</code>.
+    Fields of the page with the same autocomplete value but different visible labels are asked about.
+  </p>
+
+  <div class="case" id="case_01">
+    <div class="case-title">01 — CANTTELL: two email fields labelled differently</div>
+    <form><label for="flc_case_01">Adresse électronique</label><input id="flc_case_01" type="email" autocomplete="email"></form><form><label for="flc_e2">Courriel</label><input id="flc_e2" type="email" autocomplete="email"></form>
+  </div>
+
+  <div class="case" id="case_02">
+    <div class="case-title">02 — NOT APPLICABLE: two telephone fields labelled the same, up to case and punctuation</div>
+    <form><label for="flc_case_02">Téléphone :</label><input id="flc_case_02" type="tel" autocomplete="tel"></form><form><label for="flc_t2">téléphone *</label><input id="flc_t2" type="tel" autocomplete="tel"></form>
+  </div>
+
+  <div class="case" id="case_03">
+    <div class="case-title">03 — NOT APPLICABLE: shipping and billing postal codes</div>
+    <form><label for="flc_case_03">Code postal de livraison</label><input id="flc_case_03" autocomplete="shipping postal-code"><label for="flc_p2">Code postal de facturation</label><input id="flc_p2" autocomplete="billing postal-code"></form>
+  </div>
+</body>
+</html>

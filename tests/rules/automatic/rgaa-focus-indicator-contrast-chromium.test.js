@@ -166,6 +166,69 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
     assert.equal(after.bare, false, 'no style attribute is left on an element that had none');
   });
 
+  // Each was failed on a real page with colors nobody sees: a cookie consent
+  // overlay read as the background (lcl.fr), a ::before painting the
+  // button's visible fill (bordeaux.fr), and below the fold, a parent with
+  // the button's own box read as what is around it (insee.fr).
+  const details = (result, elementId) =>
+    result.checksResults
+      .find((r) => r.ruleId === RULE_ID)
+      .occurrences.find((o) => o.html.includes(`id="${elementId}"`)).data.details;
+
+  await t.test('colors the indicator is not seen against are not measured', async () => {
+    const html = `<!doctype html><html lang="en"><head><title>t</title><style>
+      body { margin: 0; background: #f9f9f9; }
+      .case { padding: 30px; }
+      button:focus { outline: 2px solid #525252; outline-offset: 2px; }
+      #covered { background: transparent; border: 0; }
+      #consent { position: relative; }
+      #overlay { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.5); }
+      #pill { position: relative; z-index: 0; background: #ffcc00; color: #ffffff; border: 0; }
+      #pill::before { content: ''; position: absolute; inset: 0; z-index: -1; background: #2b2a2a; }
+      #pill:focus { outline: 2px solid #3d86d8; }
+      #spacer { height: 2000px; }
+      ul { list-style: none; margin: 0; padding: 0; background: #f7f7f7; }
+      li { background: #3467ae; }
+      #below { display: block; width: 100%; background: #3467ae; color: #fff; border: 0; }
+      #below:focus { outline: 2px solid #81888a; }
+    </style></head><body>
+      <div class="case" id="consent"><button id="covered" type="button">Menu</button><div id="overlay"></div></div>
+      <div class="case" style="background: #ffcc00"><button id="pill" type="button">Personnaliser</button></div>
+      <div id="spacer"></div>
+      <div class="case"><ul><li><button id="below" type="button">Thème</button></li></ul></div>
+    </body></html>`;
+    const { result } = await scan(html, { rules: { include: RULE_ID } });
+    const found = outcomes(result);
+    assert.deepEqual(found.covered, ['cantTell', 'notComputable']);
+    assert.deepEqual(found.pill, ['cantTell', 'notComputable']);
+    assert.notEqual(details(result, 'pill').cause, 'covered');
+    // Around the list, #f7f7f7 gives 3.4:1, so one side reaches 3:1.
+    assert.notEqual((found.below || [])[0], 'fail', JSON.stringify(found.below));
+    assert.equal(details(result, 'covered').cause, 'covered');
+  });
+
+  // RGAA 10.7.1 asks that a focus style be visible, not that it be drawn on
+  // the element's own box: a ring on a wrapper or a label is not measured
+  // here, so a faint outline beside it is asked about, not failed.
+  await t.test('a ring drawn on a wrapper or a label is asked about', async () => {
+    const field = (css) =>
+      `<!doctype html><html lang="en"><head><title>t</title><style>html,body{background:#fff;color:#000} input:focus{outline:1px solid #eee} ${css}</style></head><body><main><div class="wrap"><label for="f" id="l">Name</label><input id="f"></div></main></body></html>`;
+    for (const css of [
+      '.wrap:focus-within{box-shadow:0 0 0 3px #000}',
+      '.wrap:has(input:focus-visible){outline:3px solid #000}',
+      '.wrap:focus-within label{text-decoration:underline;color:#c00}'
+    ]) {
+      const { result } = await scan(field(css), { rules: { include: RULE_ID } });
+      assert.deepEqual(
+        summarize(result),
+        { outcome: 'cantTell', findings: [['f', 'cantTell', 'notMeasured']] },
+        css
+      );
+    }
+    const { result } = await scan(field(''), { rules: { include: RULE_ID } });
+    assert.equal(summarize(result).outcome, 'fail');
+  });
+
   await t.test('the same elements in jsdom are asked about, not failed', () => {
     const rule = runa11yCoreOnHtml(PAGE, {
       runOnly: { includeRuleIds: [RULE_ID] }

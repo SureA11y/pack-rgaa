@@ -13,17 +13,23 @@
  *   <title> child. An <svg> with aria-hidden="true", on itself or an
  *   ancestor, is left out (rgaa-svg-hidden-no-alternative checks it), and so is
  *   content hidden with CSS or the hidden attribute. An <svg role="img">
- *   with no alternative at all is left to svg-text-alternative-present. A
- *   page with none is notApplicable.
+ *   with no alternative at all is left to svg-text-alternative-present. An
+ *   <svg> that is the only content of a link or a button is left out: its
+ *   alternative is the control's name, which the glossary « Image porteuse
+ *   d'information » (notes 1 and 2) sends to Links (6.1), Forms (11.9) or
+ *   Scripts (7.1). A page with none is notApplicable.
  * @expectation
  *   The <svg> has role="img" (RGAA 1.1.5 step 3; step 4: "Si ce n'est pas
  *   le cas, le test est invalidé"), and has an alternative from one of the
  *   sources step 5 lists: the content of its <title>, aria-labelledby or
  *   aria-label.
- *   An alternative without role="img" fails: the author has shown that the
- *   image carries information, and without the role it is not exposed as
- *   an image. If the image were in fact decorative, it would fail 1.2.4
- *   instead, which requires aria-hidden="true" and no alternative.
+ *   An alternative without role="img" fails when the SVG certainly carries
+ *   information: it has a caption (a <figure> with a <figcaption>), or it
+ *   takes focus itself (tabindex 0 or more). Otherwise it is asked about
+ *   (cantTell): an icon beside a button's text is decorative, and then it
+ *   fails 1.2.4 instead, which requires aria-hidden="true" and no
+ *   alternative; the 1.1.5 methodology leaves that call to a person
+ *   (« déterminer si l'image est porteuse d'information »).
  *   An <svg role="img"> named by its <title> alone passes: RGAA 4.1.2
  *   added "Contenu de l'élément <title>" to step 5 (notes de révision 4.1
  *   vers 4.1.2).
@@ -93,6 +99,51 @@ function runInPage(ctx) {
     return trim(attr(el, 'aria-label')) ? 'aria-label' : '';
   }
 
+  // An SVG that takes focus itself, or one with a caption (criterion 1.2
+  // does not apply to it): it carries information, whatever it shows.
+  function certainlyInformative(svg) {
+    if (/^\d+$/.test(trim(attr(svg, 'tabindex')))) return true;
+    const figure = dom.closest(svg, 'figure');
+    return !!(
+      figure &&
+      Array.from(dom.querySelectorAll(figure, ':scope > figcaption')).some((c) =>
+        trim(dom.textContent(c))
+      )
+    );
+  }
+
+  // The only content of a link or a button: its alternative is the
+  // control's name, which the glossary « Image porteuse d'information »
+  // (notes 1 and 2) sends to Links (6.1), Forms (11.9) or Scripts (7.1).
+  function onlyContentOfControl(svg) {
+    let control = null;
+    for (let a = parentOf(svg); a && dom.nodeType(a) === 1 && !control; a = parentOf(a)) {
+      const tag = tagOf(a);
+      const role = helpers.aria.getExplicitRole(a);
+      if (role === 'link' || role === 'button') control = a;
+      else if (!role && ((tag === 'a' && dom.hasAttribute(a, 'href')) || tag === 'button')) {
+        control = a;
+      }
+    }
+    if (!control) return false;
+    const others = Array.from(dom.querySelectorAll(control, 'img, svg')).filter(
+      (n) => n !== svg && !dom.contains(svg, n)
+    );
+    if (others.length) return false;
+    // Text of its own, outside the SVG.
+    let walker = null;
+    try {
+      walker = dom.createTreeWalker(dom.ownerDocument(control), control, 4, null);
+    } catch {}
+    if (!walker) return false;
+    for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+      if (!trim(dom.nodeValue(n))) continue;
+      const p = dom.parentElement(n);
+      if (!p || !dom.closest(p, 'svg')) return false;
+    }
+    return true;
+  }
+
   function titleChildText(el) {
     for (const child of Array.from(dom.querySelectorAll(el, ':scope > *'))) {
       if (tagOf(child) === 'title') return trim(dom.textContent(child));
@@ -111,6 +162,7 @@ function runInPage(ctx) {
     const p = dom.parentElement(svg);
     if (p && dom.get(p, 'closest') && dom.closest(p, 'svg')) continue;
     if (insideAriaHidden(svg)) continue;
+    if (onlyContentOfControl(svg)) continue;
 
     const mechanism = ariaName(svg);
     const title = titleChildText(svg);
@@ -124,6 +176,33 @@ function runInPage(ctx) {
     if (mechanism) found.push(mechanism);
     if (title) found.push('<title>');
     const alternatives = found.join(', ');
+    // An alternative does not prove the image carries information: an icon
+    // beside a button's text is decorative, and then fails 1.2.4 instead
+    // (aria-hidden="true", no <title>). RGAA leaves that call to a person
+    // (1.1.5 methodology: « déterminer si l'image est porteuse
+    // d'information »), unless the SVG has a caption or takes focus itself.
+    if (!certainlyInformative(svg)) {
+      cantTells.push(
+        helpers.reportOccurrence(svg, {
+          summary: `This <svg> has a text alternative (${alternatives}) but no role="img". If it carries information, it fails 1.1.5; if it is decorative, 1.2.4.`,
+          hint: 'If the image carries information, add role="img" and name it with aria-label or aria-labelledby. If it is decorative, remove the alternative and add aria-hidden="true".',
+          i18n: {
+            summaryKey: 'svgRoleImg_summary_cantTell_missingRole',
+            hintKey: 'svgRoleImg_hint_fail_missingRole',
+            params: { alternatives }
+          },
+          uncertainty: {
+            code: 'judgement-required',
+            needed: 'Whether the image carries information or is decorative.'
+          },
+          data: {
+            details: { reasonCode: 'missingRoleMayBeDecorative', alternatives: found },
+            visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
+          }
+        })
+      );
+      continue;
+    }
     fails.push(
       helpers.reportOccurrence(svg, {
         summary: `This <svg> has a text alternative (${alternatives}) but no role="img".`,

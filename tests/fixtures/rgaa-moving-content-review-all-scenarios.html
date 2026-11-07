@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>rgaa-moving-content-review — scenario fixture</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.4; margin: 24px; }
+    h1 { font-size: 20px; margin: 0 0 16px; }
+    h2 { font-size: 16px; margin: 22px 0 10px; }
+    .note { font-size: 12px; opacity: 0.85; margin: 8px 0 16px; }
+    .case { border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin: 10px 0; }
+    .case-title { font-weight: 700; margin: 0 0 8px; }
+  </style>
+</head>
+<body>
+  <h1>Scenario fixture: <code>rgaa-moving-content-review</code> (RGAA 13.8)</h1>
+
+  <p class="note">
+    Each target has a stable <code>id</code> of the form <code>mcr_case_NN</code>.
+    Content that moves by itself for more than 5 seconds can be stopped, hidden or read without the movement.
+  </p>
+
+  <div class="case" id="case_01">
+    <div class="case-title">01 — CANTTELL: a scrolling marquee</div>
+    <marquee id="mcr_case_01">Promotion</marquee>
+  </div>
+
+  <div class="case" id="case_02">
+    <div class="case-title">02 — CANTTELL: a background video that plays by itself, with no controls</div>
+    <video autoplay muted loop src="fond.mp4" id="mcr_case_02"></video>
+  </div>
+
+  <div class="case" id="case_03">
+    <div class="case-title">03 — NOT APPLICABLE: a video the user starts and can pause</div>
+    <video controls src="film.mp4" id="mcr_case_03"></video>
+  </div>
+</body>
+</html>

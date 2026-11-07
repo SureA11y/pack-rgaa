@@ -57,14 +57,16 @@ test(`${RULE_ID}: a skip link whose target does not exist fails, with or without
     '<a href="#contenu">Aller au contenu</a><main><p>x</p></main>',
     '<a href="#inhalt">Zum Inhalt springen</a>' + NAV + MAIN,
     '<a href="#contenido">Saltar al contenido</a>' + NAV + MAIN,
-    '<a href="#honbun">本文へスキップ</a>' + NAV + MAIN,
-    // The page's first link, before main, is a skip link whatever its wording.
-    '<a href="#x">Menu</a>' + NAV + MAIN
+    '<a href="#honbun">本文へスキップ</a>' + NAV + MAIN
   ]) {
     const rule = assertRule(run(body), RULE_ID, 'fail', { minOccurrences: 1, maxOccurrences: 1 });
     assert.deepEqual(reasons(rule), [['fail', 'skipLinkTargetMissing']], body);
     assert.equal(rule.occurrences[0].i18n.summaryKey, 'skipLinkPresent_summary_fail_targetMissing');
   }
+  // A broken first link that names something else is no skip link to the
+  // content: with navigation before main, the page has none.
+  const menu = assertRule(run('<a href="#x">Menu</a>' + NAV + MAIN), RULE_ID, 'fail');
+  assert.deepEqual(reasons(menu), [['fail', 'noSkipLink']]);
 });
 
 test(`${RULE_ID}: an ordinary link to a missing id is not a skip link`, () => {
@@ -101,6 +103,45 @@ test(`${RULE_ID}: a skip link that stops short of main, or to a hidden target, i
     'cantTell'
   );
   assert.deepEqual(reasons(hidden), [['cantTell', 'skipLinkTargetHidden']]);
+});
+
+// A breadcrumb at the top of <main> is part of the zone: a skip link to the
+// content after it still reaches the zone (as on unistra.fr, where it was
+// dropped and the page failed as having no skip link).
+test(`${RULE_ID}: a link into main past a breadcrumb passes`, () => {
+  const crumbs =
+    '<nav aria-label="Fil d’Ariane"><a href="/">Accueil</a><a href="/fr">Université</a></nav>';
+  for (const body of [
+    '<a href="#c">Passer au contenu principal</a>' +
+      NAV +
+      '<main>' +
+      crumbs +
+      '<a id="c" tabindex="-1"></a><h1>Contact</h1></main>',
+    '<a href="#c">Passer au contenu principal</a>' +
+      NAV +
+      '<main><div>' +
+      crumbs +
+      '</div><h1 id="c">Contact</h1></main>'
+  ]) {
+    assertRule(run(body), RULE_ID, 'pass', { maxOccurrences: 0 });
+  }
+});
+
+// Other focusable content before the target, in the zone, may be what the
+// link skips: a person checks, with or without a breadcrumb too.
+test(`${RULE_ID}: a link into main past links outside navigation is asked about`, () => {
+  for (const inside of [
+    '<p><a href="/a">A</a></p><h1 id="c">Titre</h1>',
+    '<nav><a href="/">Accueil</a></nav><p><a href="/a">A</a></p><h1 id="c">Titre</h1>'
+  ]) {
+    const rule = assertRule(
+      run('<a href="#c">Aller au contenu</a>' + NAV + '<main>' + inside + '</main>'),
+      RULE_ID,
+      'cantTell',
+      { minOccurrences: 1, maxOccurrences: 1 }
+    );
+    assert.deepEqual(reasons(rule), [['cantTell', 'skipLinkTargetNotMain']], inside);
+  }
 });
 
 // A target inside navigation, after main, or with navigation between it and
@@ -208,11 +249,8 @@ test(`${RULE_ID}: a main landmark satisfies WCAG 2.4.1 but not RGAA 12.7`, () =>
     rgaa127.meta.normativeMappings.filter((m) => m.standard === 'RGAA').map((m) => m.requirement),
     ['12.7.1']
   );
-  // bypass-blocks-present asks under 12.6.1 only; 12.7 is not its criterion.
-  assert.deepEqual(rule('bypass-blocks-present').rollupIds, [
-    'wcag-2.4.1-bypass-blocks',
-    'rgaa-4.1.2-12.6'
-  ]);
+  // bypass-blocks-present counts toward no RGAA test.
+  assert.deepEqual(rule('bypass-blocks-present').rollupIds, ['wcag-2.4.1-bypass-blocks']);
   assert.ok(!rgaa127.data.details.checksIds.includes('bypass-blocks-present'));
 });
 
@@ -249,4 +287,46 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-skip-link-present-all-sc
   const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 1, maxOccurrences: 1 });
   assert.deepEqual(reasons(rule), [['fail', 'skipLinkTargetMissing']]);
   assert.match(rule.occurrences[0].html, /id="slp_case_01"/);
+});
+
+// 12.7.1 is about the main content zone: a broken first link that names
+// something else is no skip link to it, so the page is judged as having none.
+test(`${RULE_ID}: a broken link that is not about the content is not a broken skip link`, () => {
+  const cookies =
+    '<header><a href="#tarteaucitron">Gestion des cookies</a><ul><li><a href="/a">A</a></li></ul></header>';
+  const rule = assertRule(run(cookies + MAIN), RULE_ID, 'cantTell');
+  assert.deepEqual(reasons(rule), [['cantTell', 'noNavigationBeforeMain']]);
+  const withNav = assertRule(
+    run('<a href="#menu">Aller au menu</a>' + NAV + MAIN),
+    RULE_ID,
+    'fail'
+  );
+  assert.deepEqual(reasons(withNav), [['fail', 'noSkipLink']]);
+  // A broken link to the content still fails as such, by its name or its fragment.
+  for (const link of [
+    '<a href="#contenu">Aller au contenu</a>',
+    '<a href="#main-content">Passer</a>'
+  ]) {
+    const broken = assertRule(run(link + NAV + '<main><h1>T</h1></main>'), RULE_ID, 'fail');
+    assert.deepEqual(reasons(broken), [['fail', 'skipLinkTargetMissing']], link);
+  }
+});
+
+// A link to the content landing on a wrapper before a section menu may
+// still reach the zone: a person judges, instead of the page failing.
+test(`${RULE_ID}: a content link whose target lies before a section menu is asked about`, () => {
+  const body =
+    '<header><a href="#contenu">Aller au contenu</a><nav><a href="/a">A</a></nav></header>' +
+    '<div id="contenu"><nav aria-label="Rubrique"><a href="/r1">R1</a></nav><main><h1>T</h1></main></div>';
+  const rule = assertRule(run(body), RULE_ID, 'cantTell');
+  assert.deepEqual(reasons(rule), [['cantTell', 'skipLinkTargetNotMain']]);
+});
+
+// It works with the keyboard, but screen reader users cannot find it.
+test(`${RULE_ID}: a working skip link inside aria-hidden="true" is asked about`, () => {
+  const body =
+    '<header><div aria-hidden="true"><a href="#contenu">Aller au contenu</a></div><nav><a href="/a">A</a></nav></header>' +
+    '<main id="contenu"><h1>T</h1></main>';
+  const rule = assertRule(run(body), RULE_ID, 'cantTell');
+  assert.deepEqual(reasons(rule), [['cantTell', 'skipLinkAriaHidden']]);
 });

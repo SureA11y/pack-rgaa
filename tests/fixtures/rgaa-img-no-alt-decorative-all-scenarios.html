@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>rgaa-img-no-alt-decorative — scenario fixture</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.4; margin: 24px; }
+    h1 { font-size: 20px; margin: 0 0 16px; }
+    h2 { font-size: 16px; margin: 22px 0 10px; }
+    .note { font-size: 12px; opacity: 0.85; margin: 8px 0 16px; }
+    .case { border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin: 10px 0; }
+    .case-title { font-weight: 700; margin: 0 0 8px; }
+  </style>
+</head>
+<body>
+  <h1>Scenario fixture: <code>rgaa-img-no-alt-decorative</code> (RGAA 1.2.1)</h1>
+
+  <p class="note">
+    Each target has a stable <code>id</code> of the form <code>inad_case_NN</code>.
+    An <code>&lt;img&gt;</code> with no <code>alt</code> fails 1.1.1 if it carries
+    information and 1.2.1 if it is decorative: a spacer fails here, the others are
+    asked about, and the only content of a link is left to 1.1.1.
+  </p>
+
+  <h2>A. Spacers (FAIL)</h2>
+
+  <div class="case" id="case_01">
+    <div class="case-title">01 — FAIL: 1 by 1 px image with no alt</div>
+    <img id="inad_case_01" src="pixel.gif" width="1" height="1">
+  </div>
+
+  <div class="case" id="case_02">
+    <div class="case-title">02 — FAIL: horizontal rule image, 2 px high, with no alt</div>
+    <img id="inad_case_02" src="rule.gif" width="300" height="2">
+  </div>
+
+  <h2>B. Decorative or informative, for a person (CANTTELL)</h2>
+
+  <div class="case" id="case_03">
+    <div class="case-title">03 — CANTTELL: photo with no alt</div>
+    <img id="inad_case_03" src="photo.jpg" width="300" height="200">
+  </div>
+
+  <div class="case" id="case_04">
+    <div class="case-title">04 — CANTTELL: icon with no alt next to a link's text</div>
+    <a href="/report">Annual report <img id="inad_case_04" src="pdf.png" width="16" height="16"></a>
+  </div>
+
+  <h2>C. Out of scope</h2>
+
+  <div class="case" id="case_05">
+    <div class="case-title">05 — NOT APPLICABLE: image that is a link's only content (informative, 1.1.1)</div>
+    <a href="https://facebook.com/example" title="Facebook"><img id="inad_case_05" src="fb.svg" width="16" height="16"></a>
+  </div>
+
+  <div class="case" id="case_06">
+    <div class="case-title">06 — NOT APPLICABLE: image with alt=""</div>
+    <img id="inad_case_06" src="pixel.gif" alt="" width="1" height="1">
+  </div>
+
+  <div class="case" id="case_07">
+    <div class="case-title">07 — NOT APPLICABLE: image with a caption</div>
+    <figure><img id="inad_case_07" src="chart.png"><figcaption>Sales in 2025</figcaption></figure>
+  </div>
+
+  <div class="case" id="case_08">
+    <div class="case-title">08 — NOT APPLICABLE: image with a title</div>
+    <img id="inad_case_08" src="logo.png" title="Example">
+  </div>
+</body>
+</html>

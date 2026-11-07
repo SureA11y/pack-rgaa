@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>rgaa-format-hint-review — scenario fixture</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.4; margin: 24px; }
+    h1 { font-size: 20px; margin: 0 0 16px; }
+    h2 { font-size: 16px; margin: 22px 0 10px; }
+    .note { font-size: 12px; opacity: 0.85; margin: 8px 0 16px; }
+    .case { border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin: 10px 0; }
+    .case-title { font-weight: 700; margin: 0 0 8px; }
+  </style>
+</head>
+<body>
+  <h1>Scenario fixture: <code>rgaa-format-hint-review</code> (RGAA 11.11)</h1>
+
+  <p class="note">
+    Each target has a stable <code>id</code> of the form <code>fhr_case_NN</code>.
+    Fields with a pattern, minlength, min/max or inputmode whose label, description and placeholder give no format or example are asked about.
+  </p>
+
+  <div class="case" id="case_01">
+    <div class="case-title">01 — CANTTELL: a pattern with no title nor hint</div>
+    <form><label for="fhr_case_01">Numéro de client</label><input id="fhr_case_01" pattern="[A-Z]{2}[0-9]{6}"></form>
+  </div>
+
+  <div class="case" id="case_02">
+    <div class="case-title">02 — CANTTELL: a number field with a range and no hint</div>
+    <form><label for="fhr_case_02">Quantité</label><input id="fhr_case_02" type="number" min="1" max="10"></form>
+  </div>
+
+  <div class="case" id="case_03">
+    <div class="case-title">03 — NOT APPLICABLE: a pattern whose label shows an example</div>
+    <form><label for="fhr_case_03">Code postal (ex. : 75001)</label><input id="fhr_case_03" pattern="[0-9]{5}"></form>
+  </div>
+
+  <div class="case" id="case_04">
+    <div class="case-title">04 — NOT APPLICABLE: a pattern with a title</div>
+    <form><label for="fhr_case_04">Référence</label><input id="fhr_case_04" pattern="[A-Z]+" title="Lettres capitales uniquement"></form>
+  </div>
+
+  <div class="case" id="case_05">
+    <div class="case-title">05 — NOT APPLICABLE: a maxlength only</div>
+    <form><label for="fhr_case_05">Nom</label><input id="fhr_case_05" maxlength="40"></form>
+  </div>
+</body>
+</html>

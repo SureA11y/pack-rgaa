@@ -1,0 +1,23 @@
+{
+  "name": "pack-rgaa-bench",
+  "private": true,
+  "description": "Compares @surea11y/pack-rgaa with the other engines that check RGAA and report per RGAA criterion, on the pack's fixtures, neutral test pages and audited French sites",
+  "type": "module",
+  "scripts": {
+    "vendor": "node vendor.mjs",
+    "scan": "node run.mjs",
+    "summarize": "node summarize.mjs",
+    "diff": "node diff.mjs",
+    "disagreements": "node disagreements.mjs",
+    "report": "node report.mjs"
+  },
+  "dependencies": {
+    "@a11ylint/core": "1.0.0-alpha.7",
+    "@surea11y/core": "github:SureA11y/core#main",
+    "@surea11y/pack-rgaa": "file:..",
+    "@uuv/a11y": "1.0.0-beta.113",
+    "axe-core": "4.14.0",
+    "esbuild": "0.28.2",
+    "playwright": "1.62.1"
+  }
+}

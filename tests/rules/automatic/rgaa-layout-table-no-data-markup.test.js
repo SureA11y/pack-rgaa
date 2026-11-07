@@ -127,11 +127,13 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-layout-table-no-data-mar
 
 // RGAA 4.1.2 took <colgroup> out of 5.8.1's list: a layout table may set
 // its column widths with one.
+// RGAA 5.8.1 does not list <colgroup>: column widths are layout too.
 test(`${RULE_ID}: <colgroup> in a layout table passes`, () => {
   const html = page(
-    '<table role="presentation"><colgroup><col></colgroup><tr><td>a</td><td>b</td></tr></table>'
+    '<table role="presentation"><colgroup><col style="width:50%"><col></colgroup><tr><td>a</td><td>b</td></tr></table>'
   );
   assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'pass');
+  assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'pass', { maxOccurrences: 0 });
 });
 
 // 5.8.1 applies to layout tables. A table with a full header row or column

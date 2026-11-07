@@ -9,5 +9,5 @@ const safeDom = require('@surea11y/core/eslint-plugin');
 module.exports = [
   { languageOptions: { ecmaVersion: 2022, sourceType: 'commonjs' } },
   { files: ['rules/**'], ...safeDom.configs.recommended },
-  { ignores: ['node_modules/**'] }
+  { ignores: ['node_modules/**', 'bench/**'] }
 ];

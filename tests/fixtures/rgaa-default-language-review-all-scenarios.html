@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>rgaa-default-language-review — scenario fixture</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.4; margin: 24px; }
+    h1 { font-size: 20px; margin: 0 0 16px; }
+    h2 { font-size: 16px; margin: 22px 0 10px; }
+    .note { font-size: 12px; opacity: 0.85; margin: 8px 0 16px; }
+    .case { border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin: 10px 0; }
+    .case-title { font-weight: 700; margin: 0 0 8px; }
+  </style>
+</head>
+<body>
+  <h1>Scenario fixture: <code>rgaa-default-language-review</code> (RGAA 8.4.1)</h1>
+
+  <p class="note">
+    Each target has a stable <code>id</code> of the form <code>dlr_case_NN</code>.
+    Declared lang="en"; main text French: one question, on html.
+  </p>
+
+  <div class="case" id="case_01">
+    <div class="case-title">01 — CANTTELL (on the html element): page text written in French</div>
+    <div id="dlr_case_01"><p>La médiathèque municipale ouvre ses portes du mardi au samedi. Les horaires changent pendant les vacances scolaires : elle est alors ouverte le matin seulement. Vous pouvez emprunter jusqu’à dix documents pour une durée de trois semaines, et les prolonger une fois sur votre compte en ligne. Les inscriptions sont gratuites pour les habitants de la commune et pour les personnes qui y travaillent. Un justificatif de domicile vous sera demandé lors de votre première visite. Les enfants de moins de quatorze ans doivent être accompagnés par un adulte pour s’inscrire.</p><p>Le mercredi après-midi, une heure du conte est proposée aux plus jeunes. Des ateliers numériques sont aussi organisés chaque mois : ils sont ouverts à tous, sur inscription auprès de l’accueil. Le prêt de liseuses et de livres audio est possible pour les lecteurs qui en font la demande.</p></div>
+  </div>
+
+  <div class="case" id="case_02">
+    <div class="case-title">02 — NOT COUNTED: a passage that carries its own language</div>
+    <blockquote id="dlr_case_02" lang="es"><p>La biblioteca está abierta de martes a sábado.</p></blockquote>
+  </div>
+
+  <div class="case" id="case_03">
+    <div class="case-title">03 — NOT COUNTED: code</div>
+    <pre id="dlr_case_03"><code>if (open) { return true; }</code></pre>
+  </div>
+</body>
+</html>

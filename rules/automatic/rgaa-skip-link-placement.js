@@ -20,20 +20,27 @@
  *   presentation, comes in the same relative order in the source, and is
  *   visible or, failing that, visible when it takes focus.
  *   - Visibility needs a layout (a browser). A link that is not visible at
- *     rest is focused, as by the keyboard, and measured again. It fails
+ *     rest is focused, as by the keyboard, with transitions held off on the
+ *     whole page, and measured again. It fails
  *     when it is still not visible: no size, outside the page, clipped by
  *     an ancestor, fully transparent or `visibility: hidden`
  *     (SKIP_LINK_NOT_VISIBLE). It is asked about when something may cover
- *     it, or an animation starts on focus (SKIP_LINK_VISIBILITY_UNKNOWN).
+ *     it, or an animation runs on it or an ancestor once it has focus
+ *     (SKIP_LINK_VISIBILITY_UNKNOWN).
  *     Without a layout (jsdom) visibility is always asked about.
  *   - Place and order need the site's other pages, through the
- *     `crawl.skipLinks` probe. The link fails when another page measured at
- *     the same viewport width shows it more than 24 CSS pixels to the side
+ *     `crawl.skipLinks` probe, and 12.7.2 compares only the pages of one
+ *     « ensemble de pages » (the home page may be one on its own). The
+ *     link fails when another page of its ensemble measured at the same
+ *     viewport width shows it more than 24 CSS pixels to the side
  *     (SKIP_LINK_POSITION_DIFFERS). Moved only up or down, it is asked
  *     about (SKIP_LINK_POSITION_SHIFTED): content above it on one page, a
  *     cookie banner or a message, pushes it down without moving it in the
  *     layout, which the measured boxes cannot tell from a link placed
- *     elsewhere. It is asked about when its focus order
+ *     elsewhere. The probe names this page's ensemble in `ensemble`, and
+ *     each other page's in its record: a page of another ensemble is not
+ *     compared, and when the names are missing a difference to the side is
+ *     asked about (SKIP_LINK_POSITION_MAY_DIFFER). It is asked about when its focus order
  *     differs (SKIP_LINK_ORDER_DIFFERS), since what the order is relative to
  *     is a person's call; when no other page was measured at the same width
  *     (SKIP_LINK_VIEWPORT_DIFFERS); and when the probe brings no other page
@@ -48,7 +55,8 @@
  *   when the link is not visible. The record is flat because the engine
  *   cuts probes deeper than six levels. A crawler scans each
  *   page once, collects these records and passes them back as
- *   `engineOptions.probes['crawl.skipLinks'] = { pages: [...] }`. The page's
+ *   `engineOptions.probes['crawl.skipLinks'] = { ensemble, pages: [...] }`,
+ *   each record with its ensemble's name when the crawler knows it. The page's
  *   own URL is left out of the comparison.
  * - focusOrder is the link's index among the page's elements in sequential
  *   focus order (positive tabindex first, then document order).
@@ -83,6 +91,7 @@ const meta = {
     'SKIP_LINK_NOT_VISIBLE',
     'SKIP_LINK_POSITION_DIFFERS',
     'SKIP_LINK_POSITION_SHIFTED',
+    'SKIP_LINK_POSITION_MAY_DIFFER',
     'SKIP_LINK_VISIBILITY_UNKNOWN',
     'SKIP_LINK_ORDER_DIFFERS',
     'SKIP_LINK_VIEWPORT_DIFFERS',
@@ -99,6 +108,17 @@ const meta = {
         'The skip link is at the same place in the layout of every page; only content above it, such as a banner, pushes it down.',
       failWhen:
         'The skip link is placed elsewhere in the layout on some pages, which fails RGAA 12.7.2.'
+    },
+    SKIP_LINK_POSITION_MAY_DIFFER: {
+      steps: [
+        'Open the page the report names and the other pages it lists, in windows of the same width.',
+        'Decide whether they belong to the same set of pages: the home page, say, may form a set of its own.',
+        'Within a set, check that the skip link sits at the same place on each page.'
+      ],
+      passWhen:
+        'The pages belong to different sets, or the skip link sits at the same place across each set.',
+      failWhen:
+        'The skip link is at another place on pages of the same set, which fails RGAA 12.7.2.'
     },
     SKIP_LINK_VISIBILITY_UNKNOWN: {
       steps: [
@@ -254,37 +274,43 @@ function runInPage(ctx) {
     return ce != null && ce.toLowerCase() !== 'false';
   }
 
-  function scan(from, to, found) {
+  // What lies between `from` and `to`: a navigation block, and focusable
+  // elements outside navigation blocks, as rgaa-skip-link-present reads it.
+  function scan(from, to, stopAtTo, found) {
     const walker = dom.createTreeWalker(document, document, 1);
     walker.currentNode = from;
     let count = 0;
+    let nav = null;
     for (let n = walker.nextNode(); n && n !== to; n = walker.nextNode()) {
       if (++count > 5000) {
         found.navigation = true;
+        found.focusable = true;
         break;
       }
-      if (dom.contains(n, to)) continue;
+      if (stopAtTo && dom.contains(n, to)) continue;
+      if (nav && dom.contains(nav, n)) continue;
       if (!isEligible(n)) continue;
-      if (isNavigation(n)) found.navigation = true;
-      else if (isFocusable(n)) found.focusable = true;
+      if (isNavigation(n)) {
+        found.navigation = true;
+        nav = n;
+      } else if (isFocusable(n)) found.focusable = true;
     }
     return found;
   }
 
   function between(target, main) {
-    const found = { navigation: false, focusable: false };
+    const found = { navigation: false, focusable: false, inside: false };
     if (target === main) return found;
-    let inside = false;
     try {
-      inside = dom.contains(main, target);
+      found.inside = dom.contains(main, target);
     } catch {}
-    if (inside) return scan(main, target, found);
+    if (found.inside) return scan(main, target, true, found);
     let pos = 0;
     try {
       pos = dom.compareDocumentPosition(target, main);
     } catch {}
     if (!(pos & FOLLOWING) && !(pos & CONTAINED_BY)) return null;
-    return scan(target, main, found);
+    return scan(target, main, true, found);
   }
 
   const mains = query('main').filter(isEligible);
@@ -303,7 +329,9 @@ function runInPage(ctx) {
       const target = resolveTarget(el, fragment);
       if (!target || !isEligible(target)) continue;
       const path = between(target, main);
-      if (path && !path.navigation && !path.focusable) {
+      // Inside the zone, a navigation block before the target (a breadcrumb)
+      // is still main content, as rgaa-skip-link-present accepts it.
+      if (path && (path.inside || !path.navigation) && !path.focusable) {
         skipLink = el;
         break;
       }
@@ -447,18 +475,52 @@ function runInPage(ctx) {
     return cur;
   }
 
+  // Transitions held off for the whole page, as rgaa-orientation-content-
+  // parity does: a container that slides the link in on :focus-within is
+  // measured where it ends, not where it starts. The sheet is a cascade
+  // layer declared before any other, which wins over the page's own
+  // !important as a user style sheet would.
+  function freezeTransitions() {
+    let sheet = null;
+    try {
+      sheet = dom.createElement(document, 'style');
+      sheet.textContent =
+        '@layer surea11y-no-transitions{*,*::before,*::after{transition:none!important}}';
+      const host = dom.head(document) || dom.documentElement(document);
+      dom.insertBefore(host, sheet, dom.firstChild(host));
+    } catch {
+      sheet = null;
+    }
+    return () => {
+      try {
+        if (sheet && dom.parentNode(sheet)) dom.removeChild(dom.parentNode(sheet), sheet);
+      } catch {}
+    };
+  }
+
+  // A CSS animation running on the link or an ancestor once it has focus.
+  function animated(el) {
+    for (let n = el; n && dom.nodeType(n) === 1; n = dom.parentElement(n)) {
+      try {
+        if (typeof dom.get(n, 'getAnimations') === 'function' && dom.getAnimations(n).length) {
+          return true;
+        }
+      } catch {}
+    }
+    return false;
+  }
+
   // The link focused as by the keyboard, transitions off, then put back.
   function visibilityOnFocus(el) {
     const previous = deepActiveElement();
     const hadStyle = dom.hasAttribute(el, 'style');
     const styleAttr = dom.getAttribute(el, 'style');
+    const thaw = freezeTransitions();
     try {
       el.style.setProperty('transition', 'none', 'important');
       dom.focus(el, { preventScroll: true, focusVisible: true });
       if (deepActiveElement() !== el) return null;
-      if (typeof dom.get(el, 'getAnimations') === 'function' && dom.getAnimations(el).length) {
-        return { state: 'unknown', rect: null, animated: true };
-      }
+      if (animated(el)) return { state: 'unknown', rect: null, animated: true };
       return visibility(el);
     } catch {
       return null;
@@ -479,6 +541,8 @@ function runInPage(ctx) {
       dom.getAttribute(el, 'style');
       if (hadStyle) dom.setAttribute(el, 'style', styleAttr);
       else dom.removeAttribute(el, 'style');
+      // The page's state is back before the sheet goes, so nothing animates.
+      thaw();
     }
   }
 
@@ -529,8 +593,16 @@ function runInPage(ctx) {
   );
 
   const num = (v) => (typeof v === 'number' && Number.isFinite(v) ? v : null);
+  // 12.7.2 compares the pages of one « ensemble de pages », and the home
+  // page may be one on its own (glossary). The crawler names each page's
+  // ensemble, this page's in probe.ensemble: another ensemble is not
+  // compared, and with no names a difference is asked about.
+  const ownEnsemble = probe && typeof probe.ensemble === 'string' ? probe.ensemble : null;
+  const sameEnsemble = (p) =>
+    ownEnsemble && typeof p.ensemble === 'string' ? p.ensemble === ownEnsemble : null;
   const moved = [];
   const shifted = [];
+  const mayHaveMoved = [];
   const reordered = [];
   let measured = 0;
   let comparable = 0;
@@ -542,11 +614,19 @@ function runInPage(ctx) {
       comparable += 1;
       const dx = Math.abs(r.x - where.x);
       const dy = Math.abs(r.y - where.y);
-      if (dx > MAX_SHIFT) moved.push({ url: String(p.url), x: r.x, y: r.y });
-      else if (dy > MAX_SHIFT) shifted.push({ url: String(p.url), x: r.x, y: r.y });
+      const same = sameEnsemble(p);
+      if (same === false) continue;
+      const place = { url: String(p.url), x: r.x, y: r.y };
+      if (dx > MAX_SHIFT) (same ? moved : mayHaveMoved).push(place);
+      else if (dy > MAX_SHIFT) shifted.push(place);
     }
     const o = num(p.skipLink.focusOrder);
-    if (o != null && record.focusOrder != null && o !== record.focusOrder) {
+    if (
+      sameEnsemble(p) !== false &&
+      o != null &&
+      record.focusOrder != null &&
+      o !== record.focusOrder
+    ) {
       reordered.push({ url: String(p.url), focusOrder: o });
     }
   }
@@ -573,6 +653,13 @@ function runInPage(ctx) {
       key: 'cantTell_positionShifted',
       needed:
         'Whether the skip link is at the same place in the layout of every page, or only pushed down by content above it.'
+    },
+    SKIP_LINK_POSITION_MAY_DIFFER: {
+      summary: (p) =>
+        `This skip link is at another place on other pages of the site, measured at the same window width: ${p.pages}. Whether they belong to the same set of pages is not known.`,
+      hint: 'Check whether these pages belong to the same set of pages as this one, such as the home page, which may form one on its own; within a set, the skip link must be at the same place (RGAA 12.7.2).',
+      key: 'cantTell_positionMayDiffer',
+      needed: 'Whether the pages where the skip link is elsewhere belong to the same set of pages.'
     },
     SKIP_LINK_VISIBILITY_UNKNOWN: {
       summary: () =>
@@ -644,6 +731,9 @@ function runInPage(ctx) {
   if (moved.length) report('SKIP_LINK_POSITION_DIFFERS', { x: where.x, y: where.y, pages: moved });
   if (shifted.length) {
     report('SKIP_LINK_POSITION_SHIFTED', { x: where.x, y: where.y, pages: shifted });
+  }
+  if (mayHaveMoved.length) {
+    report('SKIP_LINK_POSITION_MAY_DIFFER', { x: where.x, y: where.y, pages: mayHaveMoved });
   }
   if (reordered.length) {
     report('SKIP_LINK_ORDER_DIFFERS', { focusOrder: record.focusOrder, pages: reordered });

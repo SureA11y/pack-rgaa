@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>rgaa-autocomplete-user-field — scenario fixture</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.4; margin: 24px; }
+    h1 { font-size: 20px; margin: 0 0 16px; }
+    h2 { font-size: 16px; margin: 22px 0 10px; }
+    .note { font-size: 12px; opacity: 0.85; margin: 8px 0 16px; }
+    .case { border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin: 10px 0; }
+    .case-title { font-weight: 700; margin: 0 0 8px; }
+  </style>
+</head>
+<body>
+<body>
+  <h1>Scenario fixture: <code>rgaa-autocomplete-user-field</code> (RGAA 11.13.1)</h1>
+
+  <p class="note">
+    Each target has a stable <code>id</code> of the form <code>auf_case_NN</code>.
+    11.13.1 applies to fields about the user. A malformed value naming a field of
+    the list fails; a field that looks like personal data with no valid value is
+    asked about; a field that does not concern the user is out of scope.
+  </p>
+
+  <form action="/compte">
+    <div class="case" id="case_01">
+      <div class="case-title">01 — FAIL: "email home", which names a listed field but is malformed</div>
+      <label for="auf_case_01">Courriel</label>
+      <input type="email" id="auf_case_01" autocomplete="email home">
+    </div>
+
+    <div class="case" id="case_02">
+      <div class="case-title">02 — CANTTELL: email field with no autocomplete</div>
+      <label for="auf_case_02">Courriel</label>
+      <input type="email" id="auf_case_02">
+    </div>
+
+    <div class="case" id="case_03">
+      <div class="case-title">03 — CANTTELL: "Nom" with autocomplete="off"</div>
+      <label for="auf_case_03">Nom</label>
+      <input id="auf_case_03" autocomplete="off">
+    </div>
+
+    <div class="case" id="case_04">
+      <div class="case-title">04 — PASS: well-formed value</div>
+      <label for="auf_case_04">Code postal</label>
+      <input id="auf_case_04" autocomplete="shipping postal-code">
+    </div>
+
+    <div class="case" id="case_05">
+      <div class="case-title">05 — NOT APPLICABLE: invalid value on a field that does not concern the user</div>
+      <label for="auf_case_05">Filtrer les résultats</label>
+      <input id="auf_case_05" autocomplete="nope">
+    </div>
+  </form>
+
+  <div class="case" id="case_06">
+    <div class="case-title">06 — NOT APPLICABLE: search form</div>
+    <form role="search"><label for="auf_case_06">Rechercher</label><input type="search" id="auf_case_06" autocomplete="nope"></form>
+  </div>
+</body>
+</html>

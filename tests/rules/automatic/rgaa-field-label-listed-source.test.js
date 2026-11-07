@@ -227,7 +227,12 @@ test(`${RULE_ID}: the map links it to 11.1.1 alone, and the WCAG field-name rule
     assert.ok(!tests(id).includes('11.1.1'), id);
   }
   assert.deepEqual(tests('aria-role-name-present'), ['7.1.1', '11.6.1']);
-  assert.deepEqual(tests('form-control-programmatic-label-quality'), ['11.1.3', '11.2.2']);
+  assert.deepEqual(tests('form-control-programmatic-label-quality'), [
+    '11.1.3',
+    '11.2.2',
+    '11.2.3',
+    '11.2.4'
+  ]);
 });
 
 // --- RGAA and WCAG rollups in one run --------------------------------------------
@@ -318,4 +323,49 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-field-label-listed-sourc
     ['flls_case_09', 'cantTell', 'labelForNotLabelable'],
     ['flls_case_10', 'cantTell', 'emptySource']
   ]);
+});
+
+// An earlier element with the same id takes the label: the field still has
+// none, and the message says why.
+test(`${RULE_ID}: a label that goes to an earlier element with the same id fails with its own reason`, () => {
+  const rule = assertRule(
+    runa11yCoreOnHtml(
+      page(
+        '<div id="email"></div><label for="email">Courriel</label><input id="email" type="email">'
+      ),
+      RUN
+    ),
+    RULE_ID,
+    'fail',
+    { minOccurrences: 1, maxOccurrences: 1 }
+  );
+  assert.deepEqual(reasons(rule), [['fail', 'duplicateId']]);
+  assert.equal(
+    rule.occurrences[0].i18n.summaryKey,
+    'fieldLabelListedSource_summary_fail_duplicateId'
+  );
+});
+
+// An <output> announcing a status (insee.fr: an empty aria-live region) is
+// not a field anyone fills in; one in a form, tied to its fields, still fails.
+test(`${RULE_ID}: an unlabelled <output> that looks like a status message is asked about`, () => {
+  for (const body of [
+    '<output aria-live="polite"></output>',
+    '<output role="status">3 résultats</output>'
+  ]) {
+    const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'cantTell', {
+      minOccurrences: 1,
+      maxOccurrences: 1
+    });
+    assert.deepEqual(reasons(rule), [['cantTell', 'outputStatus']], body);
+  }
+  const inForm = assertRule(
+    runa11yCoreOnHtml(
+      page('<form><input id="a" aria-label="A"><output for="a">12</output></form>'),
+      RUN
+    ),
+    RULE_ID,
+    'fail'
+  );
+  assert.deepEqual(reasons(inForm), [['fail', 'noLabel']]);
 });

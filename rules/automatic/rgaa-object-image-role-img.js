@@ -13,8 +13,11 @@
  *   only; an <object> with another type, or none, is out of scope). An
  *   <object> with aria-hidden="true", on itself or an ancestor, or with
  *   role="none"/"presentation", is left out: it is marked decorative, which
- *   1.2.3 covers. Content hidden with CSS or the hidden attribute is left
- *   out too. A page with none is notApplicable.
+ *   1.2.3 covers. One that is the only content of a link or a button is
+ *   left out: its alternative is the control's name, which the glossary «
+ *   Image porteuse d'information » (notes 1 and 2) sends to Links (6.1),
+ *   Forms (11.9) or Scripts (7.1). Content hidden with CSS or the hidden
+ *   attribute is left out too. A page with none is notApplicable.
  * @expectation
  *   RGAA 1.1.6 passes when one of these holds:
  *   - the <object> has a text alternative (aria-labelledby, aria-label or
@@ -24,7 +27,11 @@
  *   - a mechanism lets the user replace it with an alternative content.
  *   Passes: role="img" and a text alternative.
  *   Fails: no text alternative, no fallback content between <object> and
- *   </object>, and no link or button right after it.
+ *   </object>, and no link or button right after it, when the object has
+ *   role="img" or certainly carries information (a captioned image, or one
+ *   that takes focus). Without either, it is asked about
+ *   (noAlternativeMayBeDecorative): it may be decorative, and then it fails
+ *   1.2.3 instead.
  *   Asks (cantTell):
  *   - a text alternative without role="img". The test wording requires
  *     both, but the methodology validates on the alternative alone (steps 3
@@ -200,11 +207,51 @@ function runInPage(ctx) {
 
   const VF = { targetSet: 'dom', accEligible: null, reasons: [] };
 
+  // Certainly informative: an image with a caption, or one that takes
+  // focus. Anything else may be decorative, and then 1.2 applies instead.
+  function certainlyInformative(el) {
+    if (/^\d+$/.test(String(dom.getAttribute(el, 'tabindex') || '').trim())) return true;
+    const figure = dom.closest(el, 'figure');
+    if (
+      figure &&
+      Array.from(dom.querySelectorAll(figure, ':scope > figcaption')).some((c) =>
+        String(dom.textContent(c) || '').trim()
+      )
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  // The only content of a link or a button: its alternative is the
+  // control's name, which the glossary « Image porteuse d'information »
+  // (notes 1 and 2) sends to Links (6.1), Forms (11.9) or Scripts (7.1).
+  function onlyContentOfControl(el) {
+    const tagName = (n) => String(dom.localName(n) || '').toLowerCase();
+    let control = null;
+    for (let a = dom.parentElement(el); a && !control; a = dom.parentElement(a)) {
+      const r = helpers.aria.getExplicitRole(a);
+      if (r === 'link' || r === 'button') control = a;
+      else if (
+        !r &&
+        ((tagName(a) === 'a' && dom.hasAttribute(a, 'href')) || tagName(a) === 'button')
+      ) {
+        control = a;
+      }
+    }
+    if (!control) return false;
+    if (String(dom.textContent(control) || '').trim()) return false;
+    return !Array.from(dom.querySelectorAll(control, 'img, svg, canvas, object, embed')).some(
+      (n) => n !== el && !dom.contains(el, n)
+    );
+  }
+
   for (const el of nodes) {
     if (!el || !dom.get(el, 'getAttribute')) continue;
     const type = trim(attr(el, 'type')).toLowerCase();
     if (!type.startsWith('image/')) continue;
     if (insideAriaHidden(el)) continue;
+    if (onlyContentOfControl(el)) continue;
     const role = firstRole(el);
     if (role === 'none' || role === 'presentation') continue;
     applicableCount += 1;
@@ -259,6 +306,29 @@ function runInPage(ctx) {
             hintKey: 'objectImageRoleImg_hint_cantTell_fallback'
           },
           data: { details: { reasonCode: 'fallbackOnly', type }, visibilityFilter: VF }
+        })
+      );
+      continue;
+    }
+
+    if (!isRoleImg && !certainlyInformative(el)) {
+      cantTells.push(
+        helpers.reportOccurrence(el, {
+          summary:
+            'This image object has no text alternative. If it carries information, it fails 1.1.6; if it is decorative, it needs aria-hidden="true" (1.2.3).',
+          hint: 'If the image carries information, give the <object> role="img" and an aria-label or aria-labelledby, or follow it with a link or button to an alternative content; if it is decorative, add aria-hidden="true".',
+          i18n: {
+            summaryKey: 'objectImageRoleImg_summary_cantTell_mayBeDecorative',
+            hintKey: 'objectImageRoleImg_hint_cantTell_mayBeDecorative'
+          },
+          uncertainty: {
+            code: 'judgement-required',
+            needed: 'Whether the image carries information or is decorative.'
+          },
+          data: {
+            details: { reasonCode: 'noAlternativeMayBeDecorative', type },
+            visibilityFilter: VF
+          }
         })
       );
       continue;

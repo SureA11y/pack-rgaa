@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>rgaa-quotation-review — scenario fixture</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.4; margin: 24px; }
+    h1 { font-size: 20px; margin: 0 0 16px; }
+    h2 { font-size: 16px; margin: 22px 0 10px; }
+    .note { font-size: 12px; opacity: 0.85; margin: 8px 0 16px; }
+    .case { border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin: 10px 0; }
+    .case-title { font-weight: 700; margin: 0 0 8px; }
+  </style>
+</head>
+<body>
+  <h1>Scenario fixture: <code>rgaa-quotation-review</code> (RGAA 9.4)</h1>
+
+  <p class="note">
+    Each target has a stable <code>id</code> of the form <code>qtr_case_NN</code>.
+    Paragraphs and passages of 8 words or more in quotation marks outside q and blockquote are asked about.
+  </p>
+
+  <div class="case" id="case_01">
+    <div class="case-title">01 — CANTTELL: a paragraph wholly in quotation marks</div>
+    <p id="qtr_case_01">« La culture ne s’hérite pas, elle se conquiert, et chaque génération doit la reconquérir. »</p>
+  </div>
+
+  <div class="case" id="case_02">
+    <div class="case-title">02 — CANTTELL: a long passage in running text</div>
+    <p id="qtr_case_02">Le maire a rappelé que « la médiathèque restera ouverte tout l’été, y compris le samedi matin » lors du conseil.</p>
+  </div>
+
+  <div class="case" id="case_03">
+    <div class="case-title">03 — NOT APPLICABLE: a title of a few words</div>
+    <p id="qtr_case_03">Exposition « Les couleurs du port » jusqu’au 30 juin.</p>
+  </div>
+
+  <div class="case" id="case_04">
+    <div class="case-title">04 — NOT APPLICABLE: a block quotation already marked up</div>
+    <figure id="qtr_case_04"><blockquote><p>« La culture ne s’hérite pas, elle se conquiert, et chaque génération doit la reconquérir. »</p></blockquote><figcaption>André Malraux</figcaption></figure>
+  </div>
+</body>
+</html>

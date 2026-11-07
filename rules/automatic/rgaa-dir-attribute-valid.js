@@ -20,8 +20,10 @@
  *   ignored: HTML matches the keyword exactly, apart from case, so a
  *   browser ignores dir=" rtl ". dir="auto", which HTML allows, fails with
  *   its own reasonCode on reverse-direction text, since RGAA names only
- *   those two values. Whether the direction is the right one is the
- *   relevance condition of the same test, left to a person.
+ *   those two values. The relevance condition of the same test fails a
+ *   dir that changes the direction on text whose letters all read in the
+ *   old one (directionNotRelevant): dir="rtl" on French text. Other
+ *   questions of relevance are left to a person.
  * @implementation-notes
  * - The inherited direction comes from the nearest ancestor whose dir is
  *   ltr or rtl, or, for an ancestor with dir="auto", from the first strong
@@ -36,7 +38,8 @@ const id = 'rgaa-dir-attribute-valid';
 
 const meta = {
   title: 'dir attributes are ltr or rtl',
-  description: 'Checks that every dir attribute is ltr or rtl, the two values RGAA accepts.',
+  description:
+    'Checks that every dir attribute is ltr or rtl, the two values RGAA accepts, and fails one that turns text the wrong way.',
   i18n: {
     titleKey: 'dirAttributeValid_title',
     descriptionKey: 'dirAttributeValid_description'
@@ -91,6 +94,28 @@ function runInPage(ctx) {
     return String(dom.textContent(el) || '');
   }
 
+  // The element's text, without that of descendants with their own dir,
+  // scripts or styles.
+  function textOutsideOwnDir(el) {
+    const tag = String(dom.tagName(el) || '').toLowerCase();
+    if (tag === 'input' || tag === 'textarea') return ownText(el);
+    const parts = [];
+    const visit = (node) => {
+      for (const n of Array.from(dom.childNodes(node) || [])) {
+        const type = dom.nodeType(n);
+        if (type === 3) parts.push(String(dom.nodeValue(n) || ''));
+        else if (type === 1) {
+          const t = String(dom.tagName(n) || '').toLowerCase();
+          if (['head', 'script', 'style', 'template', 'noscript'].includes(t)) continue;
+          if (dom.hasAttribute(n, 'dir')) continue;
+          visit(n);
+        }
+      }
+    };
+    visit(el);
+    return parts.join(' ');
+  }
+
   function inheritedDir(el) {
     for (let p = dom.parentElement(el); p; p = dom.parentElement(p)) {
       if (!dom.get(p, 'hasAttribute') || !dom.hasAttribute(p, 'dir')) continue;
@@ -113,7 +138,30 @@ function runInPage(ctx) {
     }
 
     applicableCount += 1;
-    if (value === 'ltr' || value === 'rtl') continue;
+    if (value === 'ltr' || value === 'rtl') {
+      // A dir that changes the direction, on text with letters of the old
+      // direction only, is not relevant (8.10.2): dir="rtl" on French text.
+      if (value === inheritedDir(el)) continue;
+      const text = textOutsideOwnDir(el);
+      const old = value === 'rtl' ? 'ltr' : 'rtl';
+      if (!hasStrong(text, old) || hasStrong(text, value)) continue;
+      occurrences.push(
+        helpers.reportOccurrence(el, {
+          summary: `This element has dir="${raw}", but its text reads ${value === 'rtl' ? 'left to right' : 'right to left'}.`,
+          hint: 'Remove the dir attribute, or set it to the direction the text reads in.',
+          i18n: {
+            summaryKey: `dirAttributeValid_summary_fail_irrelevant_${value}`,
+            hintKey: 'dirAttributeValid_hint_fail_irrelevant',
+            params: { value: raw }
+          },
+          data: {
+            details: { reasonCode: 'directionNotRelevant', value: raw },
+            visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
+          }
+        })
+      );
+      continue;
+    }
     occurrences.push(
       helpers.reportOccurrence(el, {
         summary: isAuto

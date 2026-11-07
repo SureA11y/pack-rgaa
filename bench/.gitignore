@@ -1,0 +1,4 @@
+# Scans are large; `npm run scan` makes them again.
+results/
+# The engines vendor.mjs fetches and builds.
+vendor/

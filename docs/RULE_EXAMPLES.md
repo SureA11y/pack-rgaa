@@ -56,6 +56,22 @@ The W3C validator accepts both: `aria-expanded` is allowed on a heading, and an 
 ```
 Three validator errors under RGAA 8.2.1: an empty `aria-expanded` value, `aria-label` on a `<div>` with no role (which cannot be named), and `role="heading"` without `aria-level`, which the validator requires although WAI-ARIA gives a default level.
 
+## rgaa-aria-hidden-text-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<p aria-hidden="true">Offre valable jusqu’au 31 mars</p>
+```
+Sighted users read the text, screen reader users never hear it: a person checks that it is given to them another way, or carries no information (RGAA 10.8.1).
+
+**Not applicable**
+```html
+<label>Nom <span aria-hidden="true">*</span></label>
+```
+A sign alone is not text of two words.
+
 ## rgaa-aria-list-item-roles
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -96,21 +112,23 @@ Both roles are ones the W3C validator accepts, and allowed on their elements; th
 ```
 The validator reports the unknown token `bogus` even though `button` follows it as a fallback (WCAG's `aria-roles-valid` passes on one valid token), and `role="tab"` is not allowed on `<nav>`. Both fail RGAA 8.2.1. An `<img alt="" role="presentation">` is asked about instead: the validator reports it, but RGAA 1.2.1 names `role="presentation"` for decorative images.
 
-## rgaa-button-name-present
+## rgaa-autocomplete-user-field
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
 
 **Passed**
 ```html
-<button type="button" aria-label="Fermer le menu">×</button>
+<label for="e">Courriel</label>
+<input id="e" type="email" autocomplete="email">
 ```
-The button outside any form has a name, its `aria-label`.
+The field asks for the user's email and its value is in RGAA's list (11.13.1). Whether the value suits the field is for a person.
 
 **Failed**
 ```html
-<button type="button"><img src="menu.svg" alt=""></button>
+<label for="e">Courriel</label>
+<input id="e" type="email" autocomplete="email home">
 ```
-The button outside any form has no name: as a component driven by script, it fails RGAA 7.1.1. The same empty button inside a `<form>` is `rgaa-form-button-name-present`'s, under 11.9.1.
+The value names a field of the list, so the author says it is about the user, but it is not well formed and the browser cannot use it. A field that looks like personal data with no autocomplete, `on` or `off` is asked about instead, and an invalid value on a field that does not concern the user, such as a search field, is out of scope.
 
 ## rgaa-canvas-decorative-aria-hidden
 
@@ -155,7 +173,39 @@ With `role="img"`, only `aria-labelledby` or `aria-label` can provide the altern
 <canvas width="40" height="20"></canvas>
 <a href="/donnees">Données du graphique</a>
 ```
-A person checks that the adjacent link leads to an alternative content.
+A person checks that the adjacent link leads to an alternative content. A canvas with nothing at all is asked about too, since it may be decorative (then it fails 1.2.5), unless it certainly carries information, captioned or focusable: then it fails. An image that is the only content of a link or a button is judged as the control's label, under Links (6.1), Forms (11.9) or Scripts (7.1), as the glossary « Image porteuse d'information » (notes 1 and 2) says.
+
+## rgaa-captcha-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<img src="captcha.php" alt="Image CAPTCHA">
+```
+A person checks that the alternative says what to do, and that an audio CAPTCHA or another way in is offered (RGAA 1.4, 1.5).
+
+**Not applicable**
+```html
+<img src="mairie.jpg" alt="La mairie">
+```
+Nothing says the image is a CAPTCHA.
+
+## rgaa-color-reference-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<p>Les champs indiqués en rouge sont obligatoires.</p>
+```
+The text indicates required fields by a colour: a person checks that they are also marked another way, such as an asterisk or the word « obligatoire » (RGAA 3.1.2).
+
+**Not applicable**
+```html
+<p>T-shirt rouge en coton bio.</p>
+```
+The colour names a product; it indicates nothing on the page.
 
 ## rgaa-complex-table-summary
 
@@ -206,6 +256,38 @@ A complex table with a summary in its caption: a person checks that it explains 
 ```
 In an HTML5 document the `summary` attribute is not a summary, so the table has none to judge; rgaa-complex-table-summary asks about it under 5.1.1. Under an HTML 4.01 doctype the same table is flagged.
 
+## rgaa-consequential-form-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<form action="/paiement"><label for="cc">Numéro de carte</label><input id="cc" autocomplete="cc-number"><button type="submit">Payer 49 €</button></form>
+```
+A person checks that the order can be reviewed, confirmed or cancelled (RGAA 11.12).
+
+**Not applicable**
+```html
+<form action="/contact"><label for="m">Message</label><textarea id="m"></textarea><button type="submit">Envoyer</button></form>
+```
+A contact form has none of the consequences 11.12 names.
+
+## rgaa-context-change-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<select onchange="this.form.submit()" aria-label="Langue"><option>Français</option><option>English</option></select>
+```
+Choosing an option submits the form at once: a person checks that a text before the list warns of it (RGAA 7.4.1).
+
+**Not applicable**
+```html
+<select aria-label="Langue"><option>Français</option></select><button>Changer</button>
+```
+An explicit button starts the change.
+
 ## rgaa-contrast-minimum
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -240,6 +322,38 @@ The paragraph's text color is paired with the background color declared on `<bod
 ```
 A text color is declared and no background color is, on the paragraph or any ancestor (10.5.1): a reader whose browser shows a dark background keeps the grey text on it.
 
+## rgaa-cryptic-content-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<p>Merci pour votre visite :-)</p>
+```
+The emoticon has no title: a person checks that the text next to it says what it means (RGAA 13.5.1).
+
+**Not applicable**
+```html
+<p><abbr title="sourire">:-)</abbr></p>
+```
+The emoticon has a title; whether it is relevant is 13.6.1's matter.
+
+## rgaa-current-item-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<nav><ul><li class="active"><a href="/">Accueil</a></li><li><a href="/contact">Contact</a></li></ul></nav>
+```
+Only a class marks the active page, the glossary's first example of information given by position or shape: a person checks, and aria-current="page" fixes it (RGAA 10.9.1).
+
+**Not applicable**
+```html
+<nav><a href="/" class="active" aria-current="page">Accueil</a></nav>
+```
+aria-current tells the active page.
+
 ## rgaa-data-table-headers-review
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -262,6 +376,28 @@ No cell is a header. If this is a data table, "Name" and "Age" are column header
 ```
 The table has header cells, so the question does not come up. A table with `role="presentation"` is not asked about either.
 
+## rgaa-default-language-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<html lang="und">
+```
+und (undetermined) and mul (several languages) are valid codes but name no language: a person checks which language the page is mainly in (RGAA 8.4.1).
+
+**Flagged (cantTell)**
+```html
+<html lang="en"> … <p>La médiathèque municipale ouvre ses portes du mardi au samedi…</p>
+```
+The page's text is clearly French, by its frequent words, while lang says English.
+
+**Not applicable**
+```html
+<html lang="fr"> … <p>La médiathèque municipale ouvre ses portes du mardi au samedi…</p>
+```
+The text is in the declared language.
+
 ## rgaa-dir-attribute-valid
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -277,6 +413,12 @@ The direction is `rtl`, one of the two values RGAA accepts.
 <p dir="auto" lang="ar">مرحبا</p>
 ```
 HTML allows `dir="auto"`, but RGAA accepts only `ltr` or `rtl` on text that reads in the reverse direction of the page. `dir="auto"` on text in the page's own direction is not applicable.
+
+**Failed**
+```html
+<p dir="rtl">Bonjour tout le monde</p>
+```
+The French text reads left to right: `dir="rtl"` turns it the wrong way, which is not a relevant value (RGAA 8.10.2).
 
 ## rgaa-doctype-position
 
@@ -357,15 +499,31 @@ The embedded image has `role="img"` and a text alternative.
 
 **Failed**
 ```html
-<embed type="image/svg+xml" src="chart.svg">
+<figure><embed type="image/svg+xml" src="chart.svg"><figcaption>Ventes</figcaption></figure>
 ```
-No text alternative, and no link or button to an alternative content after it.
+The image has a caption, so it carries information, and it has no text alternative and no link or button to an alternative content after it. A bare `<embed>` image that may be decorative is asked about instead: if it is decorative, it fails 1.2.6.
 
 **Flagged (cantTell)**
 ```html
 <embed type="image/svg+xml" src="chart.svg" title="Ventes 2024">
 ```
 A text alternative without `role="img"`: the test wording asks for both, the methodology for the alternative only.
+
+## rgaa-embedded-player-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<iframe src="https://www.youtube-nocookie.com/embed/abc" title="Présentation de la médiathèque"></iframe>
+```
+A person checks the video's transcript, captions, audio description and controls (RGAA theme 4).
+
+**Not applicable**
+```html
+<iframe src="https://www.openstreetmap.org/export/embed.html" title="Plan d'accès"></iframe>
+```
+A map is not a media player.
 
 ## rgaa-embedded-refresh-review
 
@@ -424,6 +582,56 @@ The address fields are grouped, but the group has no `<legend>` saying what it i
 ```
 The group has a legend.
 
+## rgaa-field-hidden-label-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<label for="q" class="sr-only">Rechercher</label><input id="q"><button>OK</button>
+```
+The label is visually hidden: a person checks that a title, or visible text next to the field, makes the expected input understandable (RGAA 11.1.3).
+
+**Not applicable**
+```html
+<label for="q">Rechercher</label><input id="q">
+```
+The label is visible.
+
+## rgaa-field-label-consistency-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<label for="a">Adresse électronique</label><input id="a" type="email" autocomplete="email">
+<label for="b">Courriel</label><input id="b" type="email" autocomplete="email">
+```
+A person checks that both labels clearly ask for the same email address (RGAA 11.3.1).
+
+**Not applicable**
+```html
+<label for="a">Téléphone :</label><input id="a" type="tel" autocomplete="tel">
+<label for="b">Téléphone *</label><input id="b" type="tel" autocomplete="tel">
+```
+The labels are the same once punctuation is ignored.
+
+## rgaa-field-label-empty
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Failed**
+```html
+<label for="nom"></label><input id="nom">
+```
+The field's only label is empty, so it cannot « permettre de connaître la fonction exacte du champ » (RGAA 11.2.1).
+
+**Passed**
+```html
+<label for="nom">Nom</label><input id="nom">
+```
+The label says what to enter; whether it is exact is for a person.
+
 ## rgaa-field-label-in-name-sources
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -438,9 +646,9 @@ The title starts with the visible label "E-mail", so both label sources contain 
 **Failed**
 ```html
 <label for="mail">E-mail</label>
-<input type="email" id="mail" title="Adresse électronique">
+<input type="email" id="mail" aria-label="Adresse électronique">
 ```
-RGAA 11.2.5 checks every label source present, and the title does not contain the visible label, although the `<label>` gives the accessible name. WCAG 2.5.3 compares only the accessible name, so `label-in-name` does not apply.
+The `aria-label` gives the accessible name, and it does not contain the visible label "E-mail" (RGAA 11.2.5). A source that does not give the name, such as a `title` holding a format hint beside the `<label>`, is asked about instead: the test's conditions name every source, but its methodology and the glossary judge the étiquette alone.
 
 ## rgaa-field-label-listed-source
 
@@ -542,6 +750,24 @@ The button inside the form has a label, its content.
 ```
 The button inside the form has no label, so RGAA 11.9.1 has nothing to judge. The same empty button outside any form is not applicable: 11.9.1 covers only the buttons in a `<form>` or `role="form"` element.
 
+## rgaa-format-hint-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<label for="client">Numéro de client</label>
+<input id="client" pattern="[A-Z]{2}[0-9]{6}">
+```
+A person checks that an input error says the expected format and gives an example (RGAA 11.11.1, 11.11.2).
+
+**Not applicable**
+```html
+<label for="cp">Code postal (ex. : 75001)</label>
+<input id="cp" pattern="[0-9]{5}">
+```
+The label gives an example.
+
 ## rgaa-frame-title-attribute-present
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -558,21 +784,27 @@ The frame has a `title` attribute (RGAA 2.1.1).
 ```
 The frame has an accessible name, which WCAG 4.1.2 accepts, but no `title` attribute, which RGAA 2.1.1 asks for. Only `aria-hidden="true"` takes a frame out of scope; `tabindex="-1"` does not.
 
-## rgaa-frame-title-not-empty
-
-*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
-
-**Passed**
-```html
-<iframe src="weather.html" title="Weather forecast"></iframe>
-```
-The title is not empty. Whether it is relevant is for a person.
-
 **Failed**
 ```html
 <iframe src="map.html" title="" aria-label="Map"></iframe>
 ```
-The title is empty, so it cannot be relevant (RGAA 2.2.1). The `aria-label` gives the frame a name for WCAG, but 2.2.1 judges the `title` attribute alone.
+The title is empty, so the frame has no « titre de cadre », the content of its `title` attribute (RGAA criterion 2.1 and its glossary). The `aria-label` does not replace it.
+
+## rgaa-frame-title-relevant
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<iframe src="map.html" title="iframe"></iframe>
+```
+The frame has a title, so a person checks that it says what the frame contains (RGAA 2.2.1). "iframe" names nothing.
+
+**Not applicable**
+```html
+<iframe src="map.html" title=""></iframe>
+```
+An empty title gives the frame no « titre de cadre »: it fails 2.1.1, and 2.2 does not apply to it.
 
 ## rgaa-heading-content-present
 
@@ -605,6 +837,22 @@ The heading has no content at all, so RGAA 9.1.2 has nothing to judge. `<h2 titl
 <div role="heading">News</div>
 ```
 No `aria-level`. WAI-ARIA gives the heading level 2 by default, which WCAG accepts, but RGAA 9.1.3 does not.
+
+## rgaa-headings-absent-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<body><p>Les horaires de la mairie changent pendant les vacances scolaires… (30 words or more)</p></body>
+```
+The page has text but no heading at all: a person checks whether some passages act as headings (RGAA 9.1.3).
+
+**Not applicable**
+```html
+<body><h1>Mairie</h1><p>Les horaires…</p></body>
+```
+The page has a heading.
 
 ## rgaa-html-elements-attributes-valid
 
@@ -687,6 +935,22 @@ The text alternative runs to 88 characters; a person decides whether it should b
 ```
 A short text alternative.
 
+## rgaa-img-alt-present
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Passed**
+```html
+<img src="logo.png" alt="Example">
+```
+The image has a text alternative (RGAA 1.1.1).
+
+**Failed**
+```html
+<figure><img src="rapport.png" width="120" height="40"><figcaption>Rapport annuel</figcaption></figure>
+```
+The image has a caption, so it carries information, and it has no `alt` attribute and no other text alternative. An image that is the only content of a link or a button is judged as the control's label, under Links (6.1), Forms (11.9) or Scripts (7.1), as the glossary « Image porteuse d'information » (notes 1 and 2) says. An image that may be decorative, such as a bullet before a list item, is asked about instead: it then fails 1.2.1. A spacer (2 px or less) is left out: it is decorative, and fails 1.2.1 alone.
+
 ## rgaa-img-decorative-no-alternative
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -708,6 +972,38 @@ The image is hidden from assistive technologies but has an `aria-label`.
 <img src="logo.png" alt="" title="Logo">
 ```
 The image may carry information, and then its `title` is its alternative; a person decides.
+
+## rgaa-img-describedby-target
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Failed**
+```html
+<img src="ventes.png" alt="Ventes 2024" aria-describedby="desc-ventes">
+```
+No element has the id `desc-ventes`: aria-describedby associates no description (RGAA 1.6.9).
+
+**Passed**
+```html
+<img src="ventes.png" alt="Ventes 2024" aria-describedby="d"><p id="d">Les ventes montent de 5 % par trimestre.</p>
+```
+aria-describedby points to a passage with text; whether it is the detailed description is for a person.
+
+## rgaa-img-no-alt-decorative
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Not applicable**
+```html
+<img src="pixel.gif" alt="" width="1" height="1">
+```
+The spacer has an empty `alt`, as RGAA 1.2.1 asks of a decorative image; rgaa-img-decorative-no-alternative checks the rest of 1.2.1 for it.
+
+**Failed**
+```html
+<img src="pixel.gif" width="1" height="1">
+```
+A 1 by 1 px image carries no information, so it is decorative, and it has no `alt` attribute (RGAA 1.2.1).
 
 ## rgaa-keyboard-only-event-handlers
 
@@ -743,6 +1039,50 @@ The `for` value is the id of the field.
 ```
 No element has the id `e-mail`, so the label labels nothing.
 
+## rgaa-label-placement-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<input id="nom" type="text"> <label for="nom">Nom</label>
+```
+In a browser: the label is on the right of a text field, not above it or on its left (RGAA 11.4.2).
+
+**Flagged (cantTell)**
+```html
+<label for="cgu">J’accepte les conditions</label> <input id="cgu" type="checkbox">
+```
+In a browser: the label is on the left of a check box, not below it or on its right (RGAA 11.4.3).
+
+**Not applicable**
+```html
+<label for="mail" style="display:block">Courriel</label><input id="mail" type="email">
+```
+The label sits just above its field. Without a layout (jsdom) the rule is not applicable.
+
+## rgaa-language-change-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<html lang="fr"> … <p>This website uses cookies to improve your experience and measure the audience.</p>
+```
+The paragraph is clearly English by its frequent words, with no lang: a person checks it and adds lang="en" (RGAA 8.7.1).
+
+**Not applicable**
+```html
+<html lang="fr"> … <p lang="en">This website uses cookies to improve your experience and measure the audience.</p>
+```
+The change of language is given.
+
+**Not applicable**
+```html
+<html lang="fr"> … <p>Abonnez-vous à notre newsletter pour suivre les actualités de la start-up.</p>
+```
+Foreign words in French text, not a passage in another language.
+
 ## rgaa-layout-table-no-data-markup
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -762,6 +1102,25 @@ The layout table has only plain cells.
 </table>
 ```
 The layout table has a header cell.
+
+## rgaa-legend-relevance-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<fieldset><legend>Adresse de livraison</legend>
+<label for="rue">Rue</label><input id="rue">
+<label for="ville">Ville</label><input id="ville">
+</fieldset>
+```
+A person checks that « Adresse de livraison » says what the fields have in common (RGAA 11.7.1).
+
+**Not applicable**
+```html
+<div role="group" aria-label="Mise en forme"><button>Gras</button><button>Italique</button></div>
+```
+The group holds no form field.
 
 ## rgaa-letters-spaced-with-spaces
 
@@ -877,6 +1236,28 @@ The hover and focus colors both contrast more than 3:1 with the surrounding text
 ```
 The underline marks the link without color, so 10.6.1 does not apply to it.
 
+## rgaa-link-title-content-name
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Fails**
+```html
+<a href="/" title="Accueil"><img src="home.png" alt="Retour à la page d'accueil"></a>
+```
+The title does not repeat the image's alternative: a screen reader set to read titles says only « Accueil » (glossary « Intitulé de lien », note 2).
+
+**Flagged (cantTell)**
+```html
+<a href="/rapport.pdf" title="Rapport annuel">Rapport annuel <img src="pdf.png" alt="PDF"></a>
+```
+The title keeps the text but drops the icon's alternative; a person checks whether it should repeat it.
+
+**Passes**
+```html
+<a href="/" title="Retour à la page d'accueil du site"><img src="home.png" alt="Retour à la page d'accueil"></a>
+```
+The title contains the image's alternative.
+
 ## rgaa-listbox-option-groups-absent
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -928,7 +1309,35 @@ One `<main>` is visible; the other carries the `hidden` attribute (RGAA 9.2.1 st
   </body>
 </html>
 ```
-The second `<main>` is hidden by CSS only; RGAA wants the `hidden` attribute. `role="main"` with no `<main>` element fails too. A page with neither is asked about, and a page without the HTML5 doctype is not applicable.
+The second `<main>` is hidden by CSS only; RGAA wants the `hidden` attribute. `role="main"` with no `<main>` element fails too, as do `role="banner"`, `"navigation"` or `"contentinfo"` on another element than `<header>`, `<nav>` or `<footer>`, and a page with text and no `<main>`. A page with no text of its own (only a frame or a canvas) is asked about, and a page without the HTML5 doctype is not applicable.
+
+## rgaa-markup-for-presentation
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Failed**
+```html
+<h2 role="presentation">Nos services</h2>
+```
+RGAA's 8.9.1 methodology accepts `role="presentation"` on an empty paragraph or a `<blockquote>`, but calls it « non-conforme sur un titre ».
+
+**Failed**
+```html
+<p>Texte</p><p>&nbsp;</p><p>Suite</p>
+```
+The paragraph holds only a non-breaking space: it is used to make space, one of the misuses the methodology names (RGAA 8.9.1).
+
+**Flagged (cantTell)**
+```html
+<p>Première ligne<br><br>Deuxième ligne</p>
+```
+Two line breaks in a row may separate paragraphs, or lines of a poem: a person checks.
+
+**Not applicable**
+```html
+<blockquote><p>Une citation</p></blockquote>
+```
+The `<blockquote>` holds a quotation.
 
 ## rgaa-markup-validation-review
 
@@ -998,6 +1407,55 @@ The page reloads every 20 hours, the limit RGAA 13.1.1 accepts. WCAG 2.2.1 exemp
 ```
 The page reloads itself every 30 seconds. A redirect to another address is `rgaa-meta-redirect-immediate`'s matter.
 
+## rgaa-navigation-systems-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<nav aria-label="Menu principal"><a href="/actualites">Actualités</a> <a href="/demarches">Démarches</a> <a href="/contact">Contact</a></nav>
+```
+The page shows a menu but no site map link or search engine: a person checks that its set of pages offers a second navigation system.
+
+**Not applicable**
+```html
+<nav aria-label="Menu principal"><a href="/actualites">Actualités</a> <a href="/demarches">Démarches</a> <a href="/contact">Contact</a></nav>
+<form role="search" action="/recherche"><label for="q">Rechercher</label> <input type="search" id="q" name="q"></form>
+```
+The page shows a menu and a search engine; one page cannot pass 12.1 for its set of pages, so nothing is asked.
+
+## rgaa-noscript-alternative-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<noscript><p>Activez JavaScript pour voir la carte.</p></noscript>
+```
+A person checks that the alternative gives content and features similar to the script's; this message gives neither (RGAA 7.2.1).
+
+**Not applicable**
+```html
+<noscript><img src="pixel.gif" width="1" height="1" alt=""></noscript>
+```
+A tracking image is no alternative.
+
+## rgaa-object-embed-decorative-aria-hidden
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Failed**
+```html
+<object type="image/png" data="swirl.png" aria-hidden="true" title="Décor"></object>
+```
+The image is marked decorative with `aria-hidden="true"`, but still carries a `title`, which RGAA 1.2.3 forbids on a decorative image.
+
+**Passed**
+```html
+<embed type="image/png" src="swirl.png" aria-hidden="true">
+```
+The decorative image is hidden and has no alternative (RGAA 1.2.6).
+
 ## rgaa-object-image-role-img
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -1010,15 +1468,48 @@ The image object has `role="img"` and a text alternative.
 
 **Failed**
 ```html
-<object type="image/png" data="chart.png"></object>
+<figure><object type="image/png" data="chart.png"></object><figcaption>Ventes</figcaption></figure>
 ```
-No text alternative, no fallback content, and no link or button to an alternative content after it.
+The image has a caption, so it carries information, and it has no text alternative, no fallback content, and no link or button to an alternative content after it. A bare `<object>` image that may be decorative is asked about instead: if it is decorative, it fails 1.2.3.
 
 **Flagged (cantTell)**
 ```html
 <object type="image/png" data="chart.png">Ventes 2024 : 10 000</object>
 ```
 The content inside `<object>` is not a text alternative under RGAA 1.1.6; a person checks how the image is made accessible.
+
+## rgaa-modal-tab-order
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<header><a href="/">Accueil</a></header>
+<div role="dialog" aria-modal="true" aria-label="Connexion"><button>Fermer</button></div>
+```
+The dialog is marked modal, but the link behind it can still take focus with the Tab key: a person checks that a script keeps focus inside (RGAA 12.8.1).
+
+**Not applicable**
+```html
+<div role="dialog" aria-label="Aide"><button>Fermer</button></div>
+```
+The dialog is not modal, so the page behind it stays in the tab order on purpose.
+
+## rgaa-moving-content-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<video autoplay muted loop src="fond.mp4"></video>
+```
+The video plays by itself and has no controls: a person checks that the user can stop it, hide it, or do without it (RGAA 13.8.1).
+
+**Not applicable**
+```html
+<video controls src="film.mp4"></video>
+```
+The video does not start by itself, and its controls can pause it.
 
 ## rgaa-office-document-link
 
@@ -1035,6 +1526,12 @@ The link downloads a PDF; a person checks the document or its accessible version
 <a href="/get?file=rapport.pdf">Rapport annuel</a>
 ```
 The query string names a PDF, so the link downloads one even though its path has no extension.
+
+**Flagged (cantTell)**
+```html
+<a href="/media/1234/download">Rapport annuel (PDF, 2 Mo)</a>
+```
+The address names no format, but the link's text announces a PDF download, in brackets with its size. A format named in passing ("Comment ouvrir un PDF") is not taken for a download.
 
 **Not applicable**
 ```html
@@ -1089,9 +1586,12 @@ The option group has no `label` attribute.
 **Fails (in a browser)**
 ```html
 <style>@media (orientation: portrait) { .prices { display: none } }</style>
-<table class="prices"><tr><th>Adult</th><td>12 €</td></tr></table>
+<table class="prices">
+  <tr><th>Adult ticket</th><td>12 €</td></tr>
+  <tr><th>Child ticket</th><td>6 €</td></tr>
+</table>
 ```
-The price table disappears in portrait and its text is shown nowhere else there. The page still works in both orientations, so WCAG 1.3.4 passes, but RGAA 13.9.1 asks that the content stays the same. In jsdom, which cannot lay the page out, the rule asks about the table instead.
+The price table disappears in portrait and its text is shown nowhere else there. The page still works in both orientations, so WCAG 1.3.4 passes, but RGAA 13.9.1 asks that the content stays the same. When the presentation may just differ (a menu behind a button, the table shown as cards, another wording) the rule asks instead, since 13.9.1 lets « sa présentation et le moyen d’y accéder » differ. In jsdom, which cannot lay the page out, the rule asks about the table.
 
 **Passes (in a browser)**
 ```html
@@ -1203,6 +1703,34 @@ The centring is left to CSS.
 ```
 `<center>` is on RGAA 10.1.1's list of presentational elements.
 
+## rgaa-quotation-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<p>« La culture ne s’hérite pas, elle se conquiert, et chaque génération doit la reconquérir. »</p>
+```
+A person checks whether the paragraph is a quotation, to be marked up with <blockquote> (RGAA 9.4.2).
+
+**Flagged (cantTell)**
+```html
+<p>Le maire a rappelé que « la médiathèque restera ouverte tout l’été, y compris le samedi matin » lors du conseil.</p>
+```
+A person checks whether the passage is a quotation, to be marked up with <q> (RGAA 9.4.1).
+
+**Not applicable**
+```html
+<p>Exposition « Les couleurs du port » jusqu’au 30 juin.</p>
+```
+A title of a few words in quotation marks is not asked about.
+
+**Not applicable**
+```html
+<blockquote><p>« La culture ne s’hérite pas, elle se conquiert. »</p></blockquote>
+```
+The quotation is already marked up.
+
 ## rgaa-radio-group-present
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -1225,6 +1753,40 @@ The two choices are not grouped, so "Delivery" is not announced with them.
 ```
 The choices are in a fieldset with a legend.
 
+## rgaa-required-field-indication
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Failed**
+```html
+<form><label for="n">Nom</label><input id="n" required><label for="v">Ville</label><input id="v"></form>
+```
+The field is required, but its visible label shows no required indication (RGAA 11.10.2).
+
+**Failed**
+```html
+<form><label for="n">Nom *</label><input id="n" required><label for="v">Ville</label><input id="v"><p>* champs obligatoires</p></form>
+```
+The « * » is explained only after the field that uses it; RGAA's glossary wants the explanation before its first use.
+
+**Flagged (cantTell)**
+```html
+<form><fieldset><legend>Adresse (obligatoire)</legend><label for="r">Rue</label><input id="r" required></fieldset><label for="v">Ville</label><input id="v"></form>
+```
+The indication is in the legend, not in the field's label: a person checks that it identifies the field.
+
+**Passed**
+```html
+<form><p>Les champs marqués d'un * sont obligatoires.</p><label for="n">Nom *</label><input id="n" required><label for="v">Ville</label><input id="v"></form>
+```
+The sign is in the label and explained before its first use.
+
+**Not applicable**
+```html
+<form><label for="n">Nom</label><input id="n" required><label for="v">Ville (facultatif)</label><input id="v"></form>
+```
+The form marks its optional field, which makes 11.10.1 and 11.10.2 not applicable.
+
 ## rgaa-role-img-aria-name
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -1241,6 +1803,61 @@ The text alternative comes from `aria-label`.
 ```
 A `title` is not one of the sources RGAA 1.1.1 accepts for `role="img"`.
 
+## rgaa-same-name-checkboxes-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<p>Centres d’intérêt</p>
+<label><input type="checkbox" name="interets"> Sport</label>
+<label><input type="checkbox" name="interets"> Musique</label>
+<label><input type="checkbox" name="interets"> Lecture</label>
+```
+A person decides whether the three checkboxes need a fieldset and legend (RGAA 11.5.1).
+
+**Not applicable**
+```html
+<fieldset><legend>Langues</legend>
+<label><input type="checkbox" name="langues"> Français</label>
+<label><input type="checkbox" name="langues"> Anglais</label>
+<label><input type="checkbox" name="langues"> Espagnol</label>
+</fieldset>
+```
+The checkboxes are grouped in a fieldset.
+
+## rgaa-script-button-name-present
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Failed**
+```html
+<button type="button"><svg width="16" height="16"><rect width="16" height="16"/></svg></button>
+```
+The icon button outside a form has no name, and 7.1.3 asks « Le composant possède un nom pertinent » with no alternative.
+
+**Passed**
+```html
+<button type="button" aria-label="Fermer"><svg aria-hidden="true" width="16" height="16"><rect width="16" height="16"/></svg></button>
+```
+The button has a name, whose relevance a person judges.
+
+**Not applicable**
+```html
+<form><button></button></form>
+```
+A button in a form is checked under 11.9.1 by rgaa-form-button-name-present.
+
+## rgaa-script-redirect-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<script>setTimeout(function () { window.location.href = '/accueil'; }, 5000);</script>
+```
+The page redirects after five seconds: a person checks that the user can stop, extend or be warned of it (RGAA 13.1.3).
+
 ## rgaa-scripted-components-review
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -1254,12 +1871,35 @@ A `title` is not one of the sources RGAA 1.1.1 accepts for `role="img"`.
 ```
 The page has script, so a person checks every scripted component against RGAA 7.1. The two `role` elements are listed as candidates; `tabs.js` may attach behaviour to other elements that the markup does not show.
 
+**Flagged (cantTell)**
+```html
+<script src="/js/menu.js"></script>
+<a href="#">Ouvrir le menu</a>
+```
+The link leads nowhere, so a script likely makes it act as a button: it is listed for a person to check that its role is relevant (RGAA 7.1.3).
+
 **Not applicable**
 ```html
 <h1>Opening hours</h1>
 <p>Monday to Friday, 9:00 to 17:00.</p>
 ```
 The page has no script element, inline handler, `javascript:` URL or custom element, so nothing can create or control a scripted component.
+
+## rgaa-select-fake-groups-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<select><option>Choisissez</option><option>-- Fruits --</option><option>Pomme</option><option>-- Légumes --</option><option>Carotte</option></select>
+```
+The dashed options are group headings that screen readers read as choices: a person checks whether <optgroup> should group the items (RGAA 11.8.1).
+
+**Not applicable**
+```html
+<select><optgroup label="Fruits"><option>Pomme</option></optgroup></select>
+```
+The items are grouped with <optgroup>.
 
 ## rgaa-skip-link-placement
 
@@ -1307,6 +1947,49 @@ A link before the navigation leads to `<main>`.
 ```
 Navigation comes before the main content and no link leads to it. WCAG 2.4.1 accepts the main landmark as a way to bypass the navigation; RGAA 12.7.1 needs a link. Without the `<nav>`, the rule asks instead, since a one-page site may not need a skip link.
 
+**Flagged (cantTell)**
+```html
+<div aria-hidden="true"><a href="#contenu">Aller au contenu</a></div>
+<nav><a href="/">Accueil</a></nav>
+<main id="contenu"><h1>Actualités</h1></main>
+```
+The skip link works with the keyboard, but `aria-hidden="true"` hides it from screen reader users: a person decides.
+
+## rgaa-status-message-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<p class="alert alert-success">Message envoyé avec succès</p>
+```
+If this message appears after an action, it needs role="status" (RGAA 7.5.1); a person checks.
+
+**Not applicable**
+```html
+<div role="status">Message envoyé avec succès</div>
+```
+The message has role="status".
+
+## rgaa-svg-decorative-aria-hidden
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Not applicable**
+```html
+<button type="button">
+  <svg aria-hidden="true" width="16" height="16"><rect width="16" height="16"/></svg>
+  Rechercher
+</button>
+```
+The decorative icon is hidden with `aria-hidden="true"`, as RGAA 1.2.4 asks; rgaa-svg-hidden-no-alternative checks the rest of 1.2.4 for it.
+
+**Failed**
+```html
+<p>Contact <svg role="presentation" width="16" height="16"><rect width="16" height="16"/></svg></p>
+```
+The SVG is marked decorative with `role="presentation"`, which RGAA 1.2.4 does not accept: a decorative SVG needs `aria-hidden="true"`. Another exposed SVG that may be decorative is asked about.
+
 ## rgaa-svg-hidden-no-alternative
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -1342,12 +2025,12 @@ The SVG has `role="img"` and an `aria-label`.
 
 **Failed**
 ```html
-<svg width="20" height="20">
-  <title>Logo</title>
+<svg tabindex="0" width="20" height="20">
+  <title>Plan</title>
   <circle cx="10" cy="10" r="8"/>
 </svg>
 ```
-The SVG has a text alternative but no `role="img"`.
+The SVG takes focus, so it carries information, and it has a text alternative but no `role="img"`. An image that is the only content of a link or a button is judged as the control's label, under Links (6.1), Forms (11.9) or Scripts (7.1), as the glossary « Image porteuse d'information » (notes 1 and 2) says. An SVG that may be decorative, such as an icon beside text, is asked about instead: it then fails 1.2.4.
 
 **Passed**
 ```html
@@ -1357,11 +2040,94 @@ The SVG has a text alternative but no `role="img"`.
 ```
 Named only by `<title>`, which RGAA 4.1.2 added to the sources 1.1.5 accepts.
 
-## rgaa-th-scope-row-col
+## rgaa-table-title-adjacent
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
 
 **Flagged (cantTell)**
+```html
+<h3>Population des villes</h3>
+<table><tr><th scope="col">Ville</th><th scope="col">Habitants</th></tr><tr><td>Lyon</td><td>520 000</td></tr></table>
+```
+The heading right before the table may be its title, given as plain text: if it is, a `<caption>` or aria-labelledby ties it (RGAA 5.4.1).
+
+**Not applicable**
+```html
+<table><caption>Population des villes</caption><tr><th scope="col">Ville</th></tr><tr><td>Lyon</td></tr></table>
+```
+The title is in a `<caption>`.
+
+## rgaa-text-direction-marked
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Failed**
+```html
+<p>مرحبا بكم في موقعنا</p>
+```
+The Arabic text reads right to left in a page that reads left to right, and no element around it has a `dir` attribute (RGAA 8.10.1).
+
+**Flagged (cantTell)**
+```html
+<p>Le mot شكرا veut dire merci.</p>
+```
+One word reads right to left inside a French sentence: a person checks whether it needs `dir="rtl"`. So is a link of one or two words, such as « العربية » in a language menu, which a browser shows the same with or without `dir`.
+
+**Not applicable**
+```html
+<p dir="rtl" lang="ar">مرحبا بكم في موقعنا</p>
+```
+The change of direction is marked with `dir="rtl"`.
+
+## rgaa-text-image-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<h2><img src="engagements.png" alt="Nos engagements"></h2>
+```
+The heading is an image: if it shows the text « Nos engagements », styled text should replace it (RGAA 1.8.1).
+
+**Not applicable**
+```html
+<a href="/"><img class="site-logo" src="logo.png" alt="Mairie de Lyon"></a>
+```
+A logo is a particular case of 1.8.
+
+## rgaa-th-association-present
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Failed**
+```html
+<table>
+  <tr><td></td><th>2023</th><th>2024</th></tr>
+  <tr><th>Paris</th><td>1</td><td>2</td></tr>
+</table>
+```
+The table has headers on both axes, and its `<th>` have no `scope`, `id` or header role (RGAA 5.7.1).
+
+**Flagged (cantTell)**
+```html
+<table><tr><th>Nom</th><th>Âge</th></tr><tr><td>Ana</td><td>31</td></tr></table>
+```
+With headers on one axis only, browsers tie them to their cells and an auditor may accept it: the table is asked about once.
+
+## rgaa-th-scope-row-col
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Passed**
+```html
+<table>
+  <tr><th scope="col">Name</th><th scope="col">Age</th></tr>
+  <tr><td>Ada</td><td>36</td></tr>
+</table>
+```
+The column headers use `scope="col"`.
+
+**Failed**
 ```html
 <table>
   <tr><td></td><th scope="colgroup" colspan="2">2025</th></tr>
@@ -1369,16 +2135,7 @@ Named only by `<title>`, which RGAA 4.1.2 added to the sources 1.1.5 accepts.
   <tr><th scope="row">North</th><td>10</td><td>12</td></tr>
 </table>
 ```
-RGAA accepts `scope="col"` or `"row"` on a header over a whole column or row (5.7.2), and no `scope`, with a unique `id`, on one over part of it (5.7.3). `scope="colgroup"` fails one of the two; which one depends on what the header covers, so a person decides.
-
-**Not applicable**
-```html
-<table>
-  <tr><th scope="col">Name</th><th scope="col">Age</th></tr>
-  <tr><td>Ada</td><td>36</td></tr>
-</table>
-```
-The headers use `scope="col"`.
+RGAA accepts `scope="col"` or `"row"` on a header over a whole column or row (5.7.2), and no `scope`, with a unique `id`, on one over part of it (5.7.3). `scope="colgroup"` fails one of the two, so criterion 5.7 fails either way. A row header with `scope="col"`, where the table's shape makes it certain, fails too.
 
 ## rgaa-title-placeholder-identical
 
@@ -1413,6 +2170,23 @@ RGAA's glossary entry "Étiquette de champ de formulaire" says a placeholder may
 ```
 `xx` is not an ISO 639 language code.
 
+## rgaa-tooltip-review
+
+*Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
+
+**Flagged (cantTell)**
+```html
+<button type="button" aria-describedby="tip">Partager</button>
+<div role="tooltip" id="tip" hidden>Partager cette page</div>
+```
+A person checks that the tooltip closes with Escape, can be hovered, and stays until the pointer or focus leaves (RGAA 10.13).
+
+**Not applicable**
+```html
+<a href="/contact" title="Nous écrire">Contact</a>
+```
+The browser shows and hides a title, which 10.13's particular case leaves out.
+
 ## rgaa-video-captions-track-kind
 
 *Opt-in: runs only under the `rgaa-4.1.2` profile, the `rgaa` tag or its id.*
@@ -1427,11 +2201,11 @@ The caption track has `kind="captions"`.
 
 **Failed**
 ```html
-<video controls src="talk.mp4">
+<video controls src="talk.mp4" lang="en">
   <track src="talk.vtt" kind="subtitles" srclang="en" label="English">
 </video>
 ```
-On a page with `lang="en"`, the only text track is marked as subtitles although it is in the video's language. Subtitles in another language, or without `srclang`, are asked about instead (cantTell), since they may be translations.
+The only text track is marked as subtitles although it is in the video's language, as the video's `lang` gives it. A track with a kind HTML does not know, such as `kind="caption"`, fails too: it is never shown. Subtitles whose language can't be told to be the video's (the page's `lang` says nothing of the audio's) are asked about instead (cantTell), since they may be translations.
 
 ## rgaa-viewport-zoom-review
 
@@ -1467,3 +2241,9 @@ The tab's accessible name contains its visible text.
 </div>
 ```
 The accessible name of this scripted component does not contain its visible label (RGAA 7.1.3). A single visible character, such as "B" in an editor's menu named "Mettre en gras", is asked about (cantTell): RGAA lets the name express what a symbol means.
+
+**Failed**
+```html
+<button type="button" aria-label="Fermer">Valider</button>
+```
+A button outside a form does nothing unless a script drives it, so 7.1.3 covers it: its accessible name does not contain its visible label. A button inside a form is checked under 11.9.2 instead.

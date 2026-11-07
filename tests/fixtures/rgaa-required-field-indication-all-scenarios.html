@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>rgaa-required-field-indication — scenario fixture</title>
+    <style>
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Arial,
+          sans-serif;
+        line-height: 1.4;
+        margin: 24px;
+      }
+      h1 {
+        font-size: 20px;
+        margin: 0 0 16px;
+      }
+      h2 {
+        font-size: 16px;
+        margin: 22px 0 10px;
+      }
+      .note {
+        font-size: 12px;
+        opacity: 0.85;
+        margin: 8px 0 16px;
+      }
+      .case {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 12px;
+        margin: 10px 0;
+      }
+      .case-title {
+        font-weight: 700;
+        margin: 0 0 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Scenario fixture: <code>rgaa-required-field-indication</code> (RGAA 11.10.1, 11.10.2)</h1>
+
+    <p class="note">
+      Each target has a stable <code>id</code> of the form <code>rfi_case_NN</code>. Each form has
+      two fields or more and does not mark its optional ones, so 11.10.1 and 11.10.2 apply.
+    </p>
+
+    <div class="case" id="case_01">
+      <div class="case-title">01 — FAIL: required field, no indication in its label</div>
+      <form>
+        <label for="rfi_case_01">Nom</label><input id="rfi_case_01" required /><label for="v1"
+          >Ville</label
+        ><input id="v1" />
+      </form>
+    </div>
+
+    <div class="case" id="case_02">
+      <div class="case-title">02 — PASS: « (obligatoire) » in the label</div>
+      <form>
+        <label for="rfi_case_02">Nom (obligatoire)</label><input id="rfi_case_02" required /><label
+          for="v2"
+          >Ville</label
+        ><input id="v2" />
+      </form>
+    </div>
+
+    <div class="case" id="case_03">
+      <div class="case-title">03 — FAIL: « * » explained only after the field</div>
+      <form>
+        <label for="rfi_case_03">Nom *</label><input id="rfi_case_03" required /><label for="v3"
+          >Ville</label
+        ><input id="v3" />
+        <p>* champs obligatoires</p>
+      </form>
+    </div>
+
+    <div class="case" id="case_04">
+      <div class="case-title">04 — CANTTELL: the indication is in the legend</div>
+      <form>
+        <fieldset>
+          <legend>Adresse (obligatoire)</legend>
+          <label for="rfi_case_04">Rue</label><input id="rfi_case_04" required />
+        </fieldset>
+        <label for="v4">Ville</label><input id="v4" />
+      </form>
+    </div>
+
+    <div class="case" id="case_05">
+      <div class="case-title">05 — NOT APPLICABLE: optional fields are marked</div>
+      <form>
+        <label for="rfi_case_05">Nom</label><input id="rfi_case_05" required /><label for="v5"
+          >Ville (facultatif)</label
+        ><input id="v5" />
+      </form>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>rgaa-legend-relevance-review — scenario fixture</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.4; margin: 24px; }
+    h1 { font-size: 20px; margin: 0 0 16px; }
+    h2 { font-size: 16px; margin: 22px 0 10px; }
+    .note { font-size: 12px; opacity: 0.85; margin: 8px 0 16px; }
+    .case { border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin: 10px 0; }
+    .case-title { font-weight: 700; margin: 0 0 8px; }
+  </style>
+</head>
+<body>
+  <h1>Scenario fixture: <code>rgaa-legend-relevance-review</code> (RGAA 11.7.1)</h1>
+
+  <p class="note">
+    Each target has a stable <code>id</code> of the form <code>lgr_case_NN</code>.
+    Each legend of a group holding form fields is asked about, quoted.
+  </p>
+
+  <div class="case" id="case_01">
+    <div class="case-title">01 — CANTTELL: a fieldset with a legend</div>
+    <form><fieldset id="lgr_case_01"><legend>Adresse de livraison</legend><label for="lgr_r">Rue</label><input id="lgr_r"><label for="lgr_v">Ville</label><input id="lgr_v"></fieldset></form>
+  </div>
+
+  <div class="case" id="case_02">
+    <div class="case-title">02 — CANTTELL: a radiogroup named by aria-labelledby</div>
+    <p id="lgr_q">Mode de paiement</p><div id="lgr_case_02" role="radiogroup" aria-labelledby="lgr_q"><label><input type="radio" name="lgr_p"> Carte</label><label><input type="radio" name="lgr_p"> Virement</label></div>
+  </div>
+
+  <div class="case" id="case_03">
+    <div class="case-title">03 — NOT APPLICABLE: a fieldset with no legend</div>
+    <form><fieldset id="lgr_case_03"><label for="lgr_n">Nom</label><input id="lgr_n"></fieldset></form>
+  </div>
+
+  <div class="case" id="case_04">
+    <div class="case-title">04 — NOT APPLICABLE: a role=group of buttons</div>
+    <div id="lgr_case_04" role="group" aria-label="Mise en forme"><button type="button">Gras</button><button type="button">Italique</button></div>
+  </div>
+</body>
+</html>

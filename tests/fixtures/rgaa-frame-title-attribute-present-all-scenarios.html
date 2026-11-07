@@ -19,11 +19,12 @@
 
   <p class="note">
     Each target has a stable <code>id</code> of the form <code>fta_case_NN</code>.
-    RGAA 2.1.1 asks for a <code>title</code> attribute on every frame; only
-    <code>aria-hidden="true"</code> takes a frame out of scope.
+    RGAA 2.1.1 asks for a <code>title</code> attribute on every frame, and an
+    empty one gives the frame no title; only <code>aria-hidden="true"</code>
+    takes a frame out of scope.
   </p>
 
-  <h2>A. No title attribute (FAIL)</h2>
+  <h2>A. No title, or an empty one (FAIL)</h2>
 
   <div class="case" id="case_01">
     <div class="case-title">01 — FAIL: iframe with no title attribute and no name</div>
@@ -46,16 +47,21 @@
     <iframe id="fta_case_04" aria-labelledby="fta_case_04_lbl" src="content.html"></iframe>
   </div>
 
+  <div class="case" id="case_06">
+    <div class="case-title">06 — FAIL: empty title (an attribute with no content is no frame title)</div>
+    <iframe id="fta_case_06" title="" aria-label="Map" src="content.html"></iframe>
+  </div>
+
+  <div class="case" id="case_10">
+    <div class="case-title">10 — FAIL: title of spaces only</div>
+    <iframe id="fta_case_10" title="   " src="content.html"></iframe>
+  </div>
+
   <h2>B. Title attribute present (PASS)</h2>
 
   <div class="case" id="case_05">
     <div class="case-title">05 — PASS: iframe with a title</div>
     <iframe id="fta_case_05" title="Map of the area" src="content.html"></iframe>
-  </div>
-
-  <div class="case" id="case_06">
-    <div class="case-title">06 — PASS: empty title (present; its emptiness is 2.2.1's matter)</div>
-    <iframe id="fta_case_06" title="" aria-label="Map" src="content.html"></iframe>
   </div>
 
   <h2>C. Out of scope</h2>

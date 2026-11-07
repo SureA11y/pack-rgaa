@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>rgaa-aria-hidden-text-review — scenario fixture</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.4; margin: 24px; }
+    h1 { font-size: 20px; margin: 0 0 16px; }
+    h2 { font-size: 16px; margin: 22px 0 10px; }
+    .note { font-size: 12px; opacity: 0.85; margin: 8px 0 16px; }
+    .case { border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin: 10px 0; }
+    .case-title { font-weight: 700; margin: 0 0 8px; }
+  </style>
+</head>
+<body>
+  <h1>Scenario fixture: <code>rgaa-aria-hidden-text-review</code> (RGAA 10.8.1)</h1>
+
+  <p class="note">
+    Each target has a stable <code>id</code> of the form <code>aht_case_NN</code>.
+    Visible text hidden from assistive technologies is meant to be ignored.
+  </p>
+
+  <div class="case" id="case_01">
+    <div class="case-title">01 — CANTTELL: visible information hidden from screen readers</div>
+    <p aria-hidden="true" id="aht_case_01">Offre valable jusqu’au 31 mars</p>
+  </div>
+
+  <div class="case" id="case_02">
+    <div class="case-title">02 — NOT APPLICABLE: a decorative sign</div>
+    <span aria-hidden="true" id="aht_case_02">*</span>
+  </div>
+</body>
+</html>

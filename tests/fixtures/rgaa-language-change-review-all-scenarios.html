@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>rgaa-language-change-review — scenario fixture</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.4; margin: 24px; }
+    h1 { font-size: 20px; margin: 0 0 16px; }
+    h2 { font-size: 16px; margin: 22px 0 10px; }
+    .note { font-size: 12px; opacity: 0.85; margin: 8px 0 16px; }
+    .case { border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin: 10px 0; }
+    .case-title { font-weight: 700; margin: 0 0 8px; }
+  </style>
+</head>
+<body>
+  <h1>Scenario fixture: <code>rgaa-language-change-review</code> (RGAA 8.7.1)</h1>
+
+  <p class="note">
+    Each target has a stable <code>id</code> of the form <code>lgc_case_NN</code>.
+    The page declares lang="en"; passages of 8 words or more clearly in another language, with no lang on them or a parent, are asked about.
+  </p>
+
+  <div class="case" id="case_01">
+    <div class="case-title">01 — CANTTELL: a French paragraph with no lang</div>
+    <p id="lgc_case_01">Les inscriptions sont gratuites pour les habitants de la commune et pour les personnes qui y travaillent.</p>
+  </div>
+
+  <div class="case" id="case_02">
+    <div class="case-title">02 — CANTTELL: a German list item with no lang</div>
+    <ul><li id="lgc_case_02">Die Anmeldung ist für alle Einwohner der Stadt kostenlos und kann jederzeit gekündigt werden.</li></ul>
+  </div>
+
+  <div class="case" id="case_03">
+    <div class="case-title">03 — NOT APPLICABLE: a French paragraph that carries lang</div>
+    <p id="lgc_case_03" lang="fr">Les inscriptions sont gratuites pour les habitants de la commune et pour les personnes qui y travaillent.</p>
+  </div>
+
+  <div class="case" id="case_04">
+    <div class="case-title">04 — NOT APPLICABLE: a short foreign quote and a name</div>
+    <p id="lgc_case_04">The mayor opened the new Médiathèque Jean-Pierre Dupont with a short « bienvenue à tous » for the visitors.</p>
+  </div>
+
+  <div class="case" id="case_05">
+    <div class="case-title">05 — NOT APPLICABLE: an English paragraph</div>
+    <p id="lgc_case_05">The library is open from Tuesday to Saturday, and it is open in the morning only during the school holidays. You can borrow up to ten items for three weeks and renew them once from your account. Registration is free for the people who live or work in the town, and a proof of address will be asked for on your first visit. Children under fourteen have to come with an adult when they register.</p>
+  </div>
+</body>
+</html>

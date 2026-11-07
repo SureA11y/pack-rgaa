@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>rgaa-same-name-checkboxes-review — scenario fixture</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.4; margin: 24px; }
+    h1 { font-size: 20px; margin: 0 0 16px; }
+    h2 { font-size: 16px; margin: 22px 0 10px; }
+    .note { font-size: 12px; opacity: 0.85; margin: 8px 0 16px; }
+    .case { border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin: 10px 0; }
+    .case-title { font-weight: 700; margin: 0 0 8px; }
+  </style>
+</head>
+<body>
+  <h1>Scenario fixture: <code>rgaa-same-name-checkboxes-review</code> (RGAA 11.5.1)</h1>
+
+  <p class="note">
+    Each target has a stable <code>id</code> of the form <code>snc_case_NN</code>.
+    Three or more checkboxes sharing a name, and two or more role="radio" in one parent, outside any fieldset or group, are asked about.
+  </p>
+
+  <div class="case" id="case_01">
+    <div class="case-title">01 — CANTTELL: three checkboxes with one name, outside any group</div>
+    <form><p>Centres d’intérêt</p><label><input type="checkbox" name="interets" id="snc_case_01"> Sport</label><label><input type="checkbox" name="interets" > Musique</label><label><input type="checkbox" name="interets" > Lecture</label></form>
+  </div>
+
+  <div class="case" id="case_02">
+    <div class="case-title">02 — CANTTELL: two custom radio buttons in one parent</div>
+    <div><span id="snc_case_02" role="radio" aria-checked="true" tabindex="0">Oui</span><span role="radio" aria-checked="false" tabindex="-1">Non</span></div>
+  </div>
+
+  <div class="case" id="case_03">
+    <div class="case-title">03 — NOT APPLICABLE: three checkboxes in a fieldset</div>
+    <form><fieldset><legend>Langues</legend><label><input type="checkbox" name="langues" id="snc_case_03"> Français</label><label><input type="checkbox" name="langues" > Anglais</label><label><input type="checkbox" name="langues" > Espagnol</label></fieldset></form>
+  </div>
+
+  <div class="case" id="case_04">
+    <div class="case-title">04 — NOT APPLICABLE: custom radio buttons in a radiogroup</div>
+    <div role="radiogroup" aria-label="Taille"><span id="snc_case_04" role="radio" aria-checked="true" tabindex="0">S</span><span role="radio" aria-checked="false" tabindex="-1">M</span></div>
+  </div>
+
+  <div class="case" id="case_05">
+    <div class="case-title">05 — NOT APPLICABLE: two checkboxes sharing a name</div>
+    <form><label><input type="checkbox" name="cgu" id="snc_case_05"> J’accepte les conditions</label><label><input type="checkbox" name="cgu" > Je m’inscris à la lettre</label></form>
+  </div>
+</body>
+</html>

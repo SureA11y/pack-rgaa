@@ -508,6 +508,10 @@ function runInPage(ctx) {
     ask('ZONE_UNIDENTIFIED', block, String(dom.localName(block) || '').toLowerCase(), '');
   }
 
+  // A block of three links or more outside the main content, with no
+  // landmark around it and no name that says what it is, is likely a
+  // header, a navigation or a footer the rule could not identify.
+
   if (questions.length) {
     return {
       ruleId: rule.ruleId,

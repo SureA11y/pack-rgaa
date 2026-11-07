@@ -63,8 +63,9 @@ test('a list item outside a list names 9.3.1, and one in an <ol> made something 
   const orphan = criterion(scan('<div><li>a</li></div>'), '9.3');
   assert.equal(orphan.outcome, 'fail');
   assert.deepEqual(tests(orphan), ['9.3.1']);
+  // A widget role on the list is asked about, under the test of its list.
   const ol = criterion(scan('<ol role="tablist"><li>a</li></ol>'), '9.3');
-  assert.equal(ol.outcome, 'fail');
+  assert.equal(ol.outcome, 'cantTell');
   assert.ok(tests(ol).includes('9.3.2'));
   assert.deepEqual(contributor(ol, 'listitem-parent-valid').requirements, ['9.3.2']);
 });
@@ -86,15 +87,12 @@ test('an unnamed widget fails the criterion of its role, and a progress bar neit
   }
 });
 
-test('an image without alt fails 1.1 and is a question under 1.2', () => {
+// With no alt, an image fails 1.1.1 if it carries information and 1.2.1 if it
+// is decorative: which of the two takes a person, so neither is failed.
+test('an image without alt is a question under both 1.1 and 1.2', () => {
   const result = scan('<img src="photo.png">');
-  const informative = criterion(result, '1.1');
-  assert.equal(informative.outcome, 'fail');
-  assert.ok(tests(informative).includes('1.1.1'));
-  const decorative = criterion(result, '1.2');
-  const c = contributor(decorative, 'img-alt-present');
-  assert.deepEqual([c.outcome, c.checkOutcome, c.requirements], ['cantTell', 'fail', ['1.2.1']]);
-  assert.notEqual(decorative.outcome, 'fail');
+  assert.equal(criterion(result, '1.1').outcome, 'cantTell');
+  assert.equal(criterion(result, '1.2').outcome, 'cantTell');
 });
 
 test("a rule's result still names every test it can bear on", () => {
@@ -105,7 +103,7 @@ test("a rule's result still names every test it can bear on", () => {
       .normativeMappings.filter((m) => m.standard === 'RGAA')
       .map((m) => m.requirement)
       .sort();
-  assert.deepEqual(named('img-alt-present'), ['1.1.1', '1.2.1']);
+  assert.deepEqual(named('rgaa-img-alt-present'), ['1.1.1']);
   assert.deepEqual(
     named('rgaa-contrast-minimum'),
     RGAA_RULE_TESTS['4.1.2']['rgaa-contrast-minimum'].tests
@@ -124,7 +122,9 @@ test('a bare <canvas> is a question under both 1.1 and 1.2', () => {
 });
 
 test('a decorative SVG that keeps a <title> fails 1.2.4 and is a question under 1.1.5', () => {
-  const result = scan('<svg aria-hidden="true" width="10" height="10"><title>Logo</title></svg>');
+  const result = scan(
+    '<svg aria-hidden="true" width="10" height="10"><title>Logo</title><circle r="4"/></svg>'
+  );
   const decorative = criterion(result, '1.2');
   assert.equal(decorative.outcome, 'fail');
   assert.ok(tests(decorative).includes('1.2.4'));

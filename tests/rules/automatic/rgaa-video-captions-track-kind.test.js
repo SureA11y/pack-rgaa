@@ -17,6 +17,9 @@ function page(body) {
 
 const video = (...tracks) =>
   `<video controls>${tracks.map((t) => `<track src="t.vtt" ${t}>`).join('')}</video>`;
+// A video whose own lang gives the language of its audio.
+const langVideo = (lang, ...tracks) =>
+  video(...tracks).replace('<video ', `<video lang="${lang}" `);
 
 test(`${RULE_ID}: a captions track passes, alone or beside subtitles`, () => {
   for (const html of [
@@ -37,11 +40,11 @@ test(`${RULE_ID}: a video with no subtitles or captions track is not applicable`
   }
 });
 
-test(`${RULE_ID}: subtitles only in the page language fail, and a track without kind counts as subtitles`, () => {
+test(`${RULE_ID}: subtitles only in the video's language fail, and a track without kind counts as subtitles`, () => {
   for (const [html, kinds] of [
-    [page(video('kind="subtitles" srclang="en"')), ['subtitles']],
-    [page(video('srclang="en-GB"')), ['subtitles']],
-    [page(video('kind="" srclang="en"', 'kind="chapters"')), ['subtitles']]
+    [page(langVideo('en', 'kind="subtitles" srclang="en"')), ['subtitles']],
+    [page(langVideo('en', 'srclang="en-GB"')), ['subtitles']],
+    [page(langVideo('en', 'kind="" srclang="en"', 'kind="chapters"')), ['subtitles']]
   ]) {
     const rule = assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'fail', {
       minOccurrences: 1,
@@ -68,12 +71,12 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-video-captions-track-kin
     'rgaa-video-captions-track-kind-all-scenarios.html'
   );
   const result = runa11yCoreOnHtml(fs.readFileSync(fixturePath, 'utf8'), RUN);
-  const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 4, maxOccurrences: 4 });
+  const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 5, maxOccurrences: 5 });
   const ids = (tier) =>
     rule.occurrences
       .filter((o) => o.occurrenceOutcome === tier)
       .map((o) => (o.html.match(/id="([^"]+)"/) || [])[1]);
-  assert.deepEqual(ids('fail'), ['vct_case_01', 'vct_case_02', 'vct_case_07']);
+  assert.deepEqual(ids('fail'), ['vct_case_01', 'vct_case_02', 'vct_case_07', 'vct_case_09']);
   assert.deepEqual(ids('cantTell'), ['vct_case_08']);
 });
 
@@ -95,19 +98,60 @@ test(`${RULE_ID}: subtitles in another language, or without srclang, are asked a
     assert.equal(occ.data.details.reasonCode, 'subtitlesMayBeTranslation');
     assert.equal(occ.uncertainty.code, 'judgement-required');
   }
-  // The video's own lang counts, not only the page's.
-  const scoped = fr(`<div lang="en">${video('kind="subtitles" srclang="en"')}</div>`);
-  assertRule(runa11yCoreOnHtml(scoped, RUN), RULE_ID, 'fail');
+  // The page's language, or a wrapper's, says nothing of the audio's: an
+  // English talk with French subtitles on a French page is a translation.
+  for (const html of [
+    fr(video('kind="subtitles" srclang="fr"')),
+    fr(`<div lang="en">${video('kind="subtitles" srclang="en"')}</div>`)
+  ]) {
+    assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'cantTell');
+  }
+  // The video's own lang does.
+  assertRule(
+    runa11yCoreOnHtml(fr(langVideo('en', 'kind="subtitles" srclang="en"')), RUN),
+    RULE_ID,
+    'fail'
+  );
+});
+
+// A track label naming captions for the deaf and hard of hearing marks them.
+test(`${RULE_ID}: a subtitles track labelled as captions fails`, () => {
+  for (const label of ['Français (sourds et malentendants)', 'Français SME', 'English CC']) {
+    assertRule(
+      runa11yCoreOnHtml(page(video(`kind="subtitles" srclang="fr" label="${label}"`)), RUN),
+      RULE_ID,
+      'fail'
+    );
+  }
+});
+
+// HTML reads a kind it does not know as metadata, which is never shown.
+test(`${RULE_ID}: a track with an unknown kind, such as "caption", fails`, () => {
+  const rule = assertRule(
+    runa11yCoreOnHtml(page(video('kind="caption" srclang="en"')), RUN),
+    RULE_ID,
+    'fail',
+    { minOccurrences: 1, maxOccurrences: 1 }
+  );
+  const occ = rule.occurrences[0];
+  assert.equal(occ.data.details.reasonCode, 'invalidKind');
+  assert.equal(occ.i18n.summaryKey, 'videoCaptionsTrackKind_summary_fail_invalidKind');
+  assert.deepEqual(occ.i18n.params, { kind: 'caption' });
+  assertRule(
+    runa11yCoreOnHtml(page(video('kind="caption"', 'kind="captions"')), RUN),
+    RULE_ID,
+    'pass'
+  );
 });
 
 test(`${RULE_ID}: a captions track with no src does not count as captions`, () => {
-  const fr = `<!doctype html><html lang="fr"><head><title>t</title></head><body><video controls><track kind="subtitles" srclang="fr" src="fr.vtt"><track kind="captions" src=""></video></body></html>`;
+  const fr = `<!doctype html><html lang="fr"><head><title>t</title></head><body><video controls lang="fr"><track kind="subtitles" srclang="fr" src="fr.vtt"><track kind="captions" src=""></video></body></html>`;
   assertRule(runa11yCoreOnHtml(fr, RUN), RULE_ID, 'fail', { minOccurrences: 1, maxOccurrences: 1 });
   const alone = page('<video controls><track kind="captions" src=""></video>');
   assertRule(runa11yCoreOnHtml(alone, RUN), RULE_ID, 'notApplicable');
 });
 
-test(`${RULE_ID}: under the rgaa-4.1.2 profile: translation cantTell, same-language subtitles fail (4.3.2)`, () => {
+test(`${RULE_ID}: under the rgaa-4.1.2 profile: translation cantTell, subtitles in the video's language fail (4.3.2)`, () => {
   const fr = (body) =>
     `<!doctype html><html lang="fr"><head><title>t</title></head><body>${body}</body></html>`;
   const run = (html) => runa11yCoreOnHtml(html, { engineOptions: { profile: 'rgaa-4.1.2' } });
@@ -116,7 +160,7 @@ test(`${RULE_ID}: under the rgaa-4.1.2 profile: translation cantTell, same-langu
     .filter((m) => m.standard === 'RGAA')
     .map((m) => m.requirement);
   assert.deepEqual(tests, ['4.3.2']);
-  assertRule(run(fr(video('kind="subtitles" srclang="fr"'))), RULE_ID, 'fail');
+  assertRule(run(fr(langVideo('fr', 'kind="subtitles" srclang="fr"'))), RULE_ID, 'fail');
   // Opt-in: a WCAG profile does not run it.
   const wcag = runa11yCoreOnHtml(fr(video('kind="subtitles" srclang="fr"')), {
     engineOptions: { profile: 'wcag22-aa' }

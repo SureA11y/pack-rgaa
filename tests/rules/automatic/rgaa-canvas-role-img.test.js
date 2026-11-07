@@ -56,17 +56,28 @@ test(`${RULE_ID}: a name without role="img" and without fallback content fails`,
   }
 });
 
-// A bare canvas fails 1.1.8 if informative and 1.2.5 if decorative; which
-// one takes a person.
-test(`${RULE_ID}: no alternative at all is asked about with reasonCode noAlternative`, () => {
+// A canvas that may be decorative fails 1.2.5 instead if it is: only one
+// that certainly carries information fails 1.1.8.
+test(`${RULE_ID}: no alternative at all on a canvas that may be decorative is asked about`, () => {
   const rule = assertRule(run('<canvas width="40" height="20"></canvas>'), RULE_ID, 'cantTell', {
     minOccurrences: 1,
     maxOccurrences: 1
   });
-  const occ = rule.occurrences[0];
-  assert.equal(occ.data.details.reasonCode, 'noAlternative');
-  assert.equal(occ.i18n.summaryKey, 'canvasRoleImg_summary_cantTell_noAlternative');
-  assert.equal(occ.uncertainty.code, 'judgement-required');
+  assert.equal(rule.occurrences[0].data.details.reasonCode, 'noAlternativeMayBeDecorative');
+});
+
+test(`${RULE_ID}: no alternative at all fails with reasonCode noAlternative`, () => {
+  const rule = assertRule(
+    run('<figure><canvas width="40" height="20"></canvas><figcaption>Carte</figcaption></figure>'),
+    RULE_ID,
+    'fail',
+    {
+      minOccurrences: 1,
+      maxOccurrences: 1
+    }
+  );
+  assert.equal(rule.occurrences[0].data.details.reasonCode, 'noAlternative');
+  assert.equal(rule.occurrences[0].i18n.summaryKey, 'canvasRoleImg_summary_fail');
 });
 
 test(`${RULE_ID}: without role="img" or fallback, an adjacent link or button is asked about`, () => {
@@ -166,4 +177,26 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-canvas-role-img-all-scen
       ['cri_case_05', 'adjacentLinkOrButton']
     ]
   );
+});
+
+test(`${RULE_ID}: a canvas 0 px wide or high draws nothing and is left out`, () => {
+  for (const body of [
+    '<canvas width="0" height="0"></canvas>',
+    '<canvas width="300" height="0"></canvas>'
+  ]) {
+    assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'notApplicable');
+  }
+});
+
+// Glossary « Image porteuse d'information », notes 1 and 2: the only image of
+// a link or a button is judged as the control's label, under Links (6.1),
+// Forms (11.9) or Scripts (7.1), not under theme 1.
+test(`${RULE_ID}: the only content of a link or a button is left out`, () => {
+  for (const body of [
+    '<a href="/plan"><canvas width="40" height="20"></canvas></a>',
+    '<button type="button"><canvas width="40" height="20"></canvas></button>',
+    '<form><button><canvas width="40" height="20"></canvas></button></form>'
+  ]) {
+    assertRule(run(body), RULE_ID, 'notApplicable');
+  }
 });

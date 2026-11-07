@@ -40,6 +40,13 @@
  *   box-shadow. `measuredCount` counts the elements whose focus style was
  *   judged.
  * @implementation-notes
+ * - RGAA 10.7.1 asks that a focus style be visible, not that it be drawn on
+ *   the element's own box. A style that focus inside an ancestor brings
+ *   (:focus-within, or :has() holding :focus), and in a browser any change
+ *   on focus to the element's ancestors (up to the first one clearly larger
+ *   than it, four levels at most) or to its labels, is not measured: the
+ *   element is asked about (notMeasured) rather than failed on its own
+ *   outline alone.
  * - WCAG 2.4.7 has no contrast requirement (2.4.13 is AAA and not
  *   checked), so css-focus-indicator-suppressed only asks whether some
  *   indicator exists. RGAA 10.7.1 also asks for 3:1, which this rule
@@ -66,9 +73,14 @@
  *   cascade, so those are no longer asked about there. The colors outside
  *   the indicator are read from what is painted on each side
  *   (document.elementsFromPoint), so a positioned layer behind the element
- *   counts; a side outside the viewport falls back to the ancestors'
- *   background. An image or gradient on any side, or an animation started
- *   by focus, is still asked about. Focus and the style attribute are put
+ *   counts; a side outside the viewport falls back to the background of
+ *   the first ancestor larger than the element (a parent with the
+ *   element's own box has the color under it, not around it). An image or
+ *   gradient on any side, a ::before or ::after over most of the element
+ *   with a fill of its own (it may be the visible background), an element
+ *   something else is painted over (a cookie consent overlay, whose colors
+ *   would be read instead), or an animation started by focus, is still
+ *   asked about. Focus and the style attribute are put
  *   back afterwards. jsdom keeps the stylesheet reading described above.
  * - Opt-in (tag `rgaa`): the rule runs only under the rgaa-4.1.2 profile,
  *   the `rgaa` tag or its own id.
@@ -413,7 +425,8 @@ function runInPage(ctx) {
     return splitTop(selectorText, ',');
   }
 
-  // :focus and :focus-visible, never :focus-within.
+  // :focus and :focus-visible, never :focus-within (ancestorFocusBase reads
+  // that one, and :has() holding :focus, as styling an ancestor).
   const FOCUS_PSEUDO = /:focus(-visible)?(?![-\w])/g;
   function hasFocusPseudo(part) {
     FOCUS_PSEUDO.lastIndex = 0;
@@ -436,6 +449,26 @@ function runInPage(ctx) {
     if (trim(cur)) compounds.push(trim(cur));
     return compounds;
   }
+  // For a selector where focus on a descendant styles an element (a
+  // compound with :focus-within, or :has() holding :focus), the compound
+  // without them, which the focused element's ancestor matches; else null.
+  function ancestorFocusBase(part) {
+    const compounds = splitCompounds(part);
+    for (const c of compounds) {
+      const within = /:focus-within(?![-\w])/i.test(c);
+      const inHas = /:has\([^)]*:focus/i.test(c);
+      if (!within && !inHas) continue;
+      const base = trim(
+        c
+          .replace(/:focus-within(?![-\w])/gi, '')
+          .replace(/:has\((?:[^()]|\([^()]*\))*\)/gi, '')
+          .replace(/::?[a-z-]+$/i, '')
+      );
+      return base || '*';
+    }
+    return null;
+  }
+
   function stripFocus(sel) {
     return trim(String(sel).replace(FOCUS_PSEUDO, '')) || '*';
   }
@@ -519,6 +552,13 @@ function runInPage(ctx) {
     for (const part of splitSelectorList(cssRule.selectorText)) {
       order += 1;
       const { spec, approximate } = specificity(part);
+      // Focus inside an ancestor styles that ancestor or what it holds: a
+      // ring drawn on a wrapper with :focus-within or :has(:focus).
+      const ancestorFocus = ancestorFocusBase(part);
+      if (ancestorFocus) {
+        indirect.push({ base: ancestorFocus, subject: false });
+        continue;
+      }
       if (!hasFocusPseudo(part)) {
         if (hasPseudoElement(part)) continue;
         decls.push({
@@ -967,6 +1007,54 @@ function runInPage(ctx) {
     return out;
   }
 
+  // The elements a focus style may be drawn on instead of the element: its
+  // ancestors, up to the first one clearly larger than it and at most four
+  // levels, and its labels. Their transitions are not held off, so a
+  // change that starts on focus is found at once, and then asked about.
+  function relatedOf(el) {
+    const out = [];
+    let rect = null;
+    try {
+      rect = dom.getBoundingClientRect(el);
+    } catch {}
+    for (let a = parentOf(el), n = 0; a && n < 4; a = parentOf(a), n += 1) {
+      if (a === dom.body(document) || a === dom.documentElement(document)) break;
+      out.push(a);
+      let r = null;
+      try {
+        r = dom.getBoundingClientRect(a);
+      } catch {}
+      if (rect && r && (r.width > rect.width + 16 || r.height > rect.height + 16)) break;
+    }
+    try {
+      for (const l of helpers.getAssociatedLabelElements
+        ? helpers.getAssociatedLabelElements(el) || []
+        : []) {
+        if (!out.includes(l)) out.push(l);
+      }
+    } catch {}
+    return out;
+  }
+  const RELATED_PROPS = [
+    'outline-style',
+    'outline-width',
+    'outline-color',
+    'box-shadow',
+    'background-color',
+    'background-image',
+    'color',
+    'text-decoration-line',
+    ...SIDES.flatMap(BORDER_PROPS)
+  ];
+  function relatedSnapshot(node) {
+    try {
+      const cs = view.getComputedStyle(node);
+      return RELATED_PROPS.map((p) => cs.getPropertyValue(p)).join('|');
+    } catch {
+      return '';
+    }
+  }
+
   function deepActiveElement() {
     let cur = dom.activeElement(document) || null;
     let guard = 0;
@@ -984,13 +1072,16 @@ function runInPage(ctx) {
     const previous = deepActiveElement();
     const hadStyle = dom.hasAttribute(el, 'style');
     const styleAttr = dom.getAttribute(el, 'style');
+    const related = relatedOf(el);
     try {
       el.style.setProperty('transition', 'none', 'important');
       if (previous === el) dom.blur(el);
       const before = snapshot(el);
+      const relatedBefore = related.map(relatedSnapshot);
       dom.focus(el, { preventScroll: true, focusVisible: true });
       if (deepActiveElement() !== el) return undefined;
-      return fn(before, snapshot(el));
+      const relatedChanged = related.some((r, i) => relatedSnapshot(r) !== relatedBefore[i]);
+      return fn(before, snapshot(el), relatedChanged);
     } catch {
       return undefined;
     } finally {
@@ -1046,9 +1137,25 @@ function runInPage(ctx) {
     return backgroundAt(!rootPainted && dom.body(document) ? dom.body(document) : root);
   }
 
+  // What is around an element whose surroundings are outside the viewport:
+  // the background of the first ancestor larger than the element. A parent
+  // with the element's own box (a button filling its <li>) has the color
+  // under the element, not around it. null when there is none.
+  function backgroundBeyond(el, rect) {
+    for (let a = parentOf(el), guard = 0; a && guard < 50; a = parentOf(a), guard++) {
+      if (a === dom.documentElement(document)) return canvasColor();
+      let r = null;
+      try {
+        r = dom.getBoundingClientRect(a);
+      } catch {}
+      if (r && (r.width > rect.width + 1 || r.height > rect.height + 1)) return backgroundAt(a);
+    }
+    return null;
+  }
+
   // The colors next to the element on the given sides, `dist` pixels
   // outside its border box. A side outside the viewport falls back to the
-  // background of the element's ancestors.
+  // background of the first ancestor larger than the element.
   function colorsAround(el, rect, dist, sides) {
     const midX = rect.left + rect.width / 2;
     const midY = rect.top + rect.height / 2;
@@ -1063,7 +1170,7 @@ function runInPage(ctx) {
     for (const side of sides) {
       let c = paintedAt(el, points[side][0], points[side][1]);
       if (c === undefined) {
-        if (fallback === undefined) fallback = backgroundAt(parentOf(el));
+        if (fallback === undefined) fallback = backgroundBeyond(el, rect);
         c = fallback;
       }
       if (!c) return null;
@@ -1072,12 +1179,38 @@ function runInPage(ctx) {
     return colors;
   }
 
+  // A ::before or ::after positioned over most of the element with a fill of
+  // its own (a color other than the element's, an image): what it paints
+  // may be the element's visible background, so the inner color is unknown.
+  function pseudoFill(el, rect, bg) {
+    for (const pseudo of ['::before', '::after']) {
+      let ps;
+      try {
+        ps = view.getComputedStyle(el, pseudo);
+      } catch {
+        continue;
+      }
+      const content = ps.getPropertyValue('content');
+      if (!content || content === 'none' || content === 'normal') continue;
+      if (!['absolute', 'fixed'].includes(ps.getPropertyValue('position'))) continue;
+      if (px(ps.width) < rect.width * 0.9 || px(ps.height) < rect.height * 0.9) continue;
+      if (helpers.contrast.hasBackgroundImageOrGradient(ps)) return true;
+      const fill = helpers.contrast.parseCssColorToRgba(ps.backgroundColor);
+      if (!fill || !fill.a) continue;
+      if (!bg || fill.r !== bg.r || fill.g !== bg.g || fill.b !== bg.b || fill.a !== bg.a) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   // The element's own background while focused, over what is behind it.
   // What is behind it is read at its center, like the colors around it.
   function focusedBackground(el, rect) {
     const cs = view.getComputedStyle(el);
     if (helpers.contrast.hasBackgroundImageOrGradient(cs)) return null;
     const bg = helpers.contrast.parseCssColorToRgba(cs.backgroundColor);
+    if (pseudoFill(el, rect, bg)) return null;
     if (bg && bg.a >= 1) return { r: bg.r, g: bg.g, b: bg.b, a: 1 };
     let behind = paintedAt(el, rect.left + rect.width / 2, rect.top + rect.height / 2);
     if (behind === undefined) behind = backgroundAt(parentOf(el));
@@ -1107,8 +1240,27 @@ function runInPage(ctx) {
     return { ratios, color: helpers.contrast.rgbToHex(painted) };
   }
 
+  // Whether something else is painted over the element's center, such as a
+  // cookie consent overlay: the colors read around it would be the
+  // overlay's. Not known for a center outside the viewport, or an element
+  // hit testing skips (pointer-events: none).
+  function covered(el, rect) {
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    if (!(x >= 0 && y >= 0 && x < view.innerWidth && y < view.innerHeight)) return false;
+    if (view.getComputedStyle(el).pointerEvents === 'none') return false;
+    let stack;
+    try {
+      stack = dom.elementsFromPoint(document, x, y) || [];
+    } catch {
+      return false;
+    }
+    const top = stack[0];
+    return !!top && top !== el && !dom.contains(el, top);
+  }
+
   function evaluateRendered(el) {
-    return whileFocused(el, (before, after) => {
+    return whileFocused(el, (before, after, relatedChanged) => {
       if (after['outline-style'] === 'auto') return null; // the browser's outline
       const changed = (props) => props.some((p) => before[p] !== after[p]);
       const visibleColor = (value) => {
@@ -1125,6 +1277,9 @@ function runInPage(ctx) {
       }
 
       const rect = dom.getBoundingClientRect(el);
+      if (covered(el, rect)) {
+        return { verdict: 'cantTell', reasonCode: 'notComputable', details: { cause: 'covered' } };
+      }
       const inner = focusedBackground(el, rect);
       const indicators = [];
       let unmeasured = null;
@@ -1177,9 +1332,12 @@ function runInPage(ctx) {
         }
       }
 
+      // A ring drawn on a wrapper (:focus-within) or a label shows focus as
+      // well as the element's own style: it is not measured here.
       const otherStyle =
         changed(RENDERED_OTHER) ||
         changed(['::before', '::after']) ||
+        relatedChanged ||
         indirect.some((p) => (p.subject ? matchesSafe(el, p.base) : closestSafe(el, p.base))) ||
         dom.hasAttribute(el, 'onfocus') ||
         dom.hasAttribute(el, 'onfocusin');

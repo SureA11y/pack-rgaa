@@ -20,24 +20,30 @@
     Each target has a stable <code>id</code> of the form <code>sri_case_NN</code>. Outer <code>&lt;svg&gt;</code> elements with a text alternative are checked (RGAA 1.1.5).
   </p>
 
-  <h2>A. Alternative without role="img" (FAIL)</h2>
+  <h2>A. Alternative without role="img" (FAIL when certainly informative, else CANTTELL)</h2>
 
   <div class="case" id="case_01">
-    <div class="case-title">01 — FAIL: title element, no role</div>
+    <div class="case-title">01 — CANTTELL: title element, no role (informative: 1.1.5; decorative: 1.2.4)</div>
     <svg width="20" height="20" id="sri_case_01"><title>Logo</title><circle cx="10" cy="10" r="8"/></svg>
   </div>
 
   <div class="case" id="case_02">
-    <div class="case-title">02 — FAIL: aria-label, no role</div>
+    <div class="case-title">02 — CANTTELL: aria-label, no role</div>
     <svg aria-label="Logo" width="20" height="20" id="sri_case_02"><circle cx="10" cy="10" r="8"/></svg>
   </div>
 
   <div class="case" id="case_03">
-    <div class="case-title">03 — FAIL: aria-label with role graphics-document</div>
+    <div class="case-title">03 — CANTTELL: aria-label with role graphics-document</div>
     <svg role="graphics-document" aria-label="Plan" width="20" height="20" id="sri_case_03"><circle cx="10" cy="10" r="8"/></svg>
   </div>
 
   <h2>B. role="img" named only by title (PASS since RGAA 4.1.2)</h2>
+  <div class="case" id="case_10">
+    <div class="case-title">10 — FAIL: title element, no role, with a caption</div>
+    <figure><svg width="20" height="20" id="sri_case_10"><title>Plan</title><circle cx="10" cy="10" r="8"/></svg><figcaption>Plan du site</figcaption></figure>
+  </div>
+
+  <h2>B. role="img" named only by title (CANTTELL)</h2>
 
   <div class="case" id="case_04">
     <div class="case-title">04 — PASS: title element only</div>

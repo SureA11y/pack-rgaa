@@ -36,9 +36,11 @@
  *   natively), `inlineHandler` (an inline pointer, keyboard, focus, input or
  *   drag handler on an element that is not a native control), `contentEditable`
  *   (contenteditable on an element that is not a form field) and
- *   `stateAttribute` (aria-expanded, aria-pressed, aria-haspopup or
- *   aria-controls, native elements included: a <button aria-expanded> is a
- *   scripted disclosure).
+ *   `linkWithoutDestination` (a link whose href is "#", "#!" or a
+ *   javascript: URL, which leads nowhere and so usually acts as a button
+ *   whose role 7.1.3 asks to be relevant) and `stateAttribute`
+ *   (aria-expanded, aria-pressed, aria-haspopup or aria-controls, native
+ *   elements included: a <button aria-expanded> is a scripted disclosure).
  * - The page occurrence names the first sign of script found in
  *   `scriptEvidence`: scriptElement, inlineHandler, javascriptUrl or
  *   customElement.
@@ -524,6 +526,14 @@ function runInPage(ctx) {
     return parseInt(raw, 10);
   }
 
+  function linkWithoutDestination(element, href) {
+    return {
+      reasonCode: 'linkWithoutDestination',
+      params: { element, href },
+      summary: `This link's href is "${href}": it leads to no other page or place, so a script likely makes it act as a button.`
+    };
+  }
+
   function candidate(el) {
     const element = localNameOf(el);
 
@@ -556,6 +566,15 @@ function runInPage(ctx) {
       }
     }
 
+    // A link that leads nowhere is usually a button driven by a script,
+    // whose role 7.1.3 asks to be relevant.
+    if (element === 'a' && isJavascriptUrl(attr(el, 'href'))) {
+      return linkWithoutDestination(element, 'javascript:');
+    }
+    if (element === 'a' && ['#', '#!'].includes(String(attr(el, 'href') || '').trim())) {
+      return linkWithoutDestination(element, String(attr(el, 'href')).trim());
+    }
+
     if (isEditable(el) && element !== 'input' && element !== 'textarea' && element !== 'select') {
       return {
         reasonCode: 'contentEditable',
@@ -586,10 +605,13 @@ function runInPage(ctx) {
     contentEditable:
       'Check with assistive technologies that this editing area exposes a relevant role, name and state, and that its changes are rendered (RGAA 7.1).',
     stateAttribute:
-      'Check with assistive technologies that the state this attribute describes is updated and rendered when the component changes (RGAA 7.1).'
+      'Check with assistive technologies that the state this attribute describes is updated and rendered when the component changes (RGAA 7.1).',
+    linkWithoutDestination:
+      'If the link acts as a button (it opens, closes or changes something on the page), use a <button> or give it role="button", so that its role is relevant (RGAA 7.1.3).'
   };
 
   const selector = [
+    'a[href]',
     '[role]',
     '[tabindex]',
     '[contenteditable]',

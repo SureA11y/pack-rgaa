@@ -142,20 +142,28 @@ function rollups(body) {
     const r = result.rulesResults.find((x) => x.ruleId === ruleId);
     return r ? rollupOutcome(r) : 'missing';
   };
+  // Nothing found there: notApplicable, or a criterion that asks only
+  // because some of its tests have no rule (partial coverage).
+  const found = (ruleId) => {
+    const r = result.rulesResults.find((x) => x.ruleId === ruleId);
+    return r && r.data.details.reasonCode === 'composite.rollup.cantTell.partialCoverage'
+      ? 'notApplicable'
+      : outcome(ruleId);
+  };
   return {
     rgaa: outcome('rgaa-4.1.2-11.9'),
     wcag: outcome('wcag-2.5.3-label-in-name'),
-    others: ['rgaa-4.1.2-6.1', 'rgaa-4.1.2-11.2', 'rgaa-4.1.2-7.1'].map(outcome),
+    others: ['rgaa-4.1.2-6.1', 'rgaa-4.1.2-11.2', 'rgaa-4.1.2-7.1'].map(found),
     result
   };
 }
 
-test(`${RULE_ID}: WCAG fails a replaced name outside a form, RGAA 11.9 does not apply and no other RGAA test gets it`, () => {
+// A button outside a form is a component a script drives: 7.1.3 takes it.
+test(`${RULE_ID}: WCAG fails a replaced name outside a form, RGAA 11.9 does not apply and 7.1 gets it`, () => {
   const r = rollups('<button aria-label="Fermer la fenêtre">Valider</button>');
   assert.equal(r.wcag, 'fail');
   assert.equal(r.rgaa, 'noneFoundInPart');
-  // 7.1 now judges the button's name (rgaa-button-name-present), which it has.
-  assert.deepEqual(r.others, ['noneFoundInPart', 'noneFoundInPart', 'passedInPart']);
+  assert.deepEqual(r.others, ['notApplicable', 'notApplicable', 'fail']);
 });
 
 test(`${RULE_ID}: a title without the label is outside WCAG 2.5.3, RGAA 11.9 asks`, () => {
@@ -168,7 +176,7 @@ test(`${RULE_ID}: WCAG and RGAA agree on a replaced name in a form, reported und
   const bad = rollups('<form><button aria-label="Fermer la fenêtre">Valider</button></form>');
   assert.equal(bad.wcag, 'fail');
   assert.equal(bad.rgaa, 'fail');
-  assert.deepEqual(bad.others, ['noneFoundInPart', 'noneFoundInPart', 'noneFoundInPart']);
+  assert.deepEqual(bad.others, ['notApplicable', 'notApplicable', 'notApplicable']);
   const good = rollups('<form><button aria-label="Valider la commande">Valider</button></form>');
   assert.equal(good.wcag, 'passedInPart');
   assert.equal(good.rgaa, 'passedInPart');
