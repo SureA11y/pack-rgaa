@@ -1553,4 +1553,468 @@ const REVIEW = {
   }
 };
 
-module.exports = { REVIEW };
+// The pack's variants of core's rules: { [ruleId]: { review, dictionaries } }.
+const VARIANT_REVIEW = {
+  'rgaa-contrast-minimum': {
+    review: {
+      CONTRAST_SWITCH_OFFERED: {
+        steps: [
+          'Find the contrast switch the report names and check that it is easy to find, near the top of the page or on every page, and reachable by keyboard.',
+          'Turn the switch on.',
+          "Find the text the report names and use the color picker in the browser's developer tools, or a contrast calculator with colors picked by an eyedropper, to measure it against its background, comparing with 4.5:1 (3:1 for large text: at least 24px, or 18.5px and bold).",
+          'Move to another page and check that the setting holds.'
+        ],
+        passWhen:
+          'The switch is easy to find and use, and with it on the text reaches its ratio (G174).',
+        failWhen:
+          'The switch is hard to find or does not raise this text to its ratio, so the text fails RGAA 3.2.'
+      },
+      ENGINE_EXCEPTION: {
+        steps: [
+          'Find the text the report names (the check stopped early, so nothing was measured).',
+          "Use the color picker in the browser's developer tools, or a contrast calculator with colors picked by an eyedropper, to measure the text color against the background directly behind the letters.",
+          'Note the text size and weight and compare the ratio with 4.5:1 (3:1 for large text: at least 24px, or 18.5px and bold).'
+        ],
+        passWhen: 'The ratio reaches the threshold for its size.',
+        failWhen: 'The ratio is below the threshold for its size, which fails RGAA 3.2.'
+      },
+      LOGO_TEXT_BELOW_THRESHOLD: {
+        steps: [
+          'Find the text the report names (often in the site header or its home link).',
+          "Decide whether it is part of a logo or brand name, such as the site's name in its logo treatment, rather than a slogan, menu item or other text.",
+          "If it is not logo text, use the color picker in the browser's developer tools, or a contrast calculator with colors picked by an eyedropper, to measure it against its background and compare with 4.5:1 (3:1 for large text: at least 24px, or 18.5px and bold)."
+        ],
+        passWhen:
+          'The text is part of a logo or brand name, which has no contrast requirement, or it reaches its ratio.',
+        failWhen:
+          'The text is not part of a logo or brand name and is below its ratio, which fails RGAA 3.2.'
+      },
+      PLACEHOLDER_BELOW_THRESHOLD: {
+        steps: [
+          'Find the field the report names and empty it so the placeholder shows.',
+          "In the Styles pane, check whether the page's CSS sets the ::placeholder color or opacity, or the field's background.",
+          "Use the color picker in the browser's developer tools, or a contrast calculator with colors picked by an eyedropper, to measure the placeholder text against the field background and compare with 4.5:1 (3:1 for large text: at least 24px, or 18.5px and bold).",
+          'Check whether the placeholder holds information needed to fill the field (a format or instruction), rather than just an example.'
+        ],
+        passWhen:
+          "The placeholder reaches 4.5:1 (or 3:1 if large), or it is drawn entirely in the browser's own default colors.",
+        failWhen:
+          'The page sets the placeholder or field colors and the ratio is below the threshold, which fails RGAA 3.2.'
+      },
+      PSEUDO_ELEMENT_COLOR: {
+        steps: [
+          'Find the text the report names and note the ::first-line or ::first-letter color in the Styles pane.',
+          "Use the color picker in the browser's developer tools, or a contrast calculator with colors picked by an eyedropper, to measure both the element's text color and the first-line or first-letter color against the background.",
+          'Resize the window to see which words the first-line color paints at different widths.',
+          'Compare each ratio with the one the report gives as needed for that color: 4.5:1 for most text, or 3:1 for large text (at least 24px, or 18.5px and bold).'
+        ],
+        passWhen: 'Both colors reach the ratio they need.',
+        failWhen: 'Either color gives a ratio below the one it needs, so the text fails the check.'
+      },
+      SEMIBOLD_BELOW_THRESHOLD: {
+        steps: [
+          'Find the semi-bold text the report names.',
+          'Compare it side by side with bold text (weight 700) of the same size and font on the page or in the developer tools, toggling font-weight.',
+          'Decide whether it reads as bold; if it does, it counts as large and needs 3:1, otherwise 4.5:1.'
+        ],
+        passWhen: 'The text reads as bold, so it is large text and its ratio meets 3:1.',
+        failWhen:
+          'The text does not read as bold, so it is normal text below 4.5:1, which fails RGAA 3.2.'
+      },
+      TEXT_SHADOW: {
+        steps: [
+          'Find the text the report names and note its text-shadow.',
+          'Zoom in and check whether the shadow forms a solid outline or halo around every letter.',
+          "Use the color picker in the browser's developer tools, or a contrast calculator with colors picked by an eyedropper, to measure the color that forms the letters against the background.",
+          'Compare the ratio with the one the report gives as needed: 4.5:1 for most text, or 3:1 for large text (at least 24px, or 18.5px and bold).'
+        ],
+        passWhen: 'The color that forms the letters reaches the ratio needed.',
+        failWhen:
+          'The color that forms the letters gives a ratio below the one needed, so the text fails the check.'
+      },
+      TEXT_STROKE: {
+        steps: [
+          'Find the text the report names and note its -webkit-text-stroke width and color.',
+          'Zoom in to see which color forms most of each letter (a thin stroke counts less than the fill).',
+          "Use the color picker in the browser's developer tools, or a contrast calculator with colors picked by an eyedropper, to measure that color against the background.",
+          'Compare the ratio with the one the report gives as needed: 4.5:1 for most text, or 3:1 for large text (at least 24px, or 18.5px and bold).'
+        ],
+        passWhen: 'The color that forms the letters reaches the ratio needed.',
+        failWhen:
+          'The color that forms the letters gives a ratio below the one needed, so the text fails the check.'
+      }
+    },
+    dictionaries: {
+      fr: {
+        contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_fail:
+          'Le sélecteur est difficile à trouver ou n’amène pas ce texte à son ratio : le texte ne respecte donc pas le critère RGAA 3.2.',
+        contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_pass:
+          'Le sélecteur est facile à trouver et à utiliser, et une fois activé, le texte atteint son ratio (G174).',
+        contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_step1:
+          'Repérez le sélecteur de contraste indiqué par le rapport et vérifiez qu’il est facile à trouver, en haut de la page ou sur chaque page, et accessible au clavier.',
+        contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_step2: 'Activez le sélecteur.',
+        contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_step3:
+          'Repérez le texte indiqué par le rapport et, avec la pipette de couleur des outils de développement du navigateur ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez-le par rapport à son arrière-plan en comparant à 4,5:1 (3:1 pour le texte de grande taille : au moins 24px, ou 18.5px en gras).',
+        contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_step4:
+          'Passez à une autre page et vérifiez que le réglage est conservé.',
+        contrastMinimumRgaa_review_ENGINE_EXCEPTION_fail:
+          'Le ratio est inférieur au seuil correspondant à sa taille, ce qui ne respecte pas le critère RGAA 3.2.',
+        contrastMinimumRgaa_review_ENGINE_EXCEPTION_pass:
+          'Le ratio atteint le seuil correspondant à sa taille.',
+        contrastMinimumRgaa_review_ENGINE_EXCEPTION_step1:
+          'Repérez le texte indiqué par le rapport (la vérification s’est arrêtée tôt, donc rien n’a été mesuré).',
+        contrastMinimumRgaa_review_ENGINE_EXCEPTION_step2:
+          'Avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez la couleur du texte par rapport à l’arrière-plan situé juste derrière les lettres.',
+        contrastMinimumRgaa_review_ENGINE_EXCEPTION_step3:
+          'Notez la taille et la graisse du texte et comparez le ratio à 4,5:1 (3:1 pour le texte de grande taille : au moins 24px, ou 18.5px en gras).',
+        contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_fail:
+          'Le texte ne fait pas partie d’un logo ou d’un nom de marque et reste sous son ratio, ce qui ne respecte pas le critère RGAA 3.2.',
+        contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_pass:
+          'Le texte fait partie d’un logo ou d’un nom de marque, qui n’a pas d’exigence de contraste, ou il atteint son ratio.',
+        contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_step1:
+          'Repérez le texte indiqué par le rapport (souvent dans l’en-tête du site ou son lien vers l’accueil).',
+        contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_step2:
+          'Déterminez s’il fait partie d’un logo ou d’un nom de marque, comme le nom du site dans son traitement de logo, plutôt que d’un slogan, d’un élément de menu ou d’un autre texte.',
+        contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_step3:
+          'S’il ne s’agit pas du texte d’un logo, avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez le texte par rapport à son arrière-plan et comparez à 4,5:1 (3:1 pour le texte de grande taille : au moins 24px, ou 18.5px en gras).',
+        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_fail:
+          'La page définit les couleurs du placeholder ou du champ et le ratio est inférieur au seuil, ce qui ne respecte pas le critère RGAA 3.2.',
+        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_pass:
+          'Le placeholder atteint 4,5:1 (ou 3:1 s’il est de grande taille), ou il est entièrement dessiné avec les couleurs par défaut du navigateur.',
+        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step1:
+          'Repérez le champ indiqué par le rapport et videz-le pour que le placeholder s’affiche.',
+        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step2:
+          'Dans le panneau Styles, vérifiez si le CSS de la page définit la couleur ou l’opacité de ::placeholder, ou l’arrière-plan du champ.',
+        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step3:
+          'Avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez le texte du placeholder par rapport à l’arrière-plan du champ et comparez à 4,5:1 (3:1 pour le texte de grande taille : au moins 24px, ou 18.5px en gras).',
+        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step4:
+          'Vérifiez si le placeholder contient une information nécessaire pour remplir le champ (un format ou une consigne), plutôt qu’un simple exemple.',
+        contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_fail:
+          'L’une des couleurs donne un ratio inférieur à celui qui lui est requis : le texte ne satisfait pas à la vérification.',
+        contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_pass:
+          'Les deux couleurs atteignent le ratio qui leur est requis.',
+        contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_step1:
+          'Repérez le texte indiqué par le rapport et notez la couleur de ::first-line ou ::first-letter dans le panneau Styles.',
+        contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_step2:
+          'Avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez à la fois la couleur du texte de l’élément et la couleur de la première ligne ou de la première lettre par rapport à l’arrière-plan.',
+        contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_step3:
+          'Redimensionnez la fenêtre pour voir à quels mots la couleur de la première ligne s’applique selon la largeur.',
+        contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_step4:
+          'Comparez chaque ratio à celui que le rapport indique comme requis pour cette couleur : 4,5:1 pour la plupart des textes, ou 3:1 pour le texte de grande taille (au moins 24px, ou 18.5px en gras).',
+        contrastMinimumRgaa_review_SEMIBOLD_BELOW_THRESHOLD_fail:
+          'Le texte ne se lit pas comme du gras : c’est donc un texte normal sous 4,5:1, ce qui ne respecte pas le critère RGAA 3.2.',
+        contrastMinimumRgaa_review_SEMIBOLD_BELOW_THRESHOLD_pass:
+          'Le texte se lit comme du gras : c’est donc un texte de grande taille et son ratio atteint 3:1.',
+        contrastMinimumRgaa_review_SEMIBOLD_BELOW_THRESHOLD_step1:
+          'Repérez le texte en demi-gras indiqué par le rapport.',
+        contrastMinimumRgaa_review_SEMIBOLD_BELOW_THRESHOLD_step2:
+          'Comparez-le côte à côte avec un texte en gras (graisse 700) de même taille et de même police sur la page ou dans les outils de développement, en basculant font-weight.',
+        contrastMinimumRgaa_review_SEMIBOLD_BELOW_THRESHOLD_step3:
+          'Déterminez s’il se lit comme du gras ; si oui, il compte comme texte de grande taille et doit atteindre 3:1, sinon 4,5:1.',
+        contrastMinimumRgaa_review_TEXT_SHADOW_fail:
+          'La couleur qui forme les lettres donne un ratio inférieur au ratio requis : le texte ne satisfait pas à la vérification.',
+        contrastMinimumRgaa_review_TEXT_SHADOW_pass:
+          'La couleur qui forme les lettres atteint le ratio requis.',
+        contrastMinimumRgaa_review_TEXT_SHADOW_step1:
+          'Repérez le texte indiqué par le rapport et notez son text-shadow.',
+        contrastMinimumRgaa_review_TEXT_SHADOW_step2:
+          'Zoomez et vérifiez si l’ombre forme un contour plein ou un halo autour de chaque lettre.',
+        contrastMinimumRgaa_review_TEXT_SHADOW_step3:
+          'Avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez la couleur qui forme les lettres par rapport à l’arrière-plan.',
+        contrastMinimumRgaa_review_TEXT_SHADOW_step4:
+          'Comparez le ratio à celui que le rapport indique comme requis : 4,5:1 pour la plupart des textes, ou 3:1 pour le texte de grande taille (au moins 24px, ou 18.5px en gras).',
+        contrastMinimumRgaa_review_TEXT_STROKE_fail:
+          'La couleur qui forme les lettres donne un ratio inférieur au ratio requis : le texte ne satisfait pas à la vérification.',
+        contrastMinimumRgaa_review_TEXT_STROKE_pass:
+          'La couleur qui forme les lettres atteint le ratio requis.',
+        contrastMinimumRgaa_review_TEXT_STROKE_step1:
+          'Repérez le texte indiqué par le rapport et notez l’épaisseur et la couleur de son -webkit-text-stroke.',
+        contrastMinimumRgaa_review_TEXT_STROKE_step2:
+          'Zoomez pour voir quelle couleur forme l’essentiel de chaque lettre (un contour fin compte moins que le remplissage).',
+        contrastMinimumRgaa_review_TEXT_STROKE_step3:
+          'Avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez cette couleur par rapport à l’arrière-plan.',
+        contrastMinimumRgaa_review_TEXT_STROKE_step4:
+          'Comparez le ratio à celui que le rapport indique comme requis : 4,5:1 pour la plupart des textes, ou 3:1 pour le texte de grande taille (au moins 24px, ou 18.5px en gras).'
+      },
+      de: {
+        contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_fail:
+          'Der Schalter ist schwer zu finden oder hebt diesen Text nicht auf sein Verhältnis an, sodass der Text gegen RGAA 3.2 verstößt.',
+        contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_pass:
+          'Der Schalter ist leicht zu finden und zu bedienen, und wenn er eingeschaltet ist, erreicht der Text sein Verhältnis (G174).',
+        contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_step1:
+          'Suchen Sie den im Bericht genannten Kontrastschalter und prüfen Sie, ob er leicht zu finden ist, oben auf der Seite oder auf jeder Seite, und per Tastatur erreichbar ist.',
+        contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_step2: 'Schalten Sie den Schalter ein.',
+        contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_step3:
+          'Suchen Sie den im Bericht genannten Text und messen Sie ihn mit dem Farbwähler in den Entwicklertools des Browsers oder mit einem Kontrastrechner und per Pipette aufgenommenen Farben gegen seinen Hintergrund; vergleichen Sie mit 4,5:1 (3:1 für großen Text: mindestens 24px oder 18.5px und fett).',
+        contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_step4:
+          'Wechseln Sie zu einer anderen Seite und prüfen Sie, ob die Einstellung erhalten bleibt.',
+        contrastMinimumRgaa_review_ENGINE_EXCEPTION_fail:
+          'Das Verhältnis liegt unter dem Schwellenwert für seine Größe; das verstößt gegen RGAA 3.2.',
+        contrastMinimumRgaa_review_ENGINE_EXCEPTION_pass:
+          'Das Verhältnis erreicht den Schwellenwert für seine Größe.',
+        contrastMinimumRgaa_review_ENGINE_EXCEPTION_step1:
+          'Suchen Sie den im Bericht genannten Text (die Prüfung wurde vorzeitig beendet, daher wurde nichts gemessen).',
+        contrastMinimumRgaa_review_ENGINE_EXCEPTION_step2:
+          'Messen Sie mit dem Farbwähler in den Entwicklertools des Browsers oder mit einem Kontrastrechner und per Pipette aufgenommenen Farben die Textfarbe gegen den Hintergrund direkt hinter den Buchstaben.',
+        contrastMinimumRgaa_review_ENGINE_EXCEPTION_step3:
+          'Notieren Sie Schriftgröße und -stärke und vergleichen Sie das Verhältnis mit 4,5:1 (3:1 für großen Text: mindestens 24px oder 18.5px und fett).',
+        contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_fail:
+          'Der Text ist nicht Teil eines Logos oder Markennamens und liegt unter seinem Verhältnis; das verstößt gegen RGAA 3.2.',
+        contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_pass:
+          'Der Text ist Teil eines Logos oder Markennamens, für den keine Kontrastanforderung gilt, oder er erreicht sein Verhältnis.',
+        contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_step1:
+          'Suchen Sie den im Bericht genannten Text (oft im Kopfbereich der Website oder in ihrem Link zur Startseite).',
+        contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_step2:
+          'Entscheiden Sie, ob er Teil eines Logos oder Markennamens ist, etwa der Name der Website in ihrer Logogestaltung, und nicht ein Slogan, Menüeintrag oder anderer Text.',
+        contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_step3:
+          'Ist es kein Logotext, messen Sie ihn mit dem Farbwähler in den Entwicklertools des Browsers oder mit einem Kontrastrechner und per Pipette aufgenommenen Farben gegen seinen Hintergrund und vergleichen Sie mit 4,5:1 (3:1 für großen Text: mindestens 24px oder 18.5px und fett).',
+        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_fail:
+          'Die Seite setzt die Farben von Platzhalter oder Feld und das Verhältnis liegt unter dem Schwellenwert; das verstößt gegen RGAA 3.2.',
+        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_pass:
+          'Der Platzhalter erreicht 4,5:1 (oder 3:1, wenn groß), oder er wird vollständig in den eigenen Standardfarben des Browsers gezeichnet.',
+        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step1:
+          'Suchen Sie das im Bericht genannte Feld und leeren Sie es, damit der Platzhalter erscheint.',
+        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step2:
+          'Prüfen Sie im Bereich „Stile“, ob das CSS der Seite Farbe oder Deckkraft von ::placeholder oder den Hintergrund des Feldes setzt.',
+        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step3:
+          'Messen Sie mit dem Farbwähler in den Entwicklertools des Browsers oder mit einem Kontrastrechner und per Pipette aufgenommenen Farben den Platzhaltertext gegen den Feldhintergrund und vergleichen Sie mit 4,5:1 (3:1 für großen Text: mindestens 24px oder 18.5px und fett).',
+        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step4:
+          'Prüfen Sie, ob der Platzhalter Informationen enthält, die zum Ausfüllen des Feldes nötig sind (ein Format oder eine Anweisung), statt nur eines Beispiels.',
+        contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_fail:
+          'Eine der Farben ergibt ein Verhältnis unter dem für sie erforderlichen; der Text besteht die Prüfung nicht.',
+        contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_pass:
+          'Beide Farben erreichen das für sie erforderliche Verhältnis.',
+        contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_step1:
+          'Suchen Sie den im Bericht genannten Text und notieren Sie die Farbe von ::first-line oder ::first-letter im Bereich „Stile“.',
+        contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_step2:
+          'Messen Sie mit dem Farbwähler in den Entwicklertools des Browsers oder mit einem Kontrastrechner und per Pipette aufgenommenen Farben sowohl die Textfarbe des Elements als auch die Farbe der ersten Zeile oder des ersten Buchstabens gegen den Hintergrund.',
+        contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_step3:
+          'Ändern Sie die Fenstergröße, um zu sehen, für welche Wörter die Farbe der ersten Zeile bei unterschiedlichen Breiten gilt.',
+        contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_step4:
+          'Vergleichen Sie jedes Verhältnis mit dem, das der Bericht für diese Farbe als erforderlich angibt: 4,5:1 für die meisten Texte oder 3:1 für großen Text (mindestens 24px oder 18.5px und fett).',
+        contrastMinimumRgaa_review_SEMIBOLD_BELOW_THRESHOLD_fail:
+          'Der Text wirkt nicht fett, ist also normaler Text unter 4,5:1; das verstößt gegen RGAA 3.2.',
+        contrastMinimumRgaa_review_SEMIBOLD_BELOW_THRESHOLD_pass:
+          'Der Text wirkt fett, ist also großer Text, und sein Verhältnis erreicht 3:1.',
+        contrastMinimumRgaa_review_SEMIBOLD_BELOW_THRESHOLD_step1:
+          'Suchen Sie den im Bericht genannten halbfetten Text.',
+        contrastMinimumRgaa_review_SEMIBOLD_BELOW_THRESHOLD_step2:
+          'Vergleichen Sie ihn direkt mit fettem Text (Stärke 700) gleicher Größe und Schrift auf der Seite oder in den Entwicklertools, indem Sie font-weight umschalten.',
+        contrastMinimumRgaa_review_SEMIBOLD_BELOW_THRESHOLD_step3:
+          'Entscheiden Sie, ob er als fett wirkt; wenn ja, gilt er als groß und braucht 3:1, sonst 4,5:1.',
+        contrastMinimumRgaa_review_TEXT_SHADOW_fail:
+          'Die Farbe, die die Buchstaben bildet, ergibt ein Verhältnis unter dem erforderlichen; der Text besteht die Prüfung nicht.',
+        contrastMinimumRgaa_review_TEXT_SHADOW_pass:
+          'Die Farbe, die die Buchstaben bildet, erreicht das erforderliche Verhältnis.',
+        contrastMinimumRgaa_review_TEXT_SHADOW_step1:
+          'Suchen Sie den im Bericht genannten Text und notieren Sie seinen text-shadow.',
+        contrastMinimumRgaa_review_TEXT_SHADOW_step2:
+          'Zoomen Sie hinein und prüfen Sie, ob der Schatten eine geschlossene Kontur oder einen Halo um jeden Buchstaben bildet.',
+        contrastMinimumRgaa_review_TEXT_SHADOW_step3:
+          'Messen Sie mit dem Farbwähler in den Entwicklertools des Browsers oder mit einem Kontrastrechner und per Pipette aufgenommenen Farben die Farbe, die die Buchstaben bildet, gegen den Hintergrund.',
+        contrastMinimumRgaa_review_TEXT_SHADOW_step4:
+          'Vergleichen Sie das Verhältnis mit dem, das der Bericht als erforderlich angibt: 4,5:1 für die meisten Texte oder 3:1 für großen Text (mindestens 24px oder 18.5px und fett).',
+        contrastMinimumRgaa_review_TEXT_STROKE_fail:
+          'Die Farbe, die die Buchstaben bildet, ergibt ein Verhältnis unter dem erforderlichen; der Text besteht die Prüfung nicht.',
+        contrastMinimumRgaa_review_TEXT_STROKE_pass:
+          'Die Farbe, die die Buchstaben bildet, erreicht das erforderliche Verhältnis.',
+        contrastMinimumRgaa_review_TEXT_STROKE_step1:
+          'Suchen Sie den im Bericht genannten Text und notieren Sie Breite und Farbe seines -webkit-text-stroke.',
+        contrastMinimumRgaa_review_TEXT_STROKE_step2:
+          'Zoomen Sie hinein, um zu sehen, welche Farbe den Großteil jedes Buchstabens bildet (eine dünne Kontur zählt weniger als die Füllung).',
+        contrastMinimumRgaa_review_TEXT_STROKE_step3:
+          'Messen Sie mit dem Farbwähler in den Entwicklertools des Browsers oder mit einem Kontrastrechner und per Pipette aufgenommenen Farben diese Farbe gegen den Hintergrund.',
+        contrastMinimumRgaa_review_TEXT_STROKE_step4:
+          'Vergleichen Sie das Verhältnis mit dem, das der Bericht als erforderlich angibt: 4,5:1 für die meisten Texte oder 3:1 für großen Text (mindestens 24px oder 18.5px und fett).'
+      },
+      es: {
+        contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_fail:
+          'El conmutador es difícil de encontrar o no eleva este texto hasta su relación, así que el texto incumple RGAA 3.2.',
+        contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_pass:
+          'El conmutador es fácil de encontrar y de usar, y con él activado el texto alcanza su relación (G174).',
+        contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_step1:
+          'Localizar el conmutador de contraste que indica el informe y comprobar que es fácil de encontrar, cerca de la parte superior de la página o en todas las páginas, y que se puede alcanzar con el teclado.',
+        contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_step2: 'Activar el conmutador.',
+        contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_step3:
+          'Localizar el texto que indica el informe y medirlo frente a su fondo con el selector de color de las herramientas para desarrolladores del navegador, o con una calculadora de contraste y colores tomados con un cuentagotas, comparándolo con 4.5:1 (3:1 para texto grande: al menos 24px, o 18.5px y en negrita).',
+        contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_step4:
+          'Ir a otra página y comprobar que la configuración se mantiene.',
+        contrastMinimumRgaa_review_ENGINE_EXCEPTION_fail:
+          'La relación es inferior al umbral correspondiente a su tamaño, lo que incumple RGAA 3.2.',
+        contrastMinimumRgaa_review_ENGINE_EXCEPTION_pass:
+          'La relación alcanza el umbral correspondiente a su tamaño.',
+        contrastMinimumRgaa_review_ENGINE_EXCEPTION_step1:
+          'Localizar el texto que indica el informe (la comprobación se detuvo antes de tiempo, así que no se midió nada).',
+        contrastMinimumRgaa_review_ENGINE_EXCEPTION_step2:
+          'Con el selector de color de las herramientas para desarrolladores del navegador, o con una calculadora de contraste y colores tomados con un cuentagotas, medir el color del texto frente al fondo situado justo detrás de las letras.',
+        contrastMinimumRgaa_review_ENGINE_EXCEPTION_step3:
+          'Anotar el tamaño y el grosor del texto y comparar la relación con 4.5:1 (3:1 para texto grande: al menos 24px, o 18.5px y en negrita).',
+        contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_fail:
+          'El texto no forma parte de un logotipo ni de un nombre de marca y está por debajo de su relación, lo que incumple RGAA 3.2.',
+        contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_pass:
+          'El texto forma parte de un logotipo o nombre de marca, que no tiene requisito de contraste, o alcanza su relación.',
+        contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_step1:
+          'Localizar el texto que indica el informe (a menudo en la cabecera del sitio o en su enlace a la página de inicio).',
+        contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_step2:
+          'Decidir si forma parte de un logotipo o nombre de marca, como el nombre del sitio en su tratamiento de logotipo, y no de un eslogan, un elemento de menú u otro texto.',
+        contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_step3:
+          'Si no es texto de logotipo, medirlo frente a su fondo con el selector de color de las herramientas para desarrolladores del navegador, o con una calculadora de contraste y colores tomados con un cuentagotas, y compararlo con 4.5:1 (3:1 para texto grande: al menos 24px, o 18.5px y en negrita).',
+        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_fail:
+          'La página define los colores del texto provisional o del campo y la relación es inferior al umbral, lo que incumple RGAA 3.2.',
+        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_pass:
+          'El texto provisional alcanza 4.5:1 (o 3:1 si es grande), o se dibuja enteramente con los colores predeterminados del propio navegador.',
+        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step1:
+          'Localizar el campo que indica el informe y vaciarlo para que se muestre el texto provisional.',
+        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step2:
+          'En el panel Styles, comprobar si el CSS de la página define el color o la opacidad de ::placeholder, o el fondo del campo.',
+        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step3:
+          'Con el selector de color de las herramientas para desarrolladores del navegador, o con una calculadora de contraste y colores tomados con un cuentagotas, medir el texto provisional frente al fondo del campo y compararlo con 4.5:1 (3:1 para texto grande: al menos 24px, o 18.5px y en negrita).',
+        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step4:
+          'Comprobar si el texto provisional contiene información necesaria para rellenar el campo (un formato o una instrucción), y no solo un ejemplo.',
+        contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_fail:
+          'Alguno de los colores da una relación inferior a la que necesita, por lo que el texto no supera la comprobación.',
+        contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_pass:
+          'Ambos colores alcanzan la relación que necesitan.',
+        contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_step1:
+          'Localizar el texto que indica el informe y anotar el color de ::first-line o ::first-letter en el panel Styles.',
+        contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_step2:
+          'Con el selector de color de las herramientas para desarrolladores del navegador, o con una calculadora de contraste y colores tomados con un cuentagotas, medir frente al fondo tanto el color del texto del elemento como el color de la primera línea o de la primera letra.',
+        contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_step3:
+          'Cambiar el tamaño de la ventana para ver a qué palabras se aplica el color de la primera línea con anchos distintos.',
+        contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_step4:
+          'Comparar cada relación con la que el informe indica como necesaria para ese color: 4.5:1 para la mayoría del texto, o 3:1 para texto grande (al menos 24px, o 18.5px y en negrita).',
+        contrastMinimumRgaa_review_SEMIBOLD_BELOW_THRESHOLD_fail:
+          'El texto no se percibe como negrita, así que es texto normal por debajo de 4.5:1, lo que incumple RGAA 3.2.',
+        contrastMinimumRgaa_review_SEMIBOLD_BELOW_THRESHOLD_pass:
+          'El texto se percibe como negrita, así que es texto grande y su relación cumple 3:1.',
+        contrastMinimumRgaa_review_SEMIBOLD_BELOW_THRESHOLD_step1:
+          'Localizar el texto seminegrita que indica el informe.',
+        contrastMinimumRgaa_review_SEMIBOLD_BELOW_THRESHOLD_step2:
+          'Compararlo junto a un texto en negrita (grosor 700) del mismo tamaño y fuente en la página o en las herramientas para desarrolladores, alternando font-weight.',
+        contrastMinimumRgaa_review_SEMIBOLD_BELOW_THRESHOLD_step3:
+          'Decidir si se percibe como negrita; si es así, cuenta como texto grande y necesita 3:1; si no, 4.5:1.',
+        contrastMinimumRgaa_review_TEXT_SHADOW_fail:
+          'El color que forma las letras da una relación inferior a la necesaria, por lo que el texto no supera la comprobación.',
+        contrastMinimumRgaa_review_TEXT_SHADOW_pass:
+          'El color que forma las letras alcanza la relación necesaria.',
+        contrastMinimumRgaa_review_TEXT_SHADOW_step1:
+          'Localizar el texto que indica el informe y anotar su text-shadow.',
+        contrastMinimumRgaa_review_TEXT_SHADOW_step2:
+          'Ampliar y comprobar si la sombra forma un contorno o halo sólido alrededor de cada letra.',
+        contrastMinimumRgaa_review_TEXT_SHADOW_step3:
+          'Con el selector de color de las herramientas para desarrolladores del navegador, o con una calculadora de contraste y colores tomados con un cuentagotas, medir el color que forma las letras frente al fondo.',
+        contrastMinimumRgaa_review_TEXT_SHADOW_step4:
+          'Comparar la relación con la que el informe indica como necesaria: 4.5:1 para la mayoría del texto, o 3:1 para texto grande (al menos 24px, o 18.5px y en negrita).',
+        contrastMinimumRgaa_review_TEXT_STROKE_fail:
+          'El color que forma las letras da una relación inferior a la necesaria, por lo que el texto no supera la comprobación.',
+        contrastMinimumRgaa_review_TEXT_STROKE_pass:
+          'El color que forma las letras alcanza la relación necesaria.',
+        contrastMinimumRgaa_review_TEXT_STROKE_step1:
+          'Localizar el texto que indica el informe y anotar el ancho y el color de su -webkit-text-stroke.',
+        contrastMinimumRgaa_review_TEXT_STROKE_step2:
+          'Ampliar para ver qué color forma la mayor parte de cada letra (un trazo fino cuenta menos que el relleno).',
+        contrastMinimumRgaa_review_TEXT_STROKE_step3:
+          'Con el selector de color de las herramientas para desarrolladores del navegador, o con una calculadora de contraste y colores tomados con un cuentagotas, medir ese color frente al fondo.',
+        contrastMinimumRgaa_review_TEXT_STROKE_step4:
+          'Comparar la relación con la que el informe indica como necesaria: 4.5:1 para la mayoría del texto, o 3:1 para texto grande (al menos 24px, o 18.5px y en negrita).'
+      },
+      ja: {
+        contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_fail:
+          '切り替えが見つけにくいか、このテキストを基準のコントラスト比まで引き上げないため、テキストは RGAA 3.2 を満たしません。',
+        contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_pass:
+          '切り替えは見つけやすく使いやすく、オンにするとテキストが基準のコントラスト比に達します (G174)。',
+        contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_step1:
+          'レポートに示されたコントラスト切り替えを見つけ、ページの上部またはすべてのページにあって見つけやすく、キーボードで到達できることを確認してください。',
+        contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_step2: '切り替えをオンにしてください。',
+        contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_step3:
+          'レポートに示されたテキストを見つけ、ブラウザーの開発者ツールのカラーピッカー、またはスポイトで色を取得したコントラスト計算ツールを使って背景に対して測定し、4.5:1 (大きなテキスト、つまり 24px 以上または 18.5px 以上の太字では 3:1) と比べてください。',
+        contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_step4:
+          '別のページに移動し、設定が維持されていることを確認してください。',
+        contrastMinimumRgaa_review_ENGINE_EXCEPTION_fail:
+          'サイズに応じた基準値をコントラスト比が下回るため、RGAA 3.2 を満たしません。',
+        contrastMinimumRgaa_review_ENGINE_EXCEPTION_pass:
+          'サイズに応じた基準値にコントラスト比が達しています。',
+        contrastMinimumRgaa_review_ENGINE_EXCEPTION_step1:
+          'レポートに示されたテキストを見つけてください (チェックが途中で止まったため、何も測定されていません)。',
+        contrastMinimumRgaa_review_ENGINE_EXCEPTION_step2:
+          'ブラウザーの開発者ツールのカラーピッカー、またはスポイトで色を取得したコントラスト計算ツールを使い、文字のすぐ背後にある背景に対してテキストの色を測定してください。',
+        contrastMinimumRgaa_review_ENGINE_EXCEPTION_step3:
+          'テキストのサイズと太さを控え、コントラスト比を 4.5:1 (大きなテキスト、つまり 24px 以上または 18.5px 以上の太字では 3:1) と比べてください。',
+        contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_fail:
+          'テキストはロゴやブランド名の一部ではなく、基準のコントラスト比を下回るため、RGAA 3.2 を満たしません。',
+        contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_pass:
+          'テキストはコントラストの要件がないロゴやブランド名の一部であるか、基準のコントラスト比に達しています。',
+        contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_step1:
+          'レポートに示されたテキストを見つけてください (サイトのヘッダーやホームへのリンクにあることが多いです)。',
+        contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_step2:
+          'それがスローガン、メニュー項目、その他のテキストではなく、ロゴのデザインで表されたサイト名のように、ロゴやブランド名の一部であるかを判断してください。',
+        contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_step3:
+          'ロゴのテキストでなければ、ブラウザーの開発者ツールのカラーピッカー、またはスポイトで色を取得したコントラスト計算ツールを使って背景に対して測定し、4.5:1 (大きなテキスト、つまり 24px 以上または 18.5px 以上の太字では 3:1) と比べてください。',
+        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_fail:
+          'ページがプレースホルダーまたはフィールドの色を指定しており、コントラスト比が基準値を下回るため、RGAA 3.2 を満たしません。',
+        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_pass:
+          'プレースホルダーが 4.5:1 (大きなテキストなら 3:1) に達しているか、すべてブラウザー自身の既定の色で描画されています。',
+        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step1:
+          'レポートに示されたフィールドを見つけ、中身を空にしてプレースホルダーが表示されるようにしてください。',
+        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step2:
+          '[Styles] ペインで、ページの CSS が ::placeholder の色や opacity、またはフィールドの背景を指定しているか確認してください。',
+        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step3:
+          'ブラウザーの開発者ツールのカラーピッカー、またはスポイトで色を取得したコントラスト計算ツールを使い、フィールドの背景に対してプレースホルダーのテキストを測定し、4.5:1 (大きなテキスト、つまり 24px 以上または 18.5px 以上の太字では 3:1) と比べてください。',
+        contrastMinimumRgaa_review_PLACEHOLDER_BELOW_THRESHOLD_step4:
+          'プレースホルダーが単なる例ではなく、フィールドの入力に必要な情報 (形式や指示) を含んでいるか確認してください。',
+        contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_fail:
+          'いずれかの色のコントラスト比が必要な比を下回るため、テキストはこのチェックを満たしません。',
+        contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_pass:
+          'どちらの色も必要な比に達しています。',
+        contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_step1:
+          'レポートに示されたテキストを見つけ、[Styles] ペインで ::first-line または ::first-letter の色を控えてください。',
+        contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_step2:
+          'ブラウザーの開発者ツールのカラーピッカー、またはスポイトで色を取得したコントラスト計算ツールを使い、要素のテキストの色と、first-line または first-letter の色の両方を背景に対して測定してください。',
+        contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_step3:
+          'ウィンドウの大きさを変えて、幅によって first-line の色がどの単語に適用されるかを確認してください。',
+        contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_step4:
+          'それぞれの比を、レポートがその色に必要とする比 (大半のテキストは 4.5:1、大きなテキスト、つまり 24px 以上または 18.5px 以上の太字では 3:1) と比べてください。',
+        contrastMinimumRgaa_review_SEMIBOLD_BELOW_THRESHOLD_fail:
+          'テキストは太字に見えないため通常のテキストであり、4.5:1 を下回るため、RGAA 3.2 を満たしません。',
+        contrastMinimumRgaa_review_SEMIBOLD_BELOW_THRESHOLD_pass:
+          'テキストは太字に見えるため大きなテキストであり、コントラスト比は 3:1 を満たしています。',
+        contrastMinimumRgaa_review_SEMIBOLD_BELOW_THRESHOLD_step1:
+          'レポートに示されたセミボールドのテキストを見つけてください。',
+        contrastMinimumRgaa_review_SEMIBOLD_BELOW_THRESHOLD_step2:
+          'ページ上または開発者ツールで font-weight を切り替えながら、同じサイズとフォントの太字 (ウェイト 700) のテキストと並べて比べてください。',
+        contrastMinimumRgaa_review_SEMIBOLD_BELOW_THRESHOLD_step3:
+          '太字に見えるかを判断してください。太字に見えれば大きなテキストとして 3:1、そうでなければ 4.5:1 が必要です。',
+        contrastMinimumRgaa_review_TEXT_SHADOW_fail:
+          '文字を形作っている色のコントラスト比が必要な比を下回るため、テキストはこのチェックを満たしません。',
+        contrastMinimumRgaa_review_TEXT_SHADOW_pass:
+          '文字を形作っている色が必要な比に達しています。',
+        contrastMinimumRgaa_review_TEXT_SHADOW_step1:
+          'レポートに示されたテキストを見つけ、その text-shadow を控えてください。',
+        contrastMinimumRgaa_review_TEXT_SHADOW_step2:
+          '拡大して、影がすべての文字の周りにはっきりした輪郭や縁取りを形成しているか確認してください。',
+        contrastMinimumRgaa_review_TEXT_SHADOW_step3:
+          'ブラウザーの開発者ツールのカラーピッカー、またはスポイトで色を取得したコントラスト計算ツールを使い、文字を形作っている色を背景に対して測定してください。',
+        contrastMinimumRgaa_review_TEXT_SHADOW_step4:
+          '比を、レポートが必要とする比 (大半のテキストは 4.5:1、大きなテキスト、つまり 24px 以上または 18.5px 以上の太字では 3:1) と比べてください。',
+        contrastMinimumRgaa_review_TEXT_STROKE_fail:
+          '文字を形作っている色のコントラスト比が必要な比を下回るため、テキストはこのチェックを満たしません。',
+        contrastMinimumRgaa_review_TEXT_STROKE_pass:
+          '文字を形作っている色が必要な比に達しています。',
+        contrastMinimumRgaa_review_TEXT_STROKE_step1:
+          'レポートに示されたテキストを見つけ、その -webkit-text-stroke の幅と色を控えてください。',
+        contrastMinimumRgaa_review_TEXT_STROKE_step2:
+          '拡大して、各文字の大部分をどの色が形作っているか確認してください (細い輪郭線は塗りより影響が小さくなります)。',
+        contrastMinimumRgaa_review_TEXT_STROKE_step3:
+          'ブラウザーの開発者ツールのカラーピッカー、またはスポイトで色を取得したコントラスト計算ツールを使い、その色を背景に対して測定してください。',
+        contrastMinimumRgaa_review_TEXT_STROKE_step4:
+          '比を、レポートが必要とする比 (大半のテキストは 4.5:1、大きなテキスト、つまり 24px 以上または 18.5px 以上の太字では 3:1) と比べてください。'
+      }
+    }
+  },
+  'rgaa-valid-lang': {
+    review: {},
+    dictionaries: {}
+  }
+};
+
+module.exports = { REVIEW, VARIANT_REVIEW };

@@ -28,7 +28,7 @@ const {
   testsOfRule
 } = require('./mappings');
 const { procedures, groups, notes, facetOf } = require('./procedures');
-const { REVIEW } = require('./review');
+const { REVIEW, VARIANT_REVIEW } = require('./review');
 const { RGAA_TESTS } = require('./map');
 const { RGAA_RULE_TESTS } = require('./rule-map');
 
@@ -89,7 +89,9 @@ function firstTestOf(rule, code) {
 
 // A rule claims the facets of the tests rule-map.js links it to, so what a
 // rule checks and what the procedures list under each test can't disagree.
-function claimingItsTests(rule) {
+function claimingItsTests(source) {
+  const variant = VARIANT_REVIEW[source.id];
+  const rule = variant ? { ...source, meta: { ...source.meta, review: variant.review } } : source;
   const tests = testsOfRule(LATEST, rule.id);
   if (!tests.length) return rule;
   const facetsByRequirement = {};
@@ -123,6 +125,14 @@ const rules = ['automatic', 'manual'].flatMap((type) =>
     .map((file) => claimingItsTests(require(path.join(RULES_DIR, type, file))))
 );
 
+// A dictionary, with the steps of the variants in its locale.
+function withVariantSteps(locale, dictionary) {
+  return Object.values(VARIANT_REVIEW).reduce(
+    (all, { dictionaries }) => ({ ...all, ...dictionaries[locale] }),
+    dictionary
+  );
+}
+
 // One dictionary per locale file in i18n/.
 const I18N_DIR = path.join(__dirname, 'i18n');
 const dictionaries = Object.fromEntries(
@@ -131,7 +141,10 @@ const dictionaries = Object.fromEntries(
     .filter((file) => /^[a-z]{2}(-[A-Za-z0-9]+)?\.json$/.test(file))
     .map((file) => [
       file.replace(/\.json$/, ''),
-      JSON.parse(fs.readFileSync(path.join(I18N_DIR, file), 'utf8'))
+      withVariantSteps(
+        file.replace(/\.json$/, ''),
+        JSON.parse(fs.readFileSync(path.join(I18N_DIR, file), 'utf8'))
+      )
     ])
 );
 
@@ -153,7 +166,7 @@ module.exports = definePack({
     },
     'crawl.skipLinks': {
       description:
-        'Where each page of the site places its skip link, { pages: [{ url, viewportWidth, skipLink: { text, href, focusOrder, x, y, width, height } | null }] }, measured at one window width.',
+        'Where each page of the site places its skip link, { ensemble?, pages: [{ url, ensemble?, viewportWidth, skipLink: { text, href, focusOrder, x, y, width, height } | null }] }, measured at one window width; `ensemble` names the « ensemble de pages » a page belongs to.',
       readBy: ['rgaa-skip-link-placement']
     },
     'page.source': {

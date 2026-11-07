@@ -1692,7 +1692,7 @@ Applies to visible elements that look like status messages and carry none of the
 
 An element inside one with such a role is left out. A page with none is notApplicable.
 
-**Expectation.** RGAA 7.5.1 to 7.5.3: a status message telling of a success, a result or a state uses role="status"; one with a suggestion or an error, role="alert"; one with a progress, role="log", "progressbar" or "status". The tests name the role attribute, so aria-live alone is not one of them. Whether the element is a status message (glossary « Message de statut »: a change in the content that informs the user without a change of context) is for a person, so each one is asked about.
+**Expectation.** RGAA 7.5.1 to 7.5.3: a status message telling of a success, a result or a state uses role="status"; one with a suggestion or an error, role="alert"; one with a progress, role="log", "progressbar" or "status". The methodology also accepts aria-live with aria-atomic="true", polite for a status and assertive for an alert, and aria-live="polite" for a log, which depends on what the message says. Whether the element is a status message (glossary « Message de statut »: a change in the content that informs the user without a change of context) is for a person, so each one is asked about.
 
 ### `rgaa-svg-decorative-aria-hidden`
 

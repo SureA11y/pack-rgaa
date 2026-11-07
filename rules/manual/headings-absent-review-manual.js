@@ -57,6 +57,12 @@ const meta = {
   }
 };
 
+// A document shown in a frame is no web page of its own (RGAA's « page web »).
+function applicability(ctx) {
+  if (ctx.helpers.isTopLevelDocument && !ctx.helpers.isTopLevelDocument()) return false;
+  return true;
+}
+
 function runInPage(ctx) {
   const dom = ctx.helpers.dom;
   const { document, helpers, rule } = ctx;
@@ -127,4 +133,4 @@ function runInPage(ctx) {
   };
 }
 
-module.exports = { id, meta, runInPage };
+module.exports = { id, meta, runInPage, applicability };

@@ -1237,7 +1237,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-status-message-review': {
       tests: ['7.5.1', '7.5.2', '7.5.3'],
-      note: 'Asks about visible elements that look like status messages with none of the roles 7.5 names (status, alert, log, progressbar): one with aria-live, and one whose class or id names a message (alert, message, notification, notice, toast, flash, success, error, warning, feedback) holding 40 words or less. 7.5.1 to 7.5.3 name the role attribute, so aria-live alone is not one of them; whether the element is a status message (glossary « Message de statut », a change of content without a change of context) is for a person.'
+      note: 'Asks about visible elements that look like status messages with none of the roles 7.5 names (status, alert, log, progressbar): one with aria-live, and one whose class or id names a message (alert, message, notification, notice, toast, flash, success, error, warning, feedback) holding 40 words or less. 7.5.1 to 7.5.3 name the role attribute, and their methodology also accepts aria-live with aria-atomic=\"true\" for some kinds of message; whether the element is a status message (glossary « Message de statut », a change of content without a change of context) is for a person.'
     },
     'summary-name-present': {
       tests: [],

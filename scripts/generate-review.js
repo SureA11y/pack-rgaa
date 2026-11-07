@@ -91,7 +91,82 @@ function buildReview(dictionary = french(), table = RGAA_RULE_TESTS[VERSION]) {
   return out;
 }
 
-function renderModule(review) {
+// Variants read their base's steps, which name WCAG: each gives them in its
+// own name instead, in English, with the other languages in its dictionary.
+const VARIANTS = {
+  'rgaa-contrast-minimum': {
+    base: 'contrastMinimum',
+    prefix: 'contrastMinimumRgaa',
+    sc: { '1.4.3': 'RGAA 3.2' }
+  },
+  'rgaa-valid-lang': {
+    base: 'validLang',
+    prefix: 'validLangRgaa',
+    sc: { '3.1.2': 'RGAA 8.8', '3.1.1': 'RGAA 8.4' }
+  }
+};
+const LOCALES = ['en', 'fr', 'de', 'es', 'ja'];
+const dictionaryOf = (locale) => require(`@surea11y/core/procedures/${locale}`);
+
+function inVariantTerms(text, sc) {
+  // RGAA's bold text is large from 18.5px, where WCAG's is from 14pt.
+  const out = String(text)
+    .replace(/WCAG (\d+\.\d+\.\d+)/g, (m, id) => sc[id] || m)
+    .replace(/18([.,])66/g, '18$15');
+  return /WCAG/.test(out) ? null : out;
+}
+
+function buildVariants() {
+  const out = {};
+  for (const [ruleId, { base, prefix, sc }] of Object.entries(VARIANTS)) {
+    const en = dictionaryOf('en');
+    const codes = [
+      ...new Set(
+        Object.keys(en).flatMap((k) => {
+          const m = new RegExp(`^${base}_review_(.+)_(?:step\\d+|pass|fail)$`).exec(k);
+          return m ? [m[1]] : [];
+        })
+      )
+    ].sort();
+    const review = {};
+    const dictionaries = {};
+    for (const code of codes) {
+      const keys = Object.keys(en).filter((k) =>
+        new RegExp(`^${base}_review_${code}_(?:step\\d+|pass|fail)$`).test(k)
+      );
+      const texts = {};
+      let usable = true;
+      for (const locale of LOCALES) {
+        const dict = dictionaryOf(locale);
+        texts[locale] = {};
+        for (const key of keys) {
+          const text = inVariantTerms(dict[key] || en[key], sc);
+          if (text === null) usable = false;
+          texts[locale][key.slice(`${base}_review_${code}_`.length)] = text;
+        }
+      }
+      if (!usable) continue;
+      const steps = Object.keys(texts.en)
+        .filter((k) => k.startsWith('step'))
+        .sort((a, b) => Number(a.slice(4)) - Number(b.slice(4)));
+      review[code] = {
+        steps: steps.map((k) => texts.en[k]),
+        passWhen: texts.en.pass,
+        failWhen: texts.en.fail
+      };
+      for (const locale of LOCALES.slice(1)) {
+        for (const [part, text] of Object.entries(texts[locale])) {
+          (dictionaries[locale] = dictionaries[locale] || {})[`${prefix}_review_${code}_${part}`] =
+            text;
+        }
+      }
+    }
+    out[ruleId] = { review, dictionaries };
+  }
+  return out;
+}
+
+function renderModule(review, variants = buildVariants()) {
   return `/* SPDX-License-Identifier: MPL-2.0 */
 
 'use strict';
@@ -106,7 +181,10 @@ function renderModule(review) {
 
 const REVIEW = { '${VERSION}': ${JSON.stringify(review, null, 2)} };
 
-module.exports = { REVIEW };
+// The pack's variants of core's rules: { [ruleId]: { review, dictionaries } }.
+const VARIANT_REVIEW = ${JSON.stringify(variants, null, 2)};
+
+module.exports = { REVIEW, VARIANT_REVIEW };
 `;
 }
 

@@ -92,3 +92,11 @@ test("core's steps in RGAA's terms are as generated, and name no WCAG", async ()
   );
   assert.doesNotMatch(JSON.stringify(REVIEW), /WCAG/);
 });
+
+test("the variants' steps use RGAA's thresholds, in every language", () => {
+  const { VARIANT_REVIEW } = require('../review');
+  const texts = JSON.stringify(VARIANT_REVIEW['rgaa-contrast-minimum']);
+  assert.doesNotMatch(texts, /18[.,]66/);
+  assert.match(texts, /18\.5px/);
+  assert.doesNotMatch(texts, /WCAG/);
+});
