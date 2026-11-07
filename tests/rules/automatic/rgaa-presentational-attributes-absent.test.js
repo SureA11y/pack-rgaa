@@ -109,22 +109,27 @@ test(`${RULE_ID}: custom elements are not checked`, () => {
   assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'pass', { maxOccurrences: 0 });
 });
 
-// HTML gives <source> in <picture> the <img>'s width and height, for art
-// direction, but 10.1.2's list of exceptions is closed and leaves out
-// <source>: they fail, as on any other <source>.
-test(`${RULE_ID}: width and height on a <picture>'s <source> fail`, () => {
+// HTML gives <source> in <picture> the dimensions of its image candidate,
+// as the <img> has them. It added them in 2021, after 10.1.2's list was
+// written; the pack reads the list's exception for <img> as covering them.
+// On any other <source> they fail.
+test(`${RULE_ID}: width and height on a <picture>'s <source> are allowed, as on <img>`, () => {
   const pictured = page(
     '<picture><source srcset="a.avif" type="image/avif" width="800" height="600">' +
       '<img src="a.jpg" alt="Vue" width="800" height="600"></picture>'
   );
-  const rule = assertRule(runa11yCoreOnHtml(pictured, RUN), RULE_ID, 'fail', {
+  assertRule(runa11yCoreOnHtml(pictured, RUN), RULE_ID, 'pass', { maxOccurrences: 0 });
+  const aligned = page(
+    '<picture><source srcset="a.avif" width="800" align="left"><img src="a.jpg" alt="Vue"></picture>'
+  );
+  const rule = assertRule(runa11yCoreOnHtml(aligned, RUN), RULE_ID, 'fail', {
     minOccurrences: 1,
     maxOccurrences: 1
   });
   assert.deepEqual(rule.occurrences[0].data.details, {
     reasonCode: 'presentationalAttribute',
     element: 'source',
-    attributes: ['width', 'height']
+    attributes: ['align']
   });
   const video = page('<video><source src="a.mp4" type="video/mp4" width="800"></video>');
   assertRule(runa11yCoreOnHtml(video, RUN), RULE_ID, 'fail', { minOccurrences: 1 });
