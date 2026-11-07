@@ -140,7 +140,11 @@ const standard = {
   report: { noteKey: 'report_rgaaRollup_note', titleLang: 'fr' },
   // How a person assesses it, in RGAA's own words (procedures.js), and how
   // they answer core's findings in RGAA's terms (review.js). The standard is
-  // French, so it is read in French in every locale.
+  // French, so its own text, the procedures, is read in French in every
+  // locale. lang says nothing of the review: core reads standard.review as
+  // English and translates it through the dictionaries (i18n/fr.json), so a
+  // finding reads the steps in the scan's locale, French or English, and in
+  // English where the pack has no translation.
   lang: 'fr',
   ...proceduresOf(
     (ruleId) =>
