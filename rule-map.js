@@ -933,7 +933,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-link-state-colors-review': {
       tests: ['10.6.1'],
-      note: "In a browser, puts a link in a run of text, shown only by color at rest, in its visited, hover, active and focus states and fails a state shown by another color, with no other mark, whose contrast with the surrounding text is below 3:1. That is 10.6.1 step 3, the 3:1 check « pour les différents états du lien s'ils sont présentés au moyen d'une couleur différente ». It asks when the browser's own visited color applies or a style sheet cannot be read, and in jsdom, where the states cannot be put on the link, it asks whenever a state rule changes only the color. link-in-text-block judges the resting state."
+      note: "In a browser, puts a link in a run of text, shown only by color at rest, in its visited, hover, active and focus states and fails a state shown by another color, with no other mark, whose contrast with the surrounding text is below 3:1. That is 10.6.1 step 3, the 3:1 check « pour les différents états du lien s'ils sont présentés au moyen d'une couleur différente ». It asks when the browser's own visited color applies or a style sheet cannot be read (with a sheet from another origin, a computed color other than the browser's own link color shows the author set it), and in jsdom, where the states cannot be put on the link, it asks whenever a state rule changes only the color. link-in-text-block judges the resting state."
     },
     'rgaa-link-title-content-name': {
       tests: ['6.1.2', '6.1.3'],

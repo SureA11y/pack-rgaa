@@ -187,6 +187,49 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
     assert.equal(r.outcome, 'cantTell');
   });
 
+  // A style sheet from another origin cannot be read, so the rule cannot
+  // tell which rules it holds; the computed color still shows whether the
+  // author set the link's color.
+  await t.test('a style sheet from another origin: the computed color decides', async () => {
+    async function scanCrossOrigin(sheet) {
+      const p = await browser.newPage();
+      try {
+        await p.route('https://site.test/', (r) =>
+          r.fulfill({
+            contentType: 'text/html',
+            body: `<!doctype html><html lang="fr"><head><title>t</title><link rel="stylesheet" href="https://cdn.test/site.css"></head><body><main>${LINK}</main></body></html>`
+          })
+        );
+        await p.route('https://cdn.test/site.css', (r) =>
+          r.fulfill({ contentType: 'text/css', body: sheet })
+        );
+        await p.goto('https://site.test/');
+        await p.addScriptTag({ content: BUNDLE });
+        return await p.evaluate(() =>
+          window.a11ycore.runa11yCoreInPage(
+            null,
+            null,
+            { rules: { include: 'rgaa-link-state-colors-review' } },
+            null
+          )
+        );
+      } finally {
+        await p.close();
+      }
+    }
+    const base = 'body{color:#222;background:#fff} a:visited{color:#111}';
+    // The author's color: not the browser's, so the question is the sheet.
+    assert.deepEqual(verdict(await scanCrossOrigin(`a{color:#000;text-decoration:none} ${base}`)), {
+      outcome: 'cantTell',
+      findings: [['l', 'cantTell', 'STYLESHEET_UNREADABLE', []]]
+    });
+    // The browser's own link color: its visited color applies too.
+    assert.deepEqual(verdict(await scanCrossOrigin('a{text-decoration:none} body{color:#222}')), {
+      outcome: 'cantTell',
+      findings: [['l', 'cantTell', 'BROWSER_STATE_COLORS', []]]
+    });
+  });
+
   await t.test('under the RGAA profile: WCAG 1.4.1 does not fail, RGAA 10.6 does', async () => {
     const { result } = await scan(page('a:hover{color:#222}', LINK), {
       profile: 'rgaa-4.1.2-with-wcag'
