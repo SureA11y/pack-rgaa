@@ -29,10 +29,18 @@ const STATUS_OF_OUTCOME = { pass: 'C', fail: 'NC', notApplicable: 'NA' };
  * pass `fragment: true`) can't say the page lacks what its part lacks, and the
  * page-wide rules (doctype, language, title) leave such a scan alone: there a
  * criterion found non applicable is non testé.
+ *
+ * A scan across frames (core's runa11yCoreAcrossFrames, { topFrame, frames })
+ * is read through its topFrame, the top document's scan. Each frame's scan is
+ * of a document of its own, with its own criteria results, and is not merged
+ * in: what RGAA finds in a frame's content counts toward the page through
+ * the person who completes the grid, or through a call on that frame's
+ * result.
  */
 function rgaaCriteriaStatus(result, { version = LATEST, fragment = false } = {}) {
   const criteria = RGAA_CRITERIA[version];
   if (!criteria) throw new RangeError(`RGAA has no version ${version}`);
+  if (isCrossFrameResult(result)) result = result.topFrame;
   const prefix = `rgaa-${version}-`;
   const scanned = new Map();
   for (const rule of (result && result.rulesResults) || []) {
@@ -48,17 +56,42 @@ function rgaaCriteriaStatus(result, { version = LATEST, fragment = false } = {})
   });
 }
 
+// The { topFrame, frames } tree core's runa11yCoreAcrossFrames returns.
+function isCrossFrameResult(value) {
+  return (
+    !!value &&
+    typeof value === 'object' &&
+    !Array.isArray(value.rulesResults) &&
+    !!value.topFrame &&
+    typeof value.topFrame === 'object' &&
+    Array.isArray(value.frames)
+  );
+}
+
 const STATUSES = ['C', 'NC', 'NA', 'NT'];
 
 function rateOf(validated, applicable) {
   return applicable ? validated / applicable : null;
 }
 
-// A page's rows by criterion, refusing what can't be read: an unknown status,
-// or a criterion given twice, would change the rate without a word.
-function statusesOf(rows) {
+// A page's rows by criterion, refusing what can't be read: a page that is not
+// a list of rows, a row that is no object, a criterion the version does not
+// have, an unknown status, or a criterion given twice, would change the rate
+// without a word.
+function statusesOf(page, index, known, version) {
+  const rows = Array.isArray(page) ? page : page && typeof page === 'object' ? page.rows : null;
+  if (!Array.isArray(rows)) {
+    throw new RangeError(`page ${index}: expected a list of rows, or { rows, process }`);
+  }
   const statuses = new Map();
-  for (const { criterion, status } of rows) {
+  for (const row of rows) {
+    if (!row || typeof row !== 'object') {
+      throw new RangeError(`page ${index}: a row is not a { criterion, status } object`);
+    }
+    const { criterion, status } = row;
+    if (!known.has(criterion)) {
+      throw new RangeError(`criterion ${criterion}: RGAA ${version} has no such criterion`);
+    }
     if (!STATUSES.includes(status)) {
       throw new RangeError(`criterion ${criterion}: unknown status ${status}`);
     }
@@ -80,13 +113,20 @@ function statusesOf(rows) {
  * `average` the mean of the pages' rates. `complete` is true only where every
  * page gives C, NC or NA for every criterion of the version: until then the
  * rates count what was assessed, and are no conformity claim.
+ *
+ * Throws a RangeError for what it cannot read: a page that is not a list of
+ * rows or { rows, process }, a criterion the version does not have, an
+ * unknown status or a criterion given twice on one page.
  */
 function rgaaConformityRate(pages, { version = LATEST } = {}) {
   const criteria = Object.keys(RGAA_CRITERIA[version] || {});
   if (!criteria.length) throw new RangeError(`RGAA has no version ${version}`);
-  const sample = pages.map((page) => {
+  if (!Array.isArray(pages)) throw new RangeError('expected a list of pages');
+  const known = new Set(criteria);
+  const sample = pages.map((page, index) => {
+    const statuses = statusesOf(page, index, known, version);
     const process = Array.isArray(page) ? null : page.process || null;
-    return { process, statuses: statusesOf(Array.isArray(page) ? page : page.rows) };
+    return { process, statuses };
   });
   const failedIn = new Map();
   for (const { process, statuses } of sample) {

@@ -33,6 +33,21 @@ test('a scan is read as an audit grid: a status per criterion, all of them', () 
   assert.throws(() => rgaaCriteriaStatus({}, { version: '3' }), RangeError);
 });
 
+// A scan across frames is read through its top frame, the top document's
+// scan, rather than giving NT for every criterion.
+test('a scan across frames is read through its top frame', () => {
+  const topFrame = runa11yCoreOnHtml(page, { engineOptions: { profile: 'rgaa-4.1.2' } });
+  const across = { topFrame, frames: [{ url: 'about:blank', topFrame, frames: [] }] };
+  assert.deepEqual(rgaaCriteriaStatus(across), rgaaCriteriaStatus(topFrame));
+  const of = (id) => rgaaCriteriaStatus(across).find((r) => r.criterion === id);
+  assert.equal(of('8.3').status, 'NC');
+  const part = runa11yCoreOnHtml(page, {
+    engineOptions: { profile: 'rgaa-4.1.2' },
+    contextSelector: 'main'
+  });
+  assert.ok(!rgaaCriteriaStatus({ topFrame: part, frames: [] }).some((r) => r.status === 'NA'));
+});
+
 const ALL = Object.keys(RGAA_CRITERIA['4.1.2']);
 const complete = (statuses) =>
   ALL.map((criterion) => ({ criterion, status: statuses[criterion] || 'NA' }));
@@ -90,6 +105,21 @@ test('a page of a process fails a criterion any page of the process fails', () =
 
 test("what can't be read is refused rather than counted", () => {
   assert.throws(() => rgaaConformityRate([[{ criterion: '1.1', status: 'c' }]]), RangeError);
+  // A criterion the version does not have would count toward the rate.
+  assert.throws(
+    () =>
+      rgaaConformityRate([
+        [
+          { criterion: '99.9', status: 'C' },
+          { criterion: '1.1', status: 'NC' }
+        ]
+      ]),
+    RangeError
+  );
+  assert.throws(() => rgaaConformityRate([[{ criterion: 1.1, status: 'C' }]]), RangeError);
+  for (const pages of [[null], [undefined], ['1.1'], [{ process: 'p' }], [[null]], null]) {
+    assert.throws(() => rgaaConformityRate(pages), RangeError, JSON.stringify(pages));
+  }
   assert.throws(
     () =>
       rgaaConformityRate([
