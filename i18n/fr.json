@@ -2532,7 +2532,7 @@
   "rgaa_standardReview_skip-link_SKIP_LINK_TARGET_MISSING_step2": "Appuyez sur Entrée pour le suivre.",
   "rgaa_standardReview_skip-link_SKIP_LINK_TARGET_MISSING_step3": "Appuyez encore une fois sur Tab et voyez où arrive le focus.",
   "rgaa_standardReview_skip-link_SKIP_LINK_TARGET_MISSING_pass": "Suivre le lien amène au contenu principal, et la touche Tab suivante va au premier contrôle qu’il contient.",
-  "rgaa_standardReview_skip-link_SKIP_LINK_TARGET_MISSING_fail": "Rien ne se passe ou le focus reste en haut, car aucun élément ne correspond à la cible du lien : le lien n’est pas fonctionnel, ce qui ne respecte pas les tests 12.7.1, 12.7.2 du RGAA.",
+  "rgaa_standardReview_skip-link_SKIP_LINK_TARGET_MISSING_fail": "Rien ne se passe ou le focus reste en haut, car aucun élément ne correspond à la cible du lien : le lien n’est pas fonctionnel, ce qui ne respecte pas le test 12.7.2 du RGAA.",
   "rgaa_standardReview_skip-link_SKIP_LINK_TARGET_UNUSABLE_step1": "Chargez la page à la largeur de fenêtre indiquée par le rapport (le cas échéant), appuyez sur Tab jusqu’à ce que le lien d’évitement apparaisse, puis appuyez sur Entrée.",
   "rgaa_standardReview_skip-link_SKIP_LINK_TARGET_UNUSABLE_step2": "Observez si la page défile jusqu’à la cible et si la zone cible est visible.",
   "rgaa_standardReview_skip-link_SKIP_LINK_TARGET_UNUSABLE_step3": "Appuyez encore une fois sur Tab et voyez où arrive le focus.",
