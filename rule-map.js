@@ -56,8 +56,8 @@
  * as heading hierarchy and landmarks.
  *
  * REVIEW STATUS: drafted from the RGAA 4.1.2 tests and methodology (data/),
- * then checked row by row against how other RGAA tools map and flag the same
- * checks (bench/AUDIT.md). Not yet reviewed by an RGAA auditor.
+ * then checked row by row against them (bench/AUDIT.md). Not yet reviewed by
+ * an RGAA auditor.
  */
 
 const RGAA_RULE_TESTS = {
@@ -80,7 +80,7 @@ const RGAA_RULE_TESTS = {
     },
     'aria-allowed-attr': {
       tests: [],
-      note: "Fails when an aria-* attribute is neither global nor supported by the element's role (WCAG 4.1.2). Not linked to 8.2.1, where the W3C validator decides: the rule fails <h2 aria-expanded>, which the validator accepts, judges elements whose role depends on their attributes or their table by that role, where the validator applies its own table of allowed attributes, and skips hidden content, which 8.2.1 judges. rgaa-aria-attribute-conformance reports 8.2.1. Not mapped to 7.1.1 (where other RGAA tools put this check): the rule also fires on static markup, which is not a scripted component."
+      note: "Fails when an aria-* attribute is neither global nor supported by the element's role (WCAG 4.1.2). Not linked to 8.2.1, where the W3C validator decides: the rule fails <h2 aria-expanded>, which the validator accepts, judges elements whose role depends on their attributes or their table by that role, where the validator applies its own table of allowed attributes, and skips hidden content, which 8.2.1 judges. rgaa-aria-attribute-conformance reports 8.2.1. Not mapped to 7.1.1: the rule also fires on static markup, which is not a scripted component."
     },
     'aria-allowed-role': {
       tests: [],
@@ -208,7 +208,7 @@ const RGAA_RULE_TESTS = {
     },
     'aria-valid-attr-value': {
       tests: [],
-      note: 'Flags recognized aria-* attributes whose value does not match the declared type (WCAG 4.1.2), and the constraints WAI-ARIA sets between attributes (aria-valuemin above aria-valuemax, an aria-valuenow outside its range, aria-posinset above aria-setsize), and asks about an idref list that resolves to nothing, an aria-haspopup that names another role than the popup, and an aria-activedescendant outside the widget. Not linked to 8.2.1: it passes values the W3C validator rejects (aria-expanded="", a token with surrounding spaces) and skips hidden content. rgaa-aria-attribute-conformance reports 8.2.1. Not mapped to 7.1.1 (where other RGAA tools put this check): the rule also fires on static markup, which is not a scripted component.'
+      note: 'Flags recognized aria-* attributes whose value does not match the declared type (WCAG 4.1.2), and the constraints WAI-ARIA sets between attributes (aria-valuemin above aria-valuemax, an aria-valuenow outside its range, aria-posinset above aria-setsize), and asks about an idref list that resolves to nothing, an aria-haspopup that names another role than the popup, and an aria-activedescendant outside the widget. Not linked to 8.2.1: it passes values the W3C validator rejects (aria-expanded="", a token with surrounding spaces) and skips hidden content. rgaa-aria-attribute-conformance reports 8.2.1. Not mapped to 7.1.1: the rule also fires on static markup, which is not a scripted component.'
     },
     'rgaa-autocomplete-user-field': {
       tests: ['11.13.1'],
@@ -1325,7 +1325,7 @@ const RGAA_RULE_TESTS = {
     },
     'skip-link': {
       tests: ['12.7.1', '12.7.2'],
-      note: "Flags skip links whose #fragment does not resolve to a usable target. A skip link is recognised by its wording in the shipped locales ('skip', 'aller au contenu', 'accès direct', 'zum Inhalt springen', 'saltar al contenido', '本文へ') or as the first link of the page placed before main. A dead skip link means the main zone cannot be skipped, which bears on 12.7.1 (where other RGAA tools report a broken skip link), and it bears on the condition of 12.7.2 that the link works (« Le lien est fonctionnel »); the rule asks, it never fails. The rule does not check the link's visibility or its place across pages, which rgaa-skip-link-placement checks, and a skip link can target zones other than main."
+      note: "Flags skip links whose #fragment does not resolve to a usable target. A skip link is recognised by its wording in the shipped locales ('skip', 'aller au contenu', 'accès direct', 'zum Inhalt springen', 'saltar al contenido', '本文へ') or as the first link of the page placed before main. A dead skip link means the main zone cannot be skipped, which bears on 12.7.1, and it bears on the condition of 12.7.2 that the link works (« Le lien est fonctionnel »); the rule asks, it never fails. The rule does not check the link's visibility or its place across pages, which rgaa-skip-link-placement checks, and a skip link can target zones other than main."
     },
     'rgaa-skip-link-placement': {
       tests: ['12.7.2'],
@@ -1403,7 +1403,7 @@ const RGAA_RULE_TESTS = {
     },
     'table-th-has-data-cells': {
       tests: [],
-      note: 'Fails a table (not role=presentation) that has <th> but no <td> at all, and asks about a header no data cell is assigned to (ACT d0f69e). If the auditor judges the first a layout table, the <th> use fails 5.8.1 step 2. If it is a data table whose cells are all marked <th>, no RGAA test forbids that (5.6.4 allows th), so the auditor must decide which applies. Not mapped to 5.8.1: only a failure if the auditor judges the table a layout table. Not mapped to 5.7.1 (where other RGAA tools put this check): a table with no <td>, or a header with no cell under it, says nothing about the id, scope or role that 5.7.1 checks.'
+      note: 'Fails a table (not role=presentation) that has <th> but no <td> at all, and asks about a header no data cell is assigned to (ACT d0f69e). If the auditor judges the first a layout table, the <th> use fails 5.8.1 step 2. If it is a data table whose cells are all marked <th>, no RGAA test forbids that (5.6.4 allows th), so the auditor must decide which applies. Not mapped to 5.8.1: only a failure if the auditor judges the table a layout table. Not mapped to 5.7.1: a table with no <td>, or a header with no cell under it, says nothing about the id, scope or role that 5.7.1 checks.'
     },
     'rgaa-table-title-adjacent': {
       tests: ['5.4.1'],
