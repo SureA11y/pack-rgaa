@@ -20,8 +20,10 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
-      # The npm release.yml publishes with, so a test can't pass here and fail there
-      - run: npm install -g npm@12
+      # The npm release.yml publishes with, so a test can't pass here and fail
+      # there. It needs Node 22 or later; on Node 20 the job keeps its own npm.
+      - if: matrix.node-version != '20.x'
+        run: npm install -g npm@12
       - run: npm ci
       - run: npx playwright install --with-deps chromium
         timeout-minutes: 5
