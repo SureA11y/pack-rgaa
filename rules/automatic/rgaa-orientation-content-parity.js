@@ -94,7 +94,8 @@ const meta = {
     'CONTENT_MISSING',
     'MAIN_CONTENT_HIDDEN',
     'CONTENT_BEHIND_CONTROL',
-    'hiddenInOrientation'
+    'hiddenInOrientation',
+    'CONTENT_MAY_DIFFER'
   ],
   // How a person answers each question the rule asks, per reason code: a few
   // steps from the element the finding names, then what they see if it
@@ -129,6 +130,17 @@ const meta = {
         'Compare what each orientation shows: is the hidden element’s content, or the same information, shown elsewhere in that orientation, or reachable by a control there?'
       ],
       passWhen: 'The same content is available in both orientations, whatever its presentation.',
+      failWhen:
+        'Content shown in one orientation is missing from the other, which fails RGAA 13.9.1.'
+    },
+    CONTENT_MAY_DIFFER: {
+      steps: [
+        'Open the page on a phone or tablet, or in the browser’s device emulation, in the orientation the report names: the element it names is hidden there.',
+        'Note the text the report quotes, then switch to the other orientation and find it there.',
+        'Back in the first orientation, look for the same information in another form, such as a table shown as cards or a menu behind a button.'
+      ],
+      passWhen:
+        'The same content is offered in both orientations, whatever its presentation or the way to reach it.',
       failWhen:
         'Content shown in one orientation is missing from the other, which fails RGAA 13.9.1.'
     }

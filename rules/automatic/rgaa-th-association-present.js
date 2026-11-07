@@ -47,7 +47,21 @@ const meta = {
   category: 'perceivable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['noAssociation', 'noAssociationSimple'],
+  review: {
+    noAssociationSimple: {
+      steps: [
+        'Find the table the report names: some of its <th> cells have no id, scope or role="rowheader" or "columnheader".',
+        'Look at the table on screen, and decide for each of those headers whether it covers a whole row or column, or only part of one.',
+        'Check whether the audit accepts a table with headers along one side only, which browsers tie to their cells.'
+      ],
+      passWhen:
+        'Those headers cover only part of a row or column, or the audit accepts them; scope="col" or scope="row" settles it.',
+      failWhen:
+        'A <th> covers a whole row or column and has no unique id, scope or header role, which fails RGAA 5.7.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

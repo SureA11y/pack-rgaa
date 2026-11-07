@@ -47,7 +47,28 @@ const meta = {
   category: 'perceivable',
   type: 'manual',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['quotedBlock', 'quotedPassage'],
+  review: {
+    quotedBlock: {
+      steps: [
+        'Find the block of text the report names: all of it is in quotation marks.',
+        'Read it, and decide whether it repeats the words of someone or of a source, or the marks are there for another reason.',
+        'Inspect it: it is not in a <blockquote>.'
+      ],
+      passWhen: 'The text is not a quotation.',
+      failWhen: 'The text is a block quotation with no <blockquote>, which fails RGAA 9.4.2.'
+    },
+    quotedPassage: {
+      steps: [
+        'Find the passage the report names: it is in quotation marks, inside a longer text.',
+        'Read it, and decide whether it repeats the words of someone or of a source, or the marks are there for another reason, such as a title or a term.',
+        'Inspect it: it is not in a <q>.'
+      ],
+      passWhen: 'The passage is not a quotation.',
+      failWhen: 'The passage is a short quotation with no <q>, which fails RGAA 9.4.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

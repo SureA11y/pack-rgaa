@@ -82,6 +82,19 @@
 
 const id = 'rgaa-aria-attribute-conformance';
 
+// Markup in a shadow root is asked about instead of failed, whatever is wrong
+// with it, since the W3C validator does not see it: each code gets these steps.
+const SHADOW_REVIEW = {
+  steps: [
+    'Find the element the report names: it sits inside a shadow root, which the browser inspector shows under its host element.',
+    'Read what the report says is wrong with its markup, and check it on the element.',
+    'Check whether the audit judges markup in shadow roots under RGAA 8.2.1: the W3C validator does not see it in the page’s generated source.'
+  ],
+  passWhen: 'The audit leaves shadow roots out of 8.2.1; correcting the markup settles both.',
+  failWhen:
+    'The audit judges markup in shadow roots, and this markup is as the report says, which fails RGAA 8.2.1.'
+};
+
 const meta = {
   title: 'aria-* attributes are valid for the W3C validator',
   description:
@@ -107,7 +120,16 @@ const meta = {
     'nativeCheckedConflict',
     'nativeAttributeConflict',
     'missingRequired'
-  ]
+  ],
+  review: {
+    unknownAttribute: SHADOW_REVIEW,
+    invalidValue: SHADOW_REVIEW,
+    attributeNotAllowed: SHADOW_REVIEW,
+    namingProhibited: SHADOW_REVIEW,
+    nativeCheckedConflict: SHADOW_REVIEW,
+    nativeAttributeConflict: SHADOW_REVIEW,
+    missingRequired: SHADOW_REVIEW
+  }
 };
 
 function runInPage(ctx) {

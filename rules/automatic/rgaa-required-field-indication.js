@@ -60,7 +60,95 @@ const meta = {
   category: 'understandable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: [
+    'requiredNotIndicated',
+    'markerExplainedAfter',
+    'markerNotExplained',
+    'indicationInLegend',
+    'indicationOutsideLabel',
+    'noVisibleLabel',
+    'indicationMayBeImage',
+    'allFieldsRequiredSentence',
+    'stylesNotRead',
+    'signMayMeanOther'
+  ],
+  review: {
+    indicationInLegend: {
+      steps: [
+        'Find the field the report names, and read its label on screen: it does not say the field is required.',
+        'Read the legend of its group, which holds a required indication.',
+        'Decide whether the legend makes it clear that this field is required, and whether the audit accepts a legend as the text linked to the field.'
+      ],
+      passWhen:
+        'The legend leaves no doubt that this field is required, and the audit accepts it; an indication in the label settles it.',
+      failWhen:
+        "The indication does not identify this field, or the audit holds to the field's label and linked passages, which fails RGAA 11.10.2."
+    },
+    indicationOutsideLabel: {
+      steps: [
+        'Find the field the report names, and read its label on screen: it does not say the field is required.',
+        'Find the indication next to the field or in its placeholder.',
+        'Inspect the field: check whether that text is linked to it by aria-labelledby or aria-describedby, and whether it stays visible once you type.'
+      ],
+      passWhen:
+        'The indication is visible before the form is sent, and sits in a passage linked to the field.',
+      failWhen:
+        'The indication is only next to the field, or only in a placeholder, which fails RGAA 11.10.2.'
+    },
+    noVisibleLabel: {
+      steps: [
+        'Find the field the report names: it has required or aria-required="true", but no visible label was found.',
+        'Look at the field on screen, and at the text around it.',
+        'Inspect the field: check whether a visible text that says it is required is its label, or is linked to it by aria-labelledby or aria-describedby.'
+      ],
+      passWhen:
+        'A visible text says the field is required, and is its label or a passage linked to it.',
+      failWhen:
+        'No visible label or linked passage says the field is required, which fails RGAA 11.10.2.'
+    },
+    indicationMayBeImage: {
+      steps: [
+        'Find the field the report names, and look at its label on screen.',
+        'Look for an image, an icon or a sign in the label or right next to it, and for text around the field that may say it is required.',
+        'Check that what you found says the field is required, and that it sits in the label or in a passage linked to the field.'
+      ],
+      passWhen:
+        'An image, icon or text in the label or a linked passage visibly shows the field is required.',
+      failWhen:
+        'Nothing in the label or a linked passage shows the field is required, which fails RGAA 11.10.2.'
+    },
+    allFieldsRequiredSentence: {
+      steps: [
+        'Find the field the report names, and read its label on screen: it does not say the field is required.',
+        'Find the sentence that says all the fields of the form are required, and check that it comes before the fields.',
+        "Inspect the field: check whether the sentence is linked to it by aria-describedby or aria-labelledby, and whether the audit accepts it as the field's indication."
+      ],
+      passWhen:
+        'The sentence is linked to the field, or the audit accepts it; an indication in the label settles it.',
+      failWhen:
+        "The field's label and linked passages show no indication, and the audit does not accept the sentence, which fails RGAA 11.10.2."
+    },
+    stylesNotRead: {
+      steps: [
+        'Open the page in a browser, and find the field the report names.',
+        'Look at its label on screen: the style sheets may add a sign, such as an asterisk, that the code does not show.',
+        'If a sign appears, check that the page explains it before this field.'
+      ],
+      passWhen: 'The label visibly shows the field is required.',
+      failWhen: 'The label and its linked passages show no indication, which fails RGAA 11.10.2.'
+    },
+    signMayMeanOther: {
+      steps: [
+        'Find the field the report names, and the sign in its label, such as an asterisk.',
+        'Read the page before this field: nothing there explains the sign.',
+        'Send the form with the field empty, and check whether the field is required.'
+      ],
+      passWhen: 'The sign means something else, or the field is not required.',
+      failWhen:
+        'The sign marks a required field, and the page does not explain it before its first use, which fails RGAA 11.10.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

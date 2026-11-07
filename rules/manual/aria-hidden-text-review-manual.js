@@ -47,7 +47,21 @@ const meta = {
   category: 'perceivable',
   type: 'manual',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['visibleTextHidden'],
+  review: {
+    visibleTextHidden: {
+      steps: [
+        'Find the element the report names: its text shows on screen, but aria-hidden="true" hides it from screen readers.',
+        'Read the text, and decide whether it tells anything a visitor needs.',
+        'Listen to this part of the page with a screen reader, and check whether the same information is read another way.'
+      ],
+      passWhen:
+        'The text is meant to be ignored, or the screen reader gives the same information another way.',
+      failWhen:
+        'The text holds information that a screen reader user gets nowhere else, which fails RGAA 10.8.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

@@ -43,7 +43,20 @@ const meta = {
   category: 'understandable',
   type: 'manual',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['fakeGroupHeading'],
+  review: {
+    fakeGroupHeading: {
+      steps: [
+        'Find the list the report names, and open it.',
+        'Read the option the report quotes: it looks like a group heading rather than a choice.',
+        'Decide whether the options fall into groups of the same kind under such headings.'
+      ],
+      passWhen:
+        'The options do not form groups: the option is a choice like the others, such as an item out of stock.',
+      failWhen: 'The options form groups with no <optgroup>, which fails RGAA 11.8.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

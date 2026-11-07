@@ -52,7 +52,25 @@ const meta = {
   category: 'perceivable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: [
+    'hiddenImageHasAlternative',
+    'presentationWithoutAriaHidden',
+    'presentationWithContent'
+  ],
+  review: {
+    presentationWithContent: {
+      steps: [
+        'Find the <object> the report names: it has role="none" or role="presentation", no aria-hidden="true", and content between its tags.',
+        'Look at the image on screen, and decide whether it carries information or only decorates.',
+        'Read the content between <object> and </object>, and compare it with what the image shows.'
+      ],
+      passWhen:
+        'The image carries information and that content gives the same information, so RGAA 1.2.3 does not apply; removing the role settles it.',
+      failWhen:
+        'The image is decorative, with no aria-hidden="true" and with content inside it, which fails RGAA 1.2.3.'
+    }
+  }
 };
 
 function runInPage(ctx) {

@@ -54,7 +54,8 @@ const meta = {
   category: 'perceivable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['otherScope', 'wrongAxis']
 };
 
 function runInPage(ctx) {

@@ -50,7 +50,21 @@ const meta = {
   category: 'perceivable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['presentationWithoutAriaHidden', 'exposedMayBeDecorative'],
+  review: {
+    exposedMayBeDecorative: {
+      steps: [
+        'Find the <svg> the report names.',
+        'Look at it on screen, with the text around it.',
+        'Decide whether it only decorates, such as an icon beside a text that says the same thing, or carries information.'
+      ],
+      passWhen:
+        'The image carries information, so RGAA 1.2.4 does not apply to it; RGAA 1.1.5 then asks it for role="img" and a text alternative.',
+      failWhen:
+        'The image is decorative and is not hidden with aria-hidden="true", which fails RGAA 1.2.4.'
+    }
+  }
 };
 
 function runInPage(ctx) {

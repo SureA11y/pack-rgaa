@@ -43,7 +43,21 @@ const meta = {
   category: 'operable',
   type: 'manual',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['timedScriptRedirect'],
+  review: {
+    timedScriptRedirect: {
+      steps: [
+        'Find the script the report names: it sends the visitor to another address after a delay.',
+        'Load the page, and time how long it takes to leave; the delay is also in the script.',
+        'Look on the page for a control that stops and restarts the redirection, or makes the delay at least ten times longer.',
+        'Look for a warning before it happens that gives at least 20 seconds to extend the delay.'
+      ],
+      passWhen:
+        'The user can stop and restart it, extend the delay ten times or more, or is warned with 20 seconds to extend it, or the delay is 20 hours or more.',
+      failWhen: 'None of these holds, which fails RGAA 13.1.3.'
+    }
+  }
 };
 
 function runInPage(ctx) {

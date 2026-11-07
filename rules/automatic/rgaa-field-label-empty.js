@@ -46,7 +46,8 @@ const meta = {
   category: 'understandable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['emptyLabel', 'emptyTitle', 'emptyAriaLabel', 'emptyLabelledby']
 };
 
 function runInPage(ctx) {

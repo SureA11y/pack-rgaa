@@ -47,7 +47,32 @@ const meta = {
   category: 'perceivable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['targetMissing', 'someTargetsMissing', 'emptyDescription'],
+  review: {
+    someTargetsMissing: {
+      steps: [
+        'Find the image the report names, and read the ids in its aria-describedby; the report says which ones point to nothing.',
+        'Read the passage that the ids that exist point to, and compare it with what the image shows.',
+        'Listen to the image with a screen reader.'
+      ],
+      passWhen:
+        'The passage is the detailed description of the image, and the screen reader reads it.',
+      failWhen:
+        'The passage is not the detailed description, or the screen reader does not read it, which fails RGAA 1.6.9.'
+    },
+    emptyDescription: {
+      steps: [
+        'Find the image the report names, and the passage its aria-describedby points to: it holds no text.',
+        'Use the page as a visitor would, and check whether a script fills the passage, for instance when a panel opens.',
+        'Listen to the image with a screen reader.'
+      ],
+      passWhen:
+        'The passage holds the detailed description once the page is in use, and the screen reader reads it.',
+      failWhen:
+        'The passage stays empty, so aria-describedby associates no description, which fails RGAA 1.6.9.'
+    }
+  }
 };
 
 function runInPage(ctx) {

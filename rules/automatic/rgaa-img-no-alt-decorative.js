@@ -61,7 +61,32 @@ const meta = {
   category: 'perceivable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['spacerNoAlt', 'spacerBlankAlt', 'noAltUnknownRole', 'blankAltUnknownRole'],
+  review: {
+    noAltUnknownRole: {
+      steps: [
+        'Find the image the report names: it has no alt attribute and no other text alternative.',
+        'Look at it on screen, with the text around it.',
+        'Decide whether it only decorates, or carries information: would a person miss anything if it were gone?'
+      ],
+      passWhen:
+        'The image carries information, so RGAA 1.2.1 does not apply to it; RGAA 1.1.1 then asks it for a text alternative.',
+      failWhen:
+        'The image is decorative and has no alt="", aria-hidden="true" or role="presentation", which fails RGAA 1.2.1.'
+    },
+    blankAltUnknownRole: {
+      steps: [
+        'Find the image the report names: its alt holds only spaces, and it has no other text alternative.',
+        'Look at it on screen, with the text around it.',
+        'Decide whether it only decorates, or carries information: would a person miss anything if it were gone?'
+      ],
+      passWhen:
+        'The image carries information, so RGAA 1.2.1 does not apply to it; RGAA 1.1.1 then asks it for a text alternative.',
+      failWhen:
+        'The image is decorative and its alt holds spaces instead of nothing, with no aria-hidden="true" or role="presentation", which fails RGAA 1.2.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

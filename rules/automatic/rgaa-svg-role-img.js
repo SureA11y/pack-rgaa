@@ -60,7 +60,19 @@ const meta = {
   type: 'automatic',
   defaultConfidence: 'high',
   coverage: {},
-  reasonCodes: ['missingRoleImg']
+  reasonCodes: ['missingRoleImg', 'missingRoleMayBeDecorative'],
+  review: {
+    missingRoleMayBeDecorative: {
+      steps: [
+        'Find the <svg> the report names: it has a text alternative, but no role="img".',
+        'Look at it on screen, with the text around it.',
+        'Decide whether it carries information, or only decorates, such as an icon beside a text that says the same thing.'
+      ],
+      passWhen:
+        'The image only decorates, so RGAA 1.1.5 does not apply to it; RGAA 1.2.4 then asks it for aria-hidden="true" and no alternative.',
+      failWhen: 'The image carries information and has no role="img", which fails RGAA 1.1.5.'
+    }
+  }
 };
 
 function runInPage(ctx) {

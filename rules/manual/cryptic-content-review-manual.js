@@ -44,7 +44,40 @@ const meta = {
   category: 'understandable',
   type: 'manual',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['emoticon', 'emoji', 'asciiArt'],
+  review: {
+    emoticon: {
+      steps: [
+        'Find the emoticon the report names, on screen.',
+        'Read the text immediately before and after it.',
+        'Decide whether that text says what it means.'
+      ],
+      passWhen: 'The text immediately before or after it says what it means.',
+      failWhen:
+        'Nothing next to it says what it means, and it has no title, which fails RGAA 13.5.1.'
+    },
+    emoji: {
+      steps: [
+        'Find the emoji the report names, on screen.',
+        'Read the text immediately before and after it.',
+        'Decide whether that text says what it means.'
+      ],
+      passWhen: 'The text immediately before or after it says what it means.',
+      failWhen:
+        'Nothing next to it says what it means, and it has no title, which fails RGAA 13.5.1.'
+    },
+    asciiArt: {
+      steps: [
+        'Find the ASCII art the report names, on screen.',
+        'Read the text immediately before and after it.',
+        'Decide whether that text says what it means.'
+      ],
+      passWhen: 'The text immediately before or after it says what it means.',
+      failWhen:
+        'Nothing next to it says what it means, and it has no title, which fails RGAA 13.5.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

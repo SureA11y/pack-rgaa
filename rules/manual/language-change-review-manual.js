@@ -61,7 +61,22 @@ const meta = {
   category: 'understandable',
   type: 'manual',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['undeclaredLanguageChange'],
+  review: {
+    undeclaredLanguageChange: {
+      steps: [
+        'Find the text the report names, and read it; the language the report gives is only a guess from frequent words.',
+        'Decide whether it is written in another language than the one the report says is in effect.',
+        'Leave out proper nouns, and foreign words that are in the dictionary of the page’s language or in common use.',
+        'Inspect the text: check for a lang or xml:lang attribute on its element or on a parent, which gives its language.'
+      ],
+      passWhen:
+        'The text is in the language in effect, or is made of words the test leaves out, or a lang on it or a parent gives its language.',
+      failWhen:
+        'The text is in another language and neither its element nor a parent gives it, which fails RGAA 8.7.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

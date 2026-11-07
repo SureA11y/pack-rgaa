@@ -44,7 +44,20 @@ const meta = {
   category: 'perceivable',
   type: 'manual',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['adjacentHeading'],
+  review: {
+    adjacentHeading: {
+      steps: [
+        'Find the table the report names, and the heading right before it.',
+        'Read the heading, and whatever else comes under it.',
+        'Decide whether the heading is the title of this table, or of a section that holds more than the table.'
+      ],
+      passWhen: 'The heading is the title of a section, not of the table.',
+      failWhen:
+        'The heading is the title of the table, and neither a <caption> nor a title, aria-label or aria-labelledby ties a title to it, which fails RGAA 5.4.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

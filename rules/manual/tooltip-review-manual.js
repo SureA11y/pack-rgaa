@@ -51,7 +51,34 @@ const meta = {
   category: 'perceivable',
   type: 'manual',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['tooltipRole', 'tooltipAttribute'],
+  review: {
+    tooltipRole: {
+      steps: [
+        'Find the element the report names, and move the pointer over it, then reach it with the Tab key: a tooltip appears.',
+        'With the tooltip shown, press Escape, without moving the pointer or the focus.',
+        'Show it again with the pointer, and move the pointer onto the tooltip.',
+        'Show it again, and wait: it should stay until you leave, hide it, or it stops being true.'
+      ],
+      passWhen:
+        'The tooltip hides on Escape or covers nothing else, you can move the pointer onto it, and it stays visible.',
+      failWhen:
+        'It covers other content and cannot be hidden without moving, which fails RGAA 10.13.1; it disappears when the pointer moves onto it, which fails RGAA 10.13.2; or it disappears by itself, which fails RGAA 10.13.3.'
+    },
+    tooltipAttribute: {
+      steps: [
+        'Find the element the report names, and move the pointer over it, then reach it with the Tab key: a tooltip or popover may appear.',
+        'With it shown, press Escape, without moving the pointer or the focus.',
+        'Show it again with the pointer, and move the pointer onto it.',
+        'Show it again, and wait: it should stay until you leave, hide it, or it stops being true.'
+      ],
+      passWhen:
+        'Nothing appears on hover or focus; or what appears hides on Escape or covers nothing else, you can move the pointer onto it, and it stays visible.',
+      failWhen:
+        'It covers other content and cannot be hidden without moving, which fails RGAA 10.13.1; it disappears when the pointer moves onto it, which fails RGAA 10.13.2; or it disappears by itself, which fails RGAA 10.13.3.'
+    }
+  }
 };
 
 function runInPage(ctx) {

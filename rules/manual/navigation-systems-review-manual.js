@@ -65,7 +65,22 @@ const meta = {
   category: 'operable',
   type: 'manual',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['fewerThanTwoSystems'],
+  review: {
+    fewerThanTwoSystems: {
+      steps: [
+        'This finding is about the page: the report lists the navigation systems found on it.',
+        'Work out which set of pages it belongs to, and go through a few other pages of that set.',
+        'Look for a navigation menu, a site map and a search engine: on these pages, at every screen width.',
+        'Decide whether the site is so small that this does not apply: very few pages, all reachable from the home page. A step of a process, such as a payment, does not need them either.'
+      ],
+      passWhen:
+        'The set of pages offers two of the three, or the site has very few pages, or the page is a step of a process.',
+      failWhen:
+        'The set of pages offers fewer than two of a navigation menu, a site map and a search engine, which fails RGAA 12.1.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

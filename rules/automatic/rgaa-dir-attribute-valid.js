@@ -53,7 +53,7 @@ const meta = {
   type: 'automatic',
   defaultConfidence: 'high',
   coverage: {},
-  reasonCodes: ['invalidDir', 'autoDir']
+  reasonCodes: ['invalidDir', 'autoDir', 'directionNotRelevant']
 };
 
 function runInPage(ctx) {

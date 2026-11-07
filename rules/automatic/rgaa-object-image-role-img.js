@@ -78,7 +78,8 @@ const meta = {
     'alternativeWithoutRoleImg',
     'adjacentLinkOrButton',
     'fallbackOnly',
-    'noAlternative'
+    'noAlternative',
+    'noAlternativeMayBeDecorative'
   ],
   // How a person answers each question the rule asks, per reason code: a few
   // steps from the element the finding names, then what they see if it
@@ -114,6 +115,17 @@ const meta = {
         'The <object> has role="img" and a text alternative, or a link or button right after it that leads to an alternative content.',
       failWhen:
         'The image keeps only fallback content, which RGAA 1.1.6 does not list as an alternative for an <object> image, and fails it.'
+    },
+    noAlternativeMayBeDecorative: {
+      steps: [
+        'Find the <object> image the report names: it has no role, name, content or adjacent link.',
+        'Look at what it shows on screen, with the text around it.',
+        'Decide whether it carries information, or only decorates.'
+      ],
+      passWhen:
+        'The image carries information and a mechanism on the page lets the user replace it with an alternative content, which RGAA 1.1.6 accepts.',
+      failWhen:
+        'The image carries information and nothing gives an alternative to it, which fails RGAA 1.1.6; or it is decorative but not hidden with aria-hidden="true", which fails RGAA 1.2.3.'
     }
   }
 };

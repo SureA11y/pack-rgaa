@@ -90,7 +90,8 @@ const meta = {
     'focusableNonNative',
     'inlineHandler',
     'contentEditable',
-    'stateAttribute'
+    'stateAttribute',
+    'linkWithoutDestination'
   ],
   review: {
     pageReview: {
@@ -159,6 +160,17 @@ const meta = {
         'The announced state follows what happens on the page (expanded when the content shows, pressed when on).',
       failWhen:
         'The state is not announced, or contradicts what the page shows, which fails RGAA 7.1.1.'
+    },
+    linkWithoutDestination: {
+      steps: [
+        'Find the link the report names: its href is "#", "#!" or a javascript: address, which leads nowhere.',
+        'Activate it, and see what it does.',
+        'Listen to it with a screen reader, and note the role it is announced with.'
+      ],
+      passWhen:
+        'It takes you to another page or place and is announced as a link, or it acts on the page and is announced as a button.',
+      failWhen:
+        'It acts as a button but is announced as a link, so its role is not relevant, which fails RGAA 7.1.3.'
     }
   }
 };

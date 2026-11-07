@@ -63,7 +63,29 @@ const meta = {
   category: 'understandable',
   type: 'manual',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['undeterminedLang', 'langMismatch'],
+  review: {
+    undeterminedLang: {
+      steps: [
+        'Find the language code the report names, on the <html> element: it is und (undetermined) or mul (several languages).',
+        'Read the page, and decide which language most of it is written in.'
+      ],
+      passWhen:
+        'No main language can be named, for instance because the page gives the same weight to several languages.',
+      failWhen: 'The page has a main language that the code does not give, which fails RGAA 8.4.1.'
+    },
+    langMismatch: {
+      steps: [
+        'Find the language code the report names, on the <html> element.',
+        'Read the page, and decide which language most of it is written in; the language the report gives is only a guess from frequent words.',
+        'Compare it with the code.'
+      ],
+      passWhen: 'The code gives the main language of the page.',
+      failWhen:
+        'The main language of the page is not the one the code gives, which fails RGAA 8.4.1.'
+    }
+  }
 };
 
 function applicability(ctx) {

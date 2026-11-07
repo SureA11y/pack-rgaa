@@ -74,7 +74,9 @@ const meta = {
     'contentOnly',
     'wrappingLabel',
     'labelForNotLabelable',
-    'emptySource'
+    'emptySource',
+    'duplicateId',
+    'outputStatus'
   ],
   review: {
     wrappingLabel: {
@@ -108,6 +110,15 @@ const meta = {
       passWhen:
         'An adjacent button gives the field a visible label and another source a name, or the field has a label 11.1.1 accepts elsewhere.',
       failWhen: 'The field has no label that 11.1.1 lists, which fails RGAA 11.1.1.'
+    },
+    outputStatus: {
+      steps: [
+        'Find the <output> the report names: it has no label.',
+        'Use the form, and see what the element shows and when.',
+        'Decide whether it shows the result of a calculation in the form, or a status message, such as a text saying the form was saved.'
+      ],
+      passWhen: 'The <output> is a status message, which needs no label.',
+      failWhen: 'The <output> shows a result of the form and has no label, which fails RGAA 11.1.1.'
     }
   }
 };

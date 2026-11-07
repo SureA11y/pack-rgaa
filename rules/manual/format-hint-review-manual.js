@@ -52,7 +52,21 @@ const meta = {
   category: 'understandable',
   type: 'manual',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['formatWithoutHint'],
+  review: {
+    formatWithoutHint: {
+      steps: [
+        'Find the field the report names: the report gives the constraint on what it accepts.',
+        'Enter a value that breaks the constraint, and send the form.',
+        'Read the error message for this field.'
+      ],
+      passWhen:
+        'The error message says which type or format of data is expected, and gives an example of a valid value.',
+      failWhen:
+        'The error message does not say the expected type or format, which fails RGAA 11.11.1, or gives no example of a valid value, which fails RGAA 11.11.2.'
+    }
+  }
 };
 
 function runInPage(ctx) {

@@ -74,6 +74,19 @@
 
 const id = 'rgaa-html-nesting-valid';
 
+// Markup in a shadow root is asked about instead of failed, whatever is wrong
+// with it, since the W3C validator does not see it: each code gets these steps.
+const SHADOW_REVIEW = {
+  steps: [
+    'Find the element the report names: it sits inside a shadow root, which the browser inspector shows under its host element.',
+    'Read what the report says is wrong with its markup, and check it on the element.',
+    'Check whether the audit judges markup in shadow roots under RGAA 8.2.1: the W3C validator does not see it in the page’s generated source.'
+  ],
+  passWhen: 'The audit leaves shadow roots out of 8.2.1; correcting the markup settles both.',
+  failWhen:
+    'The audit judges markup in shadow roots, and this markup is as the report says, which fails RGAA 8.2.1.'
+};
+
 const meta = {
   title: 'HTML elements are nested as HTML allows',
   description:
@@ -106,7 +119,8 @@ const meta = {
     'tabindexDescendant',
     'ismapOutsideLink',
     'extraMain',
-    'otherDoctype'
+    'otherDoctype',
+    'flowInPhrasing'
   ],
   // How a person answers each question the rule asks, per reason code: a few
   // steps from the element the finding names, then what they see if it
@@ -121,7 +135,20 @@ const meta = {
       passWhen: 'The validator reports no nesting error for the declared document type.',
       failWhen:
         'The validator reports an element nested where the declared document type does not allow it, which fails RGAA 8.2.1.'
-    }
+    },
+    listChild: SHADOW_REVIEW,
+    listText: SHADOW_REVIEW,
+    listItemParent: SHADOW_REVIEW,
+    dlChild: SHADOW_REVIEW,
+    dlText: SHADOW_REVIEW,
+    dlGroupOrder: SHADOW_REVIEW,
+    dlMixedGroups: SHADOW_REVIEW,
+    dlItemParent: SHADOW_REVIEW,
+    interactiveDescendant: SHADOW_REVIEW,
+    tabindexDescendant: SHADOW_REVIEW,
+    ismapOutsideLink: SHADOW_REVIEW,
+    extraMain: SHADOW_REVIEW,
+    flowInPhrasing: SHADOW_REVIEW
   }
 };
 

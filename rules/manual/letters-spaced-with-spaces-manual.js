@@ -58,7 +58,7 @@ const meta = {
   type: 'manual',
   defaultConfidence: 'medium',
   coverage: {},
-  reasonCodes: ['lettersSeparatedBySpaces'],
+  reasonCodes: ['lettersSeparatedBySpaces', 'spacesAsTable', 'spacesAsColumns'],
   review: {
     lettersSeparatedBySpaces: {
       steps: [
@@ -70,6 +70,26 @@ const meta = {
         'The letters are separate items, not a word, or the spacing is made with CSS letter-spacing.',
       failWhen:
         'A word is spaced out with space characters, so a screen reader spells it, which fails RGAA 10.1.3.'
+    },
+    spacesAsTable: {
+      steps: [
+        'Find the <pre> the report names: its lines hold runs of spaces between words.',
+        'Turn the page’s styles off in the browser, and look at how the text lines up.',
+        'Decide whether the spaces line up rows and columns of data, or columns of text.'
+      ],
+      passWhen:
+        'The spaces do not simulate a table or columns: the text only holds a wide gap, or is a sample of code.',
+      failWhen: 'Space characters simulate a table or columns, which fails RGAA 10.1.3.'
+    },
+    spacesAsColumns: {
+      steps: [
+        'Find the text the report names: it holds runs of non-breaking spaces between words.',
+        'Turn the page’s styles off in the browser, and look at how the text lines up.',
+        'Decide whether the spaces line up rows and columns of data, or columns of text.'
+      ],
+      passWhen:
+        'The spaces do not simulate a table or columns: the text only holds a wide gap, or is a sample of code.',
+      failWhen: 'Space characters simulate a table or columns, which fails RGAA 10.1.3.'
     }
   }
 };

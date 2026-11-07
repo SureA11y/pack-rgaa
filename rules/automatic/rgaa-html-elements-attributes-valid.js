@@ -80,6 +80,19 @@
 
 const id = 'rgaa-html-elements-attributes-valid';
 
+// Markup in a shadow root is asked about instead of failed, whatever is wrong
+// with it, since the W3C validator does not see it: each code gets these steps.
+const SHADOW_REVIEW = {
+  steps: [
+    'Find the element the report names: it sits inside a shadow root, which the browser inspector shows under its host element.',
+    'Read what the report says is wrong with its markup, and check it on the element.',
+    'Check whether the audit judges markup in shadow roots under RGAA 8.2.1: the W3C validator does not see it in the page’s generated source.'
+  ],
+  passWhen: 'The audit leaves shadow roots out of 8.2.1; correcting the markup settles both.',
+  failWhen:
+    'The audit judges markup in shadow roots, and this markup is as the report says, which fails RGAA 8.2.1.'
+};
+
 const meta = {
   title: 'HTML elements and attribute values are valid',
   description:
@@ -115,7 +128,8 @@ const meta = {
     'autocompleteValue',
     'autocompleteControl',
     'autocompleteType',
-    'otherDoctype'
+    'otherDoctype',
+    'typeValue'
   ],
   // How a person answers each question the rule asks, per reason code: a few
   // steps from the element the finding names, then what they see if it
@@ -131,7 +145,23 @@ const meta = {
         'The validator reports no error about elements, attributes or their values for the declared document type.',
       failWhen:
         'The validator reports an element, attribute or value that the declared document type does not allow, which fails RGAA 8.2.1.'
-    }
+    },
+    obsoleteElement: SHADOW_REVIEW,
+    unknownElement: SHADOW_REVIEW,
+    dirValue: SHADOW_REVIEW,
+    idValue: SHADOW_REVIEW,
+    langValue: SHADOW_REVIEW,
+    xmlLangMismatch: SHADOW_REVIEW,
+    scopeValue: SHADOW_REVIEW,
+    scopeElement: SHADOW_REVIEW,
+    headersTarget: SHADOW_REVIEW,
+    headersEmpty: SHADOW_REVIEW,
+    optgroupLabel: SHADOW_REVIEW,
+    inputImageAlt: SHADOW_REVIEW,
+    autocompleteValue: SHADOW_REVIEW,
+    autocompleteControl: SHADOW_REVIEW,
+    autocompleteType: SHADOW_REVIEW,
+    typeValue: SHADOW_REVIEW
   }
 };
 

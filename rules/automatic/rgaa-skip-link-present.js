@@ -89,7 +89,8 @@ const meta = {
     'skipLinkTargetNotMain',
     'skipLinkTargetHidden',
     'noSkipLink',
-    'noNavigationBeforeMain'
+    'noNavigationBeforeMain',
+    'skipLinkAriaHidden'
   ],
   review: {
     mainNotFound: {
@@ -135,6 +136,16 @@ const meta = {
         'The site is a single page, or nothing repeated comes before the main content, so no skip link is needed (the particular case of RGAA 12.7).',
       failWhen:
         'Repeated content, such as a header or a menu not marked as navigation, comes before the main content with no link to skip it, which fails RGAA 12.7.1.'
+    },
+    skipLinkAriaHidden: {
+      steps: [
+        'Find the skip link the report names: aria-hidden="true" is on it or on a parent.',
+        'Press Tab from the top of the page to reach it, activate it, and check that focus moves to the main content.',
+        'Listen to the same link with a screen reader, and check whether it is announced.'
+      ],
+      passWhen: 'The link reaches the main content, and a screen reader announces it.',
+      failWhen:
+        'The link is hidden from screen reader users, so they cannot use it to skip to the main content, which fails RGAA 12.7.1.'
     }
   }
 };

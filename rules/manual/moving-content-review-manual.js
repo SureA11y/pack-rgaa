@@ -59,7 +59,70 @@ const meta = {
   category: 'operable',
   type: 'manual',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['marquee', 'autoplayVideo', 'svgAnimation', 'movingAnimation', 'blinkingAnimation'],
+  review: {
+    marquee: {
+      steps: [
+        'Find the <marquee> the report names: its text scrolls by itself.',
+        'Load the page, and time the movement: note whether it stops by itself within 5 seconds.',
+        'If it goes on, look for a control, such as a pause button, on it or near it, and use it.',
+        'Check that the control stops and restarts the movement, hides and shows the content again, or shows all of its content without the movement.'
+      ],
+      passWhen:
+        'The movement lasts 5 seconds or less, or a control stops and restarts it, hides the content, or shows it all without the movement.',
+      failWhen:
+        'The movement lasts more than 5 seconds and no control does any of these, which fails RGAA 13.8.1.'
+    },
+    autoplayVideo: {
+      steps: [
+        'Find the video the report names: it plays by itself and has no browser controls.',
+        'Load the page, and time the movement: note whether it stops by itself within 5 seconds.',
+        'If it goes on, look for a control, such as a pause button, on it or near it, and use it.',
+        'Check that the control stops and restarts the movement, hides and shows the content again, or shows all of its content without the movement.'
+      ],
+      passWhen:
+        'The movement lasts 5 seconds or less, or a control stops and restarts it, hides the content, or shows it all without the movement.',
+      failWhen:
+        'The movement lasts more than 5 seconds and no control does any of these, which fails RGAA 13.8.1.'
+    },
+    svgAnimation: {
+      steps: [
+        'Find the <svg> the report names: it has an animation that repeats without end.',
+        'Load the page, and time the movement: note whether it stops by itself within 5 seconds.',
+        'If it goes on, look for a control, such as a pause button, on it or near it, and use it.',
+        'Check that the control stops and restarts the movement, hides and shows the content again, or shows all of its content without the movement.'
+      ],
+      passWhen:
+        'The movement lasts 5 seconds or less, or a control stops and restarts it, hides the content, or shows it all without the movement.',
+      failWhen:
+        'The movement lasts more than 5 seconds and no control does any of these, which fails RGAA 13.8.1.'
+    },
+    movingAnimation: {
+      steps: [
+        'Find the element the report names: an animation runs on it by itself.',
+        'Load the page, and time the movement: note whether it stops by itself within 5 seconds.',
+        'If it goes on, look for a control, such as a pause button, on it or near it, and use it.',
+        'Check that the control stops and restarts the movement, hides and shows the content again, or shows all of its content without the movement.'
+      ],
+      passWhen:
+        'The movement lasts 5 seconds or less, or a control stops and restarts it, hides the content, or shows it all without the movement.',
+      failWhen:
+        'The movement lasts more than 5 seconds and no control does any of these, which fails RGAA 13.8.1.'
+    },
+    blinkingAnimation: {
+      steps: [
+        'Find the element the report names: an animation makes it blink by itself.',
+        'Load the page, and time the blinking: note whether it stops by itself within 5 seconds.',
+        'If it goes on, look for a control, such as a pause button, on it or near it, and use it.',
+        'Check that the control stops and restarts the blinking, hides and shows the content again, or shows all of its content without the blinking.'
+      ],
+      passWhen:
+        'The blinking lasts 5 seconds or less, or a control stops and restarts it, hides the content, or shows it all without the blinking.',
+      failWhen:
+        'The blinking lasts more than 5 seconds and no control does any of these, which fails RGAA 13.8.2.'
+    }
+  }
 };
 
 function runInPage(ctx) {

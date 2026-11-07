@@ -44,7 +44,20 @@ const meta = {
   category: 'perceivable',
   type: 'manual',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['currentByLookOnly'],
+  review: {
+    currentByLookOnly: {
+      steps: [
+        'Find the navigation link the report names, and look at it on screen.',
+        'Check whether it looks different from the other links of the menu, and whether that shows it leads to the page you are on.',
+        'Listen to it with a screen reader, and check whether anything other than its look says it is the current page.'
+      ],
+      passWhen:
+        'The link does not stand for the current page, or something other than its look says so, such as aria-current="page" or a text.',
+      failWhen: 'Only the look of the link shows the current page, which fails RGAA 10.9.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

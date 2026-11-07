@@ -48,7 +48,20 @@ const meta = {
   category: 'robust',
   type: 'manual',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['frameTitleRelevance'],
+  review: {
+    frameTitleRelevance: {
+      steps: [
+        'Find the frame the report names, and read its title in the report.',
+        'Look at what the frame shows on screen; if nothing shows, open the address the report gives.',
+        'Decide whether the title says what the frame contains. A frame used only for technical purposes may have a generic title.'
+      ],
+      passWhen:
+        'The title says what the frame contains, such as the name of the map or the video it shows.',
+      failWhen: 'The title does not say what the frame contains, which fails RGAA 2.2.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

@@ -42,7 +42,19 @@ const meta = {
   category: 'perceivable',
   type: 'manual',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['noHeading'],
+  review: {
+    noHeading: {
+      steps: [
+        'This finding is about the page: it has no heading in its code. Read it on screen.',
+        'Look for text that acts as a heading: a title above a section, or a bold or larger line opening a block.',
+        'Inspect that text: it is not an <h1> to <h6>, nor role="heading" with aria-level.'
+      ],
+      passWhen: 'No passage of the page acts as a heading.',
+      failWhen: 'A passage acts as a heading with no heading markup, which fails RGAA 9.1.3.'
+    }
+  }
 };
 
 function runInPage(ctx) {

@@ -83,7 +83,8 @@ const meta = {
     'roleImgWithoutAriaName',
     'nameWithoutRoleImg',
     'adjacentLinkOrButton',
-    'noAlternative'
+    'noAlternative',
+    'noAlternativeMayBeDecorative'
   ],
   review: {
     adjacentLinkOrButton: {
@@ -97,7 +98,7 @@ const meta = {
       failWhen:
         'The link or button does not lead to an alternative, so the informative canvas has none, which fails RGAA 1.1.8.'
     },
-    noAlternative: {
+    noAlternativeMayBeDecorative: {
       steps: [
         'Find the <canvas> the report names: it has no role, name, content or adjacent link.',
         'Look at what it draws on screen (a chart, text, a game, or only an animated background or a decorative layer).',

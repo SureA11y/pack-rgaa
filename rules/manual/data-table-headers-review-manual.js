@@ -57,7 +57,7 @@ const meta = {
   type: 'manual',
   defaultConfidence: 'medium',
   coverage: {},
-  reasonCodes: ['NO_HEADER_CELLS'],
+  reasonCodes: ['NO_HEADER_CELLS', 'BOLD_CELLS_MAY_BE_HEADERS'],
   review: {
     NO_HEADER_CELLS: {
       steps: [
@@ -70,6 +70,16 @@ const meta = {
         'The table only lays out content, which reads in a sensible order, or it holds data with no cell that labels a whole row or column.',
       failWhen:
         'The table holds data but its header cells are marked as <td> without a columnheader or rowheader role, which fails RGAA 5.6.1 or 5.6.2; a layout table whose content no longer makes sense once read in order fails RGAA 5.3.1.'
+    },
+    BOLD_CELLS_MAY_BE_HEADERS: {
+      steps: [
+        'Find the table the report names, and the bold cells of its first row or first column.',
+        'Read them, and decide whether they label the rest of their column or row, or are data that happens to be bold.',
+        'Inspect them: they are <td>, not <th>, and have no columnheader or rowheader role.'
+      ],
+      passWhen: 'The bold cells hold data, not headers.',
+      failWhen:
+        'The bold cells label their column, which fails RGAA 5.6.1, or their row, which fails RGAA 5.6.2.'
     }
   }
 };

@@ -51,7 +51,34 @@ const meta = {
   category: 'robust',
   type: 'manual',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['liveWithoutRole', 'possibleStatusMessage'],
+  review: {
+    liveWithoutRole: {
+      steps: [
+        'Find the element the report names: it has aria-live, but none of the roles status, alert, log or progressbar.',
+        'Use the page, and check whether this text appears or changes as a result of what you do, without taking you anywhere else. A text shown from the start that never changes is not a status message.',
+        'Decide what it tells: a success, a result or a state; an error or a suggestion; or a progress.',
+        'Inspect the element for its role, aria-live and aria-atomic attributes.'
+      ],
+      passWhen:
+        'The text is not a status message, or the element has the matching role: status, alert, or log, progressbar or status for a progress. The RGAA methodology also accepts aria-live with aria-atomic="true", polite for status and assertive for alert, and aria-live="polite" for log.',
+      failWhen:
+        'The status message has neither, which fails RGAA 7.5.1 for a success, a result or a state, RGAA 7.5.2 for an error or a suggestion, and RGAA 7.5.3 for a progress.'
+    },
+    possibleStatusMessage: {
+      steps: [
+        'Find the element the report names: its class or id suggests a message, and it has none of the roles status, alert, log or progressbar.',
+        'Use the page, and check whether this text appears or changes as a result of what you do, without taking you anywhere else. A text shown from the start that never changes is not a status message.',
+        'Decide what it tells: a success, a result or a state; an error or a suggestion; or a progress.',
+        'Inspect the element for its role, aria-live and aria-atomic attributes.'
+      ],
+      passWhen:
+        'The text is not a status message, or the element has the matching role: status, alert, or log, progressbar or status for a progress. The RGAA methodology also accepts aria-live with aria-atomic="true", polite for status and assertive for alert, and aria-live="polite" for log.',
+      failWhen:
+        'The status message has neither, which fails RGAA 7.5.1 for a success, a result or a state, RGAA 7.5.2 for an error or a suggestion, and RGAA 7.5.3 for a progress.'
+    }
+  }
 };
 
 function runInPage(ctx) {

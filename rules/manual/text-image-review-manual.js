@@ -49,7 +49,46 @@ const meta = {
   category: 'perceivable',
   type: 'manual',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['imageButton', 'imageInHeading', 'textImageName'],
+  review: {
+    imageButton: {
+      steps: [
+        'Find the image button the report names, and look at it on screen.',
+        'Decide whether the image shows text.',
+        'If it does, decide whether styled text could look the same, or whether the effect cannot be done with CSS.',
+        'Look for a control on the page that replaces the image with text.'
+      ],
+      passWhen:
+        'The image shows no text, a control replaces it with text, or its effect cannot be done with CSS.',
+      failWhen:
+        'The image shows text that styled text could replace, with no control to replace it, which fails RGAA 1.8.2.'
+    },
+    imageInHeading: {
+      steps: [
+        'Find the image the report names, inside a heading, and look at it on screen.',
+        'Decide whether the image shows text.',
+        'If it does, decide whether styled text could look the same, or whether the effect cannot be done with CSS.',
+        'Look for a control on the page that replaces the image with text.'
+      ],
+      passWhen:
+        'The image shows no text, a control replaces it with text, or its effect cannot be done with CSS.',
+      failWhen:
+        'The image shows text that styled text could replace, with no control to replace it, which fails RGAA 1.8.1.'
+    },
+    textImageName: {
+      steps: [
+        'Find the image the report names, and look at it on screen: its file name, class or id suggests it shows text.',
+        'Decide whether the image shows text, leaving out logos and brand names.',
+        'If it does, decide whether styled text could look the same, or whether the effect cannot be done with CSS.',
+        'Look for a control on the page that replaces the image with text.'
+      ],
+      passWhen:
+        'The image shows no text, a control replaces it with text, or its effect cannot be done with CSS.',
+      failWhen:
+        'The image shows text that styled text could replace, with no control to replace it, which fails RGAA 1.8.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

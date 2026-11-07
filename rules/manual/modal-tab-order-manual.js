@@ -48,7 +48,20 @@ const meta = {
   category: 'operable',
   type: 'manual',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['focusableOutsideModal'],
+  review: {
+    focusableOutsideModal: {
+      steps: [
+        'Open the dialog the report names, as a visitor would.',
+        'Press Tab repeatedly until you have gone past its last element, watching where the focus goes.',
+        'Press Shift+Tab repeatedly in the same way, going back past its first element.'
+      ],
+      passWhen: 'The focus stays inside the dialog while it is open.',
+      failWhen:
+        'The focus reaches elements outside the dialog while it is open, which fails RGAA 12.8.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

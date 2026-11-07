@@ -63,7 +63,50 @@ const meta = {
   category: 'perceivable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['malformedUserField', 'contradictsType', 'noAutocomplete', 'onOff', 'noFieldName'],
+  review: {
+    contradictsType: {
+      steps: [
+        'Find the field the report names, and note its type and its autocomplete value.',
+        'Read its label, and decide what the field asks you to enter.',
+        'Compare the two: a value for an email belongs on a field that asks for an email, a value for a telephone on one that asks for a telephone number.'
+      ],
+      passWhen: 'The autocomplete value matches what the field asks for, and the type can hold it.',
+      failWhen:
+        'The autocomplete value does not match what the field asks for, which fails RGAA 11.13.1.'
+    },
+    noAutocomplete: {
+      steps: [
+        'Find the field the report names, and read its label.',
+        "Decide whether it asks for information about the person filling in the form (their name, address, email, telephone, birth date), or about something else, such as a friend's email.",
+        'Inspect it: it has no autocomplete attribute.'
+      ],
+      passWhen: 'The field asks for nothing about the person filling in the form.',
+      failWhen:
+        'The field asks for information about the user and has no autocomplete attribute, which fails RGAA 11.13.1.'
+    },
+    onOff: {
+      steps: [
+        'Find the field the report names, and read its label.',
+        "Decide whether it asks for information about the person filling in the form (their name, address, email, telephone, birth date), or about something else, such as a friend's email.",
+        'Inspect it: its autocomplete value is on or off, which only turns filling in on or off, and is not in the list RGAA uses.'
+      ],
+      passWhen: 'The field asks for nothing about the person filling in the form.',
+      failWhen:
+        'The field asks for information about the user and its autocomplete value says nothing of what it holds, which fails RGAA 11.13.1.'
+    },
+    noFieldName: {
+      steps: [
+        'Find the field the report names, and read its label.',
+        "Decide whether it asks for information about the person filling in the form (their name, address, email, telephone, birth date), or about something else, such as a friend's email.",
+        'Inspect it: its autocomplete value names no field of the list RGAA uses, such as email, tel or family-name.'
+      ],
+      passWhen: 'The field asks for nothing about the person filling in the form.',
+      failWhen:
+        'The field asks for information about the user and its autocomplete value is not in the list, which fails RGAA 11.13.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

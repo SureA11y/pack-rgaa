@@ -46,7 +46,19 @@ const meta = {
   category: 'understandable',
   type: 'manual',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['legendRelevance'],
+  review: {
+    legendRelevance: {
+      steps: [
+        'Find the group of fields the report names, and read its legend in the report.',
+        'Read the labels of the fields of the group.',
+        'Decide whether the legend says what they have in common, such as the question a set of choices answers, or the person an address belongs to.'
+      ],
+      passWhen: 'The legend says what the fields of the group have in common.',
+      failWhen: 'The legend does not say what the fields have in common, which fails RGAA 11.7.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

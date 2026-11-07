@@ -57,7 +57,31 @@ const meta = {
   category: 'operable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['imageLinkTitle', 'compositeLinkTitle', 'symbolAlternative'],
+  review: {
+    compositeLinkTitle: {
+      steps: [
+        'Find the link the report names: it holds text and an image, and has a title attribute.',
+        "Read the title, the link's text and the text alternative of its image.",
+        'Decide whether the image adds something to the link, or is only an icon, such as a file type or an external-link sign.'
+      ],
+      passWhen:
+        'The image adds nothing the title needs to say, and the audit accepts that; repeating its alternative in the title, or removing the title, settles it.',
+      failWhen:
+        "The title leaves out what the image's alternative adds, so the link's name is not explicit, which fails RGAA 6.1.3."
+    },
+    symbolAlternative: {
+      steps: [
+        'Find the image link the report names: the text alternative of its image is one character.',
+        'Look at the image, and decide whether the character is a symbol, such as ">" for next, or literal text.',
+        "Read the link's title."
+      ],
+      passWhen: 'The character is a symbol, and the title says what it means.',
+      failWhen:
+        "The title does not say what the symbol means, or does not repeat a character that is literal text, so the link's name is not explicit, which fails RGAA 6.1.2."
+    }
+  }
 };
 
 function runInPage(ctx) {

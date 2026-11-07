@@ -58,7 +58,63 @@ const meta = {
   category: 'perceivable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: [
+    'headingPresentation',
+    'spacerParagraph',
+    'emptyBlockquote',
+    'emptyParagraph',
+    'placeholder',
+    'consecutiveBr',
+    'spacesForMargin'
+  ],
+  review: {
+    emptyBlockquote: {
+      steps: [
+        'Find the <blockquote> the report names: it holds no text and no image.',
+        'Look at the page where it sits, and check whether it makes a gap or an indent.',
+        'Use the page, and check whether a script fills it with a quotation.'
+      ],
+      passWhen: 'A script fills the element with a quotation, or it shows nothing on screen.',
+      failWhen: 'The <blockquote> is there only for its margins, which fails RGAA 8.9.1.'
+    },
+    emptyParagraph: {
+      steps: [
+        'Find the paragraph the report names: it has no content.',
+        'Look at the page where it sits, and check whether it makes a gap.',
+        'Use the page, and check whether a script fills it.'
+      ],
+      passWhen: 'The paragraph shows nothing on screen, or a script fills it.',
+      failWhen: 'The paragraph is there only to make space, which fails RGAA 8.9.1.'
+    },
+    placeholder: {
+      steps: [
+        'Find the empty element the report names: it has a role or aria-live, so it may be waiting for content.',
+        'Use the page, and watch for the moment a script fills it, such as after a search or a form error.',
+        'Look at the page where it sits, and check whether it makes a gap while it is empty.'
+      ],
+      passWhen: 'A script fills the element with content.',
+      failWhen: 'The element stays empty and is there only to make space, which fails RGAA 8.9.1.'
+    },
+    consecutiveBr: {
+      steps: [
+        'Find the element the report names: it holds two or more <br> in a row.',
+        'Read its text on screen.',
+        'Decide whether the line breaks separate paragraphs, or lines that belong together, such as an address or a poem.'
+      ],
+      passWhen: 'The line breaks separate lines of one block of text.',
+      failWhen: 'The line breaks only make space between paragraphs, which fails RGAA 8.9.1.'
+    },
+    spacesForMargin: {
+      steps: [
+        'Find the text the report names: it starts with three non-breaking spaces or more.',
+        'Look at it on screen, and check whether the spaces push it to the right.',
+        'Decide whether they make a margin or an indent.'
+      ],
+      passWhen: 'The spaces make no margin or indent on screen.',
+      failWhen: 'The spaces are there to make a margin, which fails RGAA 8.9.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

@@ -55,7 +55,7 @@ const meta = {
   type: 'automatic',
   defaultConfidence: 'high',
   coverage: {},
-  reasonCodes: ['missingTitle']
+  reasonCodes: ['missingTitle', 'emptyTitle']
 };
 
 function runInPage(ctx) {

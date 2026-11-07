@@ -42,7 +42,20 @@ const meta = {
   category: 'robust',
   type: 'manual',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['noscriptAlternative'],
+  review: {
+    noscriptAlternative: {
+      steps: [
+        'Find the <noscript> element the report names, and read its text in the report.',
+        'With JavaScript on, note what the script gives at this place on the page.',
+        'Turn JavaScript off in the browser, reload the page, and use what appears at this place.'
+      ],
+      passWhen: 'With JavaScript off, it gives access to the same content and to similar features.',
+      failWhen:
+        'With JavaScript off, it gives less, such as a message asking to turn JavaScript on, which fails RGAA 7.2.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

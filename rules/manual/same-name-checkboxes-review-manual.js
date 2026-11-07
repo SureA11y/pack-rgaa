@@ -52,7 +52,30 @@ const meta = {
   category: 'understandable',
   type: 'manual',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['ungroupedCheckboxes', 'ungroupedRadios'],
+  review: {
+    ungroupedCheckboxes: {
+      steps: [
+        'Find the check box the report names, and the others of its set, on screen.',
+        'Read the label of each one alone, as a screen reader would.',
+        'Decide whether each label says enough, or whether you need a question or a title above them to understand it.'
+      ],
+      passWhen: 'Each label is enough on its own, or the check boxes are not one set.',
+      failWhen:
+        'The check boxes answer one question that their labels do not state, and no <fieldset> or role="group" groups them, which fails RGAA 11.5.1.'
+    },
+    ungroupedRadios: {
+      steps: [
+        'Find the radio button the report names, and the others of its set, on screen.',
+        'Read the label of each one alone, as a screen reader would.',
+        'Decide whether each label says enough, or whether you need a question or a title above them to understand it.'
+      ],
+      passWhen: 'Each label is enough on its own, or the radio buttons are not one set.',
+      failWhen:
+        'The radio buttons answer one question that their labels do not state, and no <fieldset>, role="radiogroup" or role="group" groups them, which fails RGAA 11.5.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

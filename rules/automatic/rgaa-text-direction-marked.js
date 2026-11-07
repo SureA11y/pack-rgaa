@@ -55,7 +55,45 @@ const meta = {
   category: 'understandable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['directionNotMarked', 'shortText', 'shortRun', 'bdiWithoutDir'],
+  review: {
+    shortText: {
+      steps: [
+        'Find the text the report names: one or two words that read in the other direction from the text around them.',
+        'Inspect it: no element around it has a dir attribute.',
+        'Look at it on screen, and check that its letters and any punctuation next to it show in the right order.',
+        'Check whether the audit asks for dir on text this short.'
+      ],
+      passWhen:
+        'The words show correctly, and the audit accepts them without dir; a dir on the element settles it.',
+      failWhen:
+        'The words show in the wrong order, or the audit holds to the letter of the test, so text with no dir fails RGAA 8.10.1.'
+    },
+    shortRun: {
+      steps: [
+        'Find the element the report names, and in it the one or two words that read in the other direction.',
+        'Inspect it: no element around those words has a dir attribute.',
+        'Look at the sentence on screen, and check that the words and the punctuation next to them show in the right order.',
+        'Check whether the audit asks for dir on a run this short.'
+      ],
+      passWhen:
+        'The sentence shows correctly, and the audit accepts the words without dir; an element with dir around them settles it.',
+      failWhen:
+        'The sentence shows in the wrong order, or the audit holds to the letter of the test, so a run with no dir fails RGAA 8.10.1.'
+    },
+    bdiWithoutDir: {
+      steps: [
+        'Find the text the report names: it reads in the other direction, inside a <bdi> with no dir attribute.',
+        'Look at it on screen, and check that it shows in the right order.',
+        'Check whether the audit accepts a <bdi>, which browsers isolate from the text around it but RGAA does not name.'
+      ],
+      passWhen:
+        'The text shows correctly, and the audit accepts the <bdi>; a dir on it settles it.',
+      failWhen:
+        'The audit holds to the letter of the test, which asks for a dir attribute, so the text fails RGAA 8.10.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

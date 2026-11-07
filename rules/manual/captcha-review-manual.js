@@ -45,7 +45,32 @@ const meta = {
   category: 'perceivable',
   type: 'manual',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['imageCaptcha', 'captchaWidget'],
+  review: {
+    imageCaptcha: {
+      steps: [
+        'Find the image the report names, used as a CAPTCHA, a test that tells people from programs.',
+        'Read its text alternative: it should say what the image is and what it is for, such as "Security image: type the letters shown".',
+        'Look next to it for a form of the test that needs no sight, such as an audio or a text question, or another way to the same function, such as a telephone number.'
+      ],
+      passWhen:
+        'The alternative says what the image is and does, and a non-graphic test or another way in is offered.',
+      failWhen:
+        'The alternative does not say what the image is and does, which fails RGAA 1.4; or nothing but the image gives access, which fails RGAA 1.5.'
+    },
+    captchaWidget: {
+      steps: [
+        'Find the CAPTCHA the report names, a test from another service that tells people from programs.',
+        'Run it, and when it shows images look for an audio or other non-graphic version.',
+        'Look around it for another way to the same function, such as a telephone number or a contact form that needs no CAPTCHA.'
+      ],
+      passWhen:
+        'The test offers a non-graphic version, or another way to the same function is offered.',
+      failWhen:
+        'Only images can get a person through, and nothing else gives access to the function, which fails RGAA 1.5.'
+    }
+  }
 };
 
 function runInPage(ctx) {

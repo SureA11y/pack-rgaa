@@ -69,7 +69,12 @@ const meta = {
   type: 'automatic',
   defaultConfidence: 'medium',
   coverage: {},
-  reasonCodes: ['noAlternative', 'alternativeWithoutRoleImg', 'adjacentLinkOrButton'],
+  reasonCodes: [
+    'noAlternative',
+    'alternativeWithoutRoleImg',
+    'adjacentLinkOrButton',
+    'noAlternativeMayBeDecorative'
+  ],
   review: {
     alternativeWithoutRoleImg: {
       steps: [
@@ -92,6 +97,17 @@ const meta = {
         'The link or button leads to an alternative content that gives the same information as the image.',
       failWhen:
         'The link or button does not lead to an alternative, so the informative image has none, which fails RGAA 1.1.7.'
+    },
+    noAlternativeMayBeDecorative: {
+      steps: [
+        'Find the <embed> image the report names: it has no role, name, content or adjacent link.',
+        'Look at what it shows on screen, with the text around it.',
+        'Decide whether it carries information, or only decorates.'
+      ],
+      passWhen:
+        'The image carries information and a mechanism on the page lets the user replace it with an alternative content, which RGAA 1.1.7 accepts.',
+      failWhen:
+        'The image carries information and nothing gives an alternative to it, which fails RGAA 1.1.7; or it is decorative but not hidden with aria-hidden="true", which fails RGAA 1.2.6.'
     }
   }
 };

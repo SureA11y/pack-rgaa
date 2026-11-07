@@ -52,7 +52,21 @@ const meta = {
   category: 'understandable',
   type: 'manual',
   defaultConfidence: 'medium',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['inconsistentLabels'],
+  review: {
+    inconsistentLabels: {
+      steps: [
+        'Find the field the report names, and the other fields of this page it lists, which ask for the same information.',
+        'Read their labels side by side.',
+        'Decide whether someone reading them would know that the same kind of information is asked for.'
+      ],
+      passWhen:
+        'The labels differ in wording but leave no doubt that the same kind of information is asked for.',
+      failWhen:
+        'The labels could make someone think that different information is asked for, which fails RGAA 11.3.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

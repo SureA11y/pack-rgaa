@@ -47,7 +47,38 @@ const meta = {
   category: 'perceivable',
   type: 'manual',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['embeddedPlayer', 'embeddedPlayerAutoplay'],
+  review: {
+    embeddedPlayer: {
+      steps: [
+        'Find the player the report names, and play the media.',
+        'Decide what it holds: sound only, picture only, or both, and whether it gives information.',
+        'Look just before and after the player for a text that identifies it, and for a transcript or a link to one.',
+        'In the player, turn on the captions if there is speech, and look for an audio description if the picture shows what the sound does not say.',
+        'Use the play, pause and sound controls with the keyboard, then with the mouse.',
+        'Listen to the controls with a screen reader.'
+      ],
+      passWhen:
+        'The media has the alternatives it needs, a text next to it identifies it, and its controls work with the keyboard, the mouse and a screen reader.',
+      failWhen:
+        'A missing transcript fails RGAA 4.1, missing captions RGAA 4.3, a missing audio description RGAA 4.5, no identifying text RGAA 4.7, missing or unusable controls RGAA 4.11, and a player a screen reader cannot use RGAA 4.13.'
+    },
+    embeddedPlayerAutoplay: {
+      steps: [
+        'Load the page with the sound on, and note whether the player the report names starts by itself, and for how long it makes sound.',
+        'If sound plays for more than 3 seconds, look for a control on the player or in the page that stops it or sets its volume.',
+        'Look just before and after the player for a text that identifies it, and for a transcript or a link to one.',
+        'In the player, turn on the captions if there is speech, and look for an audio description if the picture shows what the sound does not say.',
+        'Use the play, pause and sound controls with the keyboard, then with the mouse.',
+        'Listen to the controls with a screen reader.'
+      ],
+      passWhen:
+        'Sound lasts 3 seconds or less, or can be stopped or its volume set, and the media has its alternatives, an identifying text and controls that work with the keyboard, the mouse and a screen reader.',
+      failWhen:
+        'Sound plays for more than 3 seconds and nothing stops it or sets its volume, which fails RGAA 4.10.1. A missing transcript fails RGAA 4.1, missing captions RGAA 4.3, a missing audio description RGAA 4.5, no identifying text RGAA 4.7, missing or unusable controls RGAA 4.11, and a player a screen reader cannot use RGAA 4.13.'
+    }
+  }
 };
 
 function runInPage(ctx) {

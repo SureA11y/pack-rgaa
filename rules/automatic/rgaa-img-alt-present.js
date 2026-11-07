@@ -64,7 +64,30 @@ const meta = {
   category: 'perceivable',
   type: 'automatic',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['missingAlt', 'blankAlt', 'noAltMayBeDecorative', 'blankAltMayBeDecorative'],
+  review: {
+    noAltMayBeDecorative: {
+      steps: [
+        'Find the image the report names: it has no alt attribute and no other text alternative.',
+        'Look at it on screen, with the text around it.',
+        'Decide whether it carries information, or only decorates: would a person miss anything if it were gone?'
+      ],
+      passWhen:
+        'The image only decorates, so RGAA 1.1.1 does not apply to it; RGAA 1.2.1 then asks it for alt="".',
+      failWhen: 'The image carries information and has no text alternative, which fails RGAA 1.1.1.'
+    },
+    blankAltMayBeDecorative: {
+      steps: [
+        'Find the image the report names: its alt holds only spaces, and it has no other text alternative.',
+        'Look at it on screen, with the text around it.',
+        'Decide whether it carries information, or only decorates: would a person miss anything if it were gone?'
+      ],
+      passWhen:
+        'The image only decorates, so RGAA 1.1.1 does not apply to it; RGAA 1.2.1 then asks it for an alt with nothing in it, alt="".',
+      failWhen: 'The image carries information and its alt says nothing, which fails RGAA 1.1.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

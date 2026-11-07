@@ -47,7 +47,20 @@ const meta = {
   category: 'perceivable',
   type: 'manual',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['colorReference'],
+  review: {
+    colorReference: {
+      steps: [
+        'Find the text the report names: it refers to a colour, such as "the fields in red".',
+        'Find what it refers to on the page.',
+        'Check whether something other than colour identifies it: a word, a sign such as an asterisk, an icon, a shape, a position or a title.'
+      ],
+      passWhen:
+        'Something other than colour gives the same information, or the text gives no information by colour.',
+      failWhen: 'The colour is the only way to get the information, which fails RGAA 3.1.2.'
+    }
+  }
 };
 
 function runInPage(ctx) {

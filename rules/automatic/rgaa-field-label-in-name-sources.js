@@ -73,7 +73,8 @@ const meta = {
     'SOURCE_LACKS_VISIBLE_LABEL',
     'POSSIBLE_SYMBOL',
     'POSSIBLE_ABBREVIATION',
-    'PARENTHESISED_TEXT_MISSING'
+    'PARENTHESISED_TEXT_MISSING',
+    'POSSIBLE_INFLECTION'
   ],
   review: {
     POSSIBLE_SYMBOL: {
@@ -108,6 +109,28 @@ const meta = {
         'The source contains the visible label, the text in parentheses being only a note (such as "(optional)") that does not name the field.',
       failWhen:
         'The source leaves out words of the visible label that a user would say to reach the field, which fails RGAA 11.2.5.'
+    },
+    SOURCE_LACKS_VISIBLE_LABEL: {
+      steps: [
+        'Find the form field the report names, and read its visible label on screen.',
+        'Inspect it: the source the report names does not contain the visible label, and does not give the accessible name.',
+        'Check which reading of RGAA 11.2.5 the audit follows: its conditions list every source, while its methodology checks only the one that gives the name.'
+      ],
+      passWhen:
+        'The audit reads 11.2.5 by its methodology, and the source that gives the name contains the visible label; making the other source contain it too, or removing it, settles both readings.',
+      failWhen:
+        'The audit reads 11.2.5 by its conditions, so a source that does not contain the visible label fails RGAA 11.2.5.'
+    },
+    POSSIBLE_INFLECTION: {
+      steps: [
+        'Find the form field the report names, and read its visible label on screen.',
+        'Inspect each label source it has: aria-label, the text aria-labelledby points to, title, and the content of its <label>.',
+        'Compare the source with the visible label: they differ only by the ending of a word (such as "Recherche" and "Rechercher").'
+      ],
+      passWhen:
+        'The source contains the visible label as a speech-input user would say it, the word ending aside.',
+      failWhen:
+        'The source does not contain the visible label: RGAA excuses only punctuation and capital letters, so the field fails RGAA 11.2.5.'
     }
   }
 };

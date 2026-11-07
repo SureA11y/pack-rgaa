@@ -56,7 +56,7 @@ const meta = {
   type: 'automatic',
   defaultConfidence: 'high',
   coverage: {},
-  reasonCodes: ['noCaptionsKind', 'subtitlesMayBeTranslation'],
+  reasonCodes: ['noCaptionsKind', 'subtitlesMayBeTranslation', 'invalidKind'],
   review: {
     subtitlesMayBeTranslation: {
       steps: [

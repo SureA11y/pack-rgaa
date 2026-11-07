@@ -46,7 +46,21 @@ const meta = {
   category: 'understandable',
   type: 'manual',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['hiddenLabel'],
+  review: {
+    hiddenLabel: {
+      steps: [
+        'Find the field the report names: its <label> exists in the code, but is not shown on screen.',
+        'Look at what is shown next to the field: a button beside it, an icon, a text. Press Tab to reach the field, and see whether a text appears.',
+        'Inspect the field for a title attribute.',
+        'Decide whether you can tell what to enter from these alone.'
+      ],
+      passWhen:
+        'A title, or a text next to the field that is visible or shows on focus, makes it clear what to enter.',
+      failWhen: 'Nothing on screen and no title says what to enter, which fails RGAA 11.1.3.'
+    }
+  }
 };
 
 function runInPage(ctx) {

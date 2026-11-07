@@ -42,7 +42,21 @@ const meta = {
   category: 'understandable',
   type: 'manual',
   defaultConfidence: 'high',
-  coverage: {}
+  coverage: {},
+  reasonCodes: ['fieldChangesContext'],
+  review: {
+    fieldChangesContext: {
+      steps: [
+        'Find the field the report names, and change its value, using the keyboard.',
+        'See what happens: a new page, a form sent, a new window.',
+        'Read the page before the field, and its label, for a text that says this will happen.'
+      ],
+      passWhen:
+        'A text before the field says what happens and what kind of change it is, or nothing changes until a button or a link is used.',
+      failWhen:
+        'The change comes from the field alone, with no warning before it, which fails RGAA 7.4.1.'
+    }
+  }
 };
 
 function runInPage(ctx) {

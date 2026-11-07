@@ -66,7 +66,20 @@ const meta = {
   coverage: {},
   // The reason codes the rule gives, so definePack can check that `review`
   // names only these.
-  reasonCodes: ['presentationalAttribute']
+  reasonCodes: ['presentationalAttribute', 'pictureSourceDimensions'],
+  review: {
+    pictureSourceDimensions: {
+      steps: [
+        'Find the <source> the report names, inside a <picture>: it carries width or height.',
+        'Check that these are the dimensions of the image, as on its <img>, and not a way of laying out the page.',
+        'Check whether the audit accepts them: HTML added them to <source> after RGAA wrote its closed list of exceptions.'
+      ],
+      passWhen:
+        'The audit accepts them as the dimensions of the image; setting the size in CSS settles it.',
+      failWhen:
+        'The audit holds to the closed list of RGAA 10.1.2, which leaves out <source>, so the attributes fail RGAA 10.1.2.'
+    }
+  }
 };
 
 function runInPage(ctx) {

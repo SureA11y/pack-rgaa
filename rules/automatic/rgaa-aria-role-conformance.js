@@ -74,6 +74,19 @@
 
 const id = 'rgaa-aria-role-conformance';
 
+// Markup in a shadow root is asked about instead of failed, whatever is wrong
+// with it, since the W3C validator does not see it: each code gets these steps.
+const SHADOW_REVIEW = {
+  steps: [
+    'Find the element the report names: it sits inside a shadow root, which the browser inspector shows under its host element.',
+    'Read what the report says is wrong with its markup, and check it on the element.',
+    'Check whether the audit judges markup in shadow roots under RGAA 8.2.1: the W3C validator does not see it in the page’s generated source.'
+  ],
+  passWhen: 'The audit leaves shadow roots out of 8.2.1; correcting the markup settles both.',
+  failWhen:
+    'The audit judges markup in shadow roots, and this markup is as the report says, which fails RGAA 8.2.1.'
+};
+
 const meta = {
   title: 'Role attributes are valid for the W3C validator',
   description:
@@ -110,7 +123,12 @@ const meta = {
         'The image is decorative and the audit accepts role="presentation" on it, as RGAA 1.2.1 names it as a way to mark a decorative image; alt="" alone avoids the question.',
       failWhen:
         'The audit counts the validator error against the generated source, which fails RGAA 8.2.1; if the image carries information, it also lacks a text alternative (RGAA 1.1.1).'
-    }
+    },
+    emptyRole: SHADOW_REVIEW,
+    unknownRoleToken: SHADOW_REVIEW,
+    roleNotAllowed: SHADOW_REVIEW,
+    imgRoleEmptyAlt: SHADOW_REVIEW,
+    imgRoleNoName: SHADOW_REVIEW
   }
 };
 
