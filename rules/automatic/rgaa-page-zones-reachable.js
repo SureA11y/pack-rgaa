@@ -156,7 +156,9 @@ const meta = {
 // Not applicable while a modal dialog is open either: the rest of the page
 // is inert then, so the scan sees the dialog, not the page's own zones and
 // links (helpers.isModalDialogOpen, as core's whole-page rules use it).
+// A document shown in a frame is no web page of its own (RGAA's « page web »).
 function applicability(ctx) {
+  if (ctx.helpers.isTopLevelDocument && !ctx.helpers.isTopLevelDocument()) return false;
   const { helpers } = ctx;
   if (helpers.isWholeDocumentScope && !helpers.isWholeDocumentScope()) return false;
   return !(helpers.isModalDialogOpen && helpers.isModalDialogOpen());
@@ -507,6 +509,10 @@ function runInPage(ctx) {
   for (const block of unidentified) {
     ask('ZONE_UNIDENTIFIED', block, String(dom.localName(block) || '').toLowerCase(), '');
   }
+
+  // A block of three links or more outside the main content, with no
+  // landmark around it and no name that says what it is, is likely a
+  // header, a navigation or a footer the rule could not identify.
 
   if (questions.length) {
     return {

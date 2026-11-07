@@ -59,42 +59,53 @@ test('an invalid list child names the test of its own list', () => {
   assert.deepEqual(tests(ol), ['9.3.2']);
 });
 
+// Core asks where only HTML breaks; RGAA 9.3 names the elements a list is
+// structured with, so these stay failures of the standard.
+test('a broken description list fails 9.3.3', () => {
+  for (const html of ['<dl><dd>b</dd><dt>a</dt></dl>', '<dl><p>a</p></dl>', '<dt>a</dt>']) {
+    const rollup = criterion(scan(html), '9.3');
+    assert.equal(rollup.outcome, 'fail', html);
+    assert.deepEqual(tests(rollup), ['9.3.3'], html);
+  }
+});
+
 test('a list item outside a list names 9.3.1, and one in an <ol> made something else 9.3.2', () => {
   const orphan = criterion(scan('<div><li>a</li></div>'), '9.3');
   assert.equal(orphan.outcome, 'fail');
   assert.deepEqual(tests(orphan), ['9.3.1']);
+  // A widget role on the list is asked about, under the test of its list.
   const ol = criterion(scan('<ol role="tablist"><li>a</li></ol>'), '9.3');
-  assert.equal(ol.outcome, 'fail');
+  assert.equal(ol.outcome, 'cantTell');
   assert.ok(tests(ol).includes('9.3.2'));
   assert.deepEqual(contributor(ol, 'listitem-parent-valid').requirements, ['9.3.2']);
 });
 
-test('an unnamed widget fails the criterion of its role, and a progress bar neither', () => {
+test('an unnamed widget is a question under the criterion of its role, and a progress bar neither', () => {
   const grid = scan('<div role="grid"><div role="row"><div role="gridcell">a</div></div></div>');
-  assert.equal(contributor(criterion(grid, '7.1'), 'aria-role-name-present').outcome, 'fail');
+  assert.equal(contributor(criterion(grid, '7.1'), 'aria-role-name-present').outcome, 'cantTell');
   const radios = scan(
     '<div role="radiogroup"><label><input type="radio" name="a"> Oui</label><label><input type="radio" name="a"> Non</label></div>'
   );
-  assert.equal(contributor(criterion(radios, '11.6'), 'aria-role-name-present').outcome, 'fail');
+  assert.equal(
+    contributor(criterion(radios, '11.6'), 'aria-role-name-present').outcome,
+    'cantTell'
+  );
   assert.equal(contributor(criterion(radios, '7.1'), 'aria-role-name-present').outcome, 'pass');
   const bar = scan('<div role="progressbar" aria-valuenow="5"></div>');
   const name = bar.checksResults.find((c) => c.ruleId === 'aria-role-name-present');
-  assert.equal(name.outcome, 'fail');
+  assert.equal(name.outcome, 'cantTell');
   for (const id of ['7.1', '11.6']) {
     const rollup = criterion(bar, id);
     if (rollup) assert.equal(contributor(rollup, 'aria-role-name-present').outcome, 'pass', id);
   }
 });
 
-test('an image without alt fails 1.1 and is a question under 1.2', () => {
+// With no alt, an image fails 1.1.1 if it carries information and 1.2.1 if it
+// is decorative: which of the two takes a person, so neither is failed.
+test('an image without alt is a question under both 1.1 and 1.2', () => {
   const result = scan('<img src="photo.png">');
-  const informative = criterion(result, '1.1');
-  assert.equal(informative.outcome, 'fail');
-  assert.ok(tests(informative).includes('1.1.1'));
-  const decorative = criterion(result, '1.2');
-  const c = contributor(decorative, 'img-alt-present');
-  assert.deepEqual([c.outcome, c.checkOutcome, c.requirements], ['cantTell', 'fail', ['1.2.1']]);
-  assert.notEqual(decorative.outcome, 'fail');
+  assert.equal(criterion(result, '1.1').outcome, 'cantTell');
+  assert.equal(criterion(result, '1.2').outcome, 'cantTell');
 });
 
 test("a rule's result still names every test it can bear on", () => {
@@ -105,7 +116,7 @@ test("a rule's result still names every test it can bear on", () => {
       .normativeMappings.filter((m) => m.standard === 'RGAA')
       .map((m) => m.requirement)
       .sort();
-  assert.deepEqual(named('img-alt-present'), ['1.1.1', '1.2.1']);
+  assert.deepEqual(named('rgaa-img-alt-present'), ['1.1.1']);
   assert.deepEqual(
     named('rgaa-contrast-minimum'),
     RGAA_RULE_TESTS['4.1.2']['rgaa-contrast-minimum'].tests
@@ -124,7 +135,9 @@ test('a bare <canvas> is a question under both 1.1 and 1.2', () => {
 });
 
 test('a decorative SVG that keeps a <title> fails 1.2.4 and is a question under 1.1.5', () => {
-  const result = scan('<svg aria-hidden="true" width="10" height="10"><title>Logo</title></svg>');
+  const result = scan(
+    '<svg aria-hidden="true" width="10" height="10"><title>Logo</title><circle r="4"/></svg>'
+  );
   const decorative = criterion(result, '1.2');
   assert.equal(decorative.outcome, 'fail');
   assert.ok(tests(decorative).includes('1.2.4'));

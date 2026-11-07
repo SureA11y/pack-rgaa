@@ -53,11 +53,23 @@ test(`${RULE_ID}: a frame out of the tab order is still checked`, () => {
   assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'fail', { minOccurrences: 1 });
 });
 
-// An empty title is present: 2.1.1 passes and 2.2.1 (rgaa-frame-title-not-empty)
-// fails it.
-test(`${RULE_ID}: an empty title attribute is present`, () => {
-  const html = page('<iframe src="a.html" title=""></iframe>');
-  assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'pass');
+// Criterion 2.1 asks for a « titre de cadre », the content of the title
+// attribute: an empty or blank one gives the frame no title.
+test(`${RULE_ID}: an empty or blank title fails, whatever the aria-label`, () => {
+  for (const body of [
+    '<iframe src="a.html" title=""></iframe>',
+    '<iframe src="a.html" title="  \t"></iframe>',
+    '<iframe src="a.html" title="" aria-label="Map"></iframe>'
+  ]) {
+    const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'fail', {
+      minOccurrences: 1,
+      maxOccurrences: 1
+    });
+    const occ = rule.occurrences[0];
+    assert.equal(occ.data.details.reasonCode, 'emptyTitle');
+    assert.equal(occ.i18n.summaryKey, 'frameTitleAttributePresent_summary_empty');
+    assert.equal(occ.summary, 'This <iframe> has an empty title attribute.');
+  }
 });
 
 // Glossary "Titre de cadre", note 2: aria-hidden="true" makes 2.1 and 2.2
@@ -96,6 +108,15 @@ test(`${RULE_ID}: messages follow the scan locale`, () => {
     'fail'
   );
   assert.equal(rule.occurrences[0].summary, 'Ce cadre <iframe> n’a pas d’attribut title.');
+  const empty = assertRule(
+    runa11yCoreOnHtml(page('<iframe src="a.html" title=""></iframe>'), {
+      ...RUN,
+      engineOptions: { locale: 'fr' }
+    }),
+    RULE_ID,
+    'fail'
+  );
+  assert.equal(empty.occurrences[0].summary, 'Ce cadre <iframe> a un attribut title vide.');
 });
 
 test(`${RULE_ID}: opt-in, so a default, WCAG or EN 301 549 run does not include it`, () => {
@@ -145,7 +166,25 @@ test(`${RULE_ID}: RGAA 2.1 and WCAG 4.1.2 agree on a frame with no name at all`,
 test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html)`, () => {
   const fixturePath = path.join(__dirname, '../..', 'fixtures', `${RULE_ID}-all-scenarios.html`);
   const result = runa11yCoreOnHtml(fs.readFileSync(fixturePath, 'utf8'), RUN);
-  const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 4, maxOccurrences: 4 });
+  const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 6, maxOccurrences: 6 });
   const ids = rule.occurrences.map((o) => (o.html.match(/id="([^"]+)"/) || [])[1]);
-  assert.deepEqual(ids, ['fta_case_01', 'fta_case_02', 'fta_case_03', 'fta_case_04']);
+  assert.deepEqual(ids, [
+    'fta_case_01',
+    'fta_case_02',
+    'fta_case_03',
+    'fta_case_04',
+    'fta_case_06',
+    'fta_case_10'
+  ]);
+});
+
+// &nbsp; is a space too: such a title names nothing, and 2.2 never sees it.
+test(`${RULE_ID}: a title of only non-breaking spaces is empty`, () => {
+  const rule = assertRule(
+    runa11yCoreOnHtml(page('<iframe src="a.html" title="&nbsp; "></iframe>'), RUN),
+    RULE_ID,
+    'fail',
+    { minOccurrences: 1, maxOccurrences: 1 }
+  );
+  assert.equal(rule.occurrences[0].data.details.reasonCode, 'emptyTitle');
 });

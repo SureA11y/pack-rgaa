@@ -38,6 +38,10 @@
  *   as a way to mark a decorative image, so whether the audit counts it
  *   against 8.2.1 is left to the auditor.
  * @implementation-notes
+ * - Markup inside a shadow root is asked about (cantTell) instead of failed:
+ *   RGAA 8.2.1's methodology runs the W3C validator on the generated
+ *   source, whose serialization holds no shadow root. Correcting the
+ *   markup settles both readings.
  * - Expected outcomes follow the W3C validator version 26.9.27. The tables
  *   of accepted roles and of the roles each element allows were read from
  *   that version's reports, element by element; re-check them when the
@@ -69,6 +73,19 @@
  */
 
 const id = 'rgaa-aria-role-conformance';
+
+// Markup in a shadow root is asked about instead of failed, whatever is wrong
+// with it, since the W3C validator does not see it: each code gets these steps.
+const SHADOW_REVIEW = {
+  steps: [
+    'Find the element the report names: it sits inside a shadow root, which the browser inspector shows under its host element.',
+    'Read what the report says is wrong with its markup, and check it on the element.',
+    'Check whether the audit judges markup in shadow roots under RGAA 8.2.1: the W3C validator does not see it in the page’s generated source.'
+  ],
+  passWhen: 'The audit leaves shadow roots out of 8.2.1; correcting the markup settles both.',
+  failWhen:
+    'The audit judges markup in shadow roots, and this markup is as the report says, which fails RGAA 8.2.1.'
+};
 
 const meta = {
   title: 'Role attributes are valid for the W3C validator',
@@ -106,7 +123,12 @@ const meta = {
         'The image is decorative and the audit accepts role="presentation" on it, as RGAA 1.2.1 names it as a way to mark a decorative image; alt="" alone avoids the question.',
       failWhen:
         'The audit counts the validator error against the generated source, which fails RGAA 8.2.1; if the image carries information, it also lacks a text alternative (RGAA 1.1.1).'
-    }
+    },
+    emptyRole: SHADOW_REVIEW,
+    unknownRoleToken: SHADOW_REVIEW,
+    roleNotAllowed: SHADOW_REVIEW,
+    imgRoleEmptyAlt: SHADOW_REVIEW,
+    imgRoleNoName: SHADOW_REVIEW
   }
 };
 
@@ -378,18 +400,38 @@ function runInPage(ctx) {
   const cantTellOccurrences = [];
   let applicableCount = 0;
 
+  // Inside a shadow root: the W3C validator, which RGAA 8.2.1's methodology
+  // runs on the generated source, does not see it in the serialized page.
+  function inShadow(el) {
+    try {
+      const r = dom.get(el, 'getRootNode') ? dom.getRootNode(el) : null;
+      return !!r && r !== ctx.document && dom.nodeType(r) === 11;
+    } catch {
+      return false;
+    }
+  }
+  const SHADOW_NEEDED =
+    'Whether markup in a shadow root, which the W3C validator does not see in the generated source, is to be judged under 8.2.1.';
+  const SHADOW_HINT =
+    "This markup is in a shadow root, which the W3C validator does not see in the page's generated source. Check whether the audit judges it under 8.2.1; correcting the markup settles both.";
+  const shadowAsked = [];
+
   function report(el, reasonCode, params) {
     const msg = MESSAGES[reasonCode];
     let summary = msg.summary;
     for (const k of Object.keys(params)) summary = summary.split(`{{${k}}}`).join(params[k]);
+    const shadow = msg.outcome === 'fail' && inShadow(el);
     const occurrence = helpers.reportOccurrence(el, {
       summary,
-      hint: msg.hint,
+      hint: shadow ? SHADOW_HINT : msg.hint,
       i18n: {
         summaryKey: `ariaRoleConformance_summary_${msg.outcome}_${reasonCode}`,
-        hintKey: `ariaRoleConformance_hint_${msg.outcome}_${reasonCode}`,
+        hintKey: shadow
+          ? 'markupShadowRoot_hint_cantTell'
+          : `ariaRoleConformance_hint_${msg.outcome}_${reasonCode}`,
         params
       },
+      ...(shadow ? { uncertainty: { code: 'judgement-required', needed: SHADOW_NEEDED } } : {}),
       ...(msg.outcome === 'cantTell'
         ? {
             uncertainty: {
@@ -400,11 +442,12 @@ function runInPage(ctx) {
           }
         : {}),
       data: {
-        details: { reasonCode, ...params },
+        details: { reasonCode, ...params, ...(shadow ? { inShadowRoot: true } : {}) },
         visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
       }
     });
-    if (msg.outcome === 'fail') failOccurrences.push(occurrence);
+    if (shadow) shadowAsked.push(occurrence);
+    else if (msg.outcome === 'fail') failOccurrences.push(occurrence);
     else cantTellOccurrences.push(occurrence);
   }
 
@@ -466,7 +509,7 @@ function runInPage(ctx) {
   }
   const resolved = helpers.resolveTieredOutcome(
     failOccurrences,
-    cantTellOccurrences,
+    cantTellOccurrences.concat(shadowAsked),
     rule.defaultSeverity || 'moderate'
   );
   return { ruleId: rule.ruleId, ...resolved };

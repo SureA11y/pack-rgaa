@@ -13,7 +13,9 @@
  *   <input type="image"> or element with role="img" (1.9.1), an
  *   <object type="image/…"> (1.9.2), an <embed> (1.9.3), an <svg> (1.9.4)
  *   and a <canvas> (1.9.5). An <embed> whose type is not an image type is
- *   not an image. A page with none is notApplicable.
+ *   not an image. The caption and the image must both be rendered: one hidden
+ *   with CSS or the hidden attribute is none to a user (glossary « Contenu
+ *   caché »). A page with none is notApplicable.
  * @expectation
  *   The <figure> has role="figure" or role="group", and an aria-label whose
  *   text is the same as the caption's, whitespace collapsed (conditions 2
@@ -90,6 +92,20 @@ function runInPage(ctx) {
     return helpers.aria.getExplicitRole(el) === 'img' ? 'img' : null;
   }
 
+  // Rendered: a caption or an image hidden with CSS or the hidden attribute
+  // is no caption or image to a user (glossary « Contenu caché »).
+  function shown(el) {
+    try {
+      if (helpers.isDomVisibleEligible) {
+        return !!helpers.isDomVisibleEligible(el, ctx, { targetSet: 'dom' }).eligible;
+      }
+      if (helpers.getEligibilityInfo) {
+        return !!helpers.getEligibilityInfo(el, ctx, { targetSet: 'dom' }).eligible;
+      }
+    } catch {}
+    return true;
+  }
+
   const figures = helpers.queryAllSmart
     ? helpers.queryAllSmart('figure')
     : helpers.queryAll('figure');
@@ -100,13 +116,13 @@ function runInPage(ctx) {
   for (const figure of figures) {
     if (!figure || !dom.get(figure, 'getAttribute')) continue;
     const caption = Array.from(dom.querySelectorAll(figure, ':scope > *')).find(
-      (c) => String(dom.tagName(c)).toLowerCase() === 'figcaption'
+      (c) => String(dom.tagName(c)).toLowerCase() === 'figcaption' && shown(c)
     );
     const captionText = caption ? collapse(dom.textContent(caption)) : '';
     // Every element, not a selector list: jsdom returns a list's matches out
     // of tree order, and the first image decides the test.
     const image = Array.from(dom.querySelectorAll(figure, '*')).find(
-      (el) => dom.closest(el, 'figure') === figure && imageKind(el)
+      (el) => dom.closest(el, 'figure') === figure && imageKind(el) && shown(el)
     );
     if (!captionText || !image) continue;
     const kind = imageKind(image);

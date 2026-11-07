@@ -262,10 +262,10 @@ test(`${RULE_ID}: RGAA 8.2 fails an unknown role on a native element that WCAG 4
   assert.equal(rollupOutcome(rollup(result, 'wcag-4.1.2-aria-validity')), 'cantTell');
 });
 
-test(`${RULE_ID}: RGAA 8.2 and WCAG 4.1.2 agree on an unknown role and on a valid one`, () => {
+test(`${RULE_ID}: RGAA 8.2 fails an unknown role WCAG 4.1.2 asks about, and both accept a valid one`, () => {
   const bad = runa11yCoreOnHtml(page('<div role="bogus">a</div>'), RGAA);
   assert.equal(rollupOutcome(rollup(bad, 'rgaa-4.1.2-8.2')), 'fail');
-  assert.equal(rollupOutcome(rollup(bad, 'wcag-4.1.2-aria-validity')), 'fail');
+  assert.equal(rollupOutcome(rollup(bad, 'wcag-4.1.2-aria-validity')), 'cantTell');
   // A valid role passes both rules; 8.2 still asks for the validator report
   // (rgaa-markup-validation-review), so it is at best cantTell.
   const good = runa11yCoreOnHtml(page('<div role="button" tabindex="0">Open</div>'), RGAA);

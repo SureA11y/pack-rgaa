@@ -61,13 +61,15 @@ function testsOfRule(version, ruleId) {
 // What a finding that goes by `route` does in the rollup of a criterion
 // whose tests are `criterionTests`: counted toward the tests of the route it
 // shares with the criterion (a failing one as a question where the route
-// says outcome 'cantTell'), else a question in the tests the row asks about
-// there, else left out. The row itself is the route of a finding no other
+// says outcome 'cantTell', a question as a failure where it says 'fail'),
+// else a question in the tests the row asks about there, else left out. The row itself is the route of a finding no other
 // route takes, with its asks.
+const ACT_OF_OUTCOME = { cantTell: 'cantTell', fail: 'fail' };
+
 function actFor(route, asks, criterionTests) {
   const counted = listOf(route.tests).filter((t) => criterionTests.includes(t));
   if (counted.length) {
-    return { act: route.outcome === 'cantTell' ? 'cantTell' : 'count', requirements: counted };
+    return { act: ACT_OF_OUTCOME[route.outcome] || 'count', requirements: counted };
   }
   const asked = listOf(asks).filter((t) => criterionTests.includes(t));
   return asked.length ? { act: 'cantTell', requirements: asked } : 'ignore';
@@ -216,8 +218,8 @@ function routeProblems(row, at) {
     }
   };
   const outcomeField = (outcome, where) => {
-    if (outcome !== undefined && outcome !== 'cantTell') {
-      problems.push(`${at}: ${where}.outcome can only be 'cantTell'`);
+    if (outcome !== undefined && outcome !== 'cantTell' && outcome !== 'fail') {
+      problems.push(`${at}: ${where}.outcome can only be 'cantTell' or 'fail'`);
     }
   };
   testsField(row.asks, 'asks', false);
@@ -325,4 +327,34 @@ function validateRgaaRuleTests(rules) {
   return problems;
 }
 
-module.exports = { rgaaMappingsFor, rgaaComposites, validateRgaaRuleTests, COMPLETE_CHECK };
+// The tests of a version some rule's findings count toward or ask about.
+function testsWithRules(version) {
+  return new Set(
+    Object.keys(RGAA_RULE_TESTS[version] || {}).flatMap((ruleId) => testsOfRule(version, ruleId))
+  );
+}
+
+// The tests of a version some automatic rule can decide: a finding counts
+// toward them as a failure. A test a rule only asks about, or only a manual
+// rule looks at, is left to a person.
+function testsRulesDecide(version, isManual) {
+  const out = new Set();
+  for (const [ruleId, row] of Object.entries(RGAA_RULE_TESTS[version] || {})) {
+    if (isManual(ruleId)) continue;
+    for (const t of listOf(row.tests)) out.add(t);
+    for (const route of routesOf(row)) {
+      if (route.outcome !== 'cantTell') for (const t of listOf(route.tests)) out.add(t);
+    }
+  }
+  return out;
+}
+
+module.exports = {
+  testsRulesDecide,
+  rgaaMappingsFor,
+  rgaaComposites,
+  validateRgaaRuleTests,
+  testsOfRule,
+  testsWithRules,
+  COMPLETE_CHECK
+};

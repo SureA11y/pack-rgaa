@@ -127,23 +127,46 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
     const [result] = await scan(
       page(
         '@media (orientation: portrait){#t{display:none}}',
-        '<p id="t">Horaires : 9 h à 17 h</p>'
+        '<p id="t">Horaires d’ouverture : 9 h à 17 h</p>'
       )
     );
     const occ = result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences[0];
     assert.equal(occ.i18n.summaryKey, 'orientationContentParity_summary_fail_missing_portrait');
-    assert.equal(occ.i18n.params.text, 'Horaires : 9 h à 17 h');
+    assert.equal(occ.i18n.params.text, 'Horaires d’ouverture : 9 h à 17 h');
   });
 
-  await t.test('an image alternative counts as content', async () => {
+  // An image may show with another alternative in the other orientation (a
+  // logo), which a person compares.
+  await t.test('an image hidden in one orientation is asked about', async () => {
     const [result] = await scan(
       page(
         '@media (orientation: landscape){#i{display:none}}',
         '<p><img id="i" src="data:," alt="Plan d’accès" width="20" height="20"></p>'
       )
     );
-    assert.deepEqual(findings(result).findings, [['i', 'fail', 'CONTENT_MISSING']]);
+    assert.deepEqual(findings(result).findings, [['i', 'cantTell', 'CONTENT_MAY_DIFFER']]);
   });
+
+  // 13.9.1 lets the presentation and the way to reach it differ.
+  await t.test(
+    'a menu behind a button, cards for a table, another wording: asked, not failed',
+    async () => {
+      for (const [css, body] of [
+        [
+          '.burger{display:none} @media (orientation:portrait){.burger{display:inline-block} .links{display:none}}',
+          '<nav><button class="burger" aria-expanded="false">Menu</button><ul class="links"><li><a href="/a">Actualités</a></li><li><a href="/b">Démarches</a></li></ul></nav>'
+        ],
+        [
+          '.cards{display:none} @media (orientation:portrait){table{display:none} .cards{display:block}}',
+          '<table><tr><th>Fruit</th><th>Prix</th></tr><tr><td>Pomme</td><td>2 €</td></tr></table><div class="cards"><p>Pomme : 2 €</p></div>'
+        ]
+      ]) {
+        for (const result of await scan(page(css, body))) {
+          assert.notEqual(findings(result).outcome, 'fail', body);
+        }
+      }
+    }
+  );
 
   await t.test(
     'content shown only in one orientation, by a default-hidden rule, is found too',
@@ -208,10 +231,7 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
         `<nav><button id="b" aria-controls="menu" aria-expanded="false">Menu</button>${menu}</nav><main><p>Texte</p></main>`
       )
     );
-    assert.deepEqual(findings(hidden).findings, [
-      ['b', 'fail', 'CONTENT_MISSING'],
-      ['menu', 'fail', 'CONTENT_MISSING']
-    ]);
+    assert.deepEqual(findings(hidden).findings, [['menu', 'cantTell', 'CONTENT_MAY_DIFFER']]);
   });
 
   await t.test('a short hint about the orientation itself is not missing content', async () => {
@@ -232,7 +252,7 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
     const [result] = await scan(
       page(
         '@media (orientation: portrait){#t{display:none}}',
-        '<p id="t">Horaires : 9 h à 17 h</p><p>Texte</p>'
+        '<p id="t">Horaires du samedi : 9 h à 17 h</p><p>Texte</p>'
       )
     );
     assert.equal(findings(result).outcome, 'fail');

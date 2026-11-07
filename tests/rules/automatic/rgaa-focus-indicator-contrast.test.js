@@ -268,3 +268,21 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
     'fic_case_09'
   ]);
 });
+
+// A rule styling a wrapper on :focus-within, or on :has(:focus), may draw
+// the focus ring there: the faint outline beside it is asked about.
+test(`${RULE_ID}: a focus style on an ancestor makes the outline unmeasured`, () => {
+  for (const css of [
+    '.wrap:focus-within{box-shadow:0 0 0 3px #000}',
+    '.wrap:has(a:focus-visible){outline:3px solid #000}'
+  ]) {
+    const rule = only(
+      page(
+        `a:focus{outline:1px solid #eee} ${css}`,
+        '<div class="wrap"><a href="/x">Opening hours</a></div>'
+      ),
+      'cantTell'
+    );
+    assert.equal(rule.occurrences[0].data.details.reasonCode, 'notMeasured', css);
+  }
+});

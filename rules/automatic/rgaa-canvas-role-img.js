@@ -10,9 +10,14 @@
  * @applicability
  *   Applies to <canvas> elements. One with aria-hidden="true", on itself or
  *   an ancestor, or with role="none"/"presentation", is left out: it is
- *   marked decorative, which rgaa-canvas-decorative-aria-hidden checks (1.2.5).
- *   Content hidden with CSS or the hidden attribute is left out too. A page
- *   with none is notApplicable.
+ *   marked decorative, which rgaa-canvas-decorative-aria-hidden checks
+ *   (1.2.5). A canvas 0 px wide or high, rendered or by its width or height
+ *   attribute, draws nothing and is no image, so it is left out too. One
+ *   that is the only content of a link or a button is left out: its
+ *   alternative is the control's name, which the glossary « Image porteuse
+ *   d'information » (notes 1 and 2) sends to Links (6.1), Forms (11.9) or
+ *   Scripts (7.1). Content hidden with CSS or the hidden attribute is left
+ *   out too. A page with none is notApplicable.
  * @expectation
  *   RGAA 1.1.8 passes when one of these holds:
  *   - the <canvas> has role="img" and a text alternative from
@@ -31,14 +36,15 @@
  *     count;
  *   - no role="img", an aria-label, aria-labelledby or title, but no
  *     fallback content and no link or button after it (the name alone is
- *     not one of the step 6 options).
- *   Asks (cantTell):
- *   - no role="img" and no fallback content, but a link or button right
- *     after the <canvas> (does it lead to an alternative content?);
- *   - nothing at all: no role, name, fallback or link. Such a canvas fails
- *     1.1.8 if it carries information and 1.2.5 if it is decorative (no
- *     aria-hidden), and decorative canvases (animated backgrounds, chart
- *     layers) are common, so a person decides which.
+ *     not one of the step 6 options);
+ *   - nothing at all, on a canvas that certainly carries information: a
+ *     captioned canvas, or one that takes focus.
+ *   Asks (cantTell) about any other canvas with nothing at all
+ *   (noAlternativeMayBeDecorative): it may be decorative, and then it
+ *   fails 1.2.5 instead, which asks for aria-hidden="true".
+ *   Asks (cantTell): no role="img" and no fallback content, but a link or
+ *   button right after the <canvas> (does it lead to an alternative
+ *   content?).
  * @implementation-notes
  * - "Immediately followed" is read in the markup: the next sibling, skipping
  *   white space and comments, is a link (a[href], role="link") or a button
@@ -77,7 +83,8 @@ const meta = {
     'roleImgWithoutAriaName',
     'nameWithoutRoleImg',
     'adjacentLinkOrButton',
-    'noAlternative'
+    'noAlternative',
+    'noAlternativeMayBeDecorative'
   ],
   review: {
     adjacentLinkOrButton: {
@@ -91,7 +98,7 @@ const meta = {
       failWhen:
         'The link or button does not lead to an alternative, so the informative canvas has none, which fails RGAA 1.1.8.'
     },
-    noAlternative: {
+    noAlternativeMayBeDecorative: {
       steps: [
         'Find the <canvas> the report names: it has no role, name, content or adjacent link.',
         'Look at what it draws on screen (a chart, text, a game, or only an animated background or a decorative layer).',
@@ -184,6 +191,20 @@ function runInPage(ctx) {
     return null;
   }
 
+  // 0 px wide or high: rendered, or by the width or height attribute.
+  function drawsNothing(el) {
+    const zero = (v) => /^\s*0+(\.0+)?\s*(px)?\s*$/i.test(String(v == null ? '' : v));
+    if (zero(attr(el, 'width')) || zero(attr(el, 'height'))) return true;
+    try {
+      const html = dom.documentElement(ctx.document);
+      if (!html || !(dom.getClientRects(html) || []).length) return false;
+      const r = dom.getBoundingClientRect(el);
+      return r.width === 0 || r.height === 0;
+    } catch {
+      return false;
+    }
+  }
+
   const nodes = helpers.queryAllSmart
     ? helpers.queryAllSmart('canvas')
     : helpers.queryAll('canvas');
@@ -192,6 +213,45 @@ function runInPage(ctx) {
   const cantTells = [];
   let applicableCount = 0;
   const VF = { targetSet: 'dom', accEligible: null, reasons: [] };
+
+  // Certainly informative: an image with a caption, or one that takes
+  // focus. Anything else may be decorative, and then 1.2 applies instead.
+  function certainlyInformative(el) {
+    if (/^\d+$/.test(String(dom.getAttribute(el, 'tabindex') || '').trim())) return true;
+    const figure = dom.closest(el, 'figure');
+    if (
+      figure &&
+      Array.from(dom.querySelectorAll(figure, ':scope > figcaption')).some((c) =>
+        String(dom.textContent(c) || '').trim()
+      )
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  // The only content of a link or a button: its alternative is the
+  // control's name, which the glossary « Image porteuse d'information »
+  // (notes 1 and 2) sends to Links (6.1), Forms (11.9) or Scripts (7.1).
+  function onlyContentOfControl(el) {
+    const tagName = (n) => String(dom.localName(n) || '').toLowerCase();
+    let control = null;
+    for (let a = dom.parentElement(el); a && !control; a = dom.parentElement(a)) {
+      const r = helpers.aria.getExplicitRole(a);
+      if (r === 'link' || r === 'button') control = a;
+      else if (
+        !r &&
+        ((tagName(a) === 'a' && dom.hasAttribute(a, 'href')) || tagName(a) === 'button')
+      ) {
+        control = a;
+      }
+    }
+    if (!control) return false;
+    if (String(dom.textContent(control) || '').trim()) return false;
+    return !Array.from(dom.querySelectorAll(control, 'img, svg, canvas, object, embed')).some(
+      (n) => n !== el && !dom.contains(el, n)
+    );
+  }
 
   function fail(el, reasonCode, summary, summaryKey, params, extra) {
     fails.push(
@@ -217,6 +277,9 @@ function runInPage(ctx) {
   for (const el of nodes) {
     if (!el || !dom.get(el, 'getAttribute')) continue;
     if (insideAriaHidden(el)) continue;
+    if (onlyContentOfControl(el)) continue;
+    // A canvas 0 px wide or high draws nothing, so it is no image.
+    if (drawsNothing(el)) continue;
     const role = firstRole(el);
     if (role === 'none' || role === 'presentation') continue;
     applicableCount += 1;
@@ -267,25 +330,33 @@ function runInPage(ctx) {
       continue;
     }
 
-    // Nothing marks it either way: it fails 1.1.8 if it carries
-    // information and 1.2.5 (no aria-hidden) if it is decorative, as
-    // background animations and chart layers often are. Which takes a person.
-    cantTells.push(
-      helpers.reportOccurrence(el, {
-        summary:
-          'This <canvas> has no text alternative, no fallback content and no link or button to an alternative content after it.',
-        hint: 'If the canvas conveys information, give it role="img" and an aria-label or aria-labelledby, or put alternative content between <canvas> and </canvas>. If it is decorative, add aria-hidden="true".',
-        i18n: {
-          summaryKey: 'canvasRoleImg_summary_cantTell_noAlternative',
-          hintKey: 'canvasRoleImg_hint_cantTell_noAlternative'
-        },
-        uncertainty: {
-          code: 'judgement-required',
-          needed:
-            'Whether the canvas conveys information (it then needs an alternative, 1.1.8) or is decorative (it then needs aria-hidden="true", 1.2.5).'
-        },
-        data: { details: { reasonCode: 'noAlternative' }, visibilityFilter: VF }
-      })
+    if (!certainlyInformative(el)) {
+      cantTells.push(
+        helpers.reportOccurrence(el, {
+          summary:
+            'This <canvas> has no text alternative. If it carries information, it fails 1.1.8; if it is decorative, it needs aria-hidden="true" (1.2.5).',
+          hint: 'If the canvas carries information, give it role="img" and an aria-label or aria-labelledby, or alternative content; if it is decorative, add aria-hidden="true".',
+          i18n: {
+            summaryKey: 'canvasRoleImg_summary_cantTell_mayBeDecorative',
+            hintKey: 'canvasRoleImg_hint_cantTell_mayBeDecorative'
+          },
+          uncertainty: {
+            code: 'judgement-required',
+            needed: 'Whether the image carries information or is decorative.'
+          },
+          data: { details: { reasonCode: 'noAlternativeMayBeDecorative' }, visibilityFilter: VF }
+        })
+      );
+      continue;
+    }
+
+    fail(
+      el,
+      'noAlternative',
+      'This <canvas> has no text alternative, no fallback content and no link or button to an alternative content after it.',
+      'canvasRoleImg_summary_fail',
+      null,
+      null
     );
   }
 

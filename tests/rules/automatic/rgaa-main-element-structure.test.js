@@ -76,13 +76,30 @@ test(`${RULE_ID}: role="main" with no <main> element fails`, () => {
   );
 });
 
-test(`${RULE_ID}: a page with neither <main> nor role="main" is asked about`, () => {
-  const rule = assertRule(run(page('<div><p>a</p></div>')), RULE_ID, 'cantTell', {
+// Every page has a main content zone (glossary « Zone de contenu
+// principal »): with text and no <main>, 9.2.1 step 4 fails.
+test(`${RULE_ID}: a page with text and neither <main> nor role="main" fails`, () => {
+  const rule = assertRule(run(page('<div><p>a</p></div>')), RULE_ID, 'fail', {
     minOccurrences: 1,
     maxOccurrences: 1
   });
   assert.deepEqual(reasons(rule), ['noMain']);
-  assert.equal(rule.occurrences[0].uncertainty.code, 'judgement-required');
+  assert.equal(rule.occurrences[0].i18n.summaryKey, 'mainElementStructure_summary_fail_noMain');
+});
+
+test(`${RULE_ID}: a page with no text of its own and no <main> is asked about`, () => {
+  for (const body of [
+    '<iframe src="app.html" title="App"></iframe>',
+    '<canvas width="300" height="150"></canvas><script>var a = "text";</script>',
+    '<my-app></my-app><template><p>a</p></template>'
+  ]) {
+    const rule = assertRule(run(page(body)), RULE_ID, 'cantTell', {
+      minOccurrences: 1,
+      maxOccurrences: 1
+    });
+    assert.deepEqual(reasons(rule), ['noMain'], body);
+    assert.equal(rule.occurrences[0].uncertainty.code, 'judgement-required');
+  }
 });
 
 test(`${RULE_ID}: a <main> hidden only by an ancestor is asked about`, () => {
@@ -194,7 +211,7 @@ test(`${RULE_ID}: RGAA 9.2 finds nothing to check on HTML 4.01, where the landma
   assert.equal(landmarks(html).duplicate, 'cantTell');
 });
 
-test(`${RULE_ID}: RGAA 9.2 and the landmark rules agree on one <main>, and both ask when there is none`, () => {
+test(`${RULE_ID}: RGAA 9.2 and the landmark rules agree on one <main>; with none, 9.2 fails where they ask`, () => {
   const one = page('<main><p>a</p></main>');
   assert.equal(
     rollupOutcome(rollup(runa11yCoreOnHtml(one, RGAA), 'rgaa-4.1.2-9.2')),
@@ -203,7 +220,7 @@ test(`${RULE_ID}: RGAA 9.2 and the landmark rules agree on one <main>, and both 
   assert.equal(landmarks(one).one, 'pass');
   assert.equal(landmarks(one).duplicate, 'pass');
   const none = page('<div><p>a</p></div>');
-  assert.equal(rollupOutcome(rollup(runa11yCoreOnHtml(none, RGAA), 'rgaa-4.1.2-9.2')), 'cantTell');
+  assert.equal(rollup(runa11yCoreOnHtml(none, RGAA), 'rgaa-4.1.2-9.2').outcome, 'fail');
   assert.equal(landmarks(none).one, 'cantTell');
 });
 
@@ -214,4 +231,34 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
     maxOccurrences: 1
   });
   assert.match(rule.occurrences[0].html, /id="mes_main_2"/);
+});
+
+// Steps 1, 2 and 6 of 9.2.1 name <header>, <nav> and <footer>, as step 4
+// names <main>: a role on another element does not do.
+test(`${RULE_ID}: a header, navigation or footer zone marked by a role alone fails`, () => {
+  const rule = assertRule(
+    run(
+      page(
+        '<div role="banner">Logo</div><div role="navigation"><a href="/a">A</a></div>' +
+          '<main><p>a</p></main><div role="contentinfo">Mentions</div>'
+      )
+    ),
+    RULE_ID,
+    'fail',
+    { minOccurrences: 3, maxOccurrences: 3 }
+  );
+  assert.deepEqual(reasons(rule), ['roleZoneOnly', 'roleZoneOnly', 'roleZoneOnly']);
+  assert.deepEqual(rule.occurrences[1].i18n.params, {
+    tag: 'div',
+    role: 'navigation',
+    element: 'nav'
+  });
+  // The element itself, or one around or inside it, structures the zone.
+  for (const body of [
+    '<header role="banner">Logo</header><main><p>a</p></main>',
+    '<nav><ul role="navigation"><li><a href="/a">A</a></li></ul></nav><main><p>a</p></main>',
+    '<div role="contentinfo"><footer>Mentions</footer></div><main><p>a</p></main>'
+  ]) {
+    assertRule(run(page(body)), RULE_ID, 'pass', { maxOccurrences: 0 });
+  }
 });

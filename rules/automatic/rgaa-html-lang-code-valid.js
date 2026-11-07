@@ -60,7 +60,9 @@ const meta = {
   reasonCodes: ['invalidLanguageCode']
 };
 
+// A document shown in a frame is no web page of its own (RGAA's « page web »).
 function applicability(ctx) {
+  if (ctx.helpers.isTopLevelDocument && !ctx.helpers.isTopLevelDocument()) return false;
   return ctx.helpers.isWholeDocumentScope ? ctx.helpers.isWholeDocumentScope() : true;
 }
 

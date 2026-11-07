@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>rgaa-navigation-systems-review — scenario fixture</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.4; margin: 24px; }
+    h1 { font-size: 20px; margin: 0 0 16px; }
+    h2 { font-size: 16px; margin: 22px 0 10px; }
+    .note { font-size: 12px; opacity: 0.85; margin: 8px 0 16px; }
+    .case { border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin: 10px 0; }
+    .case-title { font-weight: 700; margin: 0 0 8px; }
+  </style>
+</head>
+<body>
+  <h1>Scenario fixture: <code>rgaa-navigation-systems-review</code> (RGAA 12.1)</h1>
+
+  <p class="note">
+    Each target has a stable <code>id</code> of the form <code>nsr_case_NN</code>.
+    The rule reads the whole page: it finds one navigation menu (case 01) and no site map link or search engine (the breadcrumb and the footer links do not count), so the page is asked about once.
+  </p>
+
+  <div class="case" id="case_01">
+    <div class="case-title">01 — CANTTELL: the only menu of the page</div>
+    <nav id="nsr_case_01" aria-label="Menu principal"><ul><li><a href="/actualites">Actualités</a></li><li><a href="/demarches">Démarches</a></li><li><a href="/contact">Contact</a></li></ul></nav>
+  </div>
+
+  <div class="case" id="case_02">
+    <div class="case-title">02 — NOT A MENU: a breadcrumb</div>
+    <nav id="nsr_case_02" aria-label="Fil d'Ariane"><ol><li><a href="/">Accueil</a></li><li><a href="/demarches">Démarches</a></li><li><a href="/demarches/etat-civil">État civil</a></li></ol></nav>
+  </div>
+
+  <div class="case" id="case_03">
+    <div class="case-title">03 — NOT A MENU: footer links</div>
+    <footer id="nsr_case_03"><nav aria-label="Liens utiles"><a href="/mentions-legales">Mentions légales</a> <a href="/accessibilite">Accessibilité</a> <a href="/donnees-personnelles">Données personnelles</a></nav></footer>
+  </div>
+</body>
+</html>

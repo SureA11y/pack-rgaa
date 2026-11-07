@@ -122,7 +122,9 @@ test(`${RULE_ID}: a <use> pointing at an empty symbol, a missing id or another f
   }
 });
 
-test(`${RULE_ID}: under the rgaa-4.1.2 profile, the <use> case fails 1.1.5 and 1.2.4`, () => {
+// aria-hidden marks the SVG decorative: it fails 1.2.4, and 1.1.5 only if it
+// carries information, which a person decides.
+test(`${RULE_ID}: under the rgaa-4.1.2 profile, the <use> case fails 1.2.4 and is asked about under 1.1.5`, () => {
   const html = page(`${SPRITE}<svg aria-hidden="true"><use href="#i"/></svg>`);
   const rule = assertRule(
     runa11yCoreOnHtml(html, { engineOptions: { profile: 'rgaa-4.1.2' } }),
@@ -136,4 +138,30 @@ test(`${RULE_ID}: under the rgaa-4.1.2 profile, the <use> case fails 1.1.5 and 1
   assert.deepEqual(tests, ['1.1.5', '1.2.4']);
   const wcag = runa11yCoreOnHtml(html, { engineOptions: { profile: 'wcag22-aa' } });
   assert.ok(!wcag.checksResults.some((r) => r.ruleId === RULE_ID));
+});
+
+// A sprite sheet draws nothing: it is no image, and its symbols are checked
+// where a <use> draws them.
+test(`${RULE_ID}: a sprite sheet that draws nothing of its own is left out`, () => {
+  const sprite =
+    '<svg aria-hidden="true" style="position:absolute;width:0;height:0">' +
+    '<defs><linearGradient id="g"></linearGradient></defs>' +
+    '<symbol id="i"><title>Loupe</title><rect width="20" height="20"/></symbol></svg>';
+  assertRule(
+    runa11yCoreOnHtml(
+      page(
+        `${sprite}<a href="/s"><svg role="img" aria-label="Rechercher"><use href="#i"/></svg></a>`
+      ),
+      RUN
+    ),
+    RULE_ID,
+    'notApplicable'
+  );
+  const rule = assertRule(
+    runa11yCoreOnHtml(page(`${sprite}<svg id="u" aria-hidden="true"><use href="#i"/></svg>`), RUN),
+    RULE_ID,
+    'fail',
+    { minOccurrences: 1, maxOccurrences: 1 }
+  );
+  assert.ok(rule.occurrences[0].html.includes('id="u"'));
 });

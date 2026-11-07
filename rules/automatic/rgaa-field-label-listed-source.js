@@ -32,12 +32,18 @@
  *   - a <label for> points at a field that cannot be labelled (a
  *     role="textbox" <div>): the condition is met to the letter, but the
  *     label gives the field no accessible name;
+ *   - an <output> with no label has no for attribute and is announced
+ *     (aria-live, role status, log or alert): it is more likely a status
+ *     message than a field showing a result;
  *   - the only source present is empty: an empty aria-label or title, a
  *     <label for> with no text, or an aria-labelledby whose passage has no
  *     text. The attribute is there, as 11.1.1 asks; whether it labels the
  *     field is 11.2.
  * - An aria-labelledby that points to no element in the page counts as
  *   absent.
+ * - A field whose id an earlier element also has fails with its own reason
+ *   (duplicateId) when a <label for> names that id: the label goes to the
+ *   first element.
  * - Opt-in (tag `rgaa`): WCAG accepts a wrapping label, a placeholder and a
  *   name from content, so the rule runs only under the rgaa-4.1.2 profile,
  *   the `rgaa` tag or its own id.
@@ -68,7 +74,9 @@ const meta = {
     'contentOnly',
     'wrappingLabel',
     'labelForNotLabelable',
-    'emptySource'
+    'emptySource',
+    'duplicateId',
+    'outputStatus'
   ],
   review: {
     wrappingLabel: {
@@ -102,6 +110,15 @@ const meta = {
       passWhen:
         'An adjacent button gives the field a visible label and another source a name, or the field has a label 11.1.1 accepts elsewhere.',
       failWhen: 'The field has no label that 11.1.1 lists, which fails RGAA 11.1.1.'
+    },
+    outputStatus: {
+      steps: [
+        'Find the <output> the report names: it has no label.',
+        'Use the form, and see what the element shows and when.',
+        'Decide whether it shows the result of a calculation in the form, or a status message, such as a text saying the form was saved.'
+      ],
+      passWhen: 'The <output> is a status message, which needs no label.',
+      failWhen: 'The <output> shows a result of the form and has no label, which fails RGAA 11.1.1.'
     }
   }
 };
@@ -309,6 +326,20 @@ function runInPage(ctx) {
       needed:
         'Whether a <label for> that gives the field no accessible name meets 11.1.1, whose condition it meets to the letter.'
     },
+    duplicateId: {
+      outcome: 'fail',
+      summary:
+        "A <label for> names this field's id, but an element earlier in the page has the same id, so the label goes to that element.",
+      hint: 'Give this field an id of its own, and point the <label for> at it.'
+    },
+    outputStatus: {
+      outcome: 'cantTell',
+      summary:
+        'This <output> has no label, and looks like a status message rather than a field: it has no for attribute, and is announced as a status.',
+      hint: 'If the <output> shows the result of a calculation in a form, give it a <label for>, an aria-labelledby, an aria-label or a title. A status message needs none.',
+      needed:
+        'Whether this <output> is a form field showing a result, which needs a label, or a status message.'
+    },
     emptySource: {
       outcome: 'cantTell',
       summary: 'This form field has a {{source}} label source, but it is empty.',
@@ -317,6 +348,31 @@ function runInPage(ctx) {
         'Whether the field has a label elsewhere that 11.1.1 accepts, such as an adjacent button.'
     }
   };
+
+  // A <label for> naming this field's id goes to an earlier element with the
+  // same id.
+  function labelGoesElsewhere(el) {
+    const idValue = dom.getAttribute(el, 'id');
+    if (!idValue) return false;
+    const root = dom.get(el, 'getRootNode') ? dom.getRootNode(el) : null;
+    if (!root || !dom.get(root, 'getElementById') || !dom.get(root, 'querySelectorAll')) {
+      return false;
+    }
+    const first = dom.getElementById(root, idValue);
+    if (!first || first === el) return false;
+    return Array.from(dom.querySelectorAll(root, 'label[for]')).some(
+      (label) => dom.getAttribute(label, 'for') === idValue
+    );
+  }
+
+  // An <output> that is a status message rather than a field: no for, and
+  // announced (aria-live, or role status, log or alert).
+  function isStatusOutput(el, kind) {
+    if (kind !== 'output' || dom.hasAttribute(el, 'for')) return false;
+    const live = norm(dom.getAttribute(el, 'aria-live')).toLowerCase();
+    if (live && live !== 'off') return true;
+    return ['status', 'log', 'alert'].includes(firstRoleToken(el));
+  }
 
   const failOccurrences = [];
   const cantTellOccurrences = [];
@@ -346,6 +402,8 @@ function runInPage(ctx) {
     let source = '';
     if (forLabels.length && !isLabelable(el)) {
       reasonCode = 'labelForNotLabelable';
+    } else if (labelGoesElsewhere(el)) {
+      reasonCode = 'duplicateId';
     } else if (found.empty.length) {
       reasonCode = 'emptySource';
       source = found.empty[0];
@@ -355,6 +413,8 @@ function runInPage(ctx) {
       reasonCode = 'placeholderOnly';
     } else if (hasOwnContent(el, kind)) {
       reasonCode = 'contentOnly';
+    } else if (isStatusOutput(el, kind)) {
+      reasonCode = 'outputStatus';
     } else {
       reasonCode = 'noLabel';
     }

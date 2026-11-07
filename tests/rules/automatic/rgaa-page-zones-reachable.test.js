@@ -149,8 +149,9 @@ test(`${RULE_ID}: WCAG 2.4.1 finds a bypass in <main>, RGAA 12.6 asks about the 
   assert.notEqual(rollupOutcome(rollup('wcag-2.4.1-bypass-blocks')), 'cantTell');
   assert.equal(rollupOutcome(rollup('rgaa-4.1.2-12.6')), 'cantTell');
   assert.deepEqual(RGAA_RULE_TESTS['4.1.2'][RULE_ID].tests, ['12.6.1']);
-  // bypass-blocks-present asks under 12.6.1 only on a page with no bypass at all.
-  assert.deepEqual(RGAA_RULE_TESTS['4.1.2']['bypass-blocks-present'].tests, ['12.6.1']);
+  // bypass-blocks-present is not linked: 2.4.1 is met by one mechanism for the
+  // page, where 12.6.1 asks for one in each area.
+  assert.deepEqual(RGAA_RULE_TESTS['4.1.2']['bypass-blocks-present'].tests, []);
 });
 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html)`, () => {
@@ -181,4 +182,21 @@ test(`${RULE_ID}: a skip link still counts with an element outside the tab order
     );
     assert.deepEqual(reasons(rule), [['navigation', 'ZONE_SKIP_LINK']], between);
   }
+});
+
+// A block of links outside the main content that nothing identifies is
+// likely an area of 12.6.1: the page no longer passes.
+test(`${RULE_ID}: an unidentified block of links outside the main content is asked about`, () => {
+  const html =
+    '<!doctype html><html lang="fr"><head><title>t</title></head><body>' +
+    '<div class="top"><a href="/">Accueil</a><a href="/a">A</a><a href="/b">B</a></div>' +
+    '<main><h1>T</h1><ul><li><a href="/1">1</a></li><li><a href="/2">2</a></li><li><a href="/3">3</a></li></ul></main>' +
+    '</body></html>';
+  const rule = assertRule(
+    runa11yCoreOnHtml(html, { runOnly: { includeRuleIds: [RULE_ID] } }),
+    RULE_ID,
+    'cantTell',
+    { minOccurrences: 1, maxOccurrences: 1 }
+  );
+  assert.equal(rule.occurrences[0].data.details.reasonCode, 'ZONE_UNIDENTIFIED');
 });

@@ -152,3 +152,38 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-office-document-link-all
     'odl_case_09'
   ]);
 });
+
+// Many sites serve documents from an address with no extension, and say the
+// format in the link: RGAA 13.3.1 asks about « les liens … permettant de
+// télécharger un fichier au format bureautique ».
+test(`${RULE_ID}: a format announced in the link's wording or type is flagged`, () => {
+  for (const [body, extension] of [
+    ['<a href="/media/1234/download">Rapport annuel (PDF, 2 Mo)</a>', 'pdf'],
+    ['<a href="/doc/55">Budget [xlsx – 340 Ko]</a>', 'xlsx'],
+    ['<a href="/doc/55">Guide pratique 1,2 Mo PDF</a>', 'pdf'],
+    ['<a href="/doc/55">Programme - ODT</a>', 'odt'],
+    ['<a href="/doc/55" title="Compte rendu (format pdf)">Compte rendu</a>', 'pdf'],
+    ['<a href="/doc/55" type="application/pdf">Compte rendu</a>', 'pdf'],
+    [
+      '<a href="/doc/55" type="application/vnd.openxmlformats-officedocument.wordprocessingml.document">Lettre</a>',
+      'docx'
+    ]
+  ]) {
+    const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'cantTell', {
+      minOccurrences: 1,
+      maxOccurrences: 1
+    });
+    assert.deepEqual(
+      rule.occurrences[0].data.details,
+      { reasonCode: 'officeDocument', extension },
+      body
+    );
+  }
+  // A format named in passing is not a download.
+  for (const body of [
+    '<a href="/aide">Comment ouvrir un PDF</a>',
+    '<a href="/aide">Les PDF accessibles</a>'
+  ]) {
+    assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'notApplicable');
+  }
+});

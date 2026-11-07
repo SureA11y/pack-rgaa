@@ -41,6 +41,8 @@
  *     a nested table), or an empty headers attribute;
  *   - optgroupLabel: an optgroup with no label attribute and no legend
  *     child;
+ *   - typeValue: a type on input or button that is not one of its
+ *     keywords (case aside), spaces included (type="bouton");
  *   - inputImageAlt: input type=image with no alt, or an empty one;
  *   - autocompleteValue: an empty autocomplete, a token list that is not a
  *     valid autofill detail list, on or off on input type=hidden, or a form
@@ -51,6 +53,10 @@
  *   - autocompleteType: autocomplete on an input type that does not take
  *     it (checkbox, radio, file, submit, image, reset, button).
  * @implementation-notes
+ * - Markup inside a shadow root is asked about (cantTell) instead of failed:
+ *   RGAA 8.2.1's methodology runs the W3C validator on the generated
+ *   source, whose serialization holds no shadow root. Correcting the
+ *   markup settles both readings.
  * - The WCAG rules on these attributes (deprecated-elements-not-used,
  *   rgaa-dir-attribute-valid, scope-attr-valid, table-headers-attr-valid,
  *   html-xml-lang-mismatch, autocomplete-valid, rgaa-optgroup-label-present,
@@ -73,6 +79,19 @@
  */
 
 const id = 'rgaa-html-elements-attributes-valid';
+
+// Markup in a shadow root is asked about instead of failed, whatever is wrong
+// with it, since the W3C validator does not see it: each code gets these steps.
+const SHADOW_REVIEW = {
+  steps: [
+    'Find the element the report names: it sits inside a shadow root, which the browser inspector shows under its host element.',
+    'Read what the report says is wrong with its markup, and check it on the element.',
+    'Check whether the audit judges markup in shadow roots under RGAA 8.2.1: the W3C validator does not see it in the page’s generated source.'
+  ],
+  passWhen: 'The audit leaves shadow roots out of 8.2.1; correcting the markup settles both.',
+  failWhen:
+    'The audit judges markup in shadow roots, and this markup is as the report says, which fails RGAA 8.2.1.'
+};
 
 const meta = {
   title: 'HTML elements and attribute values are valid',
@@ -109,7 +128,8 @@ const meta = {
     'autocompleteValue',
     'autocompleteControl',
     'autocompleteType',
-    'otherDoctype'
+    'otherDoctype',
+    'typeValue'
   ],
   // How a person answers each question the rule asks, per reason code: a few
   // steps from the element the finding names, then what they see if it
@@ -125,7 +145,23 @@ const meta = {
         'The validator reports no error about elements, attributes or their values for the declared document type.',
       failWhen:
         'The validator reports an element, attribute or value that the declared document type does not allow, which fails RGAA 8.2.1.'
-    }
+    },
+    obsoleteElement: SHADOW_REVIEW,
+    unknownElement: SHADOW_REVIEW,
+    dirValue: SHADOW_REVIEW,
+    idValue: SHADOW_REVIEW,
+    langValue: SHADOW_REVIEW,
+    xmlLangMismatch: SHADOW_REVIEW,
+    scopeValue: SHADOW_REVIEW,
+    scopeElement: SHADOW_REVIEW,
+    headersTarget: SHADOW_REVIEW,
+    headersEmpty: SHADOW_REVIEW,
+    optgroupLabel: SHADOW_REVIEW,
+    inputImageAlt: SHADOW_REVIEW,
+    autocompleteValue: SHADOW_REVIEW,
+    autocompleteControl: SHADOW_REVIEW,
+    autocompleteType: SHADOW_REVIEW,
+    typeValue: SHADOW_REVIEW
   }
 };
 
@@ -353,6 +389,10 @@ function runInPage(ctx) {
       () => 'This <optgroup> has no label attribute.',
       'Give the <optgroup> a label attribute that names the group.'
     ],
+    typeValue: [
+      (p) => `This <${p.element}> has type="${p.value}", which is not a type HTML defines for it.`,
+      'Use one of the types HTML defines: for a <button>, submit, reset or button.'
+    ],
     inputImageAlt: [
       () => 'This image button has no alt attribute, or an empty one.',
       'Give the <input type="image"> an alt attribute that says what the button does.'
@@ -377,27 +417,46 @@ function runInPage(ctx) {
     ]
   };
 
+  // Inside a shadow root: the W3C validator, which RGAA 8.2.1's methodology
+  // runs on the generated source, does not see it in the serialized page.
+  function inShadow(el) {
+    try {
+      const r = dom.get(el, 'getRootNode') ? dom.getRootNode(el) : null;
+      return !!r && r !== ctx.document && dom.nodeType(r) === 11;
+    } catch {
+      return false;
+    }
+  }
+  const SHADOW_NEEDED =
+    'Whether markup in a shadow root, which the W3C validator does not see in the generated source, is to be judged under 8.2.1.';
+  const SHADOW_HINT =
+    "This markup is in a shadow root, which the W3C validator does not see in the page's generated source. Check whether the audit judges it under 8.2.1; correcting the markup settles both.";
+  const shadowAsked = [];
   const occurrences = [];
   function report(el, reasonCode, params, outcome) {
     const key = outcome === 'cantTell' ? 'cantTell' : 'fail';
-    occurrences.push(
+    const shadow = key === 'fail' && inShadow(el);
+    (shadow ? shadowAsked : occurrences).push(
       helpers.reportOccurrence(el, {
         summary: TEXTS[reasonCode][0](params || {}),
-        hint: TEXTS[reasonCode][1],
+        hint: shadow ? SHADOW_HINT : TEXTS[reasonCode][1],
         i18n: {
           summaryKey: `htmlElementsAttributesValid_summary_${key}_${reasonCode}`,
-          hintKey: `htmlElementsAttributesValid_hint_${key}_${reasonCode}`,
+          hintKey: shadow
+            ? 'markupShadowRoot_hint_cantTell'
+            : `htmlElementsAttributesValid_hint_${key}_${reasonCode}`,
           params: params || {}
         },
-        uncertainty:
-          outcome === 'cantTell'
+        uncertainty: shadow
+          ? { code: 'judgement-required', needed: SHADOW_NEEDED }
+          : outcome === 'cantTell'
             ? {
                 code: 'out-of-scope',
                 needed: 'Whether elements and attribute values are valid for the declared doctype.'
               }
             : undefined,
         data: {
-          details: { reasonCode, ...(params || {}) },
+          details: { reasonCode, ...(params || {}), ...(shadow ? { inShadowRoot: true } : {}) },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })
@@ -506,6 +565,18 @@ function runInPage(ctx) {
             .toLowerCase()
         : '';
 
+    // An enumerated type matches its keyword exactly, case aside: an
+    // unknown value (« bouton »), or one with spaces, is a validator error.
+    if ((tag === 'input' || tag === 'button') && dom.hasAttribute(el, 'type')) {
+      const raw = String(attr(el, 'type'));
+      const known =
+        tag === 'button'
+          ? ['submit', 'reset', 'button'].includes(raw.toLowerCase())
+          : AUTOCOMPLETE_TYPES.has(raw.toLowerCase()) ||
+            NO_AUTOCOMPLETE_TYPES.has(raw.toLowerCase());
+      if (!known) report(el, 'typeValue', { value: raw, element: tag });
+    }
+
     if (tag === 'input' && inputType === 'image') {
       if (!dom.hasAttribute(el, 'alt') || attr(el, 'alt') === '') report(el, 'inputImageAlt', {});
     }
@@ -546,11 +617,12 @@ function runInPage(ctx) {
     }
   }
 
+  if (!occurrences.length && !shadowAsked.length) {
+    return { ruleId: rule.ruleId, outcome: 'pass', severity: 'minor', occurrences: [] };
+  }
   return {
     ruleId: rule.ruleId,
-    outcome: occurrences.length ? 'fail' : 'pass',
-    severity: occurrences.length ? rule.defaultSeverity || 'moderate' : 'minor',
-    occurrences
+    ...helpers.resolveTieredOutcome(occurrences, shadowAsked, rule.defaultSeverity || 'moderate')
   };
 }
 

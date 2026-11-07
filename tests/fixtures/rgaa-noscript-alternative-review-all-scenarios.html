@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>rgaa-noscript-alternative-review — scenario fixture</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.4; margin: 24px; }
+    h1 { font-size: 20px; margin: 0 0 16px; }
+    h2 { font-size: 16px; margin: 22px 0 10px; }
+    .note { font-size: 12px; opacity: 0.85; margin: 8px 0 16px; }
+    .case { border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin: 10px 0; }
+    .case-title { font-weight: 700; margin: 0 0 8px; }
+  </style>
+</head>
+<body>
+  <h1>Scenario fixture: <code>rgaa-noscript-alternative-review</code> (RGAA 7.2.1)</h1>
+
+  <p class="note">
+    Each target has a stable <code>id</code> of the form <code>nar_case_NN</code>.
+    A noscript alternative gives content and features similar to those of the script.
+  </p>
+
+  <div class="case" id="case_01">
+    <div class="case-title">01 — CANTTELL: a noscript that only asks to turn JavaScript on</div>
+    <noscript id="nar_case_01"><p>Activez JavaScript pour voir la carte.</p></noscript>
+  </div>
+
+  <div class="case" id="case_02">
+    <div class="case-title">02 — NOT APPLICABLE: a tracking image only</div>
+    <noscript id="nar_case_02"><img src="p.gif" width="1" height="1" alt=""></noscript>
+  </div>
+</body>
+</html>

@@ -61,12 +61,32 @@ function renderDoc({ rules, versions, themes, criteria, tests, ruleTests }) {
   );
   out.push('');
   out.push(
-    '> **Review status:** drafted from the RGAA test wording and official methodology, then checked row by row against how other RGAA tools map and flag the same checks; not yet reviewed by an RGAA auditor. Corrections go in `rule-map.js`; this page is regenerated from it.'
+    '> **Review status:** drafted from the RGAA test wording, official methodology and glossary, then checked row by row against them; not yet reviewed by an RGAA auditor. Corrections go in `rule-map.js`; this page is regenerated from it.'
   );
   out.push('');
   out.push(
     'A rule maps to a test when its failure (or, for a manual rule, the question it raises) is direct evidence about what the test\'s methodology checks. A rule that fails is linked only when its usual failures really fail the test; where that is uncertain, the test is left off or the rule asks. A mapped rule covers the test in part at most: a `pass` never means an RGAA test is conforme, and most tests need a human. A test marked "(exception)" is linked although RGAA relates it to other WCAG criteria than the rule; the reason follows the note. Where a rule\'s findings fail different tests, each finding counts toward its own (by its text size, its list, its role…), and a criterion\'s result names only the tests of the findings that decided it; the note says how. A test marked "(asks)" is one where the rule\'s failures are only questions, and one marked "(some findings)" is one only some of its findings count toward.'
   );
+
+  // A row's tests and those its reason codes send findings to.
+  const linkedTests = (row) => {
+    if (!row) return [];
+    if (!row.reasonCodes) return row.tests;
+    const all = new Set(row.tests);
+    for (const c of Object.values(row.reasonCodes || {})) {
+      for (const t of (c && c.tests) || []) all.add(t);
+    }
+    return [...all].sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
+  };
+  // Where each reason code's findings go, for the rule's row.
+  const codesNote = (row) =>
+    Object.entries((row && row.reasonCodes) || {})
+      .map(([code, c]) => {
+        const list = c && Array.isArray(c.tests) ? c.tests : row.tests;
+        const where = list.length ? list.join(', ') : 'no test';
+        return `\`${code}\`: ${where}${c && c.outcome === 'cantTell' ? ', asked (cantTell)' : ''}`;
+      })
+      .join('; ');
 
   for (const { version } of versions) {
     const table = ruleTests[version] || {};
@@ -90,9 +110,15 @@ function renderDoc({ rules, versions, themes, criteria, tests, ruleTests }) {
     out.push('|---|---|---|---|---|');
     for (const r of rules) {
       const row = table[r.ruleId];
+      const outside = (row && row.outsideCorrespondence) || {};
       const linked = linkedTests(row);
-      const testList = linked.length ? linked.map((t) => testLabel(row, t)).join(', ') : '—';
-      const why = row ? reasonOf(row) : 'Not mapped yet.';
+      const testList = linked.length
+        ? linked.map((t) => (t in outside ? `${t} (exception)` : t)).join(', ')
+        : '—';
+      const codes = codesNote(row);
+      const why = row
+        ? reasonOf(row) + (codes ? ` By reason code: ${codes}.` : '')
+        : 'Not mapped yet.';
       out.push(
         `| \`${r.ruleId}\` | ${r.type} | ${r.wcagSc.join(', ') || '—'} | ${testList} | ${cell(why)} |`
       );

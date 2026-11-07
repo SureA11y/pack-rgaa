@@ -34,11 +34,19 @@
  *     element with a tabindex attribute inside an a or a button. The rule
  *     applies to every a, with or without href, and counts a disabled
  *     control or a hidden descendant too, as the validator does;
+ *   - flowInPhrasing: flow content (div, p, a list, a table, a heading,
+ *     a sectioning element…) inside an element whose content model is
+ *     phrasing only (button, label, span, b, i, em, strong, a heading, p…),
+ *     through transparent a, ins, del or map;
  *   - ismapOutsideLink: an img with ismap and no a[href] ancestor;
  *   - extraMain: more than one main element in the document without its
  *     own hidden attribute. A main hidden by CSS, aria-hidden or a hidden
  *     ancestor still counts.
  * @implementation-notes
+ * - Markup inside a shadow root is asked about (cantTell) instead of failed:
+ *   RGAA 8.2.1's methodology runs the W3C validator on the generated
+ *   source, whose serialization holds no shadow root. Correcting the
+ *   markup settles both readings.
  * - The WCAG rules on lists and nesting (list-children-valid,
  *   listitem-parent-valid, definition-list-children-valid,
  *   dlitem-parent-valid, nested-interactive-controls-absent) judge what
@@ -65,6 +73,19 @@
  */
 
 const id = 'rgaa-html-nesting-valid';
+
+// Markup in a shadow root is asked about instead of failed, whatever is wrong
+// with it, since the W3C validator does not see it: each code gets these steps.
+const SHADOW_REVIEW = {
+  steps: [
+    'Find the element the report names: it sits inside a shadow root, which the browser inspector shows under its host element.',
+    'Read what the report says is wrong with its markup, and check it on the element.',
+    'Check whether the audit judges markup in shadow roots under RGAA 8.2.1: the W3C validator does not see it in the page’s generated source.'
+  ],
+  passWhen: 'The audit leaves shadow roots out of 8.2.1; correcting the markup settles both.',
+  failWhen:
+    'The audit judges markup in shadow roots, and this markup is as the report says, which fails RGAA 8.2.1.'
+};
 
 const meta = {
   title: 'HTML elements are nested as HTML allows',
@@ -98,7 +119,8 @@ const meta = {
     'tabindexDescendant',
     'ismapOutsideLink',
     'extraMain',
-    'otherDoctype'
+    'otherDoctype',
+    'flowInPhrasing'
   ],
   // How a person answers each question the rule asks, per reason code: a few
   // steps from the element the finding names, then what they see if it
@@ -113,7 +135,20 @@ const meta = {
       passWhen: 'The validator reports no nesting error for the declared document type.',
       failWhen:
         'The validator reports an element nested where the declared document type does not allow it, which fails RGAA 8.2.1.'
-    }
+    },
+    listChild: SHADOW_REVIEW,
+    listText: SHADOW_REVIEW,
+    listItemParent: SHADOW_REVIEW,
+    dlChild: SHADOW_REVIEW,
+    dlText: SHADOW_REVIEW,
+    dlGroupOrder: SHADOW_REVIEW,
+    dlMixedGroups: SHADOW_REVIEW,
+    dlItemParent: SHADOW_REVIEW,
+    interactiveDescendant: SHADOW_REVIEW,
+    tabindexDescendant: SHADOW_REVIEW,
+    ismapOutsideLink: SHADOW_REVIEW,
+    extraMain: SHADOW_REVIEW,
+    flowInPhrasing: SHADOW_REVIEW
   }
 };
 
@@ -182,6 +217,11 @@ function runInPage(ctx) {
       (p) => `This <${p.element}> has a tabindex attribute and is nested in <${p.ancestor}>.`,
       'Remove the tabindex attribute, or move the element out of the link or button.'
     ],
+    flowInPhrasing: [
+      (p) =>
+        `This <${p.element}> is inside a <${p.parent}>, which may only hold phrasing content such as text, <span> or <img>.`,
+      'Use a phrasing element such as <span> inside it, or move the block out of it.'
+    ],
     ismapOutsideLink: [
       () => 'This <img> has the ismap attribute but no <a href> ancestor.',
       'Remove the ismap attribute, or put the image in a link with an href.'
@@ -197,27 +237,46 @@ function runInPage(ctx) {
     ]
   };
 
+  // Inside a shadow root: the W3C validator, which RGAA 8.2.1's methodology
+  // runs on the generated source, does not see it in the serialized page.
+  function inShadow(el) {
+    try {
+      const r = dom.get(el, 'getRootNode') ? dom.getRootNode(el) : null;
+      return !!r && r !== ctx.document && dom.nodeType(r) === 11;
+    } catch {
+      return false;
+    }
+  }
+  const SHADOW_NEEDED =
+    'Whether markup in a shadow root, which the W3C validator does not see in the generated source, is to be judged under 8.2.1.';
+  const SHADOW_HINT =
+    "This markup is in a shadow root, which the W3C validator does not see in the page's generated source. Check whether the audit judges it under 8.2.1; correcting the markup settles both.";
+  const shadowAsked = [];
   const occurrences = [];
   function report(el, reasonCode, params, outcome) {
     const key = outcome === 'cantTell' ? 'cantTell' : 'fail';
-    occurrences.push(
+    const shadow = key === 'fail' && inShadow(el);
+    (shadow ? shadowAsked : occurrences).push(
       helpers.reportOccurrence(el, {
         summary: TEXTS[reasonCode][0](params || {}),
-        hint: TEXTS[reasonCode][1],
+        hint: shadow ? SHADOW_HINT : TEXTS[reasonCode][1],
         i18n: {
           summaryKey: `htmlNestingValid_summary_${key}_${reasonCode}`,
-          hintKey: `htmlNestingValid_hint_${key}_${reasonCode}`,
+          hintKey: shadow
+            ? 'markupShadowRoot_hint_cantTell'
+            : `htmlNestingValid_hint_${key}_${reasonCode}`,
           params: params || {}
         },
-        uncertainty:
-          outcome === 'cantTell'
+        uncertainty: shadow
+          ? { code: 'judgement-required', needed: SHADOW_NEEDED }
+          : outcome === 'cantTell'
             ? {
                 code: 'out-of-scope',
                 needed: 'Whether the nesting is valid for the declared doctype.'
               }
             : undefined,
         data: {
-          details: { reasonCode, ...(params || {}) },
+          details: { reasonCode, ...(params || {}), ...(shadow ? { inShadowRoot: true } : {}) },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })
@@ -241,6 +300,75 @@ function runInPage(ctx) {
   const ismaps = query('img[ismap]');
   const mains = query('main');
 
+  // Flow content inside an element whose content model is phrasing only:
+  // « Element div not allowed as child of element button ». <a>, <ins>,
+  // <del> and <map> are transparent, so their parent's model applies.
+  const PHRASING_ONLY = new Set([
+    'button',
+    'label',
+    'span',
+    'b',
+    'i',
+    'em',
+    'strong',
+    'small',
+    'abbr',
+    'cite',
+    'code',
+    'q',
+    's',
+    'sub',
+    'sup',
+    'u',
+    'mark',
+    'time',
+    'h1',
+    'h2',
+    'h3',
+    'h4',
+    'h5',
+    'h6',
+    'p'
+  ]);
+  const FLOW_ONLY = new Set([
+    'address',
+    'article',
+    'aside',
+    'blockquote',
+    'details',
+    'dialog',
+    'div',
+    'dl',
+    'fieldset',
+    'figure',
+    'footer',
+    'form',
+    'header',
+    'hr',
+    'main',
+    'nav',
+    'ol',
+    'p',
+    'pre',
+    'section',
+    'table',
+    'ul',
+    'h1',
+    'h2',
+    'h3',
+    'h4',
+    'h5',
+    'h6'
+  ]);
+  const TRANSPARENT = new Set(['a', 'ins', 'del', 'map']);
+  const flowInPhrasing = [];
+  for (const d of query(Array.from(FLOW_ONLY).join(', '))) {
+    if (!isHtml(d)) continue;
+    let p = parentElementOf(d);
+    while (p && isHtml(p) && TRANSPARENT.has(tagOf(p))) p = parentElementOf(p);
+    if (p && isHtml(p) && PHRASING_ONLY.has(tagOf(p))) flowInPhrasing.push([d, p]);
+  }
+
   const applicable =
     lists.length +
     items.length +
@@ -248,7 +376,8 @@ function runInPage(ctx) {
     dlItems.length +
     containers.length +
     ismaps.length +
-    mains.length;
+    mains.length +
+    flowInPhrasing.length;
   if (!applicable) return result('notApplicable');
 
   const doctype = helpers.getDoctypeInfo ? helpers.getDoctypeInfo() : { kind: 'html5' };
@@ -385,6 +514,10 @@ function runInPage(ctx) {
     }
   }
 
+  for (const [d, p] of flowInPhrasing) {
+    report(d, 'flowInPhrasing', { element: tagOf(d), parent: tagOf(p) });
+  }
+
   // img[ismap]: needs an a[href] ancestor.
   for (const img of ismaps) {
     let anc = parentElementOf(img);
@@ -402,7 +535,11 @@ function runInPage(ctx) {
   );
   for (const el of shownMains.slice(1)) report(el, 'extraMain', {});
 
-  return result(occurrences.length ? 'fail' : 'pass');
+  if (!occurrences.length && !shadowAsked.length) return result('pass');
+  return {
+    ruleId: rule.ruleId,
+    ...helpers.resolveTieredOutcome(occurrences, shadowAsked, rule.defaultSeverity || 'moderate')
+  };
 }
 
 module.exports = { id, meta, runInPage };

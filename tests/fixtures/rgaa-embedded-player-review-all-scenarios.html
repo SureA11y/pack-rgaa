@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>rgaa-embedded-player-review — scenario fixture</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.4; margin: 24px; }
+    h1 { font-size: 20px; margin: 0 0 16px; }
+    h2 { font-size: 16px; margin: 22px 0 10px; }
+    .note { font-size: 12px; opacity: 0.85; margin: 8px 0 16px; }
+    .case { border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin: 10px 0; }
+    .case-title { font-weight: 700; margin: 0 0 8px; }
+  </style>
+</head>
+<body>
+  <h1>Scenario fixture: <code>rgaa-embedded-player-review</code> (RGAA 4.1, 4.3, 4.5, 4.7, 4.10, 4.11, 4.13)</h1>
+
+  <p class="note">
+    Each target has a stable <code>id</code> of the form <code>epr_case_NN</code>.
+    Embedded media players are asked about; one that starts by itself also under 4.10.
+  </p>
+
+  <div class="case" id="case_01">
+    <div class="case-title">01 — CANTTELL: a YouTube player</div>
+    <iframe id="epr_case_01" src="https://www.youtube-nocookie.com/embed/abc" title="Présentation de la médiathèque" width="320" height="180"></iframe>
+  </div>
+
+  <div class="case" id="case_02">
+    <div class="case-title">02 — CANTTELL: a Vimeo player that starts by itself</div>
+    <iframe id="epr_case_02" src="https://player.vimeo.com/video/123?autoplay=1" title="Bande-annonce" width="320" height="180"></iframe>
+  </div>
+
+  <div class="case" id="case_03">
+    <div class="case-title">03 — NOT APPLICABLE: a map frame</div>
+    <iframe id="epr_case_03" src="https://www.openstreetmap.org/export/embed.html" title="Plan d'accès" width="320" height="180"></iframe>
+  </div>
+</body>
+</html>

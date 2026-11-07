@@ -16,7 +16,10 @@ function page(body, htmlAttrs = '') {
 }
 
 test(`${RULE_ID}: ltr and rtl pass, whatever the case`, () => {
-  const html = page('<p dir="rtl">a</p><p dir="LTR">b</p><p dir="Rtl">c</p>', 'dir="ltr"');
+  const html = page(
+    '<p dir="rtl">\u0645\u0631\u062d\u0628\u0627</p><p dir="LTR">b</p><p dir="Rtl">\u05e9\u05dc\u05d5\u05dd</p>',
+    'dir="ltr"'
+  );
   assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'pass', { maxOccurrences: 0 });
 });
 
@@ -100,6 +103,31 @@ test(`${RULE_ID}: any other value fails and is quoted as written`, () => {
     assert.equal(occ.data.details.value, value);
     assert.equal(occ.i18n.summaryKey, 'dirAttributeValid_summary_fail_invalid');
     assert.deepEqual(occ.i18n.params, { value });
+  }
+});
+
+// 8.10.2: « La valeur de l'attribut dir est pertinente ». A dir that turns
+// the direction on text whose letters all read the old way is not.
+test(`${RULE_ID}: a dir that turns text the wrong way fails`, () => {
+  for (const [body, attrs] of [
+    ['<p dir="rtl">Bonjour tout le monde</p>', ''],
+    ['<p>Bonjour</p>', 'dir="rtl"'],
+    ['<div dir="rtl"><p dir="ltr">\u0645\u0631\u062d\u0628\u0627</p></div>', '']
+  ]) {
+    const rule = assertRule(runa11yCoreOnHtml(page(body, attrs), RUN), RULE_ID, 'fail', {
+      minOccurrences: 1,
+      maxOccurrences: 1
+    });
+    assert.equal(rule.occurrences[0].data.details.reasonCode, 'directionNotRelevant', body);
+  }
+  for (const [body, attrs] of [
+    // Text of its own direction inside, or no letters at all.
+    ['<p dir="rtl"><span dir="ltr">Hello</span> 123</p>', ''],
+    ['<p dir="rtl">\u0645\u0631\u062d\u0628\u0627 (Google)</p>', ''],
+    ['<p dir="ltr">Hello</p>', 'dir="rtl"'],
+    ['<input dir="rtl" aria-label="x">', '']
+  ]) {
+    assertRule(runa11yCoreOnHtml(page(body, attrs), RUN), RULE_ID, 'pass', { maxOccurrences: 0 });
   }
 });
 

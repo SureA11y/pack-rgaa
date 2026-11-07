@@ -1,7 +1,7 @@
 {
   "summary": {
-    "total": 69,
-    "withFixture": 69,
+    "total": 113,
+    "withFixture": 113,
     "withoutFixture": 0
   },
   "rows": [
@@ -40,6 +40,23 @@
       }
     },
     {
+      "ruleId": "rgaa-aria-hidden-text-review",
+      "title": "Visible text hidden from assistive technologies is meant to be ignored",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/aria-hidden-text-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-aria-hidden-text-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-aria-hidden-text-review-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 1
+      }
+    },
+    {
       "ruleId": "rgaa-aria-list-item-roles",
       "title": "ARIA lists use role=\"listitem\" for their items",
       "type": "automatic",
@@ -71,6 +88,23 @@
         "FAIL": 14,
         "CANTTELL": 1,
         "OTHER": 0
+      }
+    },
+    {
+      "ruleId": "rgaa-autocomplete-user-field",
+      "title": "Fields about the user have a valid autocomplete value",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-autocomplete-user-field.js",
+      "testFile": "tests/rules/automatic/rgaa-autocomplete-user-field.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-autocomplete-user-field-all-scenarios.html",
+      "totalCases": 6,
+      "caseCounts": {
+        "PASS": 1,
+        "FAIL": 1,
+        "CANTTELL": 2,
+        "OTHER": 2
       }
     },
     {
@@ -108,6 +142,57 @@
       }
     },
     {
+      "ruleId": "rgaa-captcha-review",
+      "title": "CAPTCHA images have a relevant alternative and a non-graphic way in",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/captcha-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-captcha-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-captcha-review-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 2,
+        "OTHER": 1
+      }
+    },
+    {
+      "ruleId": "rgaa-color-declarations-paired",
+      "title": "Text and background colours are declared together",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-color-declarations-paired.js",
+      "testFile": "tests/rules/automatic/rgaa-color-declarations-paired.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-color-declarations-paired-all-scenarios.html",
+      "totalCases": 5,
+      "caseCounts": {
+        "PASS": 1,
+        "FAIL": 2,
+        "CANTTELL": 1,
+        "OTHER": 1
+      }
+    },
+    {
+      "ruleId": "rgaa-color-reference-review",
+      "title": "Text that refers to a colour does not give the information by colour alone",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/color-reference-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-color-reference-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-color-reference-review-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 2,
+        "OTHER": 1
+      }
+    },
+    {
       "ruleId": "rgaa-complex-table-summary",
       "title": "Complex data tables have a summary",
       "type": "manual",
@@ -142,6 +227,40 @@
       }
     },
     {
+      "ruleId": "rgaa-consequential-form-review",
+      "title": "Forms with financial, legal or data consequences can be checked, confirmed or undone",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/consequential-form-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-consequential-form-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-consequential-form-review-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 2,
+        "OTHER": 1
+      }
+    },
+    {
+      "ruleId": "rgaa-context-change-review",
+      "title": "A change of context from a field is announced first",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/context-change-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-context-change-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-context-change-review-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 1
+      }
+    },
+    {
       "ruleId": "rgaa-contrast-minimum",
       "title": "Text meets RGAA minimum color contrast",
       "type": "automatic",
@@ -159,6 +278,40 @@
       }
     },
     {
+      "ruleId": "rgaa-cryptic-content-review",
+      "title": "Cryptic content has a title or is defined by its context",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/cryptic-content-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-cryptic-content-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-cryptic-content-review-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 1
+      }
+    },
+    {
+      "ruleId": "rgaa-current-item-review",
+      "title": "The active item of a menu is not shown by its look alone",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/current-item-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-current-item-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-current-item-review-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 1
+      }
+    },
+    {
       "ruleId": "rgaa-data-table-headers-review",
       "title": "Tables with no header cells are checked for unmarked headers",
       "type": "manual",
@@ -173,6 +326,23 @@
         "FAIL": 0,
         "CANTTELL": 3,
         "OTHER": 4
+      }
+    },
+    {
+      "ruleId": "rgaa-default-language-review",
+      "title": "The page's default language code names its main language",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/default-language-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-default-language-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-default-language-review-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 2
       }
     },
     {
@@ -261,6 +431,23 @@
       }
     },
     {
+      "ruleId": "rgaa-embedded-player-review",
+      "title": "Media in embedded players has its alternatives and controls",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/embedded-player-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-embedded-player-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-embedded-player-review-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 2,
+        "OTHER": 1
+      }
+    },
+    {
       "ruleId": "rgaa-embedded-refresh-review",
       "title": "Embedded content that may refresh itself lets the user control the refresh",
       "type": "manual",
@@ -312,6 +499,57 @@
       }
     },
     {
+      "ruleId": "rgaa-field-hidden-label-review",
+      "title": "A field with a visually hidden label is understandable from the screen",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/field-hidden-label-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-field-hidden-label-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-field-hidden-label-review-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 1
+      }
+    },
+    {
+      "ruleId": "rgaa-field-label-consistency-review",
+      "title": "Fields asking for the same information have coherent labels",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/field-label-consistency-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-field-label-consistency-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-field-label-consistency-review-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 2
+      }
+    },
+    {
+      "ruleId": "rgaa-field-label-empty",
+      "title": "A field's label sources are not all empty",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-field-label-empty.js",
+      "testFile": "tests/rules/automatic/rgaa-field-label-empty.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-field-label-empty-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 1,
+        "FAIL": 1,
+        "CANTTELL": 0,
+        "OTHER": 0
+      }
+    },
+    {
       "ruleId": "rgaa-field-label-in-name-sources",
       "title": "Every label source of a form field contains its visible label",
       "type": "automatic",
@@ -323,8 +561,8 @@
       "totalCases": 11,
       "caseCounts": {
         "PASS": 3,
-        "FAIL": 4,
-        "CANTTELL": 1,
+        "FAIL": 2,
+        "CANTTELL": 3,
         "OTHER": 3
       }
     },
@@ -368,7 +606,7 @@
       "type": "automatic",
       "wcagSc": [],
       "ruleFile": "rules/automatic/rgaa-focus-indicator-contrast.js",
-      "testFile": "tests/rules/automatic/focus-indicator-contrast-chromium.test.js",
+      "testFile": "tests/rules/automatic/rgaa-focus-indicator-contrast-chromium.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-focus-indicator-contrast-all-scenarios.html",
       "totalCases": 11,
@@ -377,6 +615,23 @@
         "FAIL": 3,
         "CANTTELL": 4,
         "OTHER": 2
+      }
+    },
+    {
+      "ruleId": "rgaa-focus-not-removed",
+      "title": "Scripts do not remove focus from an element that receives it",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-focus-not-removed.js",
+      "testFile": "tests/rules/automatic/rgaa-focus-not-removed.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-focus-not-removed-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 1,
+        "CANTTELL": 0,
+        "OTHER": 1
       }
     },
     {
@@ -414,6 +669,23 @@
       }
     },
     {
+      "ruleId": "rgaa-format-hint-review",
+      "title": "Fields with a format constraint suggest the format or an example",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/format-hint-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-format-hint-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-format-hint-review-all-scenarios.html",
+      "totalCases": 5,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 2,
+        "OTHER": 3
+      }
+    },
+    {
       "ruleId": "rgaa-frame-title-attribute-present",
       "title": "Frames have a title attribute",
       "type": "automatic",
@@ -422,29 +694,29 @@
       "testFile": "tests/rules/automatic/rgaa-frame-title-attribute-present.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-frame-title-attribute-present-all-scenarios.html",
-      "totalCases": 9,
+      "totalCases": 10,
       "caseCounts": {
-        "PASS": 2,
-        "FAIL": 4,
+        "PASS": 1,
+        "FAIL": 6,
         "CANTTELL": 0,
         "OTHER": 3
       }
     },
     {
-      "ruleId": "rgaa-frame-title-not-empty",
-      "title": "Frame titles are not empty",
-      "type": "automatic",
+      "ruleId": "rgaa-frame-title-relevant",
+      "title": "Frame titles are relevant",
+      "type": "manual",
       "wcagSc": [],
-      "ruleFile": "rules/automatic/rgaa-frame-title-not-empty.js",
-      "testFile": "tests/rules/automatic/rgaa-frame-title-not-empty.test.js",
+      "ruleFile": "rules/manual/frame-title-relevant-manual.js",
+      "testFile": "tests/rules/manual/rgaa-frame-title-relevant.test.js",
       "hasFixture": true,
-      "fixtureFile": "tests/fixtures/rgaa-frame-title-not-empty-all-scenarios.html",
+      "fixtureFile": "tests/fixtures/rgaa-frame-title-relevant-all-scenarios.html",
       "totalCases": 5,
       "caseCounts": {
-        "PASS": 1,
-        "FAIL": 2,
-        "CANTTELL": 0,
-        "OTHER": 2
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 2,
+        "OTHER": 3
       }
     },
     {
@@ -479,6 +751,23 @@
         "FAIL": 3,
         "CANTTELL": 0,
         "OTHER": 2
+      }
+    },
+    {
+      "ruleId": "rgaa-headings-absent-review",
+      "title": "A page with text but no heading is reviewed",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/headings-absent-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-headings-absent-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-headings-absent-review-all-scenarios.html",
+      "totalCases": 0,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 0,
+        "OTHER": 0
       }
     },
     {
@@ -550,6 +839,23 @@
       }
     },
     {
+      "ruleId": "rgaa-img-alt-present",
+      "title": "Images that are not spacers have an alt attribute",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-img-alt-present.js",
+      "testFile": "tests/rules/automatic/rgaa-img-alt-present.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-img-alt-present-all-scenarios.html",
+      "totalCases": 8,
+      "caseCounts": {
+        "PASS": 3,
+        "FAIL": 1,
+        "CANTTELL": 2,
+        "OTHER": 2
+      }
+    },
+    {
       "ruleId": "rgaa-img-decorative-no-alternative",
       "title": "Decorative images have no aria-labelledby, aria-label or title",
       "type": "automatic",
@@ -564,6 +870,57 @@
         "FAIL": 2,
         "CANTTELL": 2,
         "OTHER": 2
+      }
+    },
+    {
+      "ruleId": "rgaa-img-describedby-target",
+      "title": "An image's aria-describedby points to its description",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-img-describedby-target.js",
+      "testFile": "tests/rules/automatic/rgaa-img-describedby-target.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-img-describedby-target-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 1,
+        "FAIL": 1,
+        "CANTTELL": 0,
+        "OTHER": 0
+      }
+    },
+    {
+      "ruleId": "rgaa-img-no-alt-decorative",
+      "title": "Decorative images with no alt attribute",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-img-no-alt-decorative.js",
+      "testFile": "tests/rules/automatic/rgaa-img-no-alt-decorative.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-img-no-alt-decorative-all-scenarios.html",
+      "totalCases": 8,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 2,
+        "CANTTELL": 2,
+        "OTHER": 4
+      }
+    },
+    {
+      "ruleId": "rgaa-invalid-field-message",
+      "title": "Fields marked invalid have their error message in their label or a linked passage",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/invalid-field-message-manual.js",
+      "testFile": "tests/rules/manual/rgaa-invalid-field-message.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-invalid-field-message-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 1
       }
     },
     {
@@ -601,6 +958,40 @@
       }
     },
     {
+      "ruleId": "rgaa-label-placement-review",
+      "title": "Each field's label sits right next to it, on the expected side",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/label-placement-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-label-placement-review-chromium.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-label-placement-review-all-scenarios.html",
+      "totalCases": 5,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 3,
+        "OTHER": 2
+      }
+    },
+    {
+      "ruleId": "rgaa-language-change-review",
+      "title": "A passage in another language has its language given",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/language-change-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-language-change-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-language-change-review-all-scenarios.html",
+      "totalCases": 5,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 2,
+        "OTHER": 3
+      }
+    },
+    {
       "ruleId": "rgaa-layout-table-no-data-markup",
       "title": "Layout tables use no data table markup",
       "type": "automatic",
@@ -611,10 +1002,27 @@
       "fixtureFile": "tests/fixtures/rgaa-layout-table-no-data-markup-all-scenarios.html",
       "totalCases": 11,
       "caseCounts": {
-        "PASS": 3,
-        "FAIL": 6,
+        "PASS": 4,
+        "FAIL": 5,
         "CANTTELL": 1,
         "OTHER": 1
+      }
+    },
+    {
+      "ruleId": "rgaa-legend-relevance-review",
+      "title": "Legends of groups of form fields are relevant",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/legend-relevance-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-legend-relevance-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-legend-relevance-review-all-scenarios.html",
+      "totalCases": 4,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 2,
+        "OTHER": 2
       }
     },
     {
@@ -691,7 +1099,7 @@
       "type": "automatic",
       "wcagSc": [],
       "ruleFile": "rules/automatic/rgaa-link-state-colors-review.js",
-      "testFile": "tests/rules/automatic/link-state-colors-review-chromium.test.js",
+      "testFile": "tests/rules/automatic/rgaa-link-state-colors-review-chromium.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-link-state-colors-review-all-scenarios.html",
       "totalCases": 7,
@@ -700,6 +1108,23 @@
         "FAIL": 0,
         "CANTTELL": 3,
         "OTHER": 4
+      }
+    },
+    {
+      "ruleId": "rgaa-link-title-content-name",
+      "title": "A link's title contains the name its content gives it",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-link-title-content-name.js",
+      "testFile": "tests/rules/automatic/rgaa-link-title-content-name.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-link-title-content-name-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 1,
+        "FAIL": 1,
+        "CANTTELL": 1,
+        "OTHER": 0
       }
     },
     {
@@ -734,6 +1159,23 @@
         "FAIL": 1,
         "CANTTELL": 0,
         "OTHER": 0
+      }
+    },
+    {
+      "ruleId": "rgaa-markup-for-presentation",
+      "title": "Elements are not used only for presentation",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-markup-for-presentation.js",
+      "testFile": "tests/rules/automatic/rgaa-markup-for-presentation.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-markup-for-presentation-all-scenarios.html",
+      "totalCases": 4,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 2,
+        "CANTTELL": 1,
+        "OTHER": 1
       }
     },
     {
@@ -799,6 +1241,91 @@
       "totalCases": 1,
       "caseCounts": {
         "PASS": 0,
+        "FAIL": 1,
+        "CANTTELL": 0,
+        "OTHER": 0
+      }
+    },
+    {
+      "ruleId": "rgaa-modal-tab-order",
+      "title": "Focus stays inside an open modal dialog",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/modal-tab-order-manual.js",
+      "testFile": "tests/rules/manual/rgaa-modal-tab-order.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-modal-tab-order-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 2
+      }
+    },
+    {
+      "ruleId": "rgaa-moving-content-review",
+      "title": "Moving or blinking content can be controlled",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/moving-content-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-moving-content-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-moving-content-review-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 2,
+        "OTHER": 1
+      }
+    },
+    {
+      "ruleId": "rgaa-navigation-systems-review",
+      "title": "A page that shows fewer than two navigation systems is reviewed",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/navigation-systems-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-navigation-systems-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-navigation-systems-review-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 2
+      }
+    },
+    {
+      "ruleId": "rgaa-noscript-alternative-review",
+      "title": "A <noscript> alternative gives similar content and features",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/noscript-alternative-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-noscript-alternative-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-noscript-alternative-review-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 1
+      }
+    },
+    {
+      "ruleId": "rgaa-object-embed-decorative-aria-hidden",
+      "title": "Decorative image objects and embeds have aria-hidden=\"true\" and no alternative",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-object-embed-decorative-aria-hidden.js",
+      "testFile": "tests/rules/automatic/rgaa-object-embed-decorative-aria-hidden.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-object-embed-decorative-aria-hidden-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 1,
         "FAIL": 1,
         "CANTTELL": 0,
         "OTHER": 0
@@ -878,7 +1405,7 @@
       "type": "automatic",
       "wcagSc": [],
       "ruleFile": "rules/automatic/rgaa-orientation-content-parity.js",
-      "testFile": "tests/rules/automatic/orientation-content-parity-chromium.test.js",
+      "testFile": "tests/rules/automatic/rgaa-orientation-content-parity-chromium.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-orientation-content-parity-all-scenarios.html",
       "totalCases": 7,
@@ -975,6 +1502,23 @@
       }
     },
     {
+      "ruleId": "rgaa-quotation-review",
+      "title": "Quotations use <q> or <blockquote>",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/quotation-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-quotation-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-quotation-review-all-scenarios.html",
+      "totalCases": 4,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 2,
+        "OTHER": 2
+      }
+    },
+    {
       "ruleId": "rgaa-radio-group-present",
       "title": "Radio buttons sharing a name are grouped",
       "type": "manual",
@@ -989,6 +1533,23 @@
         "FAIL": 0,
         "CANTTELL": 0,
         "OTHER": 6
+      }
+    },
+    {
+      "ruleId": "rgaa-required-field-indication",
+      "title": "Required fields show a required indication in their label",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-required-field-indication.js",
+      "testFile": "tests/rules/automatic/rgaa-required-field-indication.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-required-field-indication-all-scenarios.html",
+      "totalCases": 5,
+      "caseCounts": {
+        "PASS": 1,
+        "FAIL": 2,
+        "CANTTELL": 1,
+        "OTHER": 1
       }
     },
     {
@@ -1009,6 +1570,57 @@
       }
     },
     {
+      "ruleId": "rgaa-same-name-checkboxes-review",
+      "title": "Sets of checkboxes and custom radio buttons are grouped if needed",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/same-name-checkboxes-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-same-name-checkboxes-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-same-name-checkboxes-review-all-scenarios.html",
+      "totalCases": 5,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 2,
+        "OTHER": 3
+      }
+    },
+    {
+      "ruleId": "rgaa-script-button-name-present",
+      "title": "Buttons outside a form have a name",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-script-button-name-present.js",
+      "testFile": "tests/rules/automatic/rgaa-script-button-name-present.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-script-button-name-present-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 1,
+        "FAIL": 1,
+        "CANTTELL": 0,
+        "OTHER": 1
+      }
+    },
+    {
+      "ruleId": "rgaa-script-redirect-review",
+      "title": "A timed redirection done by a script can be controlled",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/script-redirect-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-script-redirect-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-script-redirect-review-all-scenarios.html",
+      "totalCases": 1,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 0
+      }
+    },
+    {
       "ruleId": "rgaa-scripted-components-review",
       "title": "Scripted components are compatible with assistive technologies",
       "type": "manual",
@@ -1026,12 +1638,29 @@
       }
     },
     {
+      "ruleId": "rgaa-select-fake-groups-review",
+      "title": "Options are grouped with <optgroup>, not with fake heading options",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/select-fake-groups-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-select-fake-groups-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-select-fake-groups-review-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 1
+      }
+    },
+    {
       "ruleId": "rgaa-skip-link-placement",
       "title": "Skip links are visible and at the same place on every page",
       "type": "automatic",
       "wcagSc": [],
       "ruleFile": "rules/automatic/rgaa-skip-link-placement.js",
-      "testFile": "tests/rules/automatic/skip-link-placement-chromium.test.js",
+      "testFile": "tests/rules/automatic/rgaa-skip-link-placement-chromium.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-skip-link-placement-all-scenarios.html",
       "totalCases": 1,
@@ -1060,6 +1689,40 @@
       }
     },
     {
+      "ruleId": "rgaa-status-message-review",
+      "title": "Status messages use role=\"status\", \"alert\", \"log\" or \"progressbar\"",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/status-message-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-status-message-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-status-message-review-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 1
+      }
+    },
+    {
+      "ruleId": "rgaa-svg-decorative-aria-hidden",
+      "title": "Decorative SVGs are hidden with aria-hidden=\"true\"",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-svg-decorative-aria-hidden.js",
+      "testFile": "tests/rules/automatic/rgaa-svg-decorative-aria-hidden.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-svg-decorative-aria-hidden-all-scenarios.html",
+      "totalCases": 6,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 1,
+        "CANTTELL": 2,
+        "OTHER": 3
+      }
+    },
+    {
       "ruleId": "rgaa-svg-hidden-no-alternative",
       "title": "Hidden decorative SVGs carry no text alternative",
       "type": "automatic",
@@ -1085,29 +1748,97 @@
       "testFile": "tests/rules/automatic/rgaa-svg-role-img.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-svg-role-img-all-scenarios.html",
-      "totalCases": 9,
+      "totalCases": 10,
       "caseCounts": {
         "PASS": 2,
-        "FAIL": 3,
-        "CANTTELL": 1,
+        "FAIL": 1,
+        "CANTTELL": 4,
         "OTHER": 3
       }
     },
     {
-      "ruleId": "rgaa-th-scope-row-col",
-      "title": "Table headers use scope=\"row\" or scope=\"col\"",
+      "ruleId": "rgaa-table-title-adjacent",
+      "title": "A heading just before a data table is tied to it if it is its title",
       "type": "manual",
       "wcagSc": [],
-      "ruleFile": "rules/manual/th-scope-row-col-manual.js",
-      "testFile": "tests/rules/manual/rgaa-th-scope-row-col.test.js",
+      "ruleFile": "rules/manual/table-title-adjacent-manual.js",
+      "testFile": "tests/rules/manual/rgaa-table-title-adjacent.test.js",
       "hasFixture": true,
-      "fixtureFile": "tests/fixtures/rgaa-th-scope-row-col-all-scenarios.html",
-      "totalCases": 5,
+      "fixtureFile": "tests/fixtures/rgaa-table-title-adjacent-all-scenarios.html",
+      "totalCases": 2,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 1,
+        "OTHER": 1
+      }
+    },
+    {
+      "ruleId": "rgaa-text-direction-marked",
+      "title": "Text in the other reading direction is marked with dir",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-text-direction-marked.js",
+      "testFile": "tests/rules/automatic/rgaa-text-direction-marked.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-text-direction-marked-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 1,
+        "CANTTELL": 1,
+        "OTHER": 1
+      }
+    },
+    {
+      "ruleId": "rgaa-text-image-review",
+      "title": "Images of text that carry information are replaced by styled text where possible",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/text-image-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-text-image-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-text-image-review-all-scenarios.html",
+      "totalCases": 3,
       "caseCounts": {
         "PASS": 0,
         "FAIL": 0,
         "CANTTELL": 2,
-        "OTHER": 3
+        "OTHER": 1
+      }
+    },
+    {
+      "ruleId": "rgaa-th-association-present",
+      "title": "Table headers have an id, a scope or a header role",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-th-association-present.js",
+      "testFile": "tests/rules/automatic/rgaa-th-association-present.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-th-association-present-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 1,
+        "FAIL": 1,
+        "CANTTELL": 1,
+        "OTHER": 0
+      }
+    },
+    {
+      "ruleId": "rgaa-th-scope-row-col",
+      "title": "Table headers use scope=\"row\" or scope=\"col\", the right one",
+      "type": "automatic",
+      "wcagSc": [],
+      "ruleFile": "rules/automatic/rgaa-th-scope-row-col.js",
+      "testFile": "tests/rules/automatic/rgaa-th-scope-row-col.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-th-scope-row-col-all-scenarios.html",
+      "totalCases": 7,
+      "caseCounts": {
+        "PASS": 1,
+        "FAIL": 4,
+        "CANTTELL": 0,
+        "OTHER": 2
       }
     },
     {
@@ -1128,6 +1859,23 @@
       }
     },
     {
+      "ruleId": "rgaa-tooltip-review",
+      "title": "Content shown on hover or focus can be dismissed, hovered and stays visible",
+      "type": "manual",
+      "wcagSc": [],
+      "ruleFile": "rules/manual/tooltip-review-manual.js",
+      "testFile": "tests/rules/manual/rgaa-tooltip-review.test.js",
+      "hasFixture": true,
+      "fixtureFile": "tests/fixtures/rgaa-tooltip-review-all-scenarios.html",
+      "totalCases": 3,
+      "caseCounts": {
+        "PASS": 0,
+        "FAIL": 0,
+        "CANTTELL": 2,
+        "OTHER": 1
+      }
+    },
+    {
       "ruleId": "rgaa-video-captions-track-kind",
       "title": "Video caption tracks use kind=\"captions\"",
       "type": "automatic",
@@ -1136,10 +1884,10 @@
       "testFile": "tests/rules/automatic/rgaa-video-captions-track-kind.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-video-captions-track-kind-all-scenarios.html",
-      "totalCases": 8,
+      "totalCases": 9,
       "caseCounts": {
         "PASS": 2,
-        "FAIL": 3,
+        "FAIL": 4,
         "CANTTELL": 1,
         "OTHER": 2
       }
@@ -1170,10 +1918,10 @@
       "testFile": "tests/rules/automatic/rgaa-widget-label-in-name.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-widget-label-in-name-all-scenarios.html",
-      "totalCases": 6,
+      "totalCases": 7,
       "caseCounts": {
         "PASS": 1,
-        "FAIL": 2,
+        "FAIL": 3,
         "CANTTELL": 1,
         "OTHER": 2
       }

@@ -26,7 +26,8 @@ const rgaa = definePack({
       [TEST_PROFILE]: {
         version: '4.1.2',
         tags: wcagTags('2.1').concat(['rgaa']),
-        mappedRules: true
+        mappedRules: true,
+        keepsParsing: true
       }
     }
   }

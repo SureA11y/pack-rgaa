@@ -182,3 +182,15 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-figure-caption-structure
     ['fcs_case_11', 'canvas']
   ]);
 });
+
+// A caption or an image hidden with CSS or the hidden attribute is none to a
+// user (glossary « Contenu caché »).
+test(`${RULE_ID}: a hidden caption or a hidden image is left out`, () => {
+  for (const body of [
+    '<figure><img src="a.png" alt="G"><figcaption style="display:none">Légende</figcaption></figure>',
+    '<figure><img src="a.png" alt="G"><figcaption hidden>Légende</figcaption></figure>',
+    '<figure><img src="a.png" alt="G" hidden><figcaption>Légende</figcaption></figure>'
+  ]) {
+    assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'notApplicable');
+  }
+});

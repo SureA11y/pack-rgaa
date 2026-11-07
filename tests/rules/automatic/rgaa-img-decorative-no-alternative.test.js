@@ -120,6 +120,8 @@ test(`${RULE_ID}: RGAA profile, a focusable role="presentation" div: the WCAG-si
   const v = verdicts('<div role="presentation" tabindex="0">x</div>');
   assert.equal(v.wcagRule, 'cantTell');
   assert.equal(v.rule, 'notApplicable');
+  // Some of 1.2's tests have no rule, so with nothing found it asks
+  // (partial coverage) rather than being notApplicable.
   assert.equal(v.rgaa, 'noneFoundInPart');
 });
 

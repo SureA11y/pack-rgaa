@@ -121,3 +121,25 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-letters-spaced-with-spac
   const ids = rule.occurrences.map((o) => (o.html.match(/id="([^"]+)"/) || [])[1]);
   assert.deepEqual(ids, ['lss_case_01', 'lss_case_02', 'lss_case_07', 'lss_case_08']);
 });
+
+// 10.1.3: « Les espaces ne sont pas utilisées pour simuler des tableaux »
+// nor « des colonnes de texte ».
+test(`${RULE_ID}: words lined up with runs of spaces are asked about`, () => {
+  for (const [body, code] of [
+    ['<pre>Nom      Prix\nPomme    2 €\nPoire    3 €</pre>', 'spacesAsTable'],
+    ['<p>Nom&nbsp;&nbsp;&nbsp;&nbsp;Prix&nbsp;&nbsp;&nbsp;&nbsp;Stock</p>', 'spacesAsColumns']
+  ]) {
+    const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'cantTell', {
+      minOccurrences: 1,
+      maxOccurrences: 1
+    });
+    assert.equal(rule.occurrences[0].data.details.reasonCode, code, body);
+  }
+  for (const body of [
+    '<pre><code>const a   = 1;\nconst bc  = 2;</code></pre>',
+    '<p>10&nbsp;000&nbsp;€</p>',
+    '<p>Nom&nbsp;&nbsp;&nbsp;Prix</p>'
+  ]) {
+    assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'notApplicable');
+  }
+});

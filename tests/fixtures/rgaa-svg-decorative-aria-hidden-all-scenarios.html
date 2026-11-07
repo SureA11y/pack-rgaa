@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>rgaa-svg-decorative-aria-hidden — scenario fixture</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.4; margin: 24px; }
+    h1 { font-size: 20px; margin: 0 0 16px; }
+    h2 { font-size: 16px; margin: 22px 0 10px; }
+    .note { font-size: 12px; opacity: 0.85; margin: 8px 0 16px; }
+    .case { border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin: 10px 0; }
+    .case-title { font-weight: 700; margin: 0 0 8px; }
+  </style>
+</head>
+<body>
+<body>
+  <h1>Scenario fixture: <code>rgaa-svg-decorative-aria-hidden</code> (RGAA 1.2.4)</h1>
+
+  <p class="note">
+    Each target has a stable <code>id</code> of the form <code>sda_case_NN</code>.
+    A decorative <code>&lt;svg&gt;</code> needs <code>aria-hidden="true"</code>; one
+    marked <code>role="presentation"</code> without it fails, and other exposed SVGs
+    that may be decorative are asked about.
+  </p>
+
+  <div class="case" id="case_01">
+    <div class="case-title">01 — FAIL: role="presentation" without aria-hidden</div>
+    <p>Contact <svg id="sda_case_01" role="presentation" width="16" height="16"><rect width="16" height="16"/></svg></p>
+  </div>
+
+  <div class="case" id="case_02">
+    <div class="case-title">02 — CANTTELL: icon beside a button's text</div>
+    <button type="button"><svg id="sda_case_02" width="16" height="16"><title>loupe</title><rect width="16" height="16"/></svg> Rechercher</button>
+  </div>
+
+  <div class="case" id="case_03">
+    <div class="case-title">03 — CANTTELL: unnamed exposed SVG</div>
+    <svg id="sda_case_03" width="40" height="40"><circle cx="20" cy="20" r="18"/></svg>
+  </div>
+
+  <div class="case" id="case_04">
+    <div class="case-title">04 — NOT APPLICABLE: hidden with aria-hidden</div>
+    <svg id="sda_case_04" aria-hidden="true" width="16" height="16"><rect width="16" height="16"/></svg>
+  </div>
+
+  <div class="case" id="case_05">
+    <div class="case-title">05 — NOT APPLICABLE: the only content of a link (it carries information)</div>
+    <a href="/"><svg id="sda_case_05" aria-label="Accueil" width="16" height="16"><rect width="16" height="16"/></svg></a>
+  </div>
+
+  <div class="case" id="case_06">
+    <div class="case-title">06 — NOT APPLICABLE: role="img"</div>
+    <svg id="sda_case_06" role="img" aria-label="Plan" width="16" height="16"><rect width="16" height="16"/></svg>
+  </div>
+</body>
+</html>

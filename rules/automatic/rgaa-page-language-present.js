@@ -63,11 +63,20 @@ const meta = {
   coverage: {},
   // The reason codes the rule gives, so definePack can check that `review`
   // names only these.
-  reasonCodes: ['missingLanguage', 'xmlLangOnly'],
+  reasonCodes: ['missingLanguage', 'xmlLangOnly', 'langOnlyOnXhtml'],
   // How a person answers each question the rule asks, per reason code: a few
   // steps from the element the finding names, then what they see if it
   // passes and if it fails. In English; reports show it as "How to check".
   review: {
+    langOnlyOnXhtml: {
+      steps: [
+        'Find the doctype and the <html> element of the page source: the language is given by lang alone on an XHTML page.',
+        'Check what the doctype asks: both lang and xml:lang for XHTML 1.0, xml:lang for XHTML 1.1.'
+      ],
+      passWhen: 'The <html> element has the attribute its document type needs.',
+      failWhen:
+        'The attribute the document type needs is missing, so no default language is set for it, which fails RGAA 8.3.1.'
+    },
     xmlLangOnly: {
       steps: [
         'Find the doctype and the <html> element of the page source; the language is given by xml:lang alone, without lang, where the report names it.',
@@ -81,7 +90,9 @@ const meta = {
   }
 };
 
+// A document shown in a frame is no web page of its own (RGAA's « page web »).
 function applicability(ctx) {
+  if (ctx.helpers.isTopLevelDocument && !ctx.helpers.isTopLevelDocument()) return false;
   return ctx.helpers.isWholeDocumentScope ? ctx.helpers.isWholeDocumentScope() : true;
 }
 
@@ -118,6 +129,10 @@ function runInPage(ctx) {
 
   function occurrence(reasonCode, extra) {
     const texts = {
+      langOnlyOnXhtml: [
+        'The page gives its language with lang alone, on an XHTML page that needs xml:lang.',
+        'Add xml:lang with the same value, for example <html lang="fr" xml:lang="fr">.'
+      ],
       xmlLangOnly: [
         'The page gives its language with xml:lang only, which this HTML version does not read.',
         'Add lang with the same value, for example <html lang="fr" xml:lang="fr">.'
@@ -131,29 +146,27 @@ function runInPage(ctx) {
         'Add a lang attribute to the <html> element, for example <html lang="fr">.'
       ]
     };
+    const asks = reasonCode === 'xmlLangOnly' || reasonCode === 'langOnlyOnXhtml';
     return helpers.reportOccurrence(html, {
       summary: texts[reasonCode][0],
       hint: texts[reasonCode][1],
       i18n: {
-        summaryKey:
-          reasonCode === 'xmlLangOnly'
-            ? 'pageLanguagePresent_summary_cantTell_xmlLangOnly'
-            : 'pageLanguagePresent_summary_fail_' + reasonCode,
-        hintKey:
-          reasonCode === 'xmlLangOnly'
-            ? 'pageLanguagePresent_hint_cantTell_xmlLangOnly'
-            : 'pageLanguagePresent_hint_fail',
+        summaryKey: asks
+          ? `pageLanguagePresent_summary_cantTell_${reasonCode}`
+          : 'pageLanguagePresent_summary_fail_' + reasonCode,
+        hintKey: asks
+          ? `pageLanguagePresent_hint_cantTell_${reasonCode}`
+          : 'pageLanguagePresent_hint_fail',
         params: {}
       },
-      uncertainty:
-        reasonCode === 'xmlLangOnly'
-          ? {
-              code: 'spec-only',
-              needed:
-                'Whether RGAA accepts xml:lang without lang for this HTML version and media type.',
-              evidence: { doctype: doctype.kind }
-            }
-          : undefined,
+      uncertainty: asks
+        ? {
+            code: 'spec-only',
+            needed:
+              'Whether RGAA accepts this attribute alone for this HTML version and media type.',
+            evidence: { doctype: doctype.kind }
+          }
+        : undefined,
       data: {
         details: { reasonCode, doctype: doctype.kind, ...(extra || {}) },
         visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
@@ -172,7 +185,13 @@ function runInPage(ctx) {
 
   // First condition: the language is given on <html>.
   const own = languageOf(html);
-  if (own && own.source === 'lang') return result('pass');
+  // RGAA 8.3.1 asks for lang and xml:lang on XHTML 1.0, and xml:lang on 1.1.
+  if (own && own.source === 'lang') {
+    const needsXmlLang = /xhtml/i.test(doctype.kind) && !dom.getAttribute(html, 'xml:lang');
+    return needsXmlLang
+      ? result('cantTell', [occurrence('langOnlyOnXhtml', { location: 'html' })])
+      : result('pass');
+  }
   if (own && own.source === 'xml:lang') {
     return xmlLangSuffices
       ? result('pass')

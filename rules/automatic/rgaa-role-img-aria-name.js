@@ -14,8 +14,11 @@
  *   element with aria-hidden="true", on itself or an ancestor, is left out:
  *   the glossary entry "Image de décoration" says an element with role="img"
  *   is decorative only with aria-hidden="true". Content hidden with CSS or
- *   the hidden attribute is left out too. A page with none is
- *   notApplicable.
+ *   the hidden attribute is left out too, and so is an element that is the
+ *   only content of a link or a button: its alternative is the control's
+ *   name, which the glossary « Image porteuse d'information » (notes 1 and
+ *   2) sends to Links (6.1), Forms (11.9) or Scripts (7.1). A page with
+ *   none is notApplicable.
  * @expectation
  *   The element has a text alternative from one of the two sources RGAA
  *   1.1.1 step 4 lists for role="img": text referenced by aria-labelledby, or
@@ -117,11 +120,35 @@ function runInPage(ctx) {
   const cantTells = [];
   let applicableCount = 0;
 
+  // The only content of a link or a button: its alternative is the
+  // control's name, which the glossary « Image porteuse d'information »
+  // (notes 1 and 2) sends to Links (6.1), Forms (11.9) or Scripts (7.1).
+  function onlyContentOfControl(el) {
+    const tagName = (n) => String(dom.localName(n) || '').toLowerCase();
+    let control = null;
+    for (let a = dom.parentElement(el); a && !control; a = dom.parentElement(a)) {
+      const r = helpers.aria.getExplicitRole(a);
+      if (r === 'link' || r === 'button') control = a;
+      else if (
+        !r &&
+        ((tagName(a) === 'a' && dom.hasAttribute(a, 'href')) || tagName(a) === 'button')
+      ) {
+        control = a;
+      }
+    }
+    if (!control) return false;
+    if (String(dom.textContent(control) || '').trim()) return false;
+    return !Array.from(dom.querySelectorAll(control, 'img, svg, canvas, object, embed')).some(
+      (n) => n !== el && !dom.contains(el, n)
+    );
+  }
+
   for (const el of nodes) {
     if (!el || !dom.get(el, 'getAttribute')) continue;
     if (trim(attr(el, 'role')).toLowerCase().split(' ')[0] !== 'img') continue;
     if (tagOf(el) === 'img' || isOuterSvg(el)) continue;
     if (insideAriaHidden(el)) continue;
+    if (onlyContentOfControl(el)) continue;
     applicableCount += 1;
 
     if (ariaName(el)) continue;

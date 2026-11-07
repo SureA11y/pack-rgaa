@@ -162,12 +162,14 @@ test(`${RULE_ID}: a distant aria-describedby transcript satisfies WCAG 1.2.1, RG
   assert.equal(check(result, WCAG_RULE).outcome, 'notApplicable');
   // WCAG's rollup doesn't fail: its rules found nothing, which core reads as
   // partly checked (1.2.1 can apply to content they don't look for).
+  // Its rules do not find every case 1.2.1 applies to, so core rolls it up
+  // as a question rather than notApplicable.
   const wcag = rollup(result, WCAG_ROLLUP);
   assert.equal(wcag.outcome, 'cantTell');
   assert.equal(wcag.data.details.reasonCode, 'composite.rollup.cantTell.partialCoverage');
   const rgaa = rollup(result, 'rgaa-4.1.2-4.1');
   assert.equal(rgaa.outcome, 'cantTell');
-  assert.deepEqual(rgaa.data.details.checksIds, [RULE_ID]);
+  assert.ok(rgaa.data.details.checksIds.includes(RULE_ID));
 });
 
 // The other direction: WCAG cannot verify an external transcript link, while
@@ -197,4 +199,23 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
     'mta_case_04',
     'mta_case_05'
   ]);
+});
+
+// A short text that only mentions a transcript neither holds it nor leads
+// to it.
+test(`${RULE_ID}: a text that only mentions a transcript is asked about`, () => {
+  for (const body of [
+    '<video controls></video><p>Transcription à venir.</p>',
+    '<video controls></video><p>Pas de transcription disponible pour cette vidéo.</p>'
+  ]) {
+    const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'cantTell');
+    assert.equal(rule.occurrences[0].data.details.reasonCode, 'transcriptMentionOnly', body);
+  }
+  const long =
+    '<video controls></video><div><h3>Transcription</h3><p>' +
+    'Bonjour et bienvenue dans cette présentation de la nouvelle médiathèque de la ville. '.repeat(
+      3
+    ) +
+    '</p></div>';
+  assertRule(runa11yCoreOnHtml(page(long), RUN), RULE_ID, 'pass');
 });

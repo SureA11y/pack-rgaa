@@ -60,11 +60,29 @@ test(`${RULE_ID}: a name that contains the visible text passes; punctuation and 
   }
 });
 
-test(`${RULE_ID}: a title is not checked, and links, buttons and fields are other rules' business`, () => {
+// A button outside a form does nothing unless a script drives it: 7.1.3
+// covers it, and 11.9.2 only the buttons inside a form.
+test(`${RULE_ID}: a button outside a form whose name lacks its visible label fails`, () => {
+  for (const body of [
+    '<button type="button" aria-label="Fermer">Valider</button>',
+    '<input type="button" value="Envoyer" aria-label="Valider">',
+    '<div role="button" tabindex="0" aria-label="Fermer">Valider</div>'
+  ]) {
+    const rule = assertRule(run(body), RULE_ID, 'fail', { maxOccurrences: 1 });
+    assert.deepEqual(reasons(rule), [['fail', 'NAME_LACKS_VISIBLE_LABEL']], body);
+  }
+  assertRule(
+    run('<button type="button" aria-label="Ouvrir le menu">Menu</button>'),
+    RULE_ID,
+    'pass'
+  );
+});
+
+test(`${RULE_ID}: a title is not checked, and links, buttons in a form and fields are other rules' business`, () => {
   for (const body of [
     TAB('title="Réglages"', 'Paramètres'),
     TAB('', 'Paramètres'),
-    '<button aria-label="Fermer">Valider</button>',
+    '<form><button aria-label="Fermer">Valider</button></form>',
     '<a href="/c" aria-label="Écrire">Contact</a>',
     '<div role="checkbox" aria-checked="false" tabindex="0" aria-label="Accepter">J’accepte</div>',
     '<select><option aria-label="Bleu">Rouge</option></select>'
@@ -117,10 +135,18 @@ function rollups(body) {
     const r = result.rulesResults.find((x) => x.ruleId === ruleId);
     return r ? rollupOutcome(r) : 'missing';
   };
+  // Nothing found there: notApplicable, or a criterion that asks only
+  // because some of its tests have no rule (partial coverage).
+  const found = (ruleId) => {
+    const r = result.rulesResults.find((x) => x.ruleId === ruleId);
+    return r && r.data.details.reasonCode === 'composite.rollup.cantTell.partialCoverage'
+      ? 'notApplicable'
+      : outcome(ruleId);
+  };
   return {
     rgaa: outcome('rgaa-4.1.2-7.1'),
     wcag: outcome('wcag-2.5.3-label-in-name'),
-    others: ['rgaa-4.1.2-6.1', 'rgaa-4.1.2-11.2', 'rgaa-4.1.2-11.9'].map(outcome)
+    others: ['rgaa-4.1.2-6.1', 'rgaa-4.1.2-11.2', 'rgaa-4.1.2-11.9'].map(found)
   };
 }
 
@@ -128,7 +154,7 @@ test(`${RULE_ID}: WCAG and RGAA agree on a replaced tab name, reported under 7.1
   const bad = rollups(TAB('aria-label="Réglages"', 'Paramètres'));
   assert.equal(bad.wcag, 'fail');
   assert.equal(bad.rgaa, 'fail');
-  assert.deepEqual(bad.others, ['noneFoundInPart', 'noneFoundInPart', 'noneFoundInPart']);
+  assert.deepEqual(bad.others, ['notApplicable', 'notApplicable', 'notApplicable']);
   const good = rollups(TAB('aria-label="Paramètres avancés"', 'Paramètres'));
   assert.equal(good.wcag, 'passedInPart');
   assert.equal(good.rgaa, 'passedInPart');
@@ -158,6 +184,17 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-widget-label-in-name-all
   assert.deepEqual(got, [
     ['wlin_case_01', 'fail', 'NAME_LACKS_VISIBLE_LABEL'],
     ['wlin_case_02', 'fail', 'NAME_LACKS_VISIBLE_LABEL'],
-    ['wlin_case_03', 'cantTell', 'POSSIBLE_SYMBOL']
+    ['wlin_case_03', 'cantTell', 'POSSIBLE_SYMBOL'],
+    ['wlin_case_06', 'fail', 'NAME_LACKS_VISIBLE_LABEL']
   ]);
+});
+
+// Screen-reader-only text is not on screen, so it is no part of the visible
+// label (unistra.fr's pagination: <span class="sr-only">Page2</span>2).
+test(`${RULE_ID}: screen-reader-only text is left out of the visible label`, () => {
+  const result = run(
+    '<div role="tablist"><div role="tab" tabindex="0" aria-label="Tarifs">Tarifs<span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)"> de l’offre</span></div></div>'
+  );
+  const rule = result.checksResults.find((r) => r.ruleId === RULE_ID);
+  assert.ok(rule && rule.outcome !== 'fail', rule && JSON.stringify(reasons(rule)));
 });

@@ -23,18 +23,27 @@
  *   RGAA 11.2.5: when present, the aria-label, the text aria-labelledby
  *   points to, the title and the content of the <label> each contain the
  *   visible label. Punctuation and capital letters are ignored (the
- *   particular cases of 11.2); accents are not folded. A source that does
- *   not contain it fails.
+ *   particular cases of 11.2); accents are not folded. The source that
+ *   gives the accessible name fails when it does not contain it. Another
+ *   source that does not (a title holding a format hint beside a <label>)
+ *   is asked about: the test's conditions name every source present, but
+ *   its methodology and the glossary « Étiquette de champ de formulaire »
+ *   judge the one that is the étiquette, as 11.9.2 does for buttons. A
+ *   word that differs only by its ending ("Recherche" for "Rechercher") is
+ *   asked about too: « contient » may be read as a string or as words.
  * @implementation-notes
- * - Text that is rendered but drawn so that nothing of it can be seen, the
- *   screen-reader-only patterns (clipped, 1px with its overflow hidden,
- *   transparent; core's helpers.isVisuallyHidden), is not part of the
- *   visible label, though assistive technologies read it.
+ * - The content of a switch, checkbox or radio that is only a state word
+ *   ("Activé", "On") is its state, not its étiquette: such a field has no
+ *   visible label, and 11.2.5 does not apply to it.
+ * - Screen-reader-only text inside the element or its label (clipped
+ *   away, 1x1 px with its overflow hidden, transparent:
+ *   helpers.isVisuallyHidden) is not part of the visible label.
  * - Its runInPage is the one of rgaa-link-label-in-name-sources, apart from the
  *   `family` constant and the messages; the four label-in-name files are
  *   changed together. That file documents the comparison and the cases
  *   asked about instead of failed (a possible symbol, an abbreviation, text
- *   in parentheses).
+ *   in parentheses, a word that differs only by its ending, such as
+ *   "Recherche" for "Rechercher").
  * - Opt-in (tag `rgaa`): WCAG 2.5.3 compares only the accessible name,
  *   which label-in-name checks; this rule runs only under the rgaa-4.1.2
  *   profile, the `rgaa` tag or its own id.
@@ -64,7 +73,8 @@ const meta = {
     'SOURCE_LACKS_VISIBLE_LABEL',
     'POSSIBLE_SYMBOL',
     'POSSIBLE_ABBREVIATION',
-    'PARENTHESISED_TEXT_MISSING'
+    'PARENTHESISED_TEXT_MISSING',
+    'POSSIBLE_INFLECTION'
   ],
   review: {
     POSSIBLE_SYMBOL: {
@@ -99,6 +109,28 @@ const meta = {
         'The source contains the visible label, the text in parentheses being only a note (such as "(optional)") that does not name the field.',
       failWhen:
         'The source leaves out words of the visible label that a user would say to reach the field, which fails RGAA 11.2.5.'
+    },
+    SOURCE_LACKS_VISIBLE_LABEL: {
+      steps: [
+        'Find the form field the report names, and read its visible label on screen.',
+        'Inspect it: the source the report names does not contain the visible label, and does not give the accessible name.',
+        'Check which reading of RGAA 11.2.5 the audit follows: its conditions list every source, while its methodology checks only the one that gives the name.'
+      ],
+      passWhen:
+        'The audit reads 11.2.5 by its methodology, and the source that gives the name contains the visible label; making the other source contain it too, or removing it, settles both readings.',
+      failWhen:
+        'The audit reads 11.2.5 by its conditions, so a source that does not contain the visible label fails RGAA 11.2.5.'
+    },
+    POSSIBLE_INFLECTION: {
+      steps: [
+        'Find the form field the report names, and read its visible label on screen.',
+        'Inspect each label source it has: aria-label, the text aria-labelledby points to, title, and the content of its <label>.',
+        'Compare the source with the visible label: they differ only by the ending of a word (such as "Recherche" and "Rechercher").'
+      ],
+      passWhen:
+        'The source contains the visible label as a speech-input user would say it, the word ending aside.',
+      failWhen:
+        'The source does not contain the visible label: RGAA excuses only punctuation and capital letters, so the field fails RGAA 11.2.5.'
     }
   }
 };
@@ -143,7 +175,7 @@ function runInPage(ctx) {
       'input, select, textarea, output, progress, meter, [role~="textbox" i], [role~="searchbox" i], [role~="combobox" i], [role~="spinbutton" i], [role~="slider" i], [role~="listbox" i], [role~="checkbox" i], [role~="radio" i], [role~="switch" i], [role~="progressbar" i]',
     button: 'button, input, [role~="button" i]',
     widget:
-      '[role~="tab" i], [role~="menuitem" i], [role~="menuitemcheckbox" i], [role~="menuitemradio" i], [role~="treeitem" i], [role~="gridcell" i], [role~="option" i]'
+      '[role~="tab" i], [role~="menuitem" i], [role~="menuitemcheckbox" i], [role~="menuitemradio" i], [role~="treeitem" i], [role~="gridcell" i], [role~="option" i], button, input, [role~="button" i]'
   };
 
   function tagOf(el) {
@@ -244,6 +276,28 @@ function runInPage(ctx) {
     );
   }
 
+  // Screen-reader-only text (clipped away, 1x1 px with its overflow hidden,
+  // transparent) is in the accessibility tree but not on screen, so it is
+  // no part of the visible label: on unistra.fr, "Page" in
+  // <span class="sr-only">Page</span>2 made "Page2" the visible label.
+  const hiddenCache = new Map();
+  function srOnly(el, container) {
+    if (typeof helpers.isVisuallyHidden !== 'function') return false;
+    // The container itself is left alone: a skip link is screen-reader-only
+    // until it is focused, and its text is its visible label then.
+    for (let a = el; a && a !== container; a = dom.parentElement(a)) {
+      if (!hiddenCache.has(a)) {
+        let hidden = false;
+        try {
+          hidden = !!helpers.isVisuallyHidden(a);
+        } catch {}
+        hiddenCache.set(a, hidden);
+      }
+      if (hiddenCache.get(a)) return true;
+    }
+    return false;
+  }
+
   const SHOW_TEXT = 4;
 
   // Rendered and in the accessibility tree but drawn so that nothing can be
@@ -291,7 +345,7 @@ function runInPage(ctx) {
         }
       }
       if (skip || isNonRenderedTag(tagOf(p))) continue;
-      if (visibleOnly && !isAccEligible(p)) continue;
+      if (visibleOnly && (!isAccEligible(p) || srOnly(p, container))) continue;
       parts.push(t);
       if (!elements.includes(p)) elements.push(p);
     }
@@ -334,10 +388,14 @@ function runInPage(ctx) {
   // The visible label (glossary "Intitulé visible") and where it comes from.
   // Links, buttons and components show it as their content; a field shows it
   // in its <label>, or in the text its aria-labelledby points to.
+  // The whole text is a state, in the shipped locales.
+  const STATE_WORDS =
+    /^\s*(on|off|yes|no|enabled|disabled|activ[ée]e?|d[ée]sactiv[ée]e?|actif|inactif|oui|non|an|aus|ein|ja|nein|aktiv|inaktiv|s[ií]|activado|desactivado|オン|オフ|有効|無効)\s*$/i;
+
   function visibleLabelOf(el) {
     const tag = tagOf(el);
     const role = explicitRole(el);
-    if (family === 'button' && tag === 'input') {
+    if (tag === 'input' && classify(el) === 'button') {
       if (inputType(el) === 'image') return { text: '', origin: '', elements: [] };
       const value = String(dom.getAttribute(el, 'value') || '')
         .replace(/\s+/g, ' ')
@@ -352,7 +410,9 @@ function runInPage(ctx) {
       if (fromRefs.text) return { ...fromRefs, origin: 'aria-labelledby' };
       if (FIELD_ROLES_NAMED_BY_CONTENT.has(role)) {
         const own = textUnder(el, true);
-        if (own.text) return { ...own, origin: 'content' };
+        // A state word ("Activé", "On") is the field's state, not its
+        // étiquette (glossary « Intitulé visible »).
+        if (own.text && !STATE_WORDS.test(own.text)) return { ...own, origin: 'content' };
       }
       return { text: '', origin: '', elements: [] };
     }
@@ -433,6 +493,21 @@ function runInPage(ctx) {
     return false;
   }
 
+  // The same words but for an ending: each word of the visible label is the
+  // source's word or starts it, the label's word of 4 letters or more
+  // ("Recherche" for "Rechercher"). The source then holds the label's
+  // characters; the reverse ("Rechercher" shown, "Recherche" as the name)
+  // does not, and fails.
+  function containsInflectedRun(needle, hay) {
+    if (!needle.length) return false;
+    const close = (label, source) =>
+      label === source || (Array.from(label).length >= 4 && source.indexOf(label) === 0);
+    for (let i = 0; i + needle.length <= hay.length; i++) {
+      if (needle.every((w, j) => close(w, hay[i + j]))) return true;
+    }
+    return false;
+  }
+
   function abbreviatedWords(s) {
     // A word directly followed by a period that ends it ("av." in "l'av. Foch").
     const found = new Set();
@@ -493,7 +568,8 @@ function runInPage(ctx) {
   }
 
   // 'yes' when the source contains the visible label; otherwise why it may
-  // still be acceptable ('abbreviation', 'parentheses', 'symbol'), or 'no'.
+  // still be acceptable ('abbreviation', 'parentheses', 'inflection',
+  // 'symbol'), or 'no'.
   function compare(label, sourceText) {
     const labelTokens = tokenize(label.text, false);
     const sourceTokens = tokenize(sourceText, false);
@@ -510,6 +586,9 @@ function runInPage(ctx) {
       containsWordRun(withoutParentheses, sourceTokens, null)
     ) {
       return 'parentheses';
+    }
+    if (containsInflectedRun(tokenize(label.text, true), tokenize(sourceText, true))) {
+      return 'inflection';
     }
     if (label.elements.some(isIconFontElement)) return 'symbol';
     const whole = label.text.toLowerCase();
@@ -536,6 +615,7 @@ function runInPage(ctx) {
   const UNCERTAIN_CODES = {
     abbreviation: 'POSSIBLE_ABBREVIATION',
     parentheses: 'PARENTHESISED_TEXT_MISSING',
+    inflection: 'POSSIBLE_INFLECTION',
     symbol: 'POSSIBLE_SYMBOL'
   };
 
@@ -548,13 +628,21 @@ function runInPage(ctx) {
       summary: 'The accessible name of this form field does not contain its visible label.',
       hint: 'Make the attribute that names the element contain the visible label, ideally at its start, or remove it so the visible text names the element.'
     },
+    // 11.2.5's conditions name every source present, but its methodology
+    // and the glossary « Étiquette de champ de formulaire » judge the one
+    // that is the étiquette (aria-labelledby, aria-label, <label>, title, in
+    // that order): a title giving a format hint beside a <label> is no
+    // étiquette. 11.9.2 asks in the same conflict.
     SOURCE_LACKS_VISIBLE_LABEL: {
       reasonCode: 'SOURCE_LACKS_VISIBLE_LABEL',
-      outcome: 'fail',
-      summaryKey: 'fieldLabelInNameSources_summary_fail_source',
-      hintKey: 'fieldLabelInNameSources_hint_fail_source',
-      summary: 'A label source of this form field does not contain its visible label.',
-      hint: 'RGAA checks every source present, not only the one that gives the accessible name. Make each of them contain the visible label, or remove the ones that do not.'
+      outcome: 'cantTell',
+      summaryKey: 'fieldLabelInNameSources_summary_cantTell_source',
+      hintKey: 'fieldLabelInNameSources_hint_cantTell_source',
+      summary:
+        'A label source of this form field that does not give its accessible name does not contain its visible label.',
+      hint: 'RGAA 11.2.5 lists every source in its conditions, but its methodology and the glossary judge only the étiquette, the source that gives the name. Check which reading the audit follows. Making the attribute contain the visible label, or removing it, settles both.',
+      needed:
+        'Whether a label source that does not give the accessible name, such as a title with a format hint, is judged under 11.2.5.'
     },
     POSSIBLE_SYMBOL: {
       reasonCode: 'POSSIBLE_SYMBOL',
@@ -575,6 +663,16 @@ function runInPage(ctx) {
         'A label source of this form field differs from its visible label only by an abbreviation or by text in parentheses.',
       hint: 'Check whether the source still contains the visible label as a user would say it. RGAA excuses only punctuation and capital letters.',
       needed: 'Whether the source says the visible label, abbreviation or parenthesised text aside.'
+    },
+    POSSIBLE_INFLECTION: {
+      reasonCode: 'POSSIBLE_INFLECTION',
+      outcome: 'cantTell',
+      summaryKey: 'fieldLabelInNameSources_summary_cantTell_inflection',
+      hintKey: 'fieldLabelInNameSources_hint_cantTell_nearMatch',
+      summary:
+        'A label source of this form field differs from its visible label only by the ending of a word, such as "Recherche" and "Rechercher".',
+      hint: 'Check whether the source still contains the visible label as a user would say it. RGAA excuses only punctuation and capital letters.',
+      needed: 'Whether the source says the visible label, a word ending aside.'
     },
     PARENTHESISED_TEXT_MISSING: {
       reasonCode: 'PARENTHESISED_TEXT_MISSING',
@@ -603,7 +701,11 @@ function runInPage(ctx) {
 
   for (const el of nodes) {
     if (!el || !dom.get(el, 'getAttribute')) continue;
-    if (classify(el) !== family) continue;
+    const kind = classify(el);
+    // A button outside a form is a component a script drives: 7.1.3 covers
+    // it, and 11.9.2 only the buttons inside a form.
+    const asComponent = family === 'widget' && kind === 'button' && !insideForm(el);
+    if (kind !== family && !asComponent) continue;
     if (family === 'button' && !insideForm(el)) continue;
     if (!isDomVisible(el)) continue;
 

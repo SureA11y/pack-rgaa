@@ -10,8 +10,10 @@
  * @applicability
  *   Applies to links (a[href], area[href], role="link") whose whole
  *   accessible name is a known generic phrase ("en savoir plus", "click
- *   here", ...) or a bare file format ("PDF"), the same lists
- *   link-name-quality uses, and whose only nearby context is one that RGAA's
+ *   here", ...) or a bare file format ("PDF"), the lists link-name-quality
+ *   uses with more French phrases (« Découvrir », « Plus d'info », « Voir
+ *   tout »…); on a page with no language declared, every list applies. Its
+ *   only nearby context is one that RGAA's
  *   glossary entry "Contexte du lien" does not list: the text an
  *   aria-describedby points to, or the text of an enclosing <dd>, <dt>,
  *   <blockquote> or <figcaption>. A link with context from its paragraph,
@@ -178,7 +180,25 @@ function runInPage(ctx) {
       'ce lien',
       'télécharger',
       'voir plus',
-      'info'
+      'info',
+      "plus d'info",
+      'découvrir',
+      'en découvrir plus',
+      'découvrir plus',
+      'pour en savoir plus',
+      'savoir plus',
+      'en lire plus',
+      'lire',
+      "lire l'article",
+      'continuer la lecture',
+      'voir',
+      'voir tout',
+      'tout voir',
+      'voir le détail',
+      'voir les détails',
+      'consulter',
+      'accéder',
+      'accédez'
     ]),
     ja: new Set([
       'こちら',
@@ -257,6 +277,8 @@ function runInPage(ctx) {
 
   function isGenericPhrase(normalized, lang) {
     if (GENERIC_LINK_TEXT.en.has(normalized)) return true;
+    // With no language declared, any of the lists may apply.
+    if (!lang) return Object.values(GENERIC_LINK_TEXT).some((set) => set.has(normalized));
     return !!(
       lang &&
       lang !== 'en' &&

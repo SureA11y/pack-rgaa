@@ -162,8 +162,8 @@ test('validate: asks, reasonCodes and findings must be routes it can use', () =>
   assert.match(problemsOf({ asks: ['1.1.1'] }).join('\n'), /asks names 1\.1\.1, which tests/);
   assert.match(problemsOf({ reasonCodes: [] }).join('\n'), /reasonCodes must be an object/);
   assert.match(
-    problemsOf({ reasonCodes: { X: { outcome: 'fail' } } }).join('\n'),
-    /reasonCodes\.X\.outcome can only be 'cantTell'/
+    problemsOf({ reasonCodes: { X: { outcome: 'pass' } } }).join('\n'),
+    /reasonCodes\.X\.outcome can only be 'cantTell' or 'fail'/
   );
   assert.match(problemsOf({ findings: {} }).join('\n'), /findings must be a list/);
   assert.match(
@@ -238,7 +238,14 @@ test('the image button, the title-only field and the labelled decorative image n
   assert.deepEqual(rgaa('input-image-alt-decorative'), ['1.3.3']);
   // The title-only field is form-control-programmatic-label-quality's since
   // label-title-only was deprecated (1.10.0); the profile no longer runs it.
-  assert.deepEqual(rgaa('form-control-programmatic-label-quality'), ['11.1.3', '11.2.2']);
+  // It also asks the aria-label and aria-labelledby questions of 11.2.3 and
+  // 11.2.4; a mapping names every test for each of its questions.
+  assert.deepEqual(rgaa('form-control-programmatic-label-quality'), [
+    '11.1.3',
+    '11.2.2',
+    '11.2.3',
+    '11.2.4'
+  ]);
   assert.ok(!result.checksResults.some((r) => r.ruleId === 'label-title-only'));
   // presentation-role-conflict maps to no RGAA test, so the profile does not
   // run it; rgaa-img-decorative-no-alternative reports the image under 1.2.1.

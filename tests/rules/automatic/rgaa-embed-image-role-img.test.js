@@ -33,14 +33,24 @@ test(`${RULE_ID}: role="img" with a text alternative passes`, () => {
 
 test(`${RULE_ID}: no alternative and no adjacent link fails`, () => {
   for (const body of [
-    `<embed ${IMG}>`,
+    `<figure><embed ${IMG}><figcaption>Plan</figcaption></figure>`,
     `<embed ${IMG} role="img">`,
-    `<embed ${IMG}><p>Texte</p>`
+    `<embed ${IMG} tabindex="0"><p>Texte</p>`
   ]) {
     const rule = assertRule(run(body), RULE_ID, 'fail', { minOccurrences: 1, maxOccurrences: 1 });
     assert.equal(rule.occurrences[0].data.details.reasonCode, 'noAlternative', body);
     assert.equal(rule.occurrences[0].i18n.summaryKey, 'embedImageRoleImg_summary_fail');
   }
+});
+
+// One that may be decorative fails 1.2 instead if it is: only one that
+// certainly carries information fails 1.1.
+test(`${RULE_ID}: no alternative on an image that may be decorative is asked about`, () => {
+  const rule = assertRule(run(`<embed ${IMG}>`), RULE_ID, 'cantTell', {
+    minOccurrences: 1,
+    maxOccurrences: 1
+  });
+  assert.equal(rule.occurrences[0].data.details.reasonCode, 'noAlternativeMayBeDecorative');
 });
 
 test(`${RULE_ID}: an alternative without role="img" is asked about (D2)`, () => {
@@ -136,9 +146,9 @@ test(`${RULE_ID}: RGAA profile, title without role="img": WCAG passes, RGAA 1.1 
   assert.equal(v.rgaa, 'cantTell');
 });
 
-test(`${RULE_ID}: RGAA profile, the two standards agree on no alternative and on role="img" with a name`, () => {
+test(`${RULE_ID}: RGAA profile, WCAG fails no alternative where RGAA asks, and both pass role="img" with a name`, () => {
   const none = verdicts(`<embed ${IMG}>`);
-  assert.deepEqual([none.wcagRule, none.rule, none.rgaa], ['fail', 'fail', 'fail']);
+  assert.deepEqual([none.wcagRule, none.rule, none.rgaa], ['fail', 'cantTell', 'cantTell']);
   const named = verdicts(`<embed ${IMG} role="img" aria-label="Ventes">`);
   assert.deepEqual([named.wcagRule, named.rule, named.rgaa], ['pass', 'pass', 'passedInPart']);
 });
@@ -159,4 +169,17 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-embed-image-role-img-all
       ['eiri_case_04', 'adjacentLinkOrButton']
     ]
   );
+});
+
+// Glossary « Image porteuse d'information », notes 1 and 2: the only image of
+// a link or a button is judged as the control's label, under Links (6.1),
+// Forms (11.9) or Scripts (7.1), not under theme 1.
+test(`${RULE_ID}: the only content of a link or a button is left out`, () => {
+  for (const body of [
+    '<a href="/plan"><embed type="image/png" src="p.png"></a>',
+    '<button type="button"><embed type="image/png" src="p.png"></button>',
+    '<form><button><embed type="image/png" src="p.png"></button></form>'
+  ]) {
+    assertRule(run(body), RULE_ID, 'notApplicable');
+  }
 });

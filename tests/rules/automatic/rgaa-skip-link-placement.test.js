@@ -137,3 +137,14 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
   const rule = assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'cantTell', { minOccurrences: 1 });
   assert.ok(rule.occurrences.every((o) => /id="slp_case_01"/.test(o.html)));
 });
+
+// The skip link rgaa-skip-link-present accepts, into <main> past a
+// breadcrumb, is the one whose visibility and place are checked here.
+test(`${RULE_ID}: a skip link into the zone past a breadcrumb is checked`, () => {
+  const body =
+    '<a href="#t">Aller au contenu</a>' +
+    NAV +
+    '<main><nav aria-label="Fil d’Ariane"><a href="/">Accueil</a></nav><h1 id="t">Titre</h1></main>';
+  const rule = assertRule(run(body), RULE_ID, 'cantTell', { minOccurrences: 1 });
+  assert.ok(rule.data.page.skipLink, 'the link is found');
+});

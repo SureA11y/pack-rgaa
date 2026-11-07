@@ -229,6 +229,7 @@ function runInPage(ctx) {
     if (!reasons.length) continue;
     applicableCount += 1;
     if (describedByText(table)) continue;
+    const describedby = hasText(dom.getAttribute(table, 'aria-describedby'));
     // summary is a résumé only on a <table> before HTML5 (5.1.1 step 2).
     const hasSummaryAttr = isNative && hasText(dom.getAttribute(table, 'summary'));
     if (hasSummaryAttr && !isHtml5) continue;
@@ -250,6 +251,7 @@ function runInPage(ctx) {
             reasonCode: 'complexTableNoSummary',
             reasons,
             hasCaption: Boolean(caption),
+            ...(describedby ? { describedbyUnresolved: true } : {}),
             ...(hasSummaryAttr ? { summaryAttributeIgnored: true } : {})
           },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }

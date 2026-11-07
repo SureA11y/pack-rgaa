@@ -29,8 +29,8 @@ const CASES = [
     'deprecated-elements-not-used',
     page('<marquee>News</marquee>'),
     'cantTell',
-    ['13.8.1'],
-    'a question for 13.8.1 (moving content started automatically); 10.1.1 comes from rgaa-presentational-elements-absent and 8.2.1 from rgaa-html-elements-attributes-valid, so the element is counted once in each'
+    [],
+    'a question for no test: 13.8.1 comes from rgaa-moving-content-review; 10.1.1 comes from rgaa-presentational-elements-absent and 8.2.1 from rgaa-html-elements-attributes-valid, so the element is counted once in each'
   ],
   [
     'server-side-image-map-absent',
@@ -43,7 +43,7 @@ const CASES = [
     'input-image-alt-present',
     page('<form><input type="image" src="a.png" alt="Submit"></form>'),
     'cantTell',
-    ['1.1.3'],
+    ['1.1.3', '1.3.3'],
     'RGAA 1.1.3 accepts any alt; whether it says what the button does is asked'
   ],
   [
@@ -84,6 +84,13 @@ const CASES = [
     'hidden audio that plays on its own is still sound'
   ],
   [
+    'click-handler-keyboard-operable',
+    page('<main><span role="button" onclick="ouvrir()">Gérer mes cookies</span></main>'),
+    'fail',
+    ['7.3.1'],
+    'RGAA 7.3.1 asks that an element with a script handler be reachable by keyboard'
+  ],
+  [
     'canvas-text-alternative-quality',
     page('<canvas id="canvas1">Sales 2024: 10k</canvas>'),
     'cantTell',
@@ -103,12 +110,17 @@ for (const [ruleId, html, outcome, tests, why] of CASES) {
   });
 }
 
-test('img-alt-present fails alt=" " under RGAA 1.1.1, and img-alt-decorative does not ask', () => {
-  const result = runa11yCoreOnHtml(page('<img id="a" src="a.png" alt=" ">'), RGAA);
+// img-alt-present's WCAG verdict stays. Under RGAA, a link's only image is
+// judged as the link's label (glossary « Image porteuse d'information »,
+// note 1): rgaa-link-content-label-present fails it, not theme 1.
+test('alt=" " on a link\'s only image fails RGAA 6.2.1, not 1.1.1, and img-alt-decorative does not ask', () => {
+  const result = runa11yCoreOnHtml(page('<a href="/"><img id="a" src="a.png" alt=" "></a>'), RGAA);
   const rule = (id) => result.checksResults.find((r) => r.ruleId === id);
   assert.equal(rule('img-alt-decorative').outcome, 'notApplicable');
   assert.equal(rule('img-alt-present').outcome, 'fail');
-  assert.ok(rgaaTestsOf(rule('img-alt-present')).includes('1.1.1'));
+  assert.ok(!rgaaTestsOf(rule('img-alt-present')).includes('1.1.1'));
+  assert.equal(rule('rgaa-img-alt-present').outcome, 'notApplicable');
+  assert.equal(rule('rgaa-link-content-label-present').outcome, 'fail');
 });
 
 // A video with a captions track is asked whether the captions are complete

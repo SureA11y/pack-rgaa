@@ -19,7 +19,9 @@
  *   glossary « Lien ou bouton adjacent »: « juste avant ou juste après
  *   l’élément ») is a link or button whose name mentions a transcript, or a
  *   block whose text does (a clearly identifiable adjacent transcript, or a
- *   block holding the link). Then the media passes the presence step of
+ *   block holding the link; a short text that only mentions a transcript,
+ *   such as « Transcription à venir », is neither, and is asked about as
+ *   transcriptMentionOnly). Then the media passes the presence step of
  *   RGAA 4.1.1, 4.1.2 and 4.1.3. Otherwise it is flagged (cantTell): the
  *   transcript may be elsewhere, the media may not need one (decorative,
  *   itself an alternative, a CAPTCHA), or a video may meet 4.1.2 or 4.1.3
@@ -214,7 +216,8 @@ function runInPage(ctx) {
     const role = helpers.aria.getExplicitRole(el);
     if (role === 'link' || role === 'button') return true;
     if (tag === 'a' || tag === 'area') return dom.hasAttribute(el, 'href');
-    if (tag === 'button') return true;
+    // A <summary> is the button of a disclosure that reveals the content.
+    if (tag === 'button' || tag === 'summary') return true;
     if (tag === 'input') {
       return ['button', 'submit'].includes(normText(dom.getAttribute(el, 'type')));
     }
@@ -229,12 +232,27 @@ function runInPage(ctx) {
     return dom.textContent(el) || dom.getAttribute(el, 'value') || '';
   }
 
-  // 'adjacentLink', 'adjacentTranscript' or null.
+  // 'adjacentLink', 'adjacentTranscript', 'mentionOnly' or null. A block
+  // that holds a link or button to the transcript, or the transcript
+  // itself (some length of text), is evidence; a short text that only
+  // mentions one (« Transcription à venir ») is not.
   function adjacentEvidence(node) {
     if (!node || dom.nodeType(node) !== 1) return null;
     if (!getEligibility(node).eligible) return null;
     if (isLinkOrButton(node)) return mentionsTranscript(nameOf(node)) ? 'adjacentLink' : null;
-    return mentionsTranscript(dom.textContent(node)) ? 'adjacentTranscript' : null;
+    const text = dom.textContent(node);
+    if (!mentionsTranscript(text)) return null;
+    const controls = Array.from(
+      dom.querySelectorAll(
+        node,
+        'a[href], button, summary, input, [role~="link" i], [role~="button" i]'
+      )
+    );
+    if (controls.some((c) => isLinkOrButton(c) && mentionsTranscript(nameOf(c)))) {
+      return 'adjacentLink';
+    }
+    const words = normText(text).split(' ').filter(Boolean).length;
+    return words >= 30 ? 'adjacentTranscript' : 'mentionOnly';
   }
 
   function describedTranscript(el) {
@@ -265,23 +283,31 @@ function runInPage(ctx) {
     if (!eligInfo || !eligInfo.eligible) continue;
     applicableCount += 1;
 
-    const evidence =
-      adjacentEvidence(neighbour(el, false)) || adjacentEvidence(neighbour(el, true));
-    if (evidence) continue;
+    const found = [adjacentEvidence(neighbour(el, false)), adjacentEvidence(neighbour(el, true))];
+    if (found.some((e) => e === 'adjacentLink' || e === 'adjacentTranscript')) continue;
 
     const element = String(dom.localName(el) || '').toLowerCase();
     const described = describedTranscript(el);
-    const reasonCode = described ? 'describedTranscriptNotAdjacent' : 'noAdjacentTranscript';
+    const mention = found.includes('mentionOnly');
+    const reasonCode = mention
+      ? 'transcriptMentionOnly'
+      : described
+        ? 'describedTranscriptNotAdjacent'
+        : 'noAdjacentTranscript';
     occurrences.push(
       helpers.reportOccurrence(el, {
-        summary: described
-          ? `This <${element}> refers to a transcript through aria-describedby, but no transcript, or link or button to one, is right before or after it.`
-          : `No transcript, or link or button to one, is right before or after this <${element}>.`,
+        summary: mention
+          ? `The text next to this <${element}> mentions a transcript but neither holds it nor links to it.`
+          : described
+            ? `This <${element}> refers to a transcript through aria-describedby, but no transcript, or link or button to one, is right before or after it.`
+            : `No transcript, or link or button to one, is right before or after this <${element}>.`,
         hint: 'Check whether this media needs a transcript (RGAA 4.1). If it does, place the transcript, or a link or button to it, right before or right after the media, in the code and on screen. A video may instead have audio description.',
         i18n: {
-          summaryKey: described
-            ? 'mediaTranscriptAdjacent_summary_cantTell_described'
-            : 'mediaTranscriptAdjacent_summary_cantTell',
+          summaryKey: mention
+            ? 'mediaTranscriptAdjacent_summary_cantTell_mention'
+            : described
+              ? 'mediaTranscriptAdjacent_summary_cantTell_described'
+              : 'mediaTranscriptAdjacent_summary_cantTell',
           hintKey: 'mediaTranscriptAdjacent_hint_cantTell',
           params: { element }
         },

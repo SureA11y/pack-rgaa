@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>rgaa-frame-title-relevant — scenario fixture</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height: 1.4; margin: 24px; }
+    h1 { font-size: 20px; margin: 0 0 16px; }
+    h2 { font-size: 16px; margin: 22px 0 10px; }
+    .note { font-size: 12px; opacity: 0.85; margin: 8px 0 16px; }
+    .case { border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin: 10px 0; }
+    .case-title { font-weight: 700; margin: 0 0 8px; }
+    iframe { width: 200px; height: 100px; }
+  </style>
+</head>
+<body>
+  <h1>Scenario fixture: <code>rgaa-frame-title-relevant</code> (RGAA 2.2.1)</h1>
+
+  <p class="note">
+    Each target has a stable <code>id</code> of the form <code>ftr_case_NN</code>.
+    Each frame with a non-empty title is asked about, quoting the title. A frame
+    with no title or an empty one fails 2.1.1 instead.
+  </p>
+
+  <h2>A. Titled frames, for a person (CANTTELL)</h2>
+
+  <div class="case" id="case_01">
+    <div class="case-title">01 — CANTTELL: title that names the content</div>
+    <iframe id="ftr_case_01" src="about:blank" title="Map of the city centre"></iframe>
+  </div>
+
+  <div class="case" id="case_02">
+    <div class="case-title">02 — CANTTELL: title that names nothing</div>
+    <iframe id="ftr_case_02" src="about:blank" title="iframe"></iframe>
+  </div>
+
+  <h2>B. Out of scope</h2>
+
+  <div class="case" id="case_03">
+    <div class="case-title">03 — NOT APPLICABLE: no title (2.1.1)</div>
+    <iframe id="ftr_case_03" src="about:blank"></iframe>
+  </div>
+
+  <div class="case" id="case_04">
+    <div class="case-title">04 — NOT APPLICABLE: blank title (2.1.1)</div>
+    <iframe id="ftr_case_04" src="about:blank" title="  "></iframe>
+  </div>
+
+  <div class="case" id="case_05">
+    <div class="case-title">05 — NOT APPLICABLE: hidden with aria-hidden</div>
+    <iframe id="ftr_case_05" src="about:blank" title="Tracking" aria-hidden="true"></iframe>
+  </div>
+</body>
+</html>

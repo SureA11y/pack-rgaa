@@ -85,6 +85,20 @@ test(`${RULE_ID}: a phrase is generic only in English or in the link's own langu
   assertRule(run(body, 'en'), RULE_ID, 'notApplicable');
 });
 
+// « Découvrir », « Plus d'info »: phrases the French list lacked. With no
+// language declared, every list applies.
+test(`${RULE_ID}: more French phrases, and every list on a page with no language`, () => {
+  for (const phrase of ['Découvrir', "Plus d'info", 'Plus d’info', 'Voir tout', 'Consulter']) {
+    const body = `<div><a href="/r" aria-describedby="d">${phrase}</a><span id="d">le rapport 2025</span></div>`;
+    assertRule(run(body, 'fr'), RULE_ID, 'cantTell');
+  }
+  const noLang = runa11yCoreOnHtml(
+    '<!doctype html><html><head><title>t</title></head><body><main><div><a href="/r" aria-describedby="d">Lire la suite</a><span id="d">le rapport</span></div></main></body></html>',
+    RUN
+  );
+  assertRule(noLang, RULE_ID, 'cantTell');
+});
+
 // --- opt-in gate -------------------------------------------------------------
 
 const PAGE = page(
