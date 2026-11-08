@@ -4,7 +4,7 @@ RGAA 4.1.2, the French accessibility standard, as a pack for [`@surea11y/core`](
 
 It automates what can be checked in the page, not an RGAA audit: a scan gives results for 80 of RGAA's 106 criteria (167 of its 258 tests), many rules ask (`cantTell`) where only a person can judge, and 43 of the pack's rules are manual, finding what a person must review without ever failing it. A criterion passes only where its rules check all it asks, which four do; elsewhere rules that all pass leave it to a person (see [Reading the results](#reading-the-results)). For that person the pack gives RGAA's own methodology, test by test ([Assessing by hand](#assessing-by-hand)). A conformance claim still needs an auditor to check every criterion.
 
-It needs `@surea11y/core` 1.16 (`~1.16.0`). The standard is built from data with core's `standardFromData`, its tests under its criteria and the law its profile serves, which are experimental in core until 1.18.0 and may change in a minor, so the pack takes no later minor until then. With another core, a scan skips the pack and says why in `skippedPacks`.
+It needs `@surea11y/core` 1.16.1 or a later 1.16 release, which fails what RGAA makes certain where WCAG only asks, reads a standard's procedures, scans several profiles at once, and gives core's steps in RGAA's terms in French. The pack uses core 1.16's experimental APIs (its standard as data with `standardFromData`, tests under criteria and laws, `skip-link`'s `details.lean` and the `standard.review` dictionary keys), so it takes no later minor until they are stable (see [Packs in core's `ENGINE_OPTIONS.md`](https://github.com/SureA11y/core/blob/main/docs/ENGINE_OPTIONS.md#packs--rules-and-standards-from-outside-core)). With an older core, a scan skips the pack and says why in `skippedPacks`.
 
 ```sh
 npm install @surea11y/core @surea11y/pack-rgaa
@@ -137,7 +137,7 @@ const partlyChecked = criteria.filter(
 ); // every rule passed; the rest of the criterion is for a person
 ```
 
-Each finding a rule can't decide comes with the steps to answer it: `howToCheck` on the occurrence, with a few `steps` from the element it names, then `passWhen` and `failWhen`. The pack's rules give them in the scan's locale. Core's rules give theirs in French under the RGAA profile alone, naming the RGAA test the finding bears on (`standard.review`); beside a WCAG profile they keep core's, which name WCAG. Some of core's undecided findings also `lean` toward pass or fail, with the evidence; the outcome stays `cantTell`. The HTML report groups them as "Likely fails", "Likely passes" and "Needs a person".
+Each finding a rule can't decide comes with the steps to answer it: `howToCheck` on the occurrence, with a few `steps` from the element it names, then `passWhen` and `failWhen`. The pack's rules give them in the scan's locale. Core's rules give theirs in RGAA's terms under the RGAA profile alone, naming the RGAA test the finding bears on and RGAA's thresholds (`standard.review`): in English, or in French in a French scan, from the pack's dictionary (`i18n/fr.json`), and in English in a locale the pack doesn't translate; beside a WCAG profile they keep core's, which name WCAG. Some of core's undecided findings also `lean` toward pass or fail, with the evidence; the outcome stays `cantTell`. The HTML report groups them as "Likely fails", "Likely passes" and "Needs a person".
 
 `rgaaCriteriaStatus(result)` from `@surea11y/pack-rgaa/public` reads a scan as an audit grid does, with a row for each of the 106 criteria: `C`, `NC`, `NA`, or `NT` for what a person still has to assess and what no rule checks. Non applicable is said of a page, so a scan of part of one (a `contextSelector`, or `engineOptions.fragment` with `{ fragment: true }` passed here) gives `NT` where it would give `NA`. A scan across frames (`{ topFrame, frames }`) is read through its `topFrame`, the top document's scan; each frame's scan is a document of its own and is not merged in, so what a frame's content fails reaches the grid through the auditor, or through a call on that frame's result.
 
@@ -170,7 +170,7 @@ result.checksResults.find((c) => c.ruleId === 'duplicate-id').verdicts;
 
 ### Assessing by hand
 
-RGAA says how each test is checked, and the pack gives that methodology through core's procedures: each criterion with a procedure for each of its tests, in RGAA's French, in its 13 themes, with its particular cases, technical notes and glossary terms, and the pack's rules that check it.
+RGAA says how each test is checked, and the pack gives that methodology through core's procedures: each criterion with a procedure for each of its tests, in RGAA's French, in its 13 themes, with its particular cases, technical notes and glossary terms, and the rules that check it, the pack's and core's.
 
 ```js
 const {
@@ -195,7 +195,7 @@ require('fs').writeFileSync(
 );
 ```
 
-Each test says how much of it the rules decide (`automation`: `manual` for the 169 tests no rule decides, which a rule may still ask about, `partial` for the 83 they decide in part, `full` for the 6 they decide) and which tools it needs. Facets list the pack's own rules; core's are in [`docs/RGAA_MAPPING.md`](./docs/RGAA_MAPPING.md). The HTML report's "What's left for a person" section reads them too. `relatedRequirements('1.4.3', { packs: [rgaa] })` gives the criteria RGAA relates to a WCAG criterion. The steps are RGAA's words; only `failWhen`, which RGAA doesn't state, is the pack's.
+Each test says how much of it the rules decide (`automation`: `manual` for the 169 tests no rule decides, which a rule may still ask about, `partial` for the 83 they decide in part, `full` for the 6 they decide) and which tools it needs. Each facet lists the rules that bear on its test: the pack's own, and the core rules `rule-map.js` links to it, which core finds through the test each facet names (`mappedRequirements`) and lists in `rules` and `mappedRules` (`page-title-present` under 8.5.1); why each is linked is in [`docs/RGAA_MAPPING.md`](./docs/RGAA_MAPPING.md). The HTML report's "What's left for a person" section reads them too. `relatedRequirements('1.4.3', { packs: [rgaa] })` gives the criteria RGAA relates to a WCAG criterion. The steps are RGAA's words; only `failWhen`, which RGAA doesn't state, is the pack's.
 
 What RGAA's words mean is in its glossary:
 
@@ -208,7 +208,7 @@ rgaaGlossaryFor('1.1.1');
 
 ### In French, and the other languages
 
-The pack's messages and steps come in English and French; choose one with core's `locale` option. In another locale they are in English, while core's own messages follow the locale. RGAA itself, its criteria, tests and methodology, has one official language, so it is in French in every locale:
+The pack's messages and steps come in English and French, and so do the steps for core's undecided findings in RGAA's terms, written in English and translated in `i18n/fr.json`; choose one with core's `locale` option. In another locale they are in English, while core's own messages follow the locale. RGAA itself, its criteria, tests and methodology, has one official language, so it is in French in every locale, procedures included:
 
 ```js
 runDomRulesInPage(url, null, { packs: [rgaa], profile: 'rgaa-4.1.2', locale: 'fr' });
@@ -252,7 +252,7 @@ runDomRulesInPage(url, null, {
 
 - **The standard:** RGAA 4.1.2's themes, criteria, tests, methodology and glossary (`map.js`, `glossary.js`), generated from DINUM's own files (`data/`), and published for tools that work in RGAA's terms (`public.js`).
 - **Procedures:** RGAA's methodology, read through core's procedures (`procedures.js`), and core's undecided findings in RGAA's terms (`review.js`).
-- **The mapping:** for each of core's rules, the RGAA tests it checks, with the reason (`rule-map.js`, documented in [`docs/RGAA_MAPPING.md`](./docs/RGAA_MAPPING.md)). Results name those tests under the pack's profiles, or with `engineOptions.mappings: ['rgaa']`.
+- **The mapping:** for each of core's rules, the RGAA tests it checks, with the reason (`rule-map.js`, documented in [`docs/RGAA_MAPPING.md`](./docs/RGAA_MAPPING.md)). Results name those tests under the pack's profiles, or with `engineOptions.mappings: ['rgaa']`. A finding counts toward the one test it bears on where what core records in its details decides it: a link's kind (`linkKind`) between 6.1.1, 6.1.2, 6.1.3 and 6.1.4; the kind of message a live region declares (`messageKind`) between 7.5.1, 7.5.2 and 7.5.3; a text's size and weight (`typography`) between 3.2.1, 3.2.2, 3.2.3 and 3.2.4, by core's large-text flag, whose bold threshold is 14pt (about 18.67px) where RGAA's is 18.5px, so bold text in between is filed under 3.2.2; and a skip link whose target is missing or hidden from assistive technologies, and that leans fail (`lean`), fails 12.7.2.
 - **The standard as data** (`standard-data.js`, core's format `surea11y-standard/1`): its versions, criteria, tests, the mapping and the profile, from which core builds the standard (`standardFromData`). A standard built on RGAA, such as RAWeb, starts from it with core's `deriveStandard`, rather than copying the pack's tables: `standardDataOf(require('@surea11y/pack-rgaa').standard)`.
 - **One result per RGAA criterion** that a rule checks, each finding counting toward the test it fails, in its own section of the HTML report, with RGAA's French wording.
 - **The `rgaa-4.1.2` profile:** RGAA alone. It runs the pack's own rules and every core rule mapped to an RGAA test, WCAG rules and best-practice ones alike (`img-alt-present` for 1.1.1, `heading-order` for 9.1), and nothing else: no rule that counts for no RGAA test, and no WCAG criterion in the results. It is judged by WCAG 2.1, the version RGAA 4.1.2 is built on, and keeps 4.1.1 Parsing (`keepsParsing`), since RGAA 8.2 still requires valid code: a duplicate id fails 8.2.1, where the 2023 errata to WCAG 2.1 only ask about it. It serves article 47 of the law of 11 February 2005, which results name (`engine.law`) and the HTML report shows; who the law applies to is shown, never decided (core's `lawOf`, `describePacks`).

@@ -56,8 +56,17 @@
  *   focus pass every link is given that ring's style (outline-style: auto)
  *   at rest, in a cascade layer below every author rule, as the browser's
  *   own ring is: an outline appearing on focus costs the browser a layout
- *   of the page per link, and the outline read in focus is the same. The
- *   selectors, the attributes and focus are put back afterwards. Browsers
+ *   of the page per link, and the outline read in focus is the same. A
+ *   tree (the document, or open shadow roots with the same style sheets)
+ *   whose first link shows no outline on focus is left without the ring,
+ *   which there would cost time and save none. Each
+ *   open shadow root holding a link adopts the same rule first in its
+ *   adoptedStyleSheets, unless its own sheets declare a cascade layer or
+ *   cannot be read; a link that hosts a shadow root or is the child of one
+ *   is left out, since its shadow tree's :host and ::slotted rules lose to
+ *   the tree around it, and so is a custom element or the child of one,
+ *   which may host a closed shadow root a script cannot see. The selectors, the attributes, focus and each
+ *   root's adoptedStyleSheets are put back afterwards. Browsers
  *   hide the visited color from scripts, which is why it is emulated rather
  *   than read, and why the browser's own visited color stays a question.
  * - A state adds a mark when it brings an underline, a border, an outline,
@@ -788,16 +797,30 @@ function runInPage(ctx) {
   // as the browser's own ring is, so an author outline overrides both
   // alike. Focus then leaves an outline in place, the browser's focus rule
   // still gives its width and color, and the look read in focus has the
-  // outline it would have had.
+  // outline it would have had. A shadow tree's own rules (:host, ::slotted)
+  // lose to the tree around it whatever their layer, so a link that hosts
+  // an open shadow root or is the child of one is left without it, as is a
+  // custom element or the child of one (mayHostShadow). The
+  // freeze sheet does not reach into shadow trees: each open shadow root
+  // holding a link adopts the ring's rule (adoptInShadowRoots).
   function looksInFocus(list) {
     const looks = new Map();
     const saved = new Map();
+    let unadopt = () => {};
     try {
+      const ringed = treesWithRing(list);
       for (const [el] of list) {
+        const parent = dom.parentElement(el);
+        if (mayHostShadow(el) || (parent && mayHostShadow(parent))) continue;
+        if (!ringed.has(dom.getRootNode(el))) continue;
         const before = dom.hasAttribute(el, STATE_ATTR) ? dom.getAttribute(el, STATE_ATTR) : null;
         saved.set(el, before);
         dom.setAttribute(el, STATE_ATTR, ((before || '') + ' ring').trim());
       }
+      unadopt = adoptInShadowRoots(
+        [...saved.keys()],
+        `@layer surea11y-link-ring{[${STATE_ATTR}~="ring"]{outline-style:auto}}`
+      );
       for (const [el, parent, rest] of list) {
         looks.set(
           el,
@@ -807,12 +830,176 @@ function runInPage(ctx) {
     } catch {
       // the states left unread are not judged
     } finally {
+      unadopt();
       for (const [el, before] of saved) {
         if (before == null) dom.removeAttribute(el, STATE_ATTR);
         else dom.setAttribute(el, STATE_ATTR, before);
       }
     }
     return looks;
+  }
+
+  // A tree (the document or a shadow root) whose styles make focus draw no
+  // outline on its links gains nothing from the ring at rest and pays for
+  // it, so each tree is probed first: one of its links is focused, without
+  // the ring, and the tree's links get the ring only if an outline appears
+  // that was not there at rest. Shadow roots whose style sheets are the
+  // same (the copies of one component) share one probe, since one link per
+  // root is the common case. The ring changes only what focus costs, not
+  // what it shows, so a probe that guesses wrong for another link of the
+  // tree changes the time taken, not the verdicts. A tree whose probe
+  // cannot focus its link keeps the ring.
+  const adoptedIds = new Map();
+  function treeKey(root) {
+    if (dom.nodeType(root) !== 11) return root;
+    const parts = [];
+    try {
+      for (const s of dom.get(root, 'styleSheets') || []) {
+        const node = s.ownerNode;
+        let media = '';
+        try {
+          media = s.media ? s.media.mediaText : '';
+        } catch {}
+        parts.push(
+          `${s.disabled ? 'd' : ''}${media}|${node && dom.localName(node) === 'style' ? dom.textContent(node) : s.href}`
+        );
+      }
+      for (const s of dom.get(root, 'adoptedStyleSheets') || []) {
+        if (!adoptedIds.has(s)) adoptedIds.set(s, adoptedIds.size);
+        parts.push(`a${adoptedIds.get(s)}`);
+      }
+    } catch {
+      return root;
+    }
+    return parts.join('\u0000');
+  }
+
+  // Whether the element hosts a shadow root, or may: a closed one cannot
+  // be seen from a script, so every custom element (a name with a hyphen)
+  // is taken as a possible host, and its :host and ::slotted focus styles
+  // are not overridden by a ring it cannot see.
+  function mayHostShadow(el) {
+    return !!dom.shadowRoot(el) || String(dom.localName(el) || '').includes('-');
+  }
+
+  // The roots whose probe found an outline drawn on focus, or could not
+  // focus its link.
+  function treesWithRing(list) {
+    const keyOf = new Map(); // root -> tree key
+    const outline = new Map(); // tree key -> whether focus draws one
+    for (const [el] of list) {
+      try {
+        const parent = dom.parentElement(el);
+        if (mayHostShadow(el) || (parent && mayHostShadow(parent))) continue;
+        const root = dom.getRootNode(el);
+        if (!root) continue;
+        if (!keyOf.has(root)) keyOf.set(root, treeKey(root));
+        const key = keyOf.get(root);
+        if (outline.has(key)) continue;
+        const rest = safeComputedStyle(el);
+        const atRest = rest ? rest.outlineStyle : '';
+        const appears = inState(el, 'focus', () => {
+          const cs = safeComputedStyle(el);
+          return atRest === 'none' && !!cs && cs.outlineStyle !== 'none';
+        });
+        outline.set(key, appears !== false);
+      } catch {}
+    }
+    const ringed = new Set();
+    for (const [root, key] of keyOf) if (outline.get(key)) ringed.add(root);
+    return ringed;
+  }
+
+  // Whether the root's own style sheets declare a cascade layer (or may:
+  // one cannot be read).
+  function declaresLayer(root) {
+    const walk = (rules, depth) => {
+      for (const r of rules || []) {
+        const name = r && r.constructor && r.constructor.name;
+        if (name === 'CSSLayerBlockRule' || name === 'CSSLayerStatementRule') return true;
+        if (name === 'CSSImportRule') {
+          if (r.layerName != null) return true;
+          let nested = null;
+          try {
+            nested = r.styleSheet && r.styleSheet.cssRules;
+          } catch {
+            return true;
+          }
+          if (nested && depth < 10 && walk(nested, depth + 1)) return true;
+        } else if (r && r.cssRules && depth < 10 && walk(r.cssRules, depth + 1)) {
+          return true;
+        }
+      }
+      return false;
+    };
+    try {
+      for (const sheet of dom.get(root, 'styleSheets') || []) {
+        if (walk(sheet.cssRules, 0)) return true;
+      }
+      return false;
+    } catch {
+      return true;
+    }
+  }
+
+  // Puts a sheet with the css first in the adoptedStyleSheets of each open
+  // shadow root holding one of the elements, so that its cascade layer is
+  // the lowest there; returns what puts each root's list back. A root
+  // whose own sheets declare a layer, or cannot be read, is left out (an
+  // adopted sheet comes after them, and its layer would not be the
+  // lowest), and so is one whose list cannot be set. A list a script on
+  // the page changed in the meantime keeps its change, without the sheet.
+  function adoptInShadowRoots(elements, css) {
+    const doc = elements.length ? dom.ownerDocument(elements[0]) : null;
+    const view = doc && dom.defaultView(doc);
+    const Sheet = view && view.CSSStyleSheet;
+    if (typeof Sheet !== 'function') return () => {};
+    const roots = new Set();
+    for (const el of elements) {
+      try {
+        const root = dom.getRootNode(el);
+        if (root && root !== doc && dom.nodeType(root) === 11 && dom.host(root)) roots.add(root);
+      } catch {}
+    }
+    const adopted = [];
+    if (!roots.size) return () => {};
+    let sheet;
+    try {
+      sheet = new Sheet();
+      sheet.replaceSync(css);
+    } catch {
+      return () => {};
+    }
+    for (const root of roots) {
+      try {
+        if (declaresLayer(root)) continue;
+        const own = dom.get(root, 'adoptedStyleSheets');
+        if (!own || typeof own.length !== 'number') continue;
+        const before = [...own];
+        root.adoptedStyleSheets = [sheet, ...before];
+        const now = dom.get(root, 'adoptedStyleSheets');
+        if (!now || now[0] !== sheet || now.length !== before.length + 1) {
+          if (now && [...now].includes(sheet)) {
+            root.adoptedStyleSheets = [...now].filter((x) => x !== sheet);
+          }
+          continue;
+        }
+        adopted.push([root, before]);
+      } catch {}
+    }
+    return () => {
+      for (const [root, before] of adopted) {
+        try {
+          const now = [...dom.get(root, 'adoptedStyleSheets')];
+          const untouched =
+            now.length === before.length + 1 &&
+            now[0] === sheet &&
+            before.every((x, i) => now[i + 1] === x);
+          if (untouched) root.adoptedStyleSheets = before;
+          else if (now.includes(sheet)) root.adoptedStyleSheets = now.filter((x) => x !== sheet);
+        } catch {}
+      }
+    };
   }
 
   // What every link looks like in one state. Visited, hover and active are

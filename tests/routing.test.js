@@ -155,3 +155,101 @@ test('a decorative SVG that keeps a <title> fails 1.2.4 and is a question under 
   const informative = contributor(criterion(result, '1.1'), 'rgaa-svg-hidden-no-alternative');
   assert.deepEqual([informative.outcome, informative.requirements], ['cantTell', ['1.1.5']]);
 });
+
+// Core says what a link is made of (data.details.linkKind): 6.1.1 to 6.1.4
+// are one test per kind of link.
+test('a question about a link name goes to the test of its kind of link', () => {
+  const cases = [
+    ['<p><a href="/a">Cliquez ici</a></p>', '6.1.1'],
+    ['<p><a href="/a"><img src="a.png" alt="Cliquez ici"></a></p>', '6.1.2'],
+    ['<p><a href="/a"><img src="a.png" alt="">Cliquez ici</a></p>', '6.1.3'],
+    ['<svg><a href="/a"><text x="0" y="10">Cliquez ici</text></a></svg>', '6.1.4']
+  ];
+  for (const [html, expected] of cases) {
+    const found = contributor(criterion(scan(html), '6.1'), 'link-name-quality');
+    assert.deepEqual([found.outcome, found.requirements], ['cantTell', [expected]], html);
+  }
+  const same = contributor(
+    criterion(scan('<p><a href="/a">Voir</a></p><p><a href="/b">Voir</a></p>'), '6.1'),
+    'identical-links-same-purpose'
+  );
+  assert.deepEqual([same.outcome, same.requirements], ['cantTell', ['6.1.1']]);
+});
+
+// Core says what kind of message a live region declares it carries
+// (data.details.messageKind); one that declares none asks about all three.
+test('a question about a live region goes to the test of its kind of message', () => {
+  const cases = [
+    ['role="status"', ['7.5.1']],
+    ['role="alert"', ['7.5.2']],
+    ['role="log"', ['7.5.3']],
+    ['aria-live="polite"', ['7.5.1', '7.5.2', '7.5.3']]
+  ];
+  for (const [attributes, expected] of cases) {
+    const html = `<div ${attributes} aria-hidden="true">Enregistré</div>`;
+    const found = contributor(criterion(scan(html), '7.5'), 'live-region-announcements');
+    assert.deepEqual([found.outcome, found.requirements], ['cantTell', expected], attributes);
+  }
+});
+
+// Text whose contrast can't be computed is asked about under the test of
+// its size and weight, by core's large-text flag (bold from 14pt).
+test('a question about contrast goes to the 3.2 test of its text size and weight', () => {
+  const gradient = 'color:#888;background-image:linear-gradient(#fff,#000)';
+  const cases = [
+    ['font-size:16px', '3.2.1'],
+    ['font-size:16px;font-weight:700', '3.2.2'],
+    ['font-size:24px', '3.2.3'],
+    ['font-size:19px;font-weight:700', '3.2.4']
+  ];
+  for (const [style, expected] of cases) {
+    const html = `<p style="${style};${gradient}">Texte</p>`;
+    const found = contributor(criterion(scan(html), '3.2'), 'contrast-computable');
+    assert.deepEqual([found.outcome, found.requirements], ['cantTell', [expected]], style);
+  }
+});
+
+// A skip link to nowhere, with no script to take its click, leans fail in
+// core (data.details.lean): it doesn't work, which fails 12.7.2. Without the
+// listener hook core can't rule a script out, and it stays a question.
+test('a skip link that leans fail fails 12.7.2, and is a question otherwise', () => {
+  const { JSDOM } = require('jsdom');
+  const { listenerHookScript } = require('@surea11y/core');
+  const { runa11yCoreOnDom } = require('./helpers/run.js');
+  const skip = (hook) => {
+    const dom = new JSDOM(
+      '<!doctype html><html lang="fr"><head><title>Page</title></head><body>' +
+        '<a href="#contenu">Aller au contenu</a><main><h1>Page</h1><p>Texte</p></main></body></html>',
+      { runScripts: 'outside-only' }
+    );
+    dom.window.document.querySelector('*');
+    if (hook) dom.window.eval(listenerHookScript({ early: true }));
+    const result = runa11yCoreOnDom(dom, { engineOptions: { profile: 'rgaa-4.1.2' } });
+    return contributor(criterion(result, '12.7'), 'skip-link');
+  };
+  const leaning = skip(true);
+  assert.deepEqual([leaning.outcome, leaning.requirements], ['fail', ['12.7.2']]);
+  const asked = skip(false);
+  assert.deepEqual([asked.outcome, asked.requirements], ['cantTell', ['12.7.1', '12.7.2']]);
+});
+
+// A skip link whose target aria-hidden or inert takes out of the
+// accessibility tree, with no modal dialog open, leans fail in core: it
+// leads nowhere usable, which fails 12.7.2. A target hidden by display
+// depends on the window's width, gets no lean, and stays a question.
+test('a skip link to a target hidden from assistive technologies fails 12.7.2', () => {
+  const skip = (target) =>
+    contributor(
+      criterion(
+        scan(
+          `<a href="#contenu">Aller au contenu</a><h1>Page</h1><p>Texte</p><div id="contenu" ${target}><p>Suite</p></div>`
+        ),
+        '12.7'
+      ),
+      'skip-link'
+    );
+  const hidden = skip('aria-hidden="true"');
+  assert.deepEqual([hidden.outcome, hidden.requirements], ['fail', ['12.7.2']]);
+  const notShown = skip('style="display:none"');
+  assert.deepEqual([notShown.outcome, notShown.requirements], ['cantTell', ['12.7.1', '12.7.2']]);
+});

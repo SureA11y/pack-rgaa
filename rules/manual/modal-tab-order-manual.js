@@ -9,9 +9,11 @@
  * @standard RGAA 4.1.2 (no WCAG Success Criterion)
  * @applicability
  *   Applies to each dialog shown as modal by aria-modal="true" (an element
- *   with role dialog or alertdialog, or a <dialog>), rendered, and not
- *   opened with showModal(), which makes the rest of the page inert. A page
- *   with none is notApplicable.
+ *   with role dialog or alertdialog, or a <dialog>), rendered, and not one
+ *   core takes as an open modal dialog (helpers.getOpenModalDialogs: opened
+ *   with showModal(), or, with engineOptions.assumeModal under jsdom, an
+ *   open <dialog aria-modal="true">), which makes the rest of the page
+ *   inert. A page with none is notApplicable.
  * @expectation
  *   The 12.8.1 methodology names this case: « l'ordre de tabulation dans
  *   une fenêtre modale ne doit considérer que les éléments … au sein de
@@ -26,7 +28,10 @@
  * - Manual (cantTell): a script may trap focus, which the markup does not
  *   show.
  * - aria-hidden="true" on the rest of the page does not take it out of the
- *   tab order, so it does not count; inert and the hidden attribute do.
+ *   tab order, so it does not count; inert and the hidden attribute do, and
+ *   so does an open modal dialog: what is behind one takes no focus
+ *   (helpers.isModalInert), as core's getFocusableInfo says, so the rule
+ *   counts what core counts.
  * - Opt-in (tag `rgaa`).
  */
 
@@ -90,7 +95,12 @@ function runInPage(ctx) {
     }
   }
 
+  // A dialog core takes as an open modal one, which the browser keeps focus
+  // in by itself.
+  const modals =
+    typeof helpers.getOpenModalDialogs === 'function' ? helpers.getOpenModalDialogs() : null;
   function shownModally(el) {
+    if (modals) return modals.includes(el);
     try {
       return dom.matches(el, ':modal');
     } catch {
@@ -98,8 +108,12 @@ function runInPage(ctx) {
     }
   }
 
-  // Inert, hidden or disabled: out of the tab order.
+  // Behind an open modal dialog, which makes it inert, by core's view.
+  const modalInert = (el) => typeof helpers.isModalInert === 'function' && helpers.isModalInert(el);
+
+  // Inert, hidden, disabled or behind a modal dialog: out of the tab order.
   function outOfTabOrder(el) {
+    if (modalInert(el)) return true;
     for (let a = el; a && dom.nodeType(a) === 1; a = dom.parentElement(a)) {
       if (dom.hasAttribute(a, 'inert') || dom.hasAttribute(a, 'hidden')) return true;
     }

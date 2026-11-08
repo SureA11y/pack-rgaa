@@ -121,7 +121,8 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
           : null,
         bare:
           !!document.getElementById('var_low') &&
-          document.getElementById('var_low').hasAttribute('style')
+          document.getElementById('var_low').hasAttribute('style'),
+        ring: window.__ring || null
       }));
       return { result, after };
     } finally {
@@ -227,6 +228,113 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
     }
     const { result } = await scan(field(''), { rules: { include: RULE_ID } });
     assert.equal(summarize(result).outcome, 'fail');
+  });
+
+  // An element in a shadow tree is hit tested in its own shadow root: the
+  // document's hit test stops at the host, which read as something painted
+  // over the element, so every one was asked about. Its root sees its tree
+  // and every tree around it, so a cover in any of them still counts.
+  await t.test('in shadow trees, indicators are measured', async () => {
+    const css =
+      '.case{position:relative;padding:30px} a{color:#000} .cover{position:absolute;inset:0;background:rgba(0,0,0,.5)}';
+    const html = `<!doctype html><html lang="en"><head><title>t</title><style>body{margin:0;background:#fff} ${css}</style></head><body>
+      <div id="h"><template shadowrootmode="open"><style>${css}
+        #low:focus{outline:2px solid #dddddd} #high:focus,#under:focus{outline:2px solid #000000}
+        .back{position:absolute;inset:0;background:#111111} #dark{position:relative;color:#fff}
+        #dark:focus{outline:2px solid #222222}</style>
+        <div class="case"><a id="low" href="/1">One</a></div>
+        <div class="case"><a id="high" href="/2">Two</a></div>
+        <div class="case"><div class="back"></div><a id="dark" href="/3">Three</a></div>
+        <div class="case"><a id="under" href="/4">Four</a><div class="cover"></div></div>
+        <div class="case"><div><template shadowrootmode="open"><style>#deep:focus,#deeper:focus{outline:2px solid #dddddd}</style><a id="deep" href="/5">Five</a></template></div></div>
+        <div class="case"><div><template shadowrootmode="open"><style>#deeper:focus{outline:2px solid #dddddd}</style><a id="deeper" href="/6">Six</a></template></div><div class="cover"></div></div>
+      </template></div>
+      <div class="case"><div><template shadowrootmode="open"><style>#outer:focus{outline:2px solid #dddddd}</style><a id="outer" href="/7">Seven</a></template></div><div class="cover"></div></div>
+    </body></html>`;
+    const { result } = await scan(html, { rules: { include: RULE_ID } });
+    assert.deepEqual(outcomes(result), {
+      low: ['fail', 'lowContrast'],
+      // A dark layer is painted right behind it, in its own tree.
+      dark: ['fail', 'lowContrast'],
+      // Covered in its own tree, in the tree around it, in the document.
+      under: ['cantTell', 'notComputable'],
+      deep: ['fail', 'lowContrast'],
+      deeper: ['cantTell', 'notComputable'],
+      outer: ['cantTell', 'notComputable']
+    });
+    for (const id of ['under', 'deeper', 'outer']) {
+      assert.equal(details(result, id).cause, 'covered', id);
+    }
+    // #222222 against #111111 on both sides, read in the shadow tree.
+    assert.deepEqual(details(result, 'dark').ratios, [1.19, 1.19]);
+  });
+
+  // A shadow tree's :host and ::slotted rules lose to the tree around it,
+  // whatever their layer, so the ring drawn at rest in the document would
+  // override them. A closed shadow root cannot be seen from a script, so
+  // every custom element and its children go without the ring, and their
+  // own focus outline is the one measured. #d keeps the ring in the
+  // document.
+  await t.test('a closed shadow root keeps its :host and ::slotted outline', async () => {
+    const html = `<!doctype html><html lang="en"><head><title>t</title><style>body{background:#fff;color:#000} a{color:#000}</style></head><body>
+      <p><a id="d" href="/d">Document</a></p>
+      <p><x-btn id="xb" tabindex="0"></x-btn></p>
+      <p><x-slot id="xs"><a id="s1" href="/s">Slotted</a></x-slot></p>
+      <script>
+        const host = document.getElementById('xb').attachShadow({ mode: 'closed' });
+        host.innerHTML = '<style>:host{display:inline-block;padding:2px} :host(:focus){outline:2px solid #cccccc}</style>Button';
+        const slot = document.getElementById('xs').attachShadow({ mode: 'closed' });
+        slot.innerHTML = '<style>::slotted(a:focus){outline:2px solid #cccccc}</style>[<slot></slot>]';
+      </script>
+    </body></html>`;
+    const { result } = await scan(html, { rules: { include: RULE_ID } });
+    assert.deepEqual(outcomes(result), {
+      xb: ['fail', 'lowContrast'],
+      s1: ['fail', 'lowContrast']
+    });
+    assert.equal(details(result, 'xb').color, '#cccccc');
+  });
+
+  // The ring drawn at rest saves the browser a layout only where focus
+  // draws an outline, so a tree whose styles remove it does without: the
+  // document and #h3 here. #h1 and #h2, copies of one component, share one
+  // probe. The verdicts are the same either way.
+  await t.test('the ring at rest goes only where focus draws an outline', async () => {
+    const tree = (css) =>
+      `<style>a{color:#000} ${css}</style><p><a id="$1" href="/1">One</a> <a id="$2" href="/2">Two</a></p>`;
+    const none = 'a:focus{outline:none;box-shadow:0 0 0 2px #dddddd}';
+    const shadow = (id, css) =>
+      `<div id="${id}"><template shadowrootmode="open">${tree(css).replace(/\$/g, id)}</template></div>`;
+    const html = `<!doctype html><html lang="en"><head><title>t</title><style>body{background:#fff}</style></head><body>${tree(none).replace(/\$/g, 'd')}${shadow('h1', '')}${shadow('h2', '')}${shadow('h3', none)}</body></html>`;
+    const { result, after } = await scan(html, { rules: { include: RULE_ID } }, () => {
+      window.__ring = { doc: false, roots: [] };
+      new MutationObserver((records) => {
+        for (const r of records) {
+          for (const n of r.addedNodes) {
+            if (String(n.textContent).includes('surea11y-focus-ring')) window.__ring.doc = true;
+          }
+        }
+      }).observe(document.head, { childList: true });
+      const own = Object.getOwnPropertyDescriptor(ShadowRoot.prototype, 'adoptedStyleSheets');
+      for (const id of ['h1', 'h2', 'h3']) {
+        Object.defineProperty(document.getElementById(id).shadowRoot, 'adoptedStyleSheets', {
+          configurable: true,
+          get() {
+            return own.get.call(this);
+          },
+          set(v) {
+            const ring = [...v].some((s) =>
+              [...s.cssRules].some((x) => x.cssText.includes('surea11y-focus-ring'))
+            );
+            if (ring && !window.__ring.roots.includes(id)) window.__ring.roots.push(id);
+            own.set.call(this, v);
+          }
+        });
+      }
+    });
+    assert.deepEqual(after.ring, { doc: false, roots: ['h1', 'h2'] });
+    assert.deepEqual(outcomes(result).d1, ['fail', 'lowContrast']);
+    assert.deepEqual(outcomes(result).d2, ['fail', 'lowContrast']);
   });
 
   await t.test('the same elements in jsdom are asked about, not failed', () => {

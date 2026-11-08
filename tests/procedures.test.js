@@ -118,6 +118,26 @@ test('a pack rule is listed under the facets of the tests it checks', () => {
   assert.ok(lang.some((f) => f.variants.some((v) => v.ruleId === 'rgaa-moving-content-review')));
 });
 
+test("a facet lists the core rules the mapping links to its test, beside the pack's own", () => {
+  const { RGAA_RULE_TESTS } = require('../rule-map');
+  const { testsOfRule } = require('../mappings');
+  const [title] = core.proceduresFor('8.5', options).facets;
+  assert.deepEqual(pack.standard.procedures[V]['8.5'].facets[0].mappedRequirements, ['8.5.1']);
+  assert.ok(title.rules.includes('page-title-present'));
+  assert.ok(title.mappedRules.includes('page-title-present'));
+  // Under each facet, every core rule linked to its test, and no other.
+  const own = new Set(pack.rules.map((r) => r.id));
+  const coreRules = Object.keys(RGAA_RULE_TESTS[V]).filter((id) => !own.has(id));
+  for (const r of listed.requirements) {
+    for (const f of r.facets) {
+      const id = f.label.split(' ')[1];
+      const expected = coreRules.filter((rule) => testsOfRule(V, rule).includes(id)).sort();
+      assert.deepEqual([...(f.mappedRules || [])].sort(), expected, id);
+    }
+  }
+  assert.ok(listed.notes.some((n) => /celles de @surea11y\/core que la correspondance/.test(n)));
+});
+
 test("a criterion's notes and glossary terms come with it", () => {
   const contrast = core.proceduresFor('3.2', options);
   assert.match(contrast.note, /Cas particuliers : .*logo/);

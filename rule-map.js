@@ -303,7 +303,25 @@ const RGAA_RULE_TESTS = {
     },
     'contrast-computable': {
       tests: ['3.2.1', '3.2.2', '3.2.3', '3.2.4'],
-      note: 'Returns cantTell for visible text whose contrast cannot be computed (background image or gradient, blend mode, filter, text-shadow, opacity). This marks the text that 3.2.1 to 3.2.4 step 1 must find and measure by hand; it never gives a verdict. It does not check the paired CSS color declarations of 10.5, so 10.5 is not mapped.'
+      findings: [
+        {
+          when: { 'typography.isLargeText': false, 'typography.isBold': false },
+          tests: ['3.2.1']
+        },
+        {
+          when: { 'typography.isLargeText': false, 'typography.isBold': true },
+          tests: ['3.2.2']
+        },
+        {
+          when: { 'typography.isLargeText': true, 'typography.isBold': false },
+          tests: ['3.2.3']
+        },
+        {
+          when: { 'typography.isLargeText': true, 'typography.isBold': true },
+          tests: ['3.2.4']
+        }
+      ],
+      note: "Returns cantTell for visible text whose contrast cannot be computed (background image or gradient, blend mode, filter, text-shadow, opacity). This marks the text that 3.2.1 to 3.2.4 step 1 must find and measure by hand; it never gives a verdict. Each question goes to the one test its text's size and weight select, from the typography core gives it (stable): regular text under 24px 3.2.1, bold text not large 3.2.2, regular text from 24px 3.2.3, bold large text 3.2.4; a finding with no typography asks about the four. The pack routes on core's large-text flag (isLargeText), whose bold threshold is 14pt (about 18.67px) where RGAA's is 18.5px, so bold text from 18.5px to under 18.67px is filed under 3.2.2 where RGAA puts it under 3.2.4. The steps still state RGAA's thresholds, and the failure names each test with its size. It does not check the paired CSS color declarations of 10.5, so 10.5 is not mapped."
     },
     'contrast-enhanced': {
       tests: [],
@@ -705,7 +723,13 @@ const RGAA_RULE_TESTS = {
     },
     'identical-links-same-purpose': {
       tests: ['6.1.1', '6.1.2', '6.1.3', '6.1.4'],
-      note: 'Asks whether links with the same name but different destinations serve the same purpose. That is note 3 of the glossary entry « Intitulé de lien »: « plusieurs liens ayant une destination différente dont le "nom accessible" est identique. L\'intitulé de lien seul sera considéré comme non-explicite si le contexte de lien ne permet pas de les différencier » — the question 6.1.1 to 6.1.4 ask of text, image, composite and SVG links. It only asks, since the context may tell the links apart, and which of the four tests applies depends on the kind of link.',
+      findings: [
+        { when: { linkKind: 'text' }, tests: ['6.1.1'] },
+        { when: { linkKind: 'image' }, tests: ['6.1.2'] },
+        { when: { linkKind: 'composite' }, tests: ['6.1.3'] },
+        { when: { linkKind: 'svg' }, tests: ['6.1.4'] }
+      ],
+      note: 'Asks whether links with the same name but different destinations serve the same purpose. That is note 3 of the glossary entry « Intitulé de lien »: « plusieurs liens ayant une destination différente dont le "nom accessible" est identique. L\'intitulé de lien seul sera considéré comme non-explicite si le contexte de lien ne permet pas de les différencier » — the question 6.1.1 to 6.1.4 ask of text, image, composite and SVG links. It only asks, since the context may tell the links apart. Each question goes to the test of its kind of link, which core gives in linkKind (stable): text 6.1.1, image 6.1.2, composite 6.1.3, SVG 6.1.4.',
       outsideCorrespondence: {
         '6.1.1':
           'Glossary « Intitulé de lien », note 3: same-named links to different destinations are not explicit unless their context tells them apart. RGAA relates 6.1 to WCAG 1.1.1, 2.4.4 and 2.5.3; the engine files this check under 2.4.9.',
@@ -930,7 +954,13 @@ const RGAA_RULE_TESTS = {
     },
     'link-name-quality': {
       tests: ['6.1.1', '6.1.2', '6.1.3', '6.1.4'],
-      note: 'Flags a[href], area[href] and role=link elements whose full accessible name, whatever its source (text, img alt, SVG), is a generic phrase or a bare file format with no adjacent context. That is the question 6.1.1 to 6.1.4 step 2 asks per link type: does the name alone or with its context give the link\'s purpose and destination. Unnamed links are explicitly left out, so 6.2.1 is not covered. It accepts an aria-describedby text or a <dd>, <dt>, <blockquote> or <figcaption> as context, which the glossary "Contexte du lien" does not list; rgaa-link-context-review asks about those links. It also accepts the text of a <th> that contains the link, where the glossary names only the <th> associated with the link\'s <td>, and counts it: a header cell is context for what it contains as much as for its column.'
+      findings: [
+        { when: { linkKind: 'text' }, tests: ['6.1.1'] },
+        { when: { linkKind: 'image' }, tests: ['6.1.2'] },
+        { when: { linkKind: 'composite' }, tests: ['6.1.3'] },
+        { when: { linkKind: 'svg' }, tests: ['6.1.4'] }
+      ],
+      note: 'Flags a[href], area[href] and role=link elements whose full accessible name, whatever its source (text, img alt, SVG), is a generic phrase or a bare file format with no adjacent context. That is the question 6.1.1 to 6.1.4 step 2 asks per link type: does the name alone or with its context give the link\'s purpose and destination. Unnamed links are explicitly left out, so 6.2.1 is not covered. It accepts an aria-describedby text or a <dd>, <dt>, <blockquote> or <figcaption> as context, which the glossary "Contexte du lien" does not list; rgaa-link-context-review asks about those links. It also accepts the text of a <th> that contains the link, where the glossary names only the <th> associated with the link\'s <td>, and counts it: a header cell is context for what it contains as much as for its column. Each question goes to the test of its kind of link, which core gives in linkKind (stable): text 6.1.1, image (an <area>, or images only) 6.1.2, composite (text and an image) 6.1.3, SVG 6.1.4.'
     },
     'rgaa-link-state-colors-review': {
       tests: ['10.6.1'],
@@ -1036,7 +1066,13 @@ const RGAA_RULE_TESTS = {
     },
     'live-region-announcements': {
       tests: ['7.5.1', '7.5.2', '7.5.3'],
-      note: 'Asks about a live region assistive technologies cannot reach (aria-hidden, inert, behind an open modal dialog) or that is aria-busy, and, with the live-region hook, about one inserted with its text or shown and filled at once. 7.5 asks that status messages be rendered by assistive technologies, through role status (7.5.1), alert (7.5.2), or log, progressbar or status (7.5.3): a status message in such a region is not rendered, whatever its role. The rule cannot tell which kind of message the region holds, so a finding is a question about each of the three tests.'
+      findings: [
+        { when: { messageKind: 'status' }, tests: ['7.5.1'] },
+        { when: { messageKind: 'alert' }, tests: ['7.5.2'] },
+        { when: { messageKind: 'log' }, tests: ['7.5.3'] },
+        { when: { messageKind: 'progress' }, tests: ['7.5.3'] }
+      ],
+      note: "Asks about a live region assistive technologies cannot reach (aria-hidden, inert, behind an open modal dialog) or that is aria-busy, and, with the live-region hook, about one inserted with its text or shown and filled at once. 7.5 asks that status messages be rendered by assistive technologies, through role status (7.5.1), alert (7.5.2), or log, progressbar or status (7.5.3): a status message in such a region is not rendered, whatever its role. Core says what kind of message the region declares it carries, from its role and live-region attributes (messageKind, stable), and the question goes to that kind's test: status 7.5.1, alert 7.5.2, log and progress 7.5.3; a region that declares no kind (unknown) is a question about each of the three tests."
     },
     'rgaa-main-element-structure': {
       tests: ['9.2.1'],
@@ -1359,7 +1395,19 @@ const RGAA_RULE_TESTS = {
     },
     'skip-link': {
       tests: ['12.7.1', '12.7.2'],
-      note: "Flags skip links whose #fragment does not resolve to a usable target. A skip link is recognised by its wording in the shipped locales ('skip', 'aller au contenu', 'accès direct', 'zum Inhalt springen', 'saltar al contenido', '本文へ') or as the first link of the page placed before main. A dead skip link means the main zone cannot be skipped, which bears on 12.7.1, and it bears on the condition of 12.7.2 that the link works (« Le lien est fonctionnel »); the rule asks, it never fails. The rule does not check the link's visibility or its place across pages, which rgaa-skip-link-placement checks, and a skip link can target zones other than main."
+      findings: [
+        {
+          when: { reasonCode: 'SKIP_LINK_TARGET_MISSING', lean: 'fail' },
+          tests: ['12.7.2'],
+          outcome: 'fail'
+        },
+        {
+          when: { reasonCode: 'SKIP_LINK_TARGET_UNUSABLE', lean: 'fail' },
+          tests: ['12.7.2'],
+          outcome: 'fail'
+        }
+      ],
+      note: "Flags skip links whose #fragment does not resolve to a usable target. A skip link is recognised by its wording in the shipped locales ('skip', 'aller au contenu', 'accès direct', 'zum Inhalt springen', 'saltar al contenido', '本文へ') or as the first link of the page placed before main. A dead skip link means the main zone cannot be skipped, which bears on 12.7.1, and it bears on the condition of 12.7.2 that the link works (« Le lien est fonctionnel »); the rule asks. A link that reads as a skip link, whose fragment is no route and matches nothing, with no script listening for its click, leans fail (lean, which core copies into the finding's details): it goes nowhere, so it fails 12.7.2. A target that aria-hidden or inert takes out of the accessibility tree, with no modal dialog open, leans fail too: the link leads nowhere usable, so it fails 12.7.2. Other findings are questions about both tests, and the steps of both codes name 12.7.2, the condition a link to nowhere fails. The rule does not check the link's visibility or its place across pages, which rgaa-skip-link-placement checks, and a skip link can target zones other than main."
     },
     'rgaa-skip-link-placement': {
       tests: ['12.7.2'],

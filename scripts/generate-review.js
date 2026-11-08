@@ -1,21 +1,26 @@
 'use strict';
 
 /**
- * Generate review.js: how a person answers core's undecided findings, in
- * RGAA's terms. Core's steps name WCAG, which a report against RGAA doesn't
- * judge by; these are core's own French steps, with what fails named as the
- * RGAA tests the finding bears on (rule-map.js). A finding only the RGAA
- * profile asks about reads them (core's standard.review), in French, the
- * language the standard declares.
+ * Generate review.js and the French of its steps: how a person answers core's
+ * undecided findings, in RGAA's terms. Core's steps name WCAG, which a report
+ * against RGAA doesn't judge by; these are core's own steps, with what fails
+ * named as the RGAA tests the finding bears on (rule-map.js). A finding only
+ * the RGAA profile asks about reads them (core's standard.review).
+ *
+ * standard.review is English, from core's English steps; its French, from
+ * core's French steps put in RGAA's terms the same way, goes in i18n/fr.json
+ * under rgaa_standardReview_<rule id>_<CODE>_step<n>, _pass and _fail, which
+ * core reads in a French scan. The build fails if an entry differs between
+ * the two languages (a code, a number of steps, a placeholder).
  *
  * A code that counts toward no RGAA test is left out, and reads core's steps.
  * Where core's steps are WCAG's logic rather than its name,
- * data/review-overrides.js says it in RGAA's terms, and the build fails on a
- * code left speaking of WCAG.
+ * data/review-overrides.js says it in RGAA's terms, in both languages, and
+ * the build fails on a code left speaking of WCAG in either.
  *
  * Usage:
- *   node scripts/generate-review.js           write the module
- *   node scripts/generate-review.js --check   exit 1 if it is out of date
+ *   node scripts/generate-review.js           write review.js and i18n/fr.json
+ *   node scripts/generate-review.js --check   exit 1 if either is out of date
  */
 
 const fs = require('fs');
@@ -24,12 +29,15 @@ const path = require('path');
 const core = require('@surea11y/core');
 const { RGAA_RULE_TESTS } = require('../rule-map');
 const { facetOf } = require('../procedures');
-const OVERRIDES = require('./data/review-overrides');
+const { overrides: overridesIn } = require('./data/review-overrides');
 
 const OUTPUT_FILE = path.join(__dirname, '..', 'review.js');
 const VERSION = '4.1.2';
+// The standard's key, which starts its dictionary keys (index.js).
+const STANDARD_KEY = 'rgaa';
+const TRANSLATED = ['fr'];
 
-const french = () => require('@surea11y/core/procedures/fr');
+const coreDictionary = (lang) => require(`@surea11y/core/procedures/${lang}`);
 
 // The tests a code's findings bear on: where its route sends them, else the
 // row's own and those it asks about.
@@ -46,7 +54,9 @@ function testsOfCode(row, code) {
 // The test a code's findings are filed under, as index.js files a pack
 // rule's: its route's first test, else that of the finding route for the
 // code alone (or its first one by finding), else the row's first test or
-// question.
+// question. A route on a field alone, with no reason code, is no code's:
+// the code's findings go to more than one test, and its entry is filed
+// under the row's first.
 function routedTestOf(row, code) {
   const route = row.reasonCodes && row.reasonCodes[code];
   const routes = (row.findings || []).filter((f) => f.when.reasonCode === code);
@@ -59,70 +69,97 @@ function routedTestOf(row, code) {
   ][0];
 }
 
-const named = (tests) =>
-  tests.length > 1 ? `les tests ${tests.join(', ')} du RGAA` : `le test ${tests[0]} du RGAA`;
-const ofNamed = (tests) =>
-  tests.length > 1 ? `des tests ${tests.join(', ')} du RGAA` : `du test ${tests[0]} du RGAA`;
-
 const NUMBER = String.raw`\d+(?:\.\d+)*`;
-const LIST = String.raw`${NUMBER}(?:(?:,| et| ou) ${NUMBER})*(?: \(ou ${NUMBER}\))?`;
 
-// What RGAA doesn't have: WCAG, its levels, its criteria by number (an RGAA
-// criterion is named with « du RGAA »), and best practice.
+// Each language's words: the tests named, and core's naming of WCAG
+// replaced by them.
+const WORDS = {
+  en: {
+    named: (tests) =>
+      tests.length > 1 ? `RGAA tests ${tests.join(', ')}` : `RGAA test ${tests[0]}`,
+    fails: (failWhen, named) => `${failWhen.replace(/\.$/, '')}, which fails ${named}.`,
+    inRgaaTerms(text, tests) {
+      const named = this.named(tests);
+      const list = String.raw`${NUMBER}(?:(?:,| and| or) ${NUMBER})*(?: \(or ${NUMBER}\))?`;
+      return text
+        .replace(/18[.,]66/g, '18.5')
+        .replace(new RegExp(String.raw`\bfails WCAG ${list}`, 'g'), `fails ${named}`)
+        .replace(new RegExp(String.raw`\bof WCAG ${list}`, 'g'), `of ${named}`)
+        .replace(new RegExp(String.raw`\s*\(WCAG ${list}\)`, 'g'), ` (${named})`);
+    }
+  },
+  fr: {
+    named: (tests) =>
+      tests.length > 1 ? `les tests ${tests.join(', ')} du RGAA` : `le test ${tests[0]} du RGAA`,
+    ofNamed: (tests) =>
+      tests.length > 1 ? `des tests ${tests.join(', ')} du RGAA` : `du test ${tests[0]} du RGAA`,
+    fails: (failWhen, named) => `${failWhen.replace(/\.$/, '')}, ce qui ne respecte pas ${named}.`,
+    inRgaaTerms(text, tests) {
+      const named = this.named(tests);
+      const list = String.raw`${NUMBER}(?:(?:,| et| ou) ${NUMBER})*(?: \(ou ${NUMBER}\))?`;
+      return text
+        .replace(/18[.,]66/g, '18,5')
+        .replace(
+          new RegExp(
+            String.raw`ne (?:respecte|satisfait) pas (?:à )?(?:(?:le|les) critères? )?WCAG ${list}`,
+            'g'
+          ),
+          `ne respecte pas ${named}`
+        )
+        .replace(new RegExp(String.raw`\bde WCAG ${list}`, 'g'), this.ofNamed(tests))
+        .replace(new RegExp(String.raw`\s*\((?:critères? )?WCAG ${list}\)`, 'g'), ` (${named})`);
+    }
+  }
+};
+
+// What RGAA doesn't have, in either language: WCAG, its levels, its
+// criteria by number (an RGAA criterion is named with « du RGAA », or
+// "RGAA criterion"), and best practice.
 const WCAG_WORDS =
-  /WCAG|\bAAA?\b|niveau A|critères? \d(?![\d.]* du RGAA)|bonnes? pratiques?|18[.,]66|7:1|\((?:ARIA|SCR|F|G|H|C)\d+[,)]/;
+  /WCAG|\bAAA?\b|niveau A|\blevel AA?\b|critères? \d(?![\d.]* du RGAA)|(?<!RGAA )\bcriteri(?:on|a) \d|bonnes? pratiques?|best[ -]practices?|18[.,]66|7:1|\((?:ARIA|SCR|F|G|H|C)\d+[,)]/;
 
 // WCAG's technique ids, one or a list: « (F54) », « (F54, F42) », « (ARIA22) ».
 const TECHNIQUES = /\s*\((?:(?:ARIA|SCR|F|G|H|C)\d+(?:, )?)+\)/g;
 
 // Core's text with what fails named as the tests.
-function inRgaaTerms(text, tests) {
-  return text
-    .replace(/ pour WCAG 1\.4\.3, et à 7:1 \([^)]*\) pour 1\.4\.6/g, '')
-    .replace(/ pour le contraste minimum, et à 7:1 \([^)]*\) pour le contraste renforcé/g, '')
-    .replace(/18[.,]66/g, '18,5')
-    .replace(
-      new RegExp(
-        String.raw`ne (?:respecte|satisfait) pas (?:à )?(?:(?:le|les) critères? )?WCAG ${LIST}`,
-        'g'
-      ),
-      `ne respecte pas ${named(tests)}`
-    )
-    .replace(new RegExp(String.raw`\bde WCAG ${LIST}`, 'g'), ofNamed(tests))
-    .replace(new RegExp(String.raw`\s*\((?:critères? )?WCAG ${LIST}\)`, 'g'), ` (${named(tests)})`)
-    .replace(TECHNIQUES, '');
-}
+const inRgaaTerms = (lang, text, tests) =>
+  WORDS[lang].inRgaaTerms(text, tests).replace(TECHNIQUES, '');
 
-function entryOf(ruleId, code, entry, tests, facet, overrides, problems) {
+function entryOf(lang, ruleId, code, entry, tests, overrides, problems) {
+  const words = WORDS[lang];
   const byRule = overrides[ruleId] || {};
   const override = byRule[code] || {};
   const stepKeys = Object.keys(entry)
     .filter((k) => k.startsWith('step'))
     .sort((a, b) => Number(a.slice(4)) - Number(b.slice(4)));
-  const ours = (text) => text.replace(/@TESTS@/g, named(tests));
+  const ours = (text) => text.replace(/@TESTS@/g, words.named(tests));
   let steps = override.steps
     ? override.steps.map(ours)
-    : stepKeys.map((k) => inRgaaTerms(entry[k], tests));
-  let passWhen = ours(override.passWhen || inRgaaTerms(entry.pass, tests));
-  let failWhen = ours(override.failWhen || inRgaaTerms(entry.fail, tests));
-  if (!/RGAA/.test(failWhen)) {
-    failWhen = `${failWhen.replace(/\.$/, '')}, ce qui ne respecte pas ${named(tests)}.`;
-  }
+    : stepKeys.map((k) => inRgaaTerms(lang, entry[k], tests));
+  let passWhen = ours(override.passWhen || inRgaaTerms(lang, entry.pass, tests));
+  let failWhen = ours(override.failWhen || inRgaaTerms(lang, entry.fail, tests));
+  if (!/RGAA/.test(failWhen)) failWhen = words.fails(failWhen, words.named(tests));
   // A rule's '*' entry edits each of its codes after the rest.
   const all = byRule['*'] ? byRule['*']({ steps, passWhen, failWhen }, code) : null;
   if (all) ({ steps, passWhen, failWhen } = all);
-  const texts = [...steps, passWhen, failWhen];
-  for (const text of texts) {
-    if (WCAG_WORDS.test(text)) problems.push(`${ruleId} ${code}: ${text}`);
+  for (const text of [...steps, passWhen, failWhen]) {
+    if (WCAG_WORDS.test(text)) problems.push(`${ruleId} ${code} (${lang}): ${text}`);
   }
-  return { steps, passWhen, failWhen, facet };
+  return { steps, passWhen, failWhen };
 }
 
-function buildReview(
-  dictionary = french(),
+/**
+ * Core's steps for the codes that count toward an RGAA test, in RGAA's
+ * terms, in one language: { ruleId: { CODE: { steps, passWhen, failWhen,
+ * facet } } }, facet being that of the test the code's findings are filed
+ * under. English by default, the language of standard.review.
+ */
+function buildReview({
+  lang = 'en',
+  dictionary = coreDictionary(lang),
   table = RGAA_RULE_TESTS[VERSION],
-  overrides = OVERRIDES
-) {
+  overrides = overridesIn(lang)
+} = {}) {
   const prefixes = new Map();
   for (const check of core.getChecksCatalog()) {
     const key = check.i18n && check.i18n.titleKey;
@@ -141,21 +178,80 @@ function buildReview(
     for (const code of Object.keys(found[ruleId]).sort()) {
       const tests = testsOfCode(table[ruleId], code);
       if (!tests.length) continue;
-      (out[ruleId] = out[ruleId] || {})[code] = entryOf(
-        ruleId,
-        code,
-        found[ruleId][code],
-        tests,
-        facetOf(routedTestOf(table[ruleId], code)),
-        overrides,
-        problems
-      );
+      (out[ruleId] = out[ruleId] || {})[code] = {
+        ...entryOf(lang, ruleId, code, found[ruleId][code], tests, overrides, problems),
+        facet: facetOf(routedTestOf(table[ruleId], code))
+      };
     }
   }
   if (problems.length) {
     throw new Error(`still in WCAG's terms:\n${problems.join('\n')}`);
   }
   return out;
+}
+
+const placeholders = (text) =>
+  [...String(text).matchAll(/\{\{\s*([^|}]+?)\s*\|/g)].map((m) => m[1]).sort();
+
+/**
+ * The dictionary keys that translate an English review into another
+ * language's (`rgaa_standardReview_<rule id>_<CODE>_step<n>`, `_pass`,
+ * `_fail`), each entry whole. Throws where the two differ: a code one of
+ * them lacks, another number of steps, other placeholders.
+ */
+function translationKeys(english, other, lang) {
+  const out = {};
+  const problems = [];
+  for (const ruleId of Object.keys(other)) {
+    for (const code of Object.keys(other[ruleId])) {
+      if (!(english[ruleId] && english[ruleId][code])) {
+        problems.push(`${ruleId} ${code}: in ${lang}, not in English`);
+      }
+    }
+  }
+  for (const [ruleId, codes] of Object.entries(english)) {
+    for (const [code, en] of Object.entries(codes)) {
+      const tr = other[ruleId] && other[ruleId][code];
+      const at = `${ruleId} ${code} (${lang})`;
+      if (!tr) {
+        problems.push(`${at}: no entry`);
+        continue;
+      }
+      if (tr.steps.length !== en.steps.length) {
+        problems.push(`${at}: ${tr.steps.length} steps, where the English has ${en.steps.length}`);
+        continue;
+      }
+      const stem = `${STANDARD_KEY}_standardReview_${ruleId}_${code}_`;
+      const pairs = [
+        ...en.steps.map((text, i) => [`step${i + 1}`, text, tr.steps[i]]),
+        ['pass', en.passWhen, tr.passWhen],
+        ['fail', en.failWhen, tr.failWhen]
+      ];
+      for (const [part, source, text] of pairs) {
+        if (placeholders(source).join() !== placeholders(text).join()) {
+          problems.push(`${at} ${part}: other placeholders than the English`);
+        }
+        out[`${stem}${part}`] = text;
+      }
+    }
+  }
+  if (problems.length) throw new Error(`the languages differ:\n${problems.join('\n')}`);
+  return out;
+}
+
+// A dictionary with its standard.review keys replaced by `keys`, at its end.
+function withTranslations(dictionary, keys) {
+  const start = `${STANDARD_KEY}_standardReview_`;
+  const kept = Object.entries(dictionary).filter(([key]) => !key.startsWith(start));
+  return { ...Object.fromEntries(kept), ...keys };
+}
+
+// The pack's dictionary for a language, as the generator writes it.
+function translatedDictionary(lang, english = buildReview()) {
+  const file = path.join(__dirname, '..', 'i18n', `${lang}.json`);
+  const dictionary = JSON.parse(fs.readFileSync(file, 'utf8'));
+  const keys = translationKeys(english, buildReview({ lang }), lang);
+  return `${JSON.stringify(withTranslations(dictionary, keys), null, 2)}\n`;
 }
 
 // Variants read their base's steps, which name WCAG: each gives them in its
@@ -257,12 +353,13 @@ function renderModule(review, variants = buildVariants()) {
 'use strict';
 
 /**
- * How a person answers core's undecided findings, in RGAA's terms and in
- * French (core's standard.review), by rule and reason code, each with the
- * facet of the test its findings are filed under.
+ * How a person answers core's undecided findings, in RGAA's terms (core's
+ * standard.review), by rule and reason code, each with the facet of the test
+ * its findings are filed under. English; i18n/fr.json has the French, under
+ * rgaa_standardReview_<rule id>_<CODE>_step<n>, _pass and _fail.
  *
- * GENERATED by scripts/generate-review.js from core's French steps and
- * rule-map.js -- do not edit by hand; tests/review.test.js fails on any drift.
+ * GENERATED by scripts/generate-review.js from core's steps and rule-map.js
+ * -- do not edit by hand; tests/review.test.js fails on any drift.
  */
 
 const REVIEW = { '${VERSION}': ${JSON.stringify(review, null, 2)} };
@@ -283,22 +380,48 @@ async function formatted(source) {
   return prettier.format(source, { ...options, filepath: OUTPUT_FILE });
 }
 
+// What the generator writes: review.js, and each translated dictionary.
+async function outputs() {
+  const review = buildReview();
+  return [
+    [OUTPUT_FILE, await formatted(renderModule(review))],
+    ...TRANSLATED.map((lang) => [
+      path.join(__dirname, '..', 'i18n', `${lang}.json`),
+      translatedDictionary(lang, review)
+    ])
+  ];
+}
+
 async function main() {
-  const expected = await formatted(renderModule(buildReview()));
+  const files = await outputs();
+  const name = (file) => path.relative(path.join(__dirname, '..'), file);
   if (process.argv.includes('--check')) {
-    const actual = fs.existsSync(OUTPUT_FILE) ? fs.readFileSync(OUTPUT_FILE, 'utf8') : '';
-    if (actual !== expected) {
-      console.error('[generate-rgaa-review] review.js is out of date; run npm run review');
+    const stale = files.filter(
+      ([file, text]) => !fs.existsSync(file) || fs.readFileSync(file, 'utf8') !== text
+    );
+    if (stale.length) {
+      console.error(
+        `[generate-rgaa-review] ${stale.map(([file]) => name(file)).join(', ')} out of date; run npm run review`
+      );
       process.exit(1);
     }
     console.log('[generate-rgaa-review] up to date');
     return;
   }
-  fs.writeFileSync(OUTPUT_FILE, expected, 'utf8');
-  console.log('[generate-rgaa-review] wrote review.js');
+  for (const [file, text] of files) {
+    fs.writeFileSync(file, text, 'utf8');
+    console.log(`[generate-rgaa-review] wrote ${name(file)}`);
+  }
 }
 
-module.exports = { buildReview, renderModule, formatted };
+module.exports = {
+  buildReview,
+  renderModule,
+  formatted,
+  outputs,
+  translationKeys,
+  WCAG_WORDS
+};
 
 if (require.main === module) {
   main().catch((e) => {

@@ -72,9 +72,10 @@
  *   style are measured. The computed style settles variables, @media and the
  *   cascade, so those are no longer asked about there. The colors outside
  *   the indicator are read from what is painted on each side
- *   (document.elementsFromPoint), so a positioned layer behind the element
- *   counts; a side outside the viewport falls back to the background of
- *   the first ancestor larger than the element (a parent with the
+ *   (elementsFromPoint, on the shadow root for an element in a shadow
+ *   tree), so a positioned layer behind the element counts; a side outside
+ *   the viewport falls back to the background of the first ancestor
+ *   larger than the element (a parent with the
  *   element's own box has the color under it, not around it). An image or
  *   gradient on any side, a ::before or ::after over most of the element
  *   with a fill of its own (it may be the visible background), an element
@@ -1109,6 +1110,30 @@ function runInPage(ctx) {
     return Number.isFinite(n) ? n : 0;
   }
 
+  // The elements painted at a point, topmost first, as the tree holding
+  // the element sees them. The document's list stops at the shadow host
+  // around an element in a shadow tree, so it would read the host's colors
+  // and take the element as covered by its own host. A shadow root's list
+  // holds the elements of its tree and of every tree around it, and an
+  // element of another tree (one inside this tree, or beside it) as the
+  // host in this tree or around it that holds it: so something painted
+  // over the element in any of the trees around it still comes first.
+  function elementsAt(el, x, y) {
+    let scope = document;
+    try {
+      const root = dom.getRootNode(el);
+      if (
+        root &&
+        root !== document &&
+        dom.nodeType(root) === 11 &&
+        typeof dom.get(root, 'elementsFromPoint') === 'function'
+      ) {
+        scope = root;
+      }
+    } catch {}
+    return dom.elementsFromPoint(scope, x, y) || [];
+  }
+
   // The color painted at a point outside the element: the background of the
   // topmost other element there. undefined when the point is outside the
   // viewport, null when an image or gradient makes it unknown.
@@ -1118,7 +1143,7 @@ function runInPage(ctx) {
     if (!(x >= 0 && y >= 0 && x < w && y < h)) return undefined;
     let stack;
     try {
-      stack = dom.elementsFromPoint(document, x, y) || [];
+      stack = elementsAt(el, x, y);
     } catch {
       return undefined;
     }
@@ -1251,7 +1276,7 @@ function runInPage(ctx) {
     if (view.getComputedStyle(el).pointerEvents === 'none') return false;
     let stack;
     try {
-      stack = dom.elementsFromPoint(document, x, y) || [];
+      stack = elementsAt(el, x, y);
     } catch {
       return false;
     }
@@ -1394,23 +1419,241 @@ function runInPage(ctx) {
   // browser's outline either way, and one an author rule sets otherwise
   // differs from its resting style either way, so the verdicts are the
   // same. Ancestors of candidates and labels, read as related elements to
-  // find a ring drawn around the element, are left out. Shadow trees are
-  // not reached: a style sheet of the document does not apply there.
+  // find a ring drawn around the element, are left out, and so is an
+  // element in a shadow tree that holds a <slot>, which may be the
+  // ancestor of a candidate slotted into it.
+  // A shadow tree's own rules (:host, ::slotted) lose to the tree around
+  // it, whatever their layer, so an element that hosts an open shadow root
+  // or is the child of one is marked and left out too, and so is a custom
+  // element or the child of one, which may host a closed root; so are the
+  // hosts around a candidate in a shadow tree, whose ancestors are then
+  // left out as the candidate's are.
+  // A document's style sheet does not reach into a shadow tree, so each
+  // open shadow root holding a candidate adopts the same rule, first in
+  // its adoptedStyleSheets, and gets its own list back afterwards. A root
+  // whose own sheets declare a cascade layer, or cannot be read, is left
+  // out: an adopted sheet comes after them, and its layer would not be the
+  // lowest. So is a root whose adoptedStyleSheets cannot be set.
+  const NO_RING_ATTR = 'data-surea11y-no-ring';
+  const RING_CSS = `@layer surea11y-focus-ring{:is(${CANDIDATES}):not(label, [${NO_RING_ATTR}], :has(:is(${CANDIDATES}, slot, [${NO_RING_ATTR}]))){outline-style:auto}}`;
+
+  // Whether the root's own style sheets declare a cascade layer (or may:
+  // one cannot be read).
+  function declaresLayer(root) {
+    const walk = (rules, depth) => {
+      for (const r of rules || []) {
+        const name = r && r.constructor && r.constructor.name;
+        if (name === 'CSSLayerBlockRule' || name === 'CSSLayerStatementRule') return true;
+        if (name === 'CSSImportRule') {
+          if (r.layerName != null) return true;
+          let nested = null;
+          try {
+            nested = r.styleSheet && r.styleSheet.cssRules;
+          } catch {
+            return true;
+          }
+          if (nested && depth < MAX_DEPTH && walk(nested, depth + 1)) return true;
+        } else if (r && r.cssRules && depth < MAX_DEPTH && walk(r.cssRules, depth + 1)) {
+          return true;
+        }
+      }
+      return false;
+    };
+    try {
+      for (const sheet of dom.get(root, 'styleSheets') || []) {
+        if (walk(sheet.cssRules, 0)) return true;
+      }
+      return false;
+    } catch {
+      return true;
+    }
+  }
+
+  // Puts the sheet first in each open shadow root holding one of the
+  // elements; returns what puts each root's list back. A list changed
+  // since (a script on the page) keeps its change, without the sheet.
+  function adoptInShadowRoots(elements, css) {
+    const Sheet = view && view.CSSStyleSheet;
+    if (typeof Sheet !== 'function') return () => {};
+    const roots = new Set();
+    for (const el of elements) {
+      try {
+        const root = dom.getRootNode(el);
+        if (root && root !== document && dom.nodeType(root) === 11 && dom.host(root)) {
+          roots.add(root);
+        }
+      } catch {}
+    }
+    const adopted = [];
+    if (!roots.size) return () => {};
+    let sheet;
+    try {
+      sheet = new Sheet();
+      sheet.replaceSync(css);
+    } catch {
+      return () => {};
+    }
+    for (const root of roots) {
+      try {
+        if (declaresLayer(root)) continue;
+        const own = dom.get(root, 'adoptedStyleSheets');
+        if (!own || typeof own.length !== 'number') continue;
+        const before = [...own];
+        root.adoptedStyleSheets = [sheet, ...before];
+        const now = dom.get(root, 'adoptedStyleSheets');
+        if (!now || now[0] !== sheet || now.length !== before.length + 1) {
+          if (now && [...now].includes(sheet)) {
+            root.adoptedStyleSheets = [...now].filter((x) => x !== sheet);
+          }
+          continue;
+        }
+        adopted.push([root, before]);
+      } catch {}
+    }
+    return () => {
+      for (const [root, before] of adopted) {
+        try {
+          const now = [...dom.get(root, 'adoptedStyleSheets')];
+          const untouched =
+            now.length === before.length + 1 &&
+            now[0] === sheet &&
+            before.every((x, i) => now[i + 1] === x);
+          if (untouched) root.adoptedStyleSheets = before;
+          else if (now.includes(sheet)) root.adoptedStyleSheets = now.filter((x) => x !== sheet);
+        } catch {}
+      }
+    };
+  }
+
+  // A tree (the document or a shadow root) whose styles make focus draw no
+  // outline gains nothing from the ring at rest and pays for it, so each
+  // tree is probed first: one of its candidates in the tab order is
+  // focused, without the ring, and the tree gets the ring only if an
+  // outline appears that was not there at rest. Shadow roots whose style
+  // sheets are the same (the copies of one component) share one probe,
+  // since one link per root is the common case. The ring changes only
+  // what focus costs, not what it shows, so a probe that guesses wrong for
+  // another element of the tree changes the time taken, not the verdicts.
+  // A tree whose probe cannot focus its element keeps the ring.
+  const adoptedIds = new Map();
+  function treeKey(root) {
+    if (root === document) return root;
+    const parts = [];
+    try {
+      for (const s of dom.get(root, 'styleSheets') || []) {
+        const node = s.ownerNode;
+        let media = '';
+        try {
+          media = s.media ? s.media.mediaText : '';
+        } catch {}
+        parts.push(
+          `${s.disabled ? 'd' : ''}${media}|${node && dom.localName(node) === 'style' ? dom.textContent(node) : s.href}`
+        );
+      }
+      for (const s of dom.get(root, 'adoptedStyleSheets') || []) {
+        if (!adoptedIds.has(s)) adoptedIds.set(s, adoptedIds.size);
+        parts.push(`a${adoptedIds.get(s)}`);
+      }
+    } catch {
+      return root;
+    }
+    return parts.join('\u0000');
+  }
+
+  // Whether the element hosts a shadow root, or may: a closed one cannot
+  // be seen from a script, so every custom element (a name with a hyphen)
+  // is taken as a possible host, and its :host and ::slotted focus styles
+  // are not overridden by a ring it cannot see.
+  function mayHostShadow(el) {
+    return !!dom.shadowRoot(el) || String(dom.localName(el) || '').includes('-');
+  }
+
+  // The roots whose probe found an outline drawn on focus, or could not
+  // focus its element.
+  function treesWithRing() {
+    const keyOf = new Map(); // root -> tree key
+    const outline = new Map(); // tree key -> whether focus draws one
+    for (const el of candidates) {
+      try {
+        if (!el || dom.nodeType(el) !== 1 || dom.hasAttribute(el, NO_RING_ATTR)) continue;
+        const root = dom.getRootNode(el);
+        if (!root) continue;
+        if (!keyOf.has(root)) keyOf.set(root, treeKey(root));
+        const key = keyOf.get(root);
+        if (outline.has(key) || !isTabbable(el) || !isRendered(el)) continue;
+        const appears = whileFocused(
+          el,
+          (before, after) => before['outline-style'] === 'none' && after['outline-style'] !== 'none'
+        );
+        outline.set(key, appears !== false);
+      } catch {}
+    }
+    const ringed = new Set();
+    for (const [root, key] of keyOf) if (outline.get(key)) ringed.add(root);
+    return ringed;
+  }
+
   function drawRings() {
     if (!layout) return () => {};
+    const marked = [];
+    const hostsSeen = new Set();
+    const mark = (el) => {
+      if (dom.hasAttribute(el, NO_RING_ATTR)) return false;
+      dom.setAttribute(el, NO_RING_ATTR, '');
+      marked.push(el);
+      return true;
+    };
+    for (const el of candidates) {
+      try {
+        if (!el || dom.nodeType(el) !== 1) continue;
+        const parent = dom.parentElement(el);
+        if (mayHostShadow(el) || (parent && mayHostShadow(parent))) mark(el);
+        // The hosts around a candidate in a shadow tree, so that their
+        // ancestors are left out as the candidate's own would be; only a
+        // host with a candidate or label above it needs the mark.
+        let root = dom.getRootNode(el);
+        for (let guard = 0; root && root !== document && guard < 50; guard += 1) {
+          const host = dom.nodeType(root) === 11 ? dom.host(root) : null;
+          if (!host || hostsSeen.has(host)) break;
+          hostsSeen.add(host);
+          const above = dom.parentElement(host);
+          if (above && dom.closest(above, `${CANDIDATES}, label`)) mark(host);
+          root = dom.getRootNode(host);
+        }
+      } catch {}
+    }
+    const ringed = treesWithRing();
     let sheet = null;
     try {
-      const host = dom.head(document) || dom.documentElement(document);
-      sheet = dom.createElement(document, 'style');
-      sheet.textContent = `@layer surea11y-focus-ring{:is(${CANDIDATES}):not(label, :has(:is(${CANDIDATES}))){outline-style:auto}}`;
-      dom.insertBefore(host, sheet, dom.firstChild(host));
+      if (ringed.has(document)) {
+        const host = dom.head(document) || dom.documentElement(document);
+        sheet = dom.createElement(document, 'style');
+        sheet.textContent = RING_CSS;
+        dom.insertBefore(host, sheet, dom.firstChild(host));
+      }
     } catch {
       sheet = null;
     }
+    const unadopt = adoptInShadowRoots(
+      [...candidates].filter((el) => {
+        try {
+          return ringed.has(dom.getRootNode(el));
+        } catch {
+          return false;
+        }
+      }),
+      RING_CSS
+    );
     return () => {
+      unadopt();
       try {
         if (sheet && dom.parentNode(sheet)) dom.removeChild(dom.parentNode(sheet), sheet);
       } catch {}
+      for (const el of marked) {
+        try {
+          dom.removeAttribute(el, NO_RING_ATTR);
+        } catch {}
+      }
     };
   }
   const removeRings = drawRings();

@@ -3,8 +3,8 @@
 /**
  * The standard is built from data with core's standardFromData
  * (standard-data.js). Before, the pack built it with its own functions
- * (mappings.js up to 1.0's development); what they gave with core 1.16.0 is
- * recorded in tests/fixtures/standard/core-1.16.0.json (tests/helpers/
+ * (mappings.js up to 1.0.0); what they gave with core 1.16.1 is
+ * recorded in tests/fixtures/standard/core-1.16.1.json (tests/helpers/
  * standard-facts.js): every rollup, every rule's entries, every WCAG
  * rollup's entries and the validation of every rule. Core's give the same.
  * The comparison is skipped with another core, or one whose rules changed.
@@ -78,10 +78,12 @@ test('the profile serves article 47, which results and describePacks name', () =
     described.standard.laws.map((l) => [l.id, l.profiles]),
     [['fr-article-47', ['rgaa-4.1.2']]]
   );
-  // The experimental APIs of core it uses, for which its range is ~1.16.0.
+  // The experimental APIs of core it uses, for which its range is ~1.16.1.
   assert.deepEqual(described.experimental.map((e) => e.id).sort(), [
     'ruleMappedStandard tests',
+    'skip-link details.lean',
     'standard data',
-    'standard laws'
+    'standard laws',
+    'standard.review dictionary keys'
   ]);
 });

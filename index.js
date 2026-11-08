@@ -113,7 +113,11 @@ const standard = standardFromData(STANDARD_DATA, {
   report: { noteKey: 'report_rgaaRollup_note', titleLang: 'fr' },
   // How a person assesses it, in RGAA's own words (procedures.js), and how
   // they answer core's findings in RGAA's terms (review.js). The standard is
-  // French, so it is read in French in every locale.
+  // French (lang, in the data), so its own text, the procedures, is read in
+  // French in every locale. lang says nothing of the review: core reads
+  // standard.review as English and translates it through the dictionaries
+  // (i18n/fr.json), so a finding reads the steps in the scan's locale, French
+  // or English, and in English where the pack has no translation.
   ...proceduresOf(
     (ruleId) =>
       CORE_MANUAL_RULES.includes(ruleId) ||
@@ -127,9 +131,12 @@ module.exports = definePack({
   version,
   namespace: 'rgaa',
   // The standard is built from data with core's standardFromData, its
-  // tests under its criteria and its law: experimental in core until 1.18.0,
-  // so a later minor may change them and the range takes none.
-  core: '~1.16.0',
+  // tests under its criteria and its law, and the pack uses skip-link's
+  // details.lean and the standard.review dictionary keys: experimental in
+  // core until 1.18.0, so a later minor may change them and the range takes
+  // none. 1.16.1 is the first core that reads the standard's steps in French
+  // in a French scan.
+  core: '~1.16.1',
   description: 'RGAA 4.1.2, the French accessibility standard',
   rules,
   standard,
