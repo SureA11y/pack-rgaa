@@ -7,7 +7,7 @@ const path = require('node:path');
 
 const { assertRule } = require('@surea11y/core/testing');
 const { runa11yCoreOnHtml } = require('../../helpers/run.js');
-const { rgaaComposites } = require('../../../mappings.js');
+const rgaaComposites = () => require('../../..').standard.composites();
 
 const RULE_ID = 'rgaa-embedded-player-review';
 const RUN = { runOnly: { includeRuleIds: [RULE_ID] } };

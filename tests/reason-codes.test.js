@@ -11,7 +11,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 
 const { runa11yCoreOnHtml, runa11yCoreOnDom, createDom } = require('./helpers/run.js');
-const { rgaaComposites } = require('../mappings.js');
+const rgaaComposites = () => require('..').standard.composites();
 
 const RGAA = { engineOptions: { profile: 'rgaa-4.1.2' } };
 const page = (body, lang = 'fr') =>
