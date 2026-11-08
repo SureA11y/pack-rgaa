@@ -269,6 +269,32 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
     assert.deepEqual(details(result, 'dark').ratios, [1.19, 1.19]);
   });
 
+  // A shadow tree's :host and ::slotted rules lose to the tree around it,
+  // whatever their layer, so the ring drawn at rest in the document would
+  // override them. A closed shadow root cannot be seen from a script, so
+  // every custom element and its children go without the ring, and their
+  // own focus outline is the one measured. #d keeps the ring in the
+  // document.
+  await t.test('a closed shadow root keeps its :host and ::slotted outline', async () => {
+    const html = `<!doctype html><html lang="en"><head><title>t</title><style>body{background:#fff;color:#000} a{color:#000}</style></head><body>
+      <p><a id="d" href="/d">Document</a></p>
+      <p><x-btn id="xb" tabindex="0"></x-btn></p>
+      <p><x-slot id="xs"><a id="s1" href="/s">Slotted</a></x-slot></p>
+      <script>
+        const host = document.getElementById('xb').attachShadow({ mode: 'closed' });
+        host.innerHTML = '<style>:host{display:inline-block;padding:2px} :host(:focus){outline:2px solid #cccccc}</style>Button';
+        const slot = document.getElementById('xs').attachShadow({ mode: 'closed' });
+        slot.innerHTML = '<style>::slotted(a:focus){outline:2px solid #cccccc}</style>[<slot></slot>]';
+      </script>
+    </body></html>`;
+    const { result } = await scan(html, { rules: { include: RULE_ID } });
+    assert.deepEqual(outcomes(result), {
+      xb: ['fail', 'lowContrast'],
+      s1: ['fail', 'lowContrast']
+    });
+    assert.equal(details(result, 'xb').color, '#cccccc');
+  });
+
   // The ring drawn at rest saves the browser a layout only where focus
   // draws an outline, so a tree whose styles remove it does without: the
   // document and #h3 here. #h1 and #h2, copies of one component, share one

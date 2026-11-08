@@ -64,7 +64,8 @@
  *   adoptedStyleSheets, unless its own sheets declare a cascade layer or
  *   cannot be read; a link that hosts a shadow root or is the child of one
  *   is left out, since its shadow tree's :host and ::slotted rules lose to
- *   the tree around it. The selectors, the attributes, focus and each
+ *   the tree around it, and so is a custom element or the child of one,
+ *   which may host a closed shadow root a script cannot see. The selectors, the attributes, focus and each
  *   root's adoptedStyleSheets are put back afterwards. Browsers
  *   hide the visited color from scripts, which is why it is emulated rather
  *   than read, and why the browser's own visited color stays a question.
@@ -798,7 +799,8 @@ function runInPage(ctx) {
   // still gives its width and color, and the look read in focus has the
   // outline it would have had. A shadow tree's own rules (:host, ::slotted)
   // lose to the tree around it whatever their layer, so a link that hosts
-  // an open shadow root or is the child of one is left without it. The
+  // an open shadow root or is the child of one is left without it, as is a
+  // custom element or the child of one (mayHostShadow). The
   // freeze sheet does not reach into shadow trees: each open shadow root
   // holding a link adopts the ring's rule (adoptInShadowRoots).
   function looksInFocus(list) {
@@ -809,7 +811,7 @@ function runInPage(ctx) {
       const ringed = treesWithRing(list);
       for (const [el] of list) {
         const parent = dom.parentElement(el);
-        if (dom.shadowRoot(el) || (parent && dom.shadowRoot(parent))) continue;
+        if (mayHostShadow(el) || (parent && mayHostShadow(parent))) continue;
         if (!ringed.has(dom.getRootNode(el))) continue;
         const before = dom.hasAttribute(el, STATE_ATTR) ? dom.getAttribute(el, STATE_ATTR) : null;
         saved.set(el, before);
@@ -872,6 +874,14 @@ function runInPage(ctx) {
     return parts.join('\u0000');
   }
 
+  // Whether the element hosts a shadow root, or may: a closed one cannot
+  // be seen from a script, so every custom element (a name with a hyphen)
+  // is taken as a possible host, and its :host and ::slotted focus styles
+  // are not overridden by a ring it cannot see.
+  function mayHostShadow(el) {
+    return !!dom.shadowRoot(el) || String(dom.localName(el) || '').includes('-');
+  }
+
   // The roots whose probe found an outline drawn on focus, or could not
   // focus its link.
   function treesWithRing(list) {
@@ -880,7 +890,7 @@ function runInPage(ctx) {
     for (const [el] of list) {
       try {
         const parent = dom.parentElement(el);
-        if (dom.shadowRoot(el) || (parent && dom.shadowRoot(parent))) continue;
+        if (mayHostShadow(el) || (parent && mayHostShadow(parent))) continue;
         const root = dom.getRootNode(el);
         if (!root) continue;
         if (!keyOf.has(root)) keyOf.set(root, treeKey(root));
