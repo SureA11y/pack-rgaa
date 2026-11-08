@@ -121,7 +121,8 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
           : null,
         bare:
           !!document.getElementById('var_low') &&
-          document.getElementById('var_low').hasAttribute('style')
+          document.getElementById('var_low').hasAttribute('style'),
+        ring: window.__ring || null
       }));
       return { result, after };
     } finally {
@@ -227,6 +228,48 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
     }
     const { result } = await scan(field(''), { rules: { include: RULE_ID } });
     assert.equal(summarize(result).outcome, 'fail');
+  });
+
+  // The ring drawn at rest saves the browser a layout only where focus
+  // draws an outline, so a tree whose styles remove it does without: the
+  // document and #h3 here. #h1 and #h2, copies of one component, share one
+  // probe. The verdicts are the same either way.
+  await t.test('the ring at rest goes only where focus draws an outline', async () => {
+    const tree = (css) =>
+      `<style>a{color:#000} ${css}</style><p><a id="$1" href="/1">One</a> <a id="$2" href="/2">Two</a></p>`;
+    const none = 'a:focus{outline:none;box-shadow:0 0 0 2px #dddddd}';
+    const shadow = (id, css) =>
+      `<div id="${id}"><template shadowrootmode="open">${tree(css).replace(/\$/g, id)}</template></div>`;
+    const html = `<!doctype html><html lang="en"><head><title>t</title><style>body{background:#fff}</style></head><body>${tree(none).replace(/\$/g, 'd')}${shadow('h1', '')}${shadow('h2', '')}${shadow('h3', none)}</body></html>`;
+    const { result, after } = await scan(html, { rules: { include: RULE_ID } }, () => {
+      window.__ring = { doc: false, roots: [] };
+      new MutationObserver((records) => {
+        for (const r of records) {
+          for (const n of r.addedNodes) {
+            if (String(n.textContent).includes('surea11y-focus-ring')) window.__ring.doc = true;
+          }
+        }
+      }).observe(document.head, { childList: true });
+      const own = Object.getOwnPropertyDescriptor(ShadowRoot.prototype, 'adoptedStyleSheets');
+      for (const id of ['h1', 'h2', 'h3']) {
+        Object.defineProperty(document.getElementById(id).shadowRoot, 'adoptedStyleSheets', {
+          configurable: true,
+          get() {
+            return own.get.call(this);
+          },
+          set(v) {
+            const ring = [...v].some((s) =>
+              [...s.cssRules].some((x) => x.cssText.includes('surea11y-focus-ring'))
+            );
+            if (ring && !window.__ring.roots.includes(id)) window.__ring.roots.push(id);
+            own.set.call(this, v);
+          }
+        });
+      }
+    });
+    assert.deepEqual(after.ring, { doc: false, roots: ['h1', 'h2'] });
+    assert.deepEqual(outcomes(result).d1, ['fail', 'lowContrast']);
+    assert.deepEqual(outcomes(result).d2, ['fail', 'lowContrast']);
   });
 
   await t.test('the same elements in jsdom are asked about, not failed', () => {
