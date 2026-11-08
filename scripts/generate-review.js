@@ -79,6 +79,7 @@ const TECHNIQUES = /\s*\((?:(?:ARIA|SCR|F|G|H|C)\d+(?:, )?)+\)/g;
 function inRgaaTerms(text, tests) {
   return text
     .replace(/ pour WCAG 1\.4\.3, et à 7:1 \([^)]*\) pour 1\.4\.6/g, '')
+    .replace(/ pour le contraste minimum, et à 7:1 \([^)]*\) pour le contraste renforcé/g, '')
     .replace(/18[.,]66/g, '18,5')
     .replace(
       new RegExp(

@@ -74,11 +74,12 @@ test(`${RULE_ID}: no text, or no computable text, is notApplicable`, () => {
     'font-size:16px;color:#888;background-image:linear-gradient(#fff,#000)',
     'Opening hours'
   );
+  // As core's contrast rules, from core 1.16: no occurrence, the counts on
+  // the result's details; contrast-computable asks about the text.
   const rule = assertRule(runa11yCoreOnHtml(gradient, RUN), RULE_ID, 'notApplicable');
-  assert.equal(
-    rule.occurrences[0].i18n.summaryKey,
-    'contrastMinimumRgaa_notApplicable_noComputableText'
-  );
+  assert.deepEqual(rule.occurrences, []);
+  assert.equal(rule.data.details.eligibleTextCount, 1);
+  assert.equal(rule.data.details.computableTextCount, 0);
 });
 
 test(`${RULE_ID}: messages follow the scan locale`, () => {

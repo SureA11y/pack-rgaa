@@ -4,7 +4,9 @@
  * While a modal dialog is open, the rest of the page is inert: the scan
  * sees the dialog, not the page. RGAA's rules about the page's zones and its
  * skip links report notApplicable then, as core's whole-page rules do, and
- * judge the page as before once the dialog is closed.
+ * judge the page as before once the dialog is closed. jsdom can't open a
+ * modal dialog (showModal), so the tests stand in for one with open and
+ * aria-modal="true", which core takes as modal with assumeModal (core 1.16).
  */
 
 const test = require('node:test');
@@ -30,9 +32,10 @@ for (const ruleId of [
 ]) {
   test(`${ruleId}: notApplicable while a modal dialog is open, judged without one`, () => {
     const outcome = (html) =>
-      runa11yCoreOnHtml(html, { runOnly: { includeRuleIds: [ruleId] } }).checksResults.find(
-        (r) => r.ruleId === ruleId
-      ).outcome;
+      runa11yCoreOnHtml(html, {
+        runOnly: { includeRuleIds: [ruleId] },
+        engineOptions: { assumeModal: true }
+      }).checksResults.find((r) => r.ruleId === ruleId).outcome;
     assert.equal(outcome(page(MODAL)), 'notApplicable');
     assert.notEqual(outcome(page('')), 'notApplicable');
   });
