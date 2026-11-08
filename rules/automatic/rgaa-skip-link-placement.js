@@ -413,6 +413,39 @@ function runInPage(ctx) {
     }
   }
 
+  // The topmost element at a point as the tree holding the element sees
+  // it. The document's answer is the shadow host around a link in a
+  // shadow tree, which would read as something over the link. A shadow
+  // root's holds the elements of its tree and of every tree around it, and
+  // an element of another tree as the host, in this tree or around it,
+  // that holds it, so something over the link in any of those trees still
+  // comes first.
+  function topAt(el, x, y) {
+    let scope = document;
+    try {
+      const root = dom.getRootNode(el);
+      if (
+        root &&
+        root !== document &&
+        dom.nodeType(root) === 11 &&
+        typeof dom.get(root, 'elementFromPoint') === 'function'
+      ) {
+        scope = root;
+      }
+    } catch {}
+    return dom.elementFromPoint(scope, x, y);
+  }
+
+  // Whether a is b or one of its ancestors, across shadow roots.
+  function holds(a, b) {
+    for (let n = b, guard = 0; n && guard < 1000; guard += 1) {
+      if (n === a) return true;
+      const parent = dom.parentNode(n);
+      n = parent && dom.nodeType(parent) === 11 ? dom.host(parent) : parent;
+    }
+    return false;
+  }
+
   // 'visible', 'hidden' (certainly not visible) or 'unknown' (something may
   // cover it), with its rect in page coordinates.
   function visibility(el) {
@@ -461,8 +494,8 @@ function runInPage(ctx) {
     const cy = (visible.top + visible.bottom) / 2;
     if (cx >= 0 && cy >= 0 && cx < view.innerWidth && cy < view.innerHeight) {
       try {
-        const top = dom.elementFromPoint(document, cx, cy);
-        if (top && top !== el && !dom.contains(el, top) && !dom.contains(top, el)) {
+        const top = topAt(el, cx, cy);
+        if (top && top !== el && !dom.contains(el, top) && !holds(top, el)) {
           return { state: 'unknown', rect };
         }
       } catch {}

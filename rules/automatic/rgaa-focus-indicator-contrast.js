@@ -72,9 +72,10 @@
  *   style are measured. The computed style settles variables, @media and the
  *   cascade, so those are no longer asked about there. The colors outside
  *   the indicator are read from what is painted on each side
- *   (document.elementsFromPoint), so a positioned layer behind the element
- *   counts; a side outside the viewport falls back to the background of
- *   the first ancestor larger than the element (a parent with the
+ *   (elementsFromPoint, on the shadow root for an element in a shadow
+ *   tree), so a positioned layer behind the element counts; a side outside
+ *   the viewport falls back to the background of the first ancestor
+ *   larger than the element (a parent with the
  *   element's own box has the color under it, not around it). An image or
  *   gradient on any side, a ::before or ::after over most of the element
  *   with a fill of its own (it may be the visible background), an element
@@ -1109,6 +1110,30 @@ function runInPage(ctx) {
     return Number.isFinite(n) ? n : 0;
   }
 
+  // The elements painted at a point, topmost first, as the tree holding
+  // the element sees them. The document's list stops at the shadow host
+  // around an element in a shadow tree, so it would read the host's colors
+  // and take the element as covered by its own host. A shadow root's list
+  // holds the elements of its tree and of every tree around it, and an
+  // element of another tree (one inside this tree, or beside it) as the
+  // host in this tree or around it that holds it: so something painted
+  // over the element in any of the trees around it still comes first.
+  function elementsAt(el, x, y) {
+    let scope = document;
+    try {
+      const root = dom.getRootNode(el);
+      if (
+        root &&
+        root !== document &&
+        dom.nodeType(root) === 11 &&
+        typeof dom.get(root, 'elementsFromPoint') === 'function'
+      ) {
+        scope = root;
+      }
+    } catch {}
+    return dom.elementsFromPoint(scope, x, y) || [];
+  }
+
   // The color painted at a point outside the element: the background of the
   // topmost other element there. undefined when the point is outside the
   // viewport, null when an image or gradient makes it unknown.
@@ -1118,7 +1143,7 @@ function runInPage(ctx) {
     if (!(x >= 0 && y >= 0 && x < w && y < h)) return undefined;
     let stack;
     try {
-      stack = dom.elementsFromPoint(document, x, y) || [];
+      stack = elementsAt(el, x, y);
     } catch {
       return undefined;
     }
@@ -1251,7 +1276,7 @@ function runInPage(ctx) {
     if (view.getComputedStyle(el).pointerEvents === 'none') return false;
     let stack;
     try {
-      stack = dom.elementsFromPoint(document, x, y) || [];
+      stack = elementsAt(el, x, y);
     } catch {
       return false;
     }
