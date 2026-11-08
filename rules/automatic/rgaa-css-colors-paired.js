@@ -49,7 +49,12 @@
  *   getComputedStyle, not helpers.computedStyle, which would keep the
  *   sentinel's values for the rules that follow. One read of every
  *   element's style, against one query per CSS rule, keeps a page with
- *   thousands of rules fast.
+ *   thousands of rules fast. Chromium draws a broken image's alt text
+ *   again whenever its inherited color changes, so for the time of the
+ *   read every image not shown that inherits its color keeps it, as an
+ *   important inline style put back afterwards: an image holds no judged text and
+ *   passes no color on, and the sentinel's change then costs nothing
+ *   there.
  * - Without cascade layers (jsdom), or when a page's own rule sets a color
  *   on every element, each rule's selectors are matched instead, without
  *   their state pseudo-classes (:hover, :visited...) and pseudo-elements,
@@ -295,6 +300,42 @@ function runInPage(ctx) {
         if (dom.parentNode(el)) dom.removeChild(dom.parentNode(el), el);
       } catch {}
     };
+    // Chromium draws a broken image's alt text again whenever the color it
+    // inherits changes, which costs more the more such images there are.
+    // For the time of the read, each image not shown that inherits its
+    // color is given that color, as an important inline style, so the
+    // sentinel does not reach it: an image holds no text whose colors are
+    // judged, and nothing inherits from it. Its style attribute is put
+    // back afterwards.
+    const pinned = new Map();
+    const unpin = () => {
+      for (const [img, before] of pinned) {
+        try {
+          // Reading the attribute first makes Chromium write the inline
+          // style back to it; removed before that, it comes back as style="".
+          dom.getAttribute(img, 'style');
+          if (before == null) dom.removeAttribute(img, 'style');
+          else dom.setAttribute(img, 'style', before);
+        } catch {}
+      }
+      pinned.clear();
+    };
+    try {
+      for (const img of [...dom.querySelectorAll(document, 'img')]) {
+        if (dom.get(img, 'complete') && dom.get(img, 'naturalWidth') > 0) continue;
+        const style = dom.get(img, 'style');
+        const color = prop(view.getComputedStyle(img), 'color');
+        if (!style || typeof style.setProperty !== 'function' || !color) continue;
+        // A color other than its parent's is the image's own: the sentinel
+        // does not change it.
+        const parent = dom.parentElement(img);
+        if (parent && prop(view.getComputedStyle(parent), 'color') !== color) continue;
+        pinned.set(img, dom.hasAttribute(img, 'style') ? dom.getAttribute(img, 'style') : null);
+        style.setProperty('color', color, 'important');
+      }
+    } catch {
+      unpin();
+    }
     try {
       // The sentinel's layer comes first, so it is the weakest.
       dom.insertBefore(host, freeze, dom.firstChild(host));
@@ -303,6 +344,7 @@ function runInPage(ctx) {
       // does a page whose own rule sets a color on every element.
       if (prop(view.getComputedStyle(sentinel), 'color') !== SENTINEL.color) return false;
       for (const el of [...dom.querySelectorAll(document, '*')]) {
+        if (pinned.has(el)) continue;
         // Not helpers.computedStyle: it keeps what it reads for the rest of
         // the scan, and these are the sentinel's values.
         const cs = view.getComputedStyle(el);
@@ -319,6 +361,7 @@ function runInPage(ctx) {
       return false;
     } finally {
       remove(sentinel);
+      unpin();
       try {
         // A style read: the page's colors back while transitions are held.
         prop(view.getComputedStyle(probe), 'color');
