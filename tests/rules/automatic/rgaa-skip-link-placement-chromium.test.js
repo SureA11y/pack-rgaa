@@ -168,6 +168,27 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
     assert.equal(rule.occurrences[0].data.details.cause, 'covered');
   });
 
+  // The document's hit test stops at the shadow host, which read as
+  // something over a skip link in a shadow tree. The link's own shadow root
+  // sees its tree and every tree around it, so a cover in the link's tree
+  // or in the document is still found.
+  await t.test('in a shadow tree: covered only by what is over it', async () => {
+    const cover =
+      '<div style="position:absolute;top:0;left:0;width:300px;height:60px;background:#fff;z-index:5"></div>';
+    const shadowPage = (inside, outside) =>
+      `<!doctype html><html lang="fr"><head><title>t</title><style>body{margin:0}</style></head><body><x-head><template shadowrootmode="open"><div><template shadowrootmode="open"><a id="skip" href="#main" style="position:relative">Aller au contenu</a>${inside}</template></div></template></x-head>${outside}<nav><a href="/a">A</a></nav><main id="main"><h1>Titre</h1></main></body></html>`;
+    let { rule } = await scan(shadowPage('', ''));
+    assert.deepEqual(reasons(rule), [['cantTell', 'SKIP_LINK_SINGLE_PAGE']]);
+    for (const [inside, outside] of [
+      [cover, ''],
+      ['', cover]
+    ]) {
+      ({ rule } = await scan(shadowPage(inside, outside)));
+      assert.deepEqual(reasons(rule)[0], ['cantTell', 'SKIP_LINK_VISIBILITY_UNKNOWN']);
+      assert.equal(rule.occurrences[0].data.details.cause, 'covered');
+    }
+  });
+
   await t.test(
     'another page shows it elsewhere, in another order, or at another width',
     async () => {

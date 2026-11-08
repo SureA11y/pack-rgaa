@@ -230,6 +230,45 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
     assert.equal(summarize(result).outcome, 'fail');
   });
 
+  // An element in a shadow tree is hit tested in its own shadow root: the
+  // document's hit test stops at the host, which read as something painted
+  // over the element, so every one was asked about. Its root sees its tree
+  // and every tree around it, so a cover in any of them still counts.
+  await t.test('in shadow trees, indicators are measured', async () => {
+    const css =
+      '.case{position:relative;padding:30px} a{color:#000} .cover{position:absolute;inset:0;background:rgba(0,0,0,.5)}';
+    const html = `<!doctype html><html lang="en"><head><title>t</title><style>body{margin:0;background:#fff} ${css}</style></head><body>
+      <div id="h"><template shadowrootmode="open"><style>${css}
+        #low:focus{outline:2px solid #dddddd} #high:focus,#under:focus{outline:2px solid #000000}
+        .back{position:absolute;inset:0;background:#111111} #dark{position:relative;color:#fff}
+        #dark:focus{outline:2px solid #222222}</style>
+        <div class="case"><a id="low" href="/1">One</a></div>
+        <div class="case"><a id="high" href="/2">Two</a></div>
+        <div class="case"><div class="back"></div><a id="dark" href="/3">Three</a></div>
+        <div class="case"><a id="under" href="/4">Four</a><div class="cover"></div></div>
+        <div class="case"><div><template shadowrootmode="open"><style>#deep:focus,#deeper:focus{outline:2px solid #dddddd}</style><a id="deep" href="/5">Five</a></template></div></div>
+        <div class="case"><div><template shadowrootmode="open"><style>#deeper:focus{outline:2px solid #dddddd}</style><a id="deeper" href="/6">Six</a></template></div><div class="cover"></div></div>
+      </template></div>
+      <div class="case"><div><template shadowrootmode="open"><style>#outer:focus{outline:2px solid #dddddd}</style><a id="outer" href="/7">Seven</a></template></div><div class="cover"></div></div>
+    </body></html>`;
+    const { result } = await scan(html, { rules: { include: RULE_ID } });
+    assert.deepEqual(outcomes(result), {
+      low: ['fail', 'lowContrast'],
+      // A dark layer is painted right behind it, in its own tree.
+      dark: ['fail', 'lowContrast'],
+      // Covered in its own tree, in the tree around it, in the document.
+      under: ['cantTell', 'notComputable'],
+      deep: ['fail', 'lowContrast'],
+      deeper: ['cantTell', 'notComputable'],
+      outer: ['cantTell', 'notComputable']
+    });
+    for (const id of ['under', 'deeper', 'outer']) {
+      assert.equal(details(result, id).cause, 'covered', id);
+    }
+    // #222222 against #111111 on both sides, read in the shadow tree.
+    assert.deepEqual(details(result, 'dark').ratios, [1.19, 1.19]);
+  });
+
   // The ring drawn at rest saves the browser a layout only where focus
   // draws an outline, so a tree whose styles remove it does without: the
   // document and #h3 here. #h1 and #h2, copies of one component, share one
