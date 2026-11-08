@@ -1394,23 +1394,160 @@ function runInPage(ctx) {
   // browser's outline either way, and one an author rule sets otherwise
   // differs from its resting style either way, so the verdicts are the
   // same. Ancestors of candidates and labels, read as related elements to
-  // find a ring drawn around the element, are left out. Shadow trees are
-  // not reached: a style sheet of the document does not apply there.
+  // find a ring drawn around the element, are left out, and so is an
+  // element in a shadow tree that holds a <slot>, which may be the
+  // ancestor of a candidate slotted into it.
+  // A shadow tree's own rules (:host, ::slotted) lose to the tree around
+  // it, whatever their layer, so an element that hosts an open shadow root
+  // or is the child of one is marked and left out too; so are the hosts
+  // around a candidate in a shadow tree, whose ancestors are then left out
+  // as the candidate's are.
+  // A document's style sheet does not reach into a shadow tree, so each
+  // open shadow root holding a candidate adopts the same rule, first in
+  // its adoptedStyleSheets, and gets its own list back afterwards. A root
+  // whose own sheets declare a cascade layer, or cannot be read, is left
+  // out: an adopted sheet comes after them, and its layer would not be the
+  // lowest. So is a root whose adoptedStyleSheets cannot be set.
+  const NO_RING_ATTR = 'data-surea11y-no-ring';
+  const RING_CSS = `@layer surea11y-focus-ring{:is(${CANDIDATES}):not(label, [${NO_RING_ATTR}], :has(:is(${CANDIDATES}, slot, [${NO_RING_ATTR}]))){outline-style:auto}}`;
+
+  // Whether the root's own style sheets declare a cascade layer (or may:
+  // one cannot be read).
+  function declaresLayer(root) {
+    const walk = (rules, depth) => {
+      for (const r of rules || []) {
+        const name = r && r.constructor && r.constructor.name;
+        if (name === 'CSSLayerBlockRule' || name === 'CSSLayerStatementRule') return true;
+        if (name === 'CSSImportRule') {
+          if (r.layerName != null) return true;
+          let nested = null;
+          try {
+            nested = r.styleSheet && r.styleSheet.cssRules;
+          } catch {
+            return true;
+          }
+          if (nested && depth < MAX_DEPTH && walk(nested, depth + 1)) return true;
+        } else if (r && r.cssRules && depth < MAX_DEPTH && walk(r.cssRules, depth + 1)) {
+          return true;
+        }
+      }
+      return false;
+    };
+    try {
+      for (const sheet of dom.get(root, 'styleSheets') || []) {
+        if (walk(sheet.cssRules, 0)) return true;
+      }
+      return false;
+    } catch {
+      return true;
+    }
+  }
+
+  // Puts the sheet first in each open shadow root holding one of the
+  // elements; returns what puts each root's list back. A list changed
+  // since (a script on the page) keeps its change, without the sheet.
+  function adoptInShadowRoots(elements, css) {
+    const Sheet = view && view.CSSStyleSheet;
+    if (typeof Sheet !== 'function') return () => {};
+    const roots = new Set();
+    for (const el of elements) {
+      try {
+        const root = dom.getRootNode(el);
+        if (root && root !== document && dom.nodeType(root) === 11 && dom.host(root)) {
+          roots.add(root);
+        }
+      } catch {}
+    }
+    const adopted = [];
+    if (!roots.size) return () => {};
+    let sheet;
+    try {
+      sheet = new Sheet();
+      sheet.replaceSync(css);
+    } catch {
+      return () => {};
+    }
+    for (const root of roots) {
+      try {
+        if (declaresLayer(root)) continue;
+        const own = dom.get(root, 'adoptedStyleSheets');
+        if (!own || typeof own.length !== 'number') continue;
+        const before = [...own];
+        root.adoptedStyleSheets = [sheet, ...before];
+        const now = dom.get(root, 'adoptedStyleSheets');
+        if (!now || now[0] !== sheet || now.length !== before.length + 1) {
+          if (now && [...now].includes(sheet)) {
+            root.adoptedStyleSheets = [...now].filter((x) => x !== sheet);
+          }
+          continue;
+        }
+        adopted.push([root, before]);
+      } catch {}
+    }
+    return () => {
+      for (const [root, before] of adopted) {
+        try {
+          const now = [...dom.get(root, 'adoptedStyleSheets')];
+          const untouched =
+            now.length === before.length + 1 &&
+            now[0] === sheet &&
+            before.every((x, i) => now[i + 1] === x);
+          if (untouched) root.adoptedStyleSheets = before;
+          else if (now.includes(sheet)) root.adoptedStyleSheets = now.filter((x) => x !== sheet);
+        } catch {}
+      }
+    };
+  }
+
   function drawRings() {
     if (!layout) return () => {};
+    const marked = [];
+    const hostsSeen = new Set();
+    const mark = (el) => {
+      if (dom.hasAttribute(el, NO_RING_ATTR)) return false;
+      dom.setAttribute(el, NO_RING_ATTR, '');
+      marked.push(el);
+      return true;
+    };
+    for (const el of candidates) {
+      try {
+        if (!el || dom.nodeType(el) !== 1) continue;
+        const parent = dom.parentElement(el);
+        if (dom.shadowRoot(el) || (parent && dom.shadowRoot(parent))) mark(el);
+        // The hosts around a candidate in a shadow tree, so that their
+        // ancestors are left out as the candidate's own would be; only a
+        // host with a candidate or label above it needs the mark.
+        let root = dom.getRootNode(el);
+        for (let guard = 0; root && root !== document && guard < 50; guard += 1) {
+          const host = dom.nodeType(root) === 11 ? dom.host(root) : null;
+          if (!host || hostsSeen.has(host)) break;
+          hostsSeen.add(host);
+          const above = dom.parentElement(host);
+          if (above && dom.closest(above, `${CANDIDATES}, label`)) mark(host);
+          root = dom.getRootNode(host);
+        }
+      } catch {}
+    }
     let sheet = null;
     try {
       const host = dom.head(document) || dom.documentElement(document);
       sheet = dom.createElement(document, 'style');
-      sheet.textContent = `@layer surea11y-focus-ring{:is(${CANDIDATES}):not(label, :has(:is(${CANDIDATES}))){outline-style:auto}}`;
+      sheet.textContent = RING_CSS;
       dom.insertBefore(host, sheet, dom.firstChild(host));
     } catch {
       sheet = null;
     }
+    const unadopt = adoptInShadowRoots(candidates, RING_CSS);
     return () => {
+      unadopt();
       try {
         if (sheet && dom.parentNode(sheet)) dom.removeChild(dom.parentNode(sheet), sheet);
       } catch {}
+      for (const el of marked) {
+        try {
+          dom.removeAttribute(el, NO_RING_ATTR);
+        } catch {}
+      }
     };
   }
   const removeRings = drawRings();
