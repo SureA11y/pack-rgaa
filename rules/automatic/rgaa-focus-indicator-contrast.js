@@ -1499,6 +1499,66 @@ function runInPage(ctx) {
     };
   }
 
+  // A tree (the document or a shadow root) whose styles make focus draw no
+  // outline gains nothing from the ring at rest and pays for it, so each
+  // tree is probed first: one of its candidates in the tab order is
+  // focused, without the ring, and the tree gets the ring only if an
+  // outline appears that was not there at rest. Shadow roots whose style
+  // sheets are the same (the copies of one component) share one probe,
+  // since one link per root is the common case. The ring changes only
+  // what focus costs, not what it shows, so a probe that guesses wrong for
+  // another element of the tree changes the time taken, not the verdicts.
+  // A tree whose probe cannot focus its element keeps the ring.
+  const adoptedIds = new Map();
+  function treeKey(root) {
+    if (root === document) return root;
+    const parts = [];
+    try {
+      for (const s of dom.get(root, 'styleSheets') || []) {
+        const node = s.ownerNode;
+        let media = '';
+        try {
+          media = s.media ? s.media.mediaText : '';
+        } catch {}
+        parts.push(
+          `${s.disabled ? 'd' : ''}${media}|${node && dom.localName(node) === 'style' ? dom.textContent(node) : s.href}`
+        );
+      }
+      for (const s of dom.get(root, 'adoptedStyleSheets') || []) {
+        if (!adoptedIds.has(s)) adoptedIds.set(s, adoptedIds.size);
+        parts.push(`a${adoptedIds.get(s)}`);
+      }
+    } catch {
+      return root;
+    }
+    return parts.join('\u0000');
+  }
+
+  // The roots whose probe found an outline drawn on focus, or could not
+  // focus its element.
+  function treesWithRing() {
+    const keyOf = new Map(); // root -> tree key
+    const outline = new Map(); // tree key -> whether focus draws one
+    for (const el of candidates) {
+      try {
+        if (!el || dom.nodeType(el) !== 1 || dom.hasAttribute(el, NO_RING_ATTR)) continue;
+        const root = dom.getRootNode(el);
+        if (!root) continue;
+        if (!keyOf.has(root)) keyOf.set(root, treeKey(root));
+        const key = keyOf.get(root);
+        if (outline.has(key) || !isTabbable(el) || !isRendered(el)) continue;
+        const appears = whileFocused(
+          el,
+          (before, after) => before['outline-style'] === 'none' && after['outline-style'] !== 'none'
+        );
+        outline.set(key, appears !== false);
+      } catch {}
+    }
+    const ringed = new Set();
+    for (const [root, key] of keyOf) if (outline.get(key)) ringed.add(root);
+    return ringed;
+  }
+
   function drawRings() {
     if (!layout) return () => {};
     const marked = [];
@@ -1528,16 +1588,28 @@ function runInPage(ctx) {
         }
       } catch {}
     }
+    const ringed = treesWithRing();
     let sheet = null;
     try {
-      const host = dom.head(document) || dom.documentElement(document);
-      sheet = dom.createElement(document, 'style');
-      sheet.textContent = RING_CSS;
-      dom.insertBefore(host, sheet, dom.firstChild(host));
+      if (ringed.has(document)) {
+        const host = dom.head(document) || dom.documentElement(document);
+        sheet = dom.createElement(document, 'style');
+        sheet.textContent = RING_CSS;
+        dom.insertBefore(host, sheet, dom.firstChild(host));
+      }
     } catch {
       sheet = null;
     }
-    const unadopt = adoptInShadowRoots(candidates, RING_CSS);
+    const unadopt = adoptInShadowRoots(
+      [...candidates].filter((el) => {
+        try {
+          return ringed.has(dom.getRootNode(el));
+        } catch {
+          return false;
+        }
+      }),
+      RING_CSS
+    );
     return () => {
       unadopt();
       try {

@@ -56,7 +56,10 @@
  *   focus pass every link is given that ring's style (outline-style: auto)
  *   at rest, in a cascade layer below every author rule, as the browser's
  *   own ring is: an outline appearing on focus costs the browser a layout
- *   of the page per link, and the outline read in focus is the same. Each
+ *   of the page per link, and the outline read in focus is the same. A
+ *   tree (the document, or open shadow roots with the same style sheets)
+ *   whose first link shows no outline on focus is left without the ring,
+ *   which there would cost time and save none. Each
  *   open shadow root holding a link adopts the same rule first in its
  *   adoptedStyleSheets, unless its own sheets declare a cascade layer or
  *   cannot be read; a link that hosts a shadow root or is the child of one
@@ -803,9 +806,11 @@ function runInPage(ctx) {
     const saved = new Map();
     let unadopt = () => {};
     try {
+      const ringed = treesWithRing(list);
       for (const [el] of list) {
         const parent = dom.parentElement(el);
         if (dom.shadowRoot(el) || (parent && dom.shadowRoot(parent))) continue;
+        if (!ringed.has(dom.getRootNode(el))) continue;
         const before = dom.hasAttribute(el, STATE_ATTR) ? dom.getAttribute(el, STATE_ATTR) : null;
         saved.set(el, before);
         dom.setAttribute(el, STATE_ATTR, ((before || '') + ' ring').trim());
@@ -830,6 +835,69 @@ function runInPage(ctx) {
       }
     }
     return looks;
+  }
+
+  // A tree (the document or a shadow root) whose styles make focus draw no
+  // outline on its links gains nothing from the ring at rest and pays for
+  // it, so each tree is probed first: one of its links is focused, without
+  // the ring, and the tree's links get the ring only if an outline appears
+  // that was not there at rest. Shadow roots whose style sheets are the
+  // same (the copies of one component) share one probe, since one link per
+  // root is the common case. The ring changes only what focus costs, not
+  // what it shows, so a probe that guesses wrong for another link of the
+  // tree changes the time taken, not the verdicts. A tree whose probe
+  // cannot focus its link keeps the ring.
+  const adoptedIds = new Map();
+  function treeKey(root) {
+    if (dom.nodeType(root) !== 11) return root;
+    const parts = [];
+    try {
+      for (const s of dom.get(root, 'styleSheets') || []) {
+        const node = s.ownerNode;
+        let media = '';
+        try {
+          media = s.media ? s.media.mediaText : '';
+        } catch {}
+        parts.push(
+          `${s.disabled ? 'd' : ''}${media}|${node && dom.localName(node) === 'style' ? dom.textContent(node) : s.href}`
+        );
+      }
+      for (const s of dom.get(root, 'adoptedStyleSheets') || []) {
+        if (!adoptedIds.has(s)) adoptedIds.set(s, adoptedIds.size);
+        parts.push(`a${adoptedIds.get(s)}`);
+      }
+    } catch {
+      return root;
+    }
+    return parts.join('\u0000');
+  }
+
+  // The roots whose probe found an outline drawn on focus, or could not
+  // focus its link.
+  function treesWithRing(list) {
+    const keyOf = new Map(); // root -> tree key
+    const outline = new Map(); // tree key -> whether focus draws one
+    for (const [el] of list) {
+      try {
+        const parent = dom.parentElement(el);
+        if (dom.shadowRoot(el) || (parent && dom.shadowRoot(parent))) continue;
+        const root = dom.getRootNode(el);
+        if (!root) continue;
+        if (!keyOf.has(root)) keyOf.set(root, treeKey(root));
+        const key = keyOf.get(root);
+        if (outline.has(key)) continue;
+        const rest = safeComputedStyle(el);
+        const atRest = rest ? rest.outlineStyle : '';
+        const appears = inState(el, 'focus', () => {
+          const cs = safeComputedStyle(el);
+          return atRest === 'none' && !!cs && cs.outlineStyle !== 'none';
+        });
+        outline.set(key, appears !== false);
+      } catch {}
+    }
+    const ringed = new Set();
+    for (const [root, key] of keyOf) if (outline.get(key)) ringed.add(root);
+    return ringed;
   }
 
   // Whether the root's own style sheets declare a cascade layer (or may:

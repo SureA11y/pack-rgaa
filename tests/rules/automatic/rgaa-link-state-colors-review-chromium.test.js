@@ -59,11 +59,12 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
   const browser = await chromium.launch({ executablePath });
   t.after(() => browser.close());
 
-  async function scan(html, engineOptions = { rules: { include: RULE_ID } }) {
+  async function scan(html, engineOptions = { rules: { include: RULE_ID } }, setup) {
     const p = await browser.newPage();
     try {
       await p.setContent(html);
       await p.addScriptTag({ content: BUNDLE });
+      if (setup) await p.evaluate(setup);
       const selectors = () =>
         [...document.styleSheets].flatMap((s) => [...s.cssRules].map((r) => r.cssText)).join('\n');
       const before = await p.evaluate(selectors);
@@ -78,7 +79,8 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
       const after = await p.evaluate(selectors);
       const state = await p.evaluate(() => ({
         marked: document.querySelectorAll('[data-surea11y-link-state]').length,
-        active: document.activeElement && document.activeElement.id
+        active: document.activeElement && document.activeElement.id,
+        ring: window.__ring || null
       }));
       assert.equal(after, before, 'the style rules are put back as they were');
       assert.equal(state.marked, 0, 'no state attribute is left behind');
@@ -181,6 +183,55 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
       assert.equal(rule(result).outcome, 'pass', css);
       assert.equal(state.active, 'field', 'focus goes back where it was');
     }
+  });
+
+  // The ring drawn at rest saves the browser a layout only where focus
+  // draws an outline, so a tree whose styles remove it does without: the
+  // document and #h3 here. #h1 and #h2, copies of one component, share one
+  // probe. The verdicts are the same either way.
+  await t.test('the ring at rest goes only where focus draws an outline', async () => {
+    const links = (id) =>
+      `<p>Lire <a id="${id}1" href="/1">la suite</a> ou <a id="${id}2" href="/2">ceci</a>.</p>`;
+    const none = 'p a:focus{color:#222;outline:none}';
+    const shadow = (id, css) =>
+      `<div id="${id}"><template shadowrootmode="open"><style>p a{color:#f60;text-decoration:none} ${css}</style>${links(id)}</template></div>`;
+    const html = page(
+      none,
+      `${links('d')}${shadow('h1', 'p a:focus{color:#222}')}${shadow('h2', 'p a:focus{color:#222}')}${shadow('h3', none)}`
+    );
+    const { result, state } = await scan(html, undefined, () => {
+      window.__ring = [];
+      const watch = (root) =>
+        new MutationObserver((records) => {
+          for (const r of records) {
+            // The value the attribute had before this change.
+            const v = r.oldValue || '';
+            if (/\bring\b/.test(v) && !window.__ring.includes(r.target.id)) {
+              window.__ring.push(r.target.id);
+            }
+          }
+        }).observe(root, {
+          subtree: true,
+          attributes: true,
+          attributeOldValue: true,
+          attributeFilter: ['data-surea11y-link-state']
+        });
+      watch(document);
+      for (const id of ['h1', 'h2', 'h3']) watch(document.getElementById(id).shadowRoot);
+    });
+    assert.deepEqual(state.ring.sort(), ['h11', 'h12', 'h21', 'h22']);
+    const states = Object.fromEntries(
+      rule(result).occurrences.map((o) => [
+        (o.html.match(/id="([^"]+)"/) || [])[1],
+        o.data.details.states
+      ])
+    );
+    assert.deepEqual(states, {
+      d1: ['focus'],
+      d2: ['focus'],
+      h31: ['focus'],
+      h32: ['focus']
+    });
   });
 
   await t.test('jsdom asks about what the browser fails', async () => {
