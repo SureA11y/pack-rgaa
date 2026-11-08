@@ -159,7 +159,7 @@ module.exports = definePack({
   version,
   namespace: 'rgaa',
   // Certain failures in rule-map.js (outcome: 'fail') need core 1.15.
-  core: '^1.15.0',
+  core: '~1.16.1',
   description: 'RGAA 4.1.2, the French accessibility standard',
   rules,
   standard,
