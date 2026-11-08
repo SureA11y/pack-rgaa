@@ -234,6 +234,22 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
     });
   });
 
+  // A closed shadow root cannot be seen from a script, so a link in a
+  // custom element goes without the ring drawn at rest, which would have
+  // overridden its ::slotted rule and drawn an outline that rule removes.
+  await t.test('a closed shadow root keeps its ::slotted rule', async () => {
+    const shadow =
+      '<style>::slotted(a){color:#f60;text-decoration:none} ::slotted(a:focus){outline:none}</style><slot></slot>';
+    const html = page(
+      'a:focus{color:#222}',
+      `${LINK}<x-text id="xt">Voir <a id="s1" href="/s">ceci</a> puis.</x-text>` +
+        `<script>document.getElementById('xt').attachShadow({ mode: 'closed' }).innerHTML = '${shadow}';</script>`
+    );
+    // #l keeps the ring, so its focus look is outlined and passes.
+    const { result } = await scan(html);
+    assert.deepEqual(verdict(result).findings, [['s1', 'fail', 'STATE_CONTRAST_LOW', ['focus']]]);
+  });
+
   await t.test('jsdom asks about what the browser fails', async () => {
     const { runa11yCoreOnHtml } = require('../../helpers/run.js');
     const r = runa11yCoreOnHtml(page('a:hover{color:#222}', LINK), {

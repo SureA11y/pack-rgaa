@@ -1424,9 +1424,10 @@ function runInPage(ctx) {
   // ancestor of a candidate slotted into it.
   // A shadow tree's own rules (:host, ::slotted) lose to the tree around
   // it, whatever their layer, so an element that hosts an open shadow root
-  // or is the child of one is marked and left out too; so are the hosts
-  // around a candidate in a shadow tree, whose ancestors are then left out
-  // as the candidate's are.
+  // or is the child of one is marked and left out too, and so is a custom
+  // element or the child of one, which may host a closed root; so are the
+  // hosts around a candidate in a shadow tree, whose ancestors are then
+  // left out as the candidate's are.
   // A document's style sheet does not reach into a shadow tree, so each
   // open shadow root holding a candidate adopts the same rule, first in
   // its adoptedStyleSheets, and gets its own list back afterwards. A root
@@ -1559,6 +1560,14 @@ function runInPage(ctx) {
     return parts.join('\u0000');
   }
 
+  // Whether the element hosts a shadow root, or may: a closed one cannot
+  // be seen from a script, so every custom element (a name with a hyphen)
+  // is taken as a possible host, and its :host and ::slotted focus styles
+  // are not overridden by a ring it cannot see.
+  function mayHostShadow(el) {
+    return !!dom.shadowRoot(el) || String(dom.localName(el) || '').includes('-');
+  }
+
   // The roots whose probe found an outline drawn on focus, or could not
   // focus its element.
   function treesWithRing() {
@@ -1598,7 +1607,7 @@ function runInPage(ctx) {
       try {
         if (!el || dom.nodeType(el) !== 1) continue;
         const parent = dom.parentElement(el);
-        if (dom.shadowRoot(el) || (parent && dom.shadowRoot(parent))) mark(el);
+        if (mayHostShadow(el) || (parent && mayHostShadow(parent))) mark(el);
         // The hosts around a candidate in a shadow tree, so that their
         // ancestors are left out as the candidate's own would be; only a
         // host with a candidate or label above it needs the mark.
