@@ -253,3 +253,15 @@ test('a skip link to a target hidden from assistive technologies fails 12.7.2', 
   const notShown = skip('style="display:none"');
   assert.deepEqual([notShown.outcome, notShown.requirements], ['cantTell', ['12.7.1', '12.7.2']]);
 });
+
+test('a required field with no indication fails 11.10.2, not 11.10.1, which its required attribute meets', () => {
+  const rollup = criterion(
+    scan(
+      '<form><label for="n">Nom</label><input id="n" required><label for="v">Ville</label><input id="v"><button>Envoyer</button></form>'
+    ),
+    '11.10'
+  );
+  assert.equal(rollup.outcome, 'fail');
+  assert.deepEqual(tests(rollup), ['11.10.2']);
+  assert.deepEqual(contributor(rollup, 'rgaa-required-field-indication').requirements, ['11.10.2']);
+});

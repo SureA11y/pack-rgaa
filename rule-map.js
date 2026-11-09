@@ -1328,6 +1328,14 @@ const RGAA_RULE_TESTS = {
         },
         signMayMeanOther: {
           tests: ['11.10.1']
+        },
+        // Given only for a field with required or aria-required="true",
+        // which condition 2 of 11.10.1 accepts: what it lacks is 11.10.2's.
+        requiredNotIndicated: {
+          tests: ['11.10.2']
+        },
+        markerNotExplained: {
+          tests: ['11.10.2']
         }
       }
     },

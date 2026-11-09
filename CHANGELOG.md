@@ -4,6 +4,10 @@ All notable changes to this package are documented here. This project adheres to
 
 ## [Unreleased]
 
+### Fixed
+
+- A required field with no indication, and one whose « * » the page never explains, count toward 11.10.2 only, no longer toward 11.10.1 too (`requiredNotIndicated`, `markerNotExplained`). Both are given only for a field with `required` or `aria-required="true"`, which condition 2 of 11.10.1 accepts. Criterion 11.10's verdict is unchanged; its result now names the right test.
+
 ## [1.1.1] - 2026-11-09
 
 1.1.0 was published without this fix: use 1.1.1 instead. Needs `@surea11y/core` 1.16.1 or a later 1.16 release, as 1.1.0 does. The rules, the standard and the data are unchanged.
