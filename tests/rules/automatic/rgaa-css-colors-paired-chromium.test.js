@@ -153,6 +153,50 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
     }
   });
 
+  await t.test('a page of broken images is read without changing the page', async () => {
+    const p = await browser.newPage();
+    const warnings = [];
+    p.on('console', (m) => {
+      if (m.type() === 'warning') warnings.push(m.text());
+    });
+    try {
+      await p.route('https://site.test/', (r) =>
+        r.fulfill({
+          contentType: 'text/html',
+          body: doc(
+            '<style>body{background:#fff} p{color:#555} img{color:#555}</style>',
+            '<p>Texte <img id="i" src="missing.png" alt="Logo"> <img src="gone.png" alt="Photo"></p>'
+          )
+        })
+      );
+      await p.route(/\.png$/, (r) => r.fulfill({ status: 404, body: '' }));
+      await p.goto('https://site.test/');
+      await p.addScriptTag({ content: BUNDLE });
+      const after = await p.evaluate(async () => {
+        const res = await window.a11ycore.runa11yCoreInPage(
+          null,
+          null,
+          { rules: { include: 'rgaa-css-colors-paired' } },
+          null
+        );
+        const img = document.getElementById('i');
+        return {
+          outcome: res.checksResults.find((r) => r.ruleId === 'rgaa-css-colors-paired').outcome,
+          style: img.getAttribute('style'),
+          display: getComputedStyle(img).display,
+          styles: document.querySelectorAll('style').length
+        };
+      });
+      assert.deepEqual(after, { outcome: 'pass', style: null, display: 'inline', styles: 1 });
+      assert.deepEqual(
+        warnings.filter((w) => /changed the page/.test(w)),
+        []
+      );
+    } finally {
+      await p.close();
+    }
+  });
+
   await t.test(
     'the same page with its style sheets readable fails, or passes once paired',
     async () => {
