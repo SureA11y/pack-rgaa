@@ -333,11 +333,17 @@ A text color is declared and no background color is, on the paragraph or any anc
 ```
 The emoticon has no title: a person checks that the text next to it says what it means (RGAA 13.5.1).
 
-**Not applicable**
+**Flagged (cantTell)**
 ```html
 <p><abbr title="sourire">:-)</abbr></p>
 ```
-The emoticon has a title; whether it is relevant is 13.6.1's matter.
+The emoticon has a title: it is reported apart (`titleOnly`), which RGAA counts toward no test, since it accepts a title and its relevance is 13.6.1's. A standard that doesn't accept a title for cryptic content, such as RAWeb 1.1, asks about it.
+
+**Not applicable**
+```html
+<p>Bravo <span role="img" aria-label="fête">🎉</span></p>
+```
+The emoji is named by role="img" and aria-label: it is an image, which 13.5 leaves to criteria 1.1 and 1.3.
 
 ## rgaa-current-item-review
 

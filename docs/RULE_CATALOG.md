@@ -510,11 +510,11 @@ Checks that visible text has a contrast ratio of at least 4.5:1, or 3:1 for text
 
 manual · no formal WCAG SC mapping · confidence high · default severity minor
 
-Flags text emoticons, emoji and ASCII art with no title, for a person to check that the text next to them says what they mean.
+Flags text emoticons, emoji and ASCII art with no title, for a person to check that the text next to them says what they mean, and, apart, those whose meaning only a title may give.
 
 **Applies to.** Applies to visible cryptic content, as RGAA 13.5 lists it: text emoticons (« :-) », « ;) », « :D », « &lt;3 »), emoji, and ASCII art (a &lt;pre&gt; of three lines or more mostly made of signs). Content inside code (&lt;code&gt;, &lt;kbd&gt;, &lt;samp&gt;), hidden with aria-hidden="true", or given a name by role="img" with aria-label or aria-labelledby is left out. A page with none is notApplicable.
 
-**Expectation.** RGAA 13.5.1: each cryptic content has « un attribut title » or « une définition est donnée par le contexte adjacent ». One with a title on itself or its parent passes (its relevance is 13.6.1's). Any other is asked about, one occurrence per element (emoticon, emoji, asciiArt): whether the text next to it defines it is for a person. Screen readers read an emoji by its Unicode name, which may not say what is meant.
+**Expectation.** RGAA 13.5.1: each cryptic content has « un attribut title » or « une définition est donnée par le contexte adjacent ». Any without a title is asked about, one occurrence per element (emoticon, emoji, asciiArt): whether the text next to it defines it is for a person. One with a title on itself or its parent is reported apart (titleOnly), which RGAA's map counts toward no test (its title's relevance is 13.6.1's): a standard that doesn't accept a title, such as RAWeb 1.1, asks about it. Screen readers read an emoji by its Unicode name, which may not say what is meant.
 
 ### `rgaa-css-colors-paired`
 

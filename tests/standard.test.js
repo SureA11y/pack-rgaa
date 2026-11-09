@@ -8,6 +8,7 @@
  * standard-facts.js): every rollup, every rule's entries, every WCAG
  * rollup's entries and the validation of every rule. Core's give the same.
  * The comparison is skipped with another core, or one whose rules changed.
+ * What the pack has changed on purpose since is listed (CHANGED_SINCE).
  */
 
 const test = require('node:test');
@@ -31,11 +32,30 @@ const skip =
   (!recorded && `nothing recorded with core ${CORE_VERSION}`) ||
   (recorded.catalog !== catalogHash() && `core ${CORE_VERSION}'s rules changed since`);
 
+// What the pack has changed on purpose since the record was taken, rollup
+// by rollup, with the reason: these differ from it, and nothing else does.
+const CHANGED_SINCE = {
+  // 1.2.0: requiredNotIndicated and markerNotExplained count toward 11.10.2
+  // only. They are given only for a field with required or
+  // aria-required="true", which condition 2 of 11.10.1 accepts.
+  'rgaa-4.1.2-11.10': '1.2.0',
+  // 1.2.0: rgaa-cryptic-content-review's titleOnly code counts toward no
+  // test, so content with a title counts as checked rather than not found.
+  'rgaa-4.1.2-13.5': '1.2.0'
+};
+
 test(
   'core’s functions give what the pack’s own gave: rollups, entries, validation',
   { skip },
   () => {
-    assert.deepEqual(standardFacts(pack.standard), recorded);
+    const facts = standardFacts(pack.standard);
+    const was = new Map(recorded.rollups);
+    for (const [id, h] of facts.rollups) {
+      if (!CHANGED_SINCE[id]) continue;
+      assert.notEqual(h, was.get(id), `${id} changed in ${CHANGED_SINCE[id]}`);
+    }
+    facts.rollups = facts.rollups.map(([id, h]) => [id, CHANGED_SINCE[id] ? was.get(id) : h]);
+    assert.deepEqual(facts, recorded);
   }
 );
 
