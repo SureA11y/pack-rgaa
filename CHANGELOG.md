@@ -4,6 +4,10 @@ All notable changes to this package are documented here. This project adheres to
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-09
+
+Needs `@surea11y/core` 1.16.1 or a later 1.16 release, as 1.0.0 does.
+
 ### Added
 
 - The standard as data (`standard-data.js`, core's format `surea11y-standard/1`): its versions, criteria, tests, the mapping and the profile. A standard built on RGAA, such as RAWeb, starts from it with core's `deriveStandard` (`standardDataOf(require('@surea11y/pack-rgaa').standard)`), rather than copying the pack's tables.
