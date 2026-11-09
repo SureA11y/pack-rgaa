@@ -38,7 +38,10 @@ const CHANGED_SINCE = {
   // 1.2.0: requiredNotIndicated and markerNotExplained count toward 11.10.2
   // only. They are given only for a field with required or
   // aria-required="true", which condition 2 of 11.10.1 accepts.
-  'rgaa-4.1.2-11.10': '1.2.0'
+  'rgaa-4.1.2-11.10': '1.2.0',
+  // 1.2.0: rgaa-cryptic-content-review's titleOnly code counts toward no
+  // test, so content with a title counts as checked rather than not found.
+  'rgaa-4.1.2-13.5': '1.2.0'
 };
 
 test(

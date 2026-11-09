@@ -4,6 +4,10 @@ All notable changes to this package are documented here. This project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- `rgaa-cryptic-content-review` reports cryptic content whose meaning only a `title` may give under a reason code of its own, `titleOnly`, which RGAA's map counts toward no test: RGAA accepts a title (13.5.1). A standard that doesn't, such as RAWeb 1.1, maps it to its own test. Under RGAA, such content now counts as checked for 13.5.1 rather than not found.
+
 ### Fixed
 
 - A required field with no indication, and one whose « * » the page never explains, count toward 11.10.2 only, no longer toward 11.10.1 too (`requiredNotIndicated`, `markerNotExplained`). Both are given only for a field with `required` or `aria-required="true"`, which condition 2 of 11.10.1 accepts. Criterion 11.10's verdict is unchanged; its result now names the right test.

@@ -371,7 +371,12 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-cryptic-content-review': {
       tests: ['13.5.1'],
-      note: 'Asks about text emoticons (« :-) », « ;) », « <3 »…), emoji and ASCII art (a <pre> of three lines or more mostly made of signs) with no title on themselves or their parent, outside code and not named by role="img" or hidden: 13.5.1 asks each « contenu cryptique (art ASCII, émoticône, syntaxe cryptique) » for a title or « une définition donnée par le contexte adjacent », and whether the context defines it is for a person.'
+      note: 'Asks about text emoticons (« :-) », « ;) », « <3 »…), emoji and ASCII art (a <pre> of three lines or more mostly made of signs) with no title on themselves or their parent, outside code and not named by role="img" or hidden: 13.5.1 asks each « contenu cryptique (art ASCII, émoticône, syntaxe cryptique) » for a title or « une définition donnée par le contexte adjacent », and whether the context defines it is for a person. Content with a title is reported apart (titleOnly) and counts toward no test: RGAA accepts the title, and its relevance is 13.6.1\'s.',
+      reasonCodes: {
+        titleOnly: {
+          tests: []
+        }
+      }
     },
     'rgaa-css-colors-paired': {
       tests: ['10.5.1', '10.5.2', '10.5.3'],

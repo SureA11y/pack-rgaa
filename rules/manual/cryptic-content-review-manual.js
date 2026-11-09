@@ -16,10 +16,12 @@
  *   page with none is notApplicable.
  * @expectation
  *   RGAA 13.5.1: each cryptic content has « un attribut title » or « une
- *   définition est donnée par le contexte adjacent ». One with a title on
- *   itself or its parent passes (its relevance is 13.6.1's). Any other is
- *   asked about, one occurrence per element (emoticon, emoji, asciiArt):
- *   whether the text next to it defines it is for a person. Screen readers
+ *   définition est donnée par le contexte adjacent ». Any without a title
+ *   is asked about, one occurrence per element (emoticon, emoji, asciiArt):
+ *   whether the text next to it defines it is for a person. One with a title
+ *   on itself or its parent is reported apart (titleOnly), which RGAA's map
+ *   counts toward no test (its title's relevance is 13.6.1's): a standard
+ *   that doesn't accept a title, such as RAWeb 1.1, asks about it. Screen readers
  *   read an emoji by its Unicode name, which may not say what is meant.
  * @implementation-notes
  * - Manual (cantTell).
@@ -31,7 +33,7 @@ const id = 'rgaa-cryptic-content-review';
 const meta = {
   title: 'Cryptic content has a title or is defined by its context',
   description:
-    'Flags text emoticons, emoji and ASCII art with no title, for a person to check that the text next to them says what they mean.',
+    'Flags text emoticons, emoji and ASCII art with no title, for a person to check that the text next to them says what they mean, and, apart, those whose meaning only a title may give.',
   i18n: {
     titleKey: 'crypticContentReview_title',
     descriptionKey: 'crypticContentReview_description'
@@ -45,7 +47,7 @@ const meta = {
   type: 'manual',
   defaultConfidence: 'high',
   coverage: {},
-  reasonCodes: ['emoticon', 'emoji', 'asciiArt'],
+  reasonCodes: ['emoticon', 'emoji', 'asciiArt', 'titleOnly'],
   review: {
     emoticon: {
       steps: [
@@ -66,6 +68,16 @@ const meta = {
       passWhen: 'The text immediately before or after it says what it means.',
       failWhen:
         'Nothing next to it says what it means, and it has no title, which fails RGAA 13.5.1.'
+    },
+    titleOnly: {
+      steps: [
+        'Find the cryptic content the report names, on screen, and the title it has.',
+        'Read the text immediately before and after it, leaving the title aside.',
+        'Decide whether that text says what it means, or whether its meaning is given another way assistive technologies render, such as an accessible name.'
+      ],
+      passWhen: 'The text next to it, or a way assistive technologies render, says what it means.',
+      failWhen:
+        'Only its title says what it means, which a standard that does not accept a title for cryptic content, such as RAWeb 1.1 (13.5.1), fails.'
     },
     asciiArt: {
       steps: [
@@ -142,6 +154,30 @@ function runInPage(ctx) {
   function ask(el, kind, sample) {
     if (seen.has(el)) return;
     seen.add(el);
+    // Content with a title: reported apart, for the standards that don't
+    // accept one.
+    if (titled(el)) {
+      occurrences.push(
+        helpers.reportOccurrence(el, {
+          summary: `This content holds cryptic content ("${sample}") whose meaning only its title may give.`,
+          hint: 'A title is not read by every assistive technology: say what it means in the text next to it, or give it an accessible name.',
+          i18n: {
+            summaryKey: 'crypticContentReview_summary_cantTell_titleOnly',
+            hintKey: 'crypticContentReview_hint_cantTell_titleOnly',
+            params: { sample }
+          },
+          uncertainty: {
+            code: 'judgement-required',
+            needed: 'Whether the meaning is given other than by the title.'
+          },
+          data: {
+            details: { reasonCode: 'titleOnly', kind, sample },
+            visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
+          }
+        })
+      );
+      return;
+    }
     occurrences.push(
       helpers.reportOccurrence(el, {
         summary: `This content holds ${kind === 'asciiArt' ? 'ASCII art' : kind === 'emoji' ? 'an emoji' : 'an emoticon'} ("${sample}") with no title.`,
@@ -165,7 +201,7 @@ function runInPage(ctx) {
 
   // ASCII art: a <pre> of three lines or more, mostly signs.
   for (const pre of [...dom.querySelectorAll(document, 'pre')]) {
-    if (excluded(pre) || !visible(pre) || titled(pre)) continue;
+    if (excluded(pre) || !visible(pre)) continue;
     if (dom.querySelectorAll(pre, 'code, kbd, samp').length) continue;
     const raw = String(dom.textContent(pre) || '');
     const lines = raw.split('\n').filter((l) => l.trim());
@@ -189,7 +225,7 @@ function runInPage(ctx) {
     const emoticon = EMOTICON.exec(t);
     const emoji = !emoticon && EMOJI.exec(t);
     if (!emoticon && !emoji) continue;
-    if (excluded(p) || !visible(p) || titled(p)) continue;
+    if (excluded(p) || !visible(p)) continue;
     ask(p, emoticon ? 'emoticon' : 'emoji', norm(emoticon ? emoticon[0] : emoji[0]));
   }
 

@@ -32,9 +32,28 @@ test(`${RULE_ID}: emoticons, emoji and ASCII art with no title are asked about`,
   }
 });
 
-test(`${RULE_ID}: a title, a named role="img", code, signs or plain text is not applicable`, () => {
+// A title is RGAA's: rule-map.js counts it toward no test. A standard that
+// doesn't accept one (RAWeb 1.1) asks about it.
+test(`${RULE_ID}: content with a title is reported apart, as titleOnly`, () => {
+  for (const [body, kind] of [
+    ['<p><abbr title="sourire">:-)</abbr></p>', 'emoticon'],
+    ['<p>Bravo <span title="fête">🎉</span></p>', 'emoji'],
+    ['<pre title="un chat">  /\\_/\\\n ( o.o )\n  > ^ <</pre>', 'asciiArt']
+  ]) {
+    const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'cantTell', {
+      minOccurrences: 1,
+      maxOccurrences: 1
+    });
+    assert.deepEqual(
+      [rule.occurrences[0].data.details.reasonCode, rule.occurrences[0].data.details.kind],
+      ['titleOnly', kind],
+      body
+    );
+  }
+});
+
+test(`${RULE_ID}: a named role="img", code, signs or plain text is not applicable`, () => {
   for (const body of [
-    '<p><abbr title="sourire">:-)</abbr></p>',
     '<p>Bravo <span role="img" aria-label="fête">🎉</span></p>',
     '<p>Bravo <span aria-hidden="true">🎉</span></p>',
     '<code>a :) b</code>',
@@ -49,6 +68,12 @@ test(`${RULE_ID}: a title, a named role="img", code, signs or plain text is not 
 test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html)`, () => {
   const fixturePath = path.join(__dirname, '../..', 'fixtures', `${RULE_ID}-all-scenarios.html`);
   const result = runa11yCoreOnHtml(fs.readFileSync(fixturePath, 'utf8'), RUN);
-  const rule = assertRule(result, RULE_ID, 'cantTell', { minOccurrences: 1, maxOccurrences: 1 });
-  assert.match(rule.occurrences[0].html, /id="ccv_case_01"/);
+  const rule = assertRule(result, RULE_ID, 'cantTell', { minOccurrences: 2, maxOccurrences: 2 });
+  assert.deepEqual(
+    rule.occurrences.map((o) => [/id="(ccv_case_\d+)"/.exec(o.html)[1], o.data.details.reasonCode]),
+    [
+      ['ccv_case_01', 'emoticon'],
+      ['ccv_case_02', 'titleOnly']
+    ]
+  );
 });
