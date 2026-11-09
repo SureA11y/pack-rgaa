@@ -7,7 +7,7 @@ All notable changes to this package are documented here. This project adheres to
 ### Added
 
 - The standard as data (`standard-data.js`, core's format `surea11y-standard/1`): its versions, criteria, tests, the mapping and the profile. A standard built on RGAA, such as RAWeb, starts from it with core's `deriveStandard` (`standardDataOf(require('@surea11y/pack-rgaa').standard)`), rather than copying the pack's tables.
-- The `rgaa-4.1.2` profile serves article 47 of law n° 2005-102 (`law`): results name it in `engine.law`, the HTML report shows it, and `describePacks` lists it with whom it applies to and its source. Facts to show, never logic.
+- The `rgaa-4.1.2` profile names the law it is used for, article 47 of law n° 2005-102 (`law`), with a link to its official text: results name it in `engine.law`, the HTML report shows it, and `describePacks` lists it. The pack doesn't document the law.
 
 ### Changed
 

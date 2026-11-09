@@ -46,18 +46,17 @@ function rowOf(row) {
 
 const wcagVersionOf = (version) => RGAA_VERSIONS.find((v) => v.version === version).wcagVersion;
 
-// The laws the standard is assessed under. Facts to show, never logic: who a
-// law applies to is not the engine's to decide.
+// The law the profile is used for, named with a link to its official text:
+// the pack tests RGAA's criteria and says which law a scan was run for; it
+// doesn't document the law.
 const LAWS = {
   'fr-article-47': {
     name: 'Article 47 de la loi n° 2005-102 du 11 février 2005',
     jurisdiction: 'FR',
-    appliesTo:
-      'Les personnes morales de droit public ; les personnes morales de droit privé chargées d’une mission de service public ; les entreprises dont le chiffre d’affaires annuel moyen en France sur les trois derniers exercices dépasse 250 millions d’euros (décret n° 2019-768, article 2).',
     sources: [
       {
-        title: 'Déclaration d’accessibilité, accessibilite.numerique.gouv.fr (DINUM)',
-        url: 'https://accessibilite.numerique.gouv.fr/obligations/declaration-accessibilite/'
+        title: 'Légifrance, article 47 de la loi n° 2005-102',
+        url: 'https://www.legifrance.gouv.fr/loda/article_lc/LEGIARTI000037388867/'
       }
     ]
   }

@@ -61,7 +61,14 @@ test('the profile serves article 47, which results and describePacks name', () =
   const law = lawOf(pack.standard, 'fr-article-47', 'fr');
   assert.equal(law.jurisdiction, 'FR');
   assert.equal(law.lang, 'fr');
-  assert.match(law.appliesTo, /250 millions d’euros/);
+  // Named, with its official text, and nothing more: the pack doesn't
+  // document the law.
+  assert.deepEqual(Object.keys(pack.standard.laws['fr-article-47']).sort(), [
+    'jurisdiction',
+    'name',
+    'sources'
+  ]);
+  assert.match(law.sources[0].url, /^https:\/\/www\.legifrance\.gouv\.fr\//);
   const { runa11yCoreOnHtml } = require('./helpers/run.js');
   const result = runa11yCoreOnHtml(
     '<!doctype html><html lang="fr"><head><title>t</title></head><body><main><p>x</p></main></body></html>',
