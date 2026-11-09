@@ -205,7 +205,7 @@ function buildTables(readSource = (file) => fs.readFileSync(path.join(DATA_DIR, 
 
 function renderModule(tables) {
   const json = (v) => JSON.stringify(v, null, 2);
-  return `/* SPDX-License-Identifier: MPL-2.0 */
+  return `/* SPDX-License-Identifier: MPL-2.0 AND etalab-2.0 */
 
 'use strict';
 
@@ -217,8 +217,10 @@ function renderModule(tables) {
  * -- do not edit by hand; tests/map.test.js fails on any drift.
  *
  * SOURCE: RGAA 4.1.2, DINUM, https://github.com/DISIC/accessibilite.numerique.gouv.fr
- * (RGAA/criteres.json), published under Licence Ouverte 2.0. The text is
- * RGAA's own French wording with its Markdown removed.
+ * (RGAA/criteres.json, last updated 7 January 2026), published under the
+ * Licence Ouverte 2.0 (etalab-2.0): the text is DINUM's, in its own French
+ * wording with its Markdown removed; the code around it is under MPL-2.0.
+ * This pack is not affiliated with or endorsed by DINUM or the French State.
  *
  * SHAPE
  * -----
@@ -267,7 +269,7 @@ module.exports = { RGAA_VERSIONS, RGAA_THEMES, RGAA_CRITERIA, RGAA_TESTS, rgaaCr
 }
 
 function renderGlossary(tables) {
-  return `/* SPDX-License-Identifier: MPL-2.0 */
+  return `/* SPDX-License-Identifier: MPL-2.0 AND etalab-2.0 */
 
 'use strict';
 
@@ -278,8 +280,10 @@ function renderGlossary(tables) {
  * -- do not edit by hand; tests/map.test.js fails on any drift.
  *
  * SOURCE: RGAA 4.1.2, DINUM, https://github.com/DISIC/accessibilite.numerique.gouv.fr
- * (RGAA/glossaire.json), published under Licence Ouverte 2.0. The text is
- * RGAA's own French wording with its markup removed.
+ * (RGAA/glossaire.json, last updated 17 April 2023), published under the
+ * Licence Ouverte 2.0 (etalab-2.0): the text is DINUM's, in its own French
+ * wording with its markup removed; the code around it is under MPL-2.0.
+ * This pack is not affiliated with or endorsed by DINUM or the French State.
  *
  * SHAPE
  * -----

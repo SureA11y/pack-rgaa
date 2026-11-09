@@ -269,4 +269,4 @@ runDomRulesInPage(url, null, {
 
 ## Licence
 
-The code is under the [Mozilla Public License 2.0](./LICENSE), as `@surea11y/core` is. The RGAA data in `data/` is DINUM's, under the Licence Ouverte 2.0 ([`data/README.md`](./data/README.md)).
+The code is under the [Mozilla Public License 2.0](./LICENSE), as `@surea11y/core` is. RGAA's text, in `data/` and quoted in `map.js`, `glossary.js` and the docs, is DINUM's, under the [Licence Ouverte 2.0](https://www.etalab.gouv.fr/licence-ouverte-open-licence/): « DINUM – RGAA 4.1.2 – données originales téléchargées sur https://github.com/DISIC/accessibilite.numerique.gouv.fr », last updated on 7 January 2026 (criteria), 2 March 2026 (methodology) and 17 April 2023 (glossary) ([`data/README.md`](./data/README.md)). The package's licence is therefore `MPL-2.0 AND etalab-2.0`. This pack is not affiliated with or endorsed by DINUM or the French State.
