@@ -4,6 +4,16 @@ All notable changes to this package are documented here. This project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- The standard as data (`standard-data.js`, core's format `surea11y-standard/1`): its versions, criteria, tests, the mapping and the profile. A standard built on RGAA, such as RAWeb, starts from it with core's `deriveStandard` (`standardDataOf(require('@surea11y/pack-rgaa').standard)`), rather than copying the pack's tables.
+- The `rgaa-4.1.2` profile serves article 47 of law n° 2005-102 (`law`): results name it in `engine.law`, the HTML report shows it, and `describePacks` lists it with whom it applies to and its source. Facts to show, never logic.
+
+### Changed
+
+- The standard is built from that data with core's `standardFromData`: core's rollups, entries and validation, with its tests under its criteria (`tests`, `wcagCorrespondence`), in place of the pack's own (`mappings.js` keeps only what the procedures read). They give what 1.0.0's gave, rollup for rollup and rule for rule (`tests/standard.test.js`, against a record taken from 1.0.0's functions with core 1.16.1). Core reports a problem with the mapping in its own words; the pack's tests still ask every row for a note.
+- The data, the tests under criteria and laws are experimental in core until 1.18.0, so the range stays `~1.16.1`.
+
 ## [1.0.0] - 2026-11-08
 
 First release. Needs `@surea11y/core` 1.16.1 or a later 1.16 release: the pack uses two of core 1.16's experimental APIs, so it takes no later minor until they are stable.

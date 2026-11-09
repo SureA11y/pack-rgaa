@@ -173,7 +173,8 @@ test('text-spacing-content-loss, a WCAG rule, reports RGAA 10.12.1 and joins its
 // Only a criterion whose rules check all it asks may pass on them alone; any
 // other is partial, as core's WCAG rollups are (mappings.js, COMPLETE_CHECK).
 test('only 2.1, 8.1, 8.3 and 8.5 pass on their rules alone; every other criterion is partial', () => {
-  const { rgaaComposites, COMPLETE_CHECK } = require('../mappings');
+  const { COMPLETE_CHECK } = require('../mappings');
+  const rgaaComposites = () => require('..').standard.composites();
   assert.deepEqual(COMPLETE_CHECK['4.1.2'], ['2.1', '8.1', '8.3', '8.5']);
   for (const c of rgaaComposites()) {
     const complete = COMPLETE_CHECK['4.1.2'].includes(c.meta.criterion);

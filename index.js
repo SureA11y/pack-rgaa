@@ -6,8 +6,8 @@
  * RGAA 4.1.2, the French accessibility standard, as a pack
  * (@surea11y/core/pack): passed to a scan in engineOptions.packs, it brings
  * the standard (its criteria and tests, generated from data/), the tests each
- * rule checks (rule-map.js), one rollup per criterion (mappings.js), the
- * rgaa-4.1.2 profile, 111 rules for what RGAA requires beyond WCAG or judges
+ * rule checks (rule-map.js), as core's standard data (standard-data.js), one
+ * rollup per criterion, the rgaa-4.1.2 profile and the law it serves, 111 rules for what RGAA requires beyond WCAG or judges
  * differently (rules/), their messages in English and French (i18n/), and RGAA's
  * own methodology as the procedures a person follows (procedures.js).
  *
@@ -18,22 +18,15 @@
 const fs = require('fs');
 const path = require('path');
 
-const { definePack } = require('@surea11y/core/pack');
+const { definePack, standardFromData } = require('@surea11y/core/pack');
 const { name, version } = require('./package.json');
 const { RGAA_VERSIONS } = require('./map');
-const {
-  rgaaMappingsFor,
-  rgaaComposites,
-  validateRgaaRuleTests,
-  testsOfRule
-} = require('./mappings');
+const { testsOfRule } = require('./mappings');
+const { STANDARD_DATA } = require('./standard-data');
 const { proceduresOf, facetOf } = require('./procedures');
 const { REVIEW, VARIANT_REVIEW, CORE_MANUAL_RULES } = require('./review');
 const { RGAA_TESTS } = require('./map');
 const { RGAA_RULE_TESTS } = require('./rule-map');
-
-// The WCAG version an RGAA version is built on.
-const wcagVersionOf = (version) => RGAA_VERSIONS.find((v) => v.version === version).wcagVersion;
 
 const LATEST = RGAA_VERSIONS.at(-1).version;
 
@@ -112,53 +105,37 @@ const dictionaries = Object.fromEntries(
     ])
 );
 
-const standard = {
-  key: 'rgaa',
-  standard: 'RGAA',
-  versions: RGAA_VERSIONS.map((v) => v.version),
-  profiles: {
-    // RGAA alone: the pack's own rules (the rgaa tag) and the core rules
-    // rule-map.js gives an RGAA test (mappedRules), and nothing else, so
-    // results hold RGAA's criteria and no WCAG ones. With no WCAG tag to
-    // imply it, the profile names the WCAG version RGAA is built on. RGAA
-    // 8.2 requires valid code as written, which the 2023 errata to WCAG 2.1
-    // no longer count under 4.1.1 Parsing: keepsParsing keeps a duplicate id
-    // a failure of 8.2.1.
-    'rgaa-4.1.2': {
-      version: '4.1.2',
-      tags: ['rgaa'],
-      mappedRules: true,
-      wcagVersion: wcagVersionOf('4.1.2'),
-      keepsParsing: true
-    }
-  },
-  ruleTag: 'rgaa',
-  ruleMapped: true,
-  mappingsFor: rgaaMappingsFor,
-  composites: rgaaComposites,
-  validate: validateRgaaRuleTests,
+// The standard, from its data (standard-data.js) with core's
+// standardFromData: one rollup per criterion, each finding counting toward
+// the test it fails, the entries of each rule, the profile and its law. A
+// standard built on RGAA starts from the same data (standardDataOf).
+const standard = standardFromData(STANDARD_DATA, {
   report: { noteKey: 'report_rgaaRollup_note', titleLang: 'fr' },
   // How a person assesses it, in RGAA's own words (procedures.js), and how
   // they answer core's findings in RGAA's terms (review.js). The standard is
-  // French, so its own text, the procedures, is read in French in every
-  // locale. lang says nothing of the review: core reads standard.review as
-  // English and translates it through the dictionaries (i18n/fr.json), so a
-  // finding reads the steps in the scan's locale, French or English, and in
-  // English where the pack has no translation.
-  lang: 'fr',
+  // French (lang, in the data), so its own text, the procedures, is read in
+  // French in every locale. lang says nothing of the review: core reads
+  // standard.review as English and translates it through the dictionaries
+  // (i18n/fr.json), so a finding reads the steps in the scan's locale, French
+  // or English, and in English where the pack has no translation.
   ...proceduresOf(
     (ruleId) =>
       CORE_MANUAL_RULES.includes(ruleId) ||
       rules.some((rule) => rule.id === ruleId && rule.meta.type === 'manual')
   ),
   review: REVIEW['4.1.2']
-};
+});
 
 module.exports = definePack({
   name,
   version,
   namespace: 'rgaa',
-  // Certain failures in rule-map.js (outcome: 'fail') need core 1.15.
+  // The standard is built from data with core's standardFromData, its
+  // tests under its criteria and its law, and the pack uses skip-link's
+  // details.lean and the standard.review dictionary keys: experimental in
+  // core until 1.18.0, so a later minor may change them and the range takes
+  // none. 1.16.1 is the first core that reads the standard's steps in French
+  // in a French scan.
   core: '~1.16.1',
   description: 'RGAA 4.1.2, the French accessibility standard',
   rules,

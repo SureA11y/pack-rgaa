@@ -45,13 +45,14 @@
  * question there, and `outcome: 'fail'` makes a question a failure there,
  * for what RGAA's text makes certain where WCAG leaves it to a person (the
  * structure of a list, say). The criterion rollups judge such a rule by its
- * findings (core's meta.contributions, built in mappings.js).
+ * findings (core's meta.contributions, built by core from the standard's
+ * data, standard-data.js).
  *
- * The build rejects an unknown rule id or test id, a field other than tests,
- * asks, reasonCodes, findings, note and outsideCorrespondence, a malformed
- * route, and a rule mapped to WCAG criteria none of
- * which RGAA relates to the test's criterion, unless outsideCorrespondence
- * says why (mappings.js). A rule with no WCAG mapping may
+ * Core's validation (the standard's validate, from core's data) rejects an
+ * unknown rule id or test id, an unknown field, a malformed route, and a
+ * rule mapped to WCAG criteria none of which RGAA relates to the test's
+ * criterion, unless outsideCorrespondence says why; the pack's tests ask
+ * every row for a note (tests/mappings.test.js). A rule with no WCAG mapping may
  * map to any test: RGAA checks some things WCAG leaves to best practice, such
  * as heading hierarchy and landmarks.
  *
