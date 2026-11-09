@@ -17,6 +17,7 @@ Needs `@surea11y/core` 1.16.1 or a later 1.16 release, as 1.0.0 does.
 
 - The standard is built from that data with core's `standardFromData`: core's rollups, entries and validation, with its tests under its criteria (`tests`, `wcagCorrespondence`), in place of the pack's own (`mappings.js` keeps only what the procedures read). They give what 1.0.0's gave, rollup for rollup and rule for rule (`tests/standard.test.js`, against a record taken from 1.0.0's functions with core 1.16.1). Core reports a problem with the mapping in its own words; the pack's tests still ask every row for a note.
 - The data, the tests under criteria and laws are experimental in core until 1.18.0, so the range stays `~1.16.1`.
+- The package's licence is `MPL-2.0 AND etalab-2.0`: RGAA's text, which `map.js`, `glossary.js` and the docs quote, is DINUM's under the Licence Ouverte 2.0, and the generated files now say so in their SPDX header instead of MPL-2.0 alone. The attribution gives the date each source file was last updated, as the licence asks, and states that the pack is not affiliated with or endorsed by DINUM or the French State ([`data/README.md`](./data/README.md)).
 
 ## [1.0.0] - 2026-11-08
 

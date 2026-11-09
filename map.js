@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: MPL-2.0 */
+/* SPDX-License-Identifier: MPL-2.0 AND etalab-2.0 */
 
 'use strict';
 
@@ -10,8 +10,10 @@
  * -- do not edit by hand; tests/map.test.js fails on any drift.
  *
  * SOURCE: RGAA 4.1.2, DINUM, https://github.com/DISIC/accessibilite.numerique.gouv.fr
- * (RGAA/criteres.json), published under Licence Ouverte 2.0. The text is
- * RGAA's own French wording with its Markdown removed.
+ * (RGAA/criteres.json, last updated 7 January 2026), published under the
+ * Licence Ouverte 2.0 (etalab-2.0): the text is DINUM's, in its own French
+ * wording with its Markdown removed; the code around it is under MPL-2.0.
+ * This pack is not affiliated with or endorsed by DINUM or the French State.
  *
  * SHAPE
  * -----
