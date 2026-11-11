@@ -170,6 +170,222 @@ function runInPage(ctx) {
     return { label: '', source: '' };
   }
 
+  // Why a button with no name has none, when its markup holds something a
+  // reader could take for a name: a misspelled naming attribute, an
+  // aria-labelledby that finds no text, a blank aria-label, text hidden from
+  // screen readers, an image with no text alternative, or an empty icon
+  // element. Returns { cause, params } or null; it changes no outcome.
+  function nameCause(el) {
+    const win = ctx.window || (ctx.document && dom.defaultView(ctx.document)) || null;
+    const attrOf = (n, name) => {
+      try {
+        return dom.getAttribute(n, name);
+      } catch {
+        return null;
+      }
+    };
+    const clip = (s, max) => {
+      const t = norm(s);
+      return t.length > max ? `${t.slice(0, max - 1)}…` : t;
+    };
+    const styleOf = (n) => {
+      if (!win || typeof win.getComputedStyle !== 'function') return null;
+      try {
+        return win.getComputedStyle(n);
+      } catch {
+        return null;
+      }
+    };
+    // Optimal string alignment distance: a transposition counts as one edit.
+    const distance = (a, b) => {
+      const d = [];
+      for (let i = 0; i <= a.length; i++) d.push([i]);
+      for (let j = 1; j <= b.length; j++) d[0][j] = j;
+      for (let i = 1; i <= a.length; i++) {
+        for (let j = 1; j <= b.length; j++) {
+          const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+          d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+          if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+            d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+          }
+        }
+      }
+      return d[a.length][b.length];
+    };
+    const near = (a, b) =>
+      a.replace(/[-_:]/g, '') === b.replace(/[-_:]/g, '') ||
+      distance(a, b) <= (b.length > 5 ? 2 : 1);
+
+    // An attribute that is not a known one, written close to a naming
+    // attribute: arialabel, aria-lable, aria-labeledby, tittle.
+    const KNOWN = new Set(
+      (
+        'aria-activedescendant aria-atomic aria-autocomplete aria-braillelabel ' +
+        'aria-brailleroledescription aria-busy aria-checked aria-colcount aria-colindex ' +
+        'aria-colindextext aria-colspan aria-controls aria-current aria-describedby ' +
+        'aria-description aria-details aria-disabled aria-dropeffect aria-errormessage ' +
+        'aria-expanded aria-flowto aria-grabbed aria-haspopup aria-hidden aria-invalid ' +
+        'aria-keyshortcuts aria-label aria-labelledby aria-level aria-live aria-modal ' +
+        'aria-multiline aria-multiselectable aria-orientation aria-owns aria-placeholder ' +
+        'aria-posinset aria-pressed aria-readonly aria-relevant aria-required ' +
+        'aria-roledescription aria-rowcount aria-rowindex aria-rowindextext aria-rowspan ' +
+        'aria-selected aria-setsize aria-sort aria-valuemax aria-valuemin aria-valuenow ' +
+        'aria-valuetext alt title value label lang style class id href src role type name ' +
+        'tabindex hidden dir for form size width height rel target'
+      ).split(' ')
+    );
+    const attrs = dom.attributes(el) || [];
+    for (let i = 0; i < attrs.length; i++) {
+      const name = String(attrs[i].name || '').toLowerCase();
+      if (!name || KNOWN.has(name) || name.slice(0, 5) === 'data-') continue;
+      const value = clip(attrs[i].value, 60);
+      if (!value) continue;
+      for (const target of ['aria-labelledby', 'aria-label', 'title']) {
+        if (near(name, target)) {
+          return {
+            cause: 'misspelledAttribute',
+            params: { attribute: name, value, suggestion: target }
+          };
+        }
+      }
+    }
+
+    const labelledby = norm(attrOf(el, 'aria-labelledby'));
+    if (labelledby) {
+      const ids = labelledby.split(' ');
+      const found = [];
+      for (const ref of ids) {
+        let target = null;
+        try {
+          target = helpers.getElementByIdInTree
+            ? helpers.getElementByIdInTree(el, ref)
+            : dom.getElementById(dom.getRootNode(el), ref);
+        } catch {}
+        if (target) found.push(target);
+      }
+      if (!found.length) {
+        // An id of the page close to the first one named: a case or
+        // spelling slip, or a leading #.
+        let suggestion = '';
+        let best = Infinity;
+        let root = null;
+        try {
+          root = dom.getRootNode(el);
+        } catch {}
+        const ref = ids[0].replace(/^#/, '');
+        for (const n of root && dom.get(root, 'querySelectorAll')
+          ? [...dom.querySelectorAll(root, '[id]')]
+          : []) {
+          const candidate = String(attrOf(n, 'id') || '');
+          if (!candidate) continue;
+          const d =
+            candidate === ref || candidate.toLowerCase() === ref.toLowerCase()
+              ? 0
+              : distance(candidate, ref);
+          if (d < best && d <= (ref.length > 5 ? 2 : 1)) {
+            best = d;
+            suggestion = candidate;
+          }
+        }
+        return { cause: 'labelledbyMissing', params: { ids: clip(labelledby, 60), suggestion } };
+      }
+      if (found.every((t) => !norm(dom.textContent(t)))) {
+        return {
+          cause: 'labelledbyEmpty',
+          params: { id: String(attrOf(found[0], 'id') || ''), element: tagOf(found[0]) }
+        };
+      }
+    }
+
+    const ariaLabel = attrOf(el, 'aria-label');
+    if (ariaLabel != null && !norm(ariaLabel)) return { cause: 'ariaLabelBlank', params: {} };
+
+    if (tagOf(el) === 'input') {
+      if (inputType(el) === 'button') return { cause: 'inputNoValue', params: {} };
+      return null;
+    }
+
+    // The content: text the CSS or aria-hidden hides, an image with no
+    // text alternative, or an empty element that only shows an icon.
+    const seen = {};
+    function walk(node, depth) {
+      if (depth > 50) return;
+      for (const child of [...(dom.childNodes(node) || [])]) {
+        if (dom.nodeType(child) !== 1) continue;
+        const tag = tagOf(child);
+        if (tag === 'script' || tag === 'style' || tag === 'template') continue;
+        const text = norm(dom.textContent(child));
+        if (text) {
+          const cs = styleOf(child);
+          const hiddenAttribute = dom.hasAttribute(child, 'hidden');
+          let property = '';
+          if (hiddenAttribute || (cs && cs.display === 'none')) property = 'display: none';
+          else if (cs && (cs.visibility === 'hidden' || cs.visibility === 'collapse')) {
+            property = 'visibility: hidden';
+          }
+          if (property) {
+            if (!seen.hiddenText) {
+              seen.hiddenText = { text: clip(text, 60), element: tag, property, hiddenAttribute };
+            }
+            continue;
+          }
+          if (norm(attrOf(child, 'aria-hidden')).toLowerCase() === 'true') {
+            if (!seen.ariaHiddenText) seen.ariaHiddenText = { text: clip(text, 60), element: tag };
+            continue;
+          }
+        }
+        if (norm(attrOf(child, 'aria-hidden')).toLowerCase() === 'true') continue;
+        if (tag === 'img') {
+          if (!seen.imageNoAlt) seen.imageNoAlt = { emptyAlt: attrOf(child, 'alt') != null };
+          continue;
+        }
+        if (tag === 'svg') {
+          if (!seen.svgNoName) seen.svgNoName = {};
+          continue;
+        }
+        const className = clip(attrOf(child, 'class'), 40);
+        if (!text && className && !dom.firstElementChild(child) && !seen.emptyIcon) {
+          seen.emptyIcon = { element: tag, className };
+        }
+        walk(child, depth + 1);
+      }
+    }
+    walk(el, 0);
+    for (const cause of ['hiddenText', 'ariaHiddenText', 'imageNoAlt', 'svgNoName', 'emptyIcon']) {
+      if (seen[cause]) return { cause, params: seen[cause] };
+    }
+    return null;
+  }
+
+  // The hint for each cause, in English; i18n/*.json has buttonNameCause_hint_<cause>.
+  function causeHint(c) {
+    const p = c.params;
+    switch (c.cause) {
+      case 'misspelledAttribute':
+        return `It has ${p.attribute}="${p.value}", but browsers do not read ${p.attribute}: did you mean ${p.suggestion}? Rename the attribute so that it names the button.`;
+      case 'labelledbyMissing':
+        return `Its aria-labelledby names "${p.ids}", but no element of the page has that id${p.suggestion ? ` (did you mean "${p.suggestion}"?)` : ''}, so it gives no name. Point aria-labelledby at the id of the element that holds the button's text, or name the button with aria-label.`;
+      case 'labelledbyEmpty':
+        return `Its aria-labelledby points to a <${p.element}> with id "${p.id}" that holds no text, so it gives no name. Put the button's text in that element, or name the button with aria-label.`;
+      case 'ariaLabelBlank':
+        return 'Its aria-label is empty, so it gives no name. Write in aria-label what the button does, or give the button visible text.';
+      case 'inputNoValue':
+        return 'This <input type="button"> has no value, which is where its text goes. Give it a value that says what the button does.';
+      case 'hiddenText':
+        return `Its text "${p.text}" is in a <${p.element}> with ${p.hiddenAttribute ? 'the hidden attribute' : p.property}, which hides it from screen readers as well as from view, so it gives no name. Let screen readers read it (a visually-hidden class keeps it off screen but read), or name the button with aria-label.`;
+      case 'ariaHiddenText':
+        return `Its text "${p.text}" is in a <${p.element}> with aria-hidden="true", which hides it from screen readers, so it gives no name. Remove aria-hidden from that element, or name the button with aria-label.`;
+      case 'imageNoAlt':
+        return `Its content is an <img> with ${p.emptyAlt ? 'an empty alt, which marks it as decorative' : 'no alt'}, so it gives no name. Give the image an alt that says what the button does, or name the button with aria-label.`;
+      case 'svgNoName':
+        return 'Its content is an <svg> with no <title>, aria-label or aria-labelledby, so it gives no name. Name the button with aria-label, or give the <svg> role="img" and an aria-label that says what the button does.';
+      case 'emptyIcon':
+        return `Its content is an empty <${p.element} class="${p.className}">, probably an icon drawn by CSS, which gives no text, so the button has no name. Name the button with aria-label, or add text, visually hidden if need be, that says what it does.`;
+      default:
+        return '';
+    }
+  }
+
   // The same code runs as rgaa-button-name-present, for the buttons outside
   // any form, which RGAA 7.1.1 covers as scripted interface components.
   const outsideForms = rule.ruleId === 'rgaa-button-name-present';
@@ -245,13 +461,17 @@ function runInPage(ctx) {
         ? 'formAttributeOnly'
         : 'nameMissing';
     const msg = MESSAGES[reasonCode];
+    // A cause the markup shows replaces the generic hint.
+    const cause = reasonCode === 'imageButtonNoAlt' ? null : nameCause(el);
     const occurrence = helpers.reportOccurrence(el, {
       summary: msg.summary,
-      hint: msg.hint,
+      hint: cause ? causeHint(cause) : msg.hint,
       i18n: {
         summaryKey: `${KEY}_summary_${msg.outcome}_${reasonCode}`,
-        hintKey: `${KEY}_hint_${msg.outcome}_${reasonCode}`,
-        params: {}
+        hintKey: cause
+          ? `buttonNameCause_hint_${cause.cause}`
+          : `${KEY}_hint_${msg.outcome}_${reasonCode}`,
+        params: cause ? cause.params : {}
       },
       ...(msg.outcome === 'cantTell'
         ? {
@@ -263,7 +483,11 @@ function runInPage(ctx) {
           }
         : {}),
       data: {
-        details: { reasonCode, element: tagOf(el) },
+        details: {
+          reasonCode,
+          element: tagOf(el),
+          ...(cause ? { nameCause: cause.cause } : {})
+        },
         visibilityFilter: { targetSet: 'acc', accEligible: true, reasons: [] }
       }
     });

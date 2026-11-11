@@ -66,12 +66,16 @@ test(`${RULE_ID}: a heading named only by an attribute is asked about`, () => {
 });
 
 test(`${RULE_ID}: content that gives no text is asked about`, () => {
-  for (const body of [
-    '<h2><img src="logo.png" alt=""></h2>',
-    '<h2><img src="logo.png"></h2>',
-    '<h2><span aria-hidden="true">★</span></h2>',
-    '<h2><svg aria-hidden="true"><text>A</text></svg><span aria-hidden="true">B</span></h2>',
-    '<h2><input type="text" aria-hidden="false"></h2>'
+  // The summary names the content that gives no text.
+  for (const [body, variant] of [
+    ['<h2><img src="logo.png" alt=""></h2>', 'image'],
+    ['<h2><img src="logo.png"></h2>', 'image'],
+    ['<h2><span aria-hidden="true">★</span></h2>', 'ariaHiddenText'],
+    [
+      '<h2><svg aria-hidden="true"><text>A</text></svg><span aria-hidden="true">B</span></h2>',
+      'ariaHiddenText'
+    ],
+    ['<h2><input type="text" aria-hidden="false"></h2>', 'embedded']
   ]) {
     const rule = assertRule(run(body), RULE_ID, 'cantTell', {
       minOccurrences: 1,
@@ -80,7 +84,8 @@ test(`${RULE_ID}: content that gives no text is asked about`, () => {
     assert.equal(rule.occurrences[0].data.details.reasonCode, 'contentNotReadable', body);
     assert.equal(
       rule.occurrences[0].i18n.summaryKey,
-      'headingContentPresent_summary_cantTell_contentNotReadable'
+      `headingContentPresent_summary_cantTell_contentNotReadable_${variant}`,
+      body
     );
   }
 });
@@ -221,4 +226,49 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-heading-content-present-
     ['cantTell', 'contentNotReadable'],
     ['cantTell', 'contentNotReadable']
   ]);
+});
+
+// A heading whose text the CSS hides is not called empty: the summary names
+// the text and what hides it.
+test(`${RULE_ID}: text hidden by CSS, or an empty icon, is named`, () => {
+  const hidden = assertRule(
+    run('<style>.t{display:none}</style><h2><span class="t">Actualités</span></h2>'),
+    RULE_ID,
+    'fail'
+  ).occurrences[0];
+  assert.equal(hidden.data.details.reasonCode, 'emptyHeading');
+  assert.equal(hidden.data.details.contentCause, 'hiddenText');
+  assert.equal(hidden.i18n.summaryKey, 'headingContentPresent_summary_fail_empty_hiddenText');
+  assert.equal(
+    hidden.summary,
+    'This heading shows no text: its text "Actualités" is in a <span> with display: none, which hides it from screen readers as well as from view.'
+  );
+  const icon = assertRule(run('<h2><i class="fa fa-star"></i></h2>'), RULE_ID, 'fail')
+    .occurrences[0];
+  assert.equal(icon.i18n.hintKey, 'headingContentPresent_hint_fail_empty_emptyIcon');
+  assert.equal(
+    icon.hint,
+    'Its only content is an empty <i class="fa fa-star">, probably an icon drawn by CSS, which gives no text. Put the heading text inside the heading, or remove the heading if it is not needed.'
+  );
+  const fr = assertRule(
+    runa11yCoreOnHtml(page('<h2><span hidden>Actualités</span></h2>'), {
+      ...RUN,
+      engineOptions: { locale: 'fr' }
+    }),
+    RULE_ID,
+    'fail'
+  ).occurrences[0];
+  assert.equal(
+    fr.summary,
+    'Ce titre n’affiche aucun texte : son texte « Actualités » se trouve dans un <span> avec l’attribut hidden, qui le masque aux lecteurs d’écran comme à la vue.'
+  );
+});
+
+test(`${RULE_ID}: the question names the content that gives no text`, () => {
+  const occ = assertRule(run('<h2><span aria-hidden="true">★</span></h2>'), RULE_ID, 'cantTell')
+    .occurrences[0];
+  assert.equal(
+    occ.summary,
+    'This heading\'s text "★" is in a <span> with aria-hidden="true", which hides it from assistive technologies.'
+  );
 });

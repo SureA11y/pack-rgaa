@@ -35,7 +35,7 @@ test(`${RULE_ID}: a link named only by an attribute fails, naming the source`, (
     assert.equal(occ.data.details.reasonCode, 'nameOutsideContent', body);
     assert.equal(occ.data.details.nameSource, source, body);
     assert.equal(occ.i18n.summaryKey, 'linkContentLabelPresent_summary_fail_nameOutsideContent');
-    assert.deepEqual(occ.i18n.params, { source });
+    assert.equal(occ.i18n.params.source, source, body);
   }
 });
 
@@ -56,10 +56,11 @@ test(`${RULE_ID}: a link with no label at all fails`, () => {
 });
 
 test(`${RULE_ID}: content that is not plain text is asked about`, () => {
-  for (const body of [
-    '<a href="/aide" aria-label="Aide"><span aria-hidden="true">?</span></a>',
-    '<a href="/"><span aria-label="Accueil"></span></a>',
-    '<a href="/"><video src="v.mp4"></video></a>'
+  // The summary names the content that is not plain text.
+  for (const [body, variant] of [
+    ['<a href="/aide" aria-label="Aide"><span aria-hidden="true">?</span></a>', 'ariaHiddenText'],
+    ['<a href="/"><span aria-label="Accueil"></span></a>', 'descendantName'],
+    ['<a href="/"><video src="v.mp4"></video></a>', 'embedded']
   ]) {
     const rule = assertRule(run(body), RULE_ID, 'cantTell', {
       minOccurrences: 1,
@@ -69,7 +70,8 @@ test(`${RULE_ID}: content that is not plain text is asked about`, () => {
     assert.equal(occ.data.details.reasonCode, 'contentNotReadable', body);
     assert.equal(
       occ.i18n.summaryKey,
-      'linkContentLabelPresent_summary_cantTell_contentNotReadable'
+      `linkContentLabelPresent_summary_cantTell_contentNotReadable_${variant}`,
+      body
     );
     assert.equal(occ.uncertainty.code, 'judgement-required');
   }
@@ -268,4 +270,71 @@ test(`${RULE_ID}: a link whose only content is an image with no alternative fail
     'cantTell'
   );
   assert.deepEqual(reasons(pdf), [['cantTell', 'contentNotReadable']]);
+});
+
+// The hint names what hides the label, or stands where it should be, so a
+// reader who sees text or an icon in the link knows why it does not count.
+test(`${RULE_ID}: the hint names the cause the markup shows`, () => {
+  for (const [body, cause, hint] of [
+    [
+      '<a href="/"><span style="display:none">Accueil</span></a>',
+      'hiddenText',
+      'Its text "Accueil" is in a <span> with display: none, which hides it from screen readers as well as from view, so the link has no label. Let screen readers read it (a visually-hidden class keeps it off screen but read).'
+    ],
+    [
+      '<a href="/"><span aria-hidden="true">Accueil</span></a>',
+      'ariaHiddenText',
+      'Its text "Accueil" is in a <span> with aria-hidden="true", which hides it from screen readers, so the link has no label. Remove aria-hidden from that element.'
+    ],
+    [
+      '<a href="/"><img src="i.png"></a>',
+      'imageNoAlt',
+      'Its content is an <img> with no text alternative, so the link has no label. Give the image a text alternative that says where the link goes.'
+    ],
+    [
+      '<a href="/"><svg><path d="M0 0h1"/></svg></a>',
+      'svgNoName',
+      'Its content is an <svg> with no <title>, aria-label or aria-labelledby, so the link has no label. Give the <svg> role="img" and an aria-label that says where the link goes, or put text in the link.'
+    ],
+    [
+      '<a href="/" aria-label="Accueil"><i class="icon-home"></i></a>',
+      'emptyIcon',
+      'Its content is an empty <i class="icon-home">, probably an icon drawn by CSS, which gives no text, so the link has no label. Put text in the link, visually hidden if need be, that says where it goes.'
+    ]
+  ]) {
+    const rule = assertRule(run(body), RULE_ID, 'fail', { minOccurrences: 1, maxOccurrences: 1 });
+    const occ = rule.occurrences[0];
+    assert.equal(occ.data.details.contentCause, cause, body);
+    assert.equal(occ.i18n.hintKey, `linkContentLabelPresent_hint_fail_${cause}`, body);
+    assert.equal(occ.hint, hint, body);
+  }
+});
+
+test(`${RULE_ID}: the question names the content that is not plain text`, () => {
+  const summaries = [
+    [
+      '<a href="/aide" aria-label="Aide"><span aria-hidden="true">?</span></a>',
+      'This link\'s text "?" is in a <span> with aria-hidden="true", so assistive technologies read only its aria-label, not text between <a> and </a>.'
+    ],
+    [
+      '<a href="/"><span aria-label="Accueil"></span></a>',
+      'This link has no text of its own: its only label is the aria-label "Accueil" of a <span> inside it.'
+    ],
+    [
+      '<a href="/"><video src="v.mp4"></video></a>',
+      'This link holds an embedded <video>, and no text or image text alternative that assistive technologies read.'
+    ]
+  ];
+  for (const [body, summary] of summaries) {
+    assert.equal(assertRule(run(body), RULE_ID, 'cantTell').occurrences[0].summary, summary);
+  }
+  const fr = assertRule(
+    runa11yCoreOnHtml(page(summaries[1][0]), { ...RUN, engineOptions: { locale: 'fr' } }),
+    RULE_ID,
+    'cantTell'
+  );
+  assert.equal(
+    fr.occurrences[0].summary,
+    'Ce lien n’a pas de texte propre : son seul intitulé est l’attribut aria-label « Accueil » d’un <span> placé à l’intérieur.'
+  );
 });
