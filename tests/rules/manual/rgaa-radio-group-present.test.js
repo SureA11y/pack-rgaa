@@ -29,12 +29,24 @@ test(`${RULE_ID}: radio buttons sharing a name outside any group are flagged onc
   assert.deepEqual(occ.data.details, {
     reasonCode: 'radiosNotGrouped',
     name: 'delivery',
-    count: 2
+    count: 2,
+    labels: 'Standard | Express'
   });
-  assert.deepEqual(occ.i18n.params, { count: '2', name: 'delivery' });
+  assert.equal(occ.i18n.summaryKey, 'radioGroupPresent_summary_cantTell_labels');
+  assert.deepEqual(occ.i18n.params, { count: '2', name: 'delivery', labels: 'Standard | Express' });
   assert.equal(
     occ.summary,
-    'The 2 radio buttons named "delivery" are not grouped in one fieldset or group.'
+    'The 2 radio buttons named "delivery" are not grouped in one fieldset or group. Their labels: "Standard | Express".'
+  );
+});
+
+test(`${RULE_ID}: radio buttons with no label keep the summary without labels`, () => {
+  const body = '<input type="radio" name="d"><input type="radio" name="d">';
+  const occ = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'cantTell').occurrences[0];
+  assert.equal(occ.i18n.summaryKey, 'radioGroupPresent_summary_cantTell');
+  assert.equal(
+    occ.summary,
+    'The 2 radio buttons named "d" are not grouped in one fieldset or group.'
   );
 });
 

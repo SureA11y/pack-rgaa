@@ -118,6 +118,29 @@ function runInPage(ctx) {
     return false;
   }
 
+  // The fields' labels for a message: the first four accessible names (or,
+  // for an ARIA radio, its text), each cut at 30 characters, joined with
+  // " | ", or '' when none has a name.
+  function labelsText(set) {
+    const names = set
+      .map((el) => {
+        let v = '';
+        try {
+          const info = helpers.getAccessibleNameInfo
+            ? helpers.getAccessibleNameInfo(el, ctx)
+            : null;
+          v = String((info && info.value) || '');
+        } catch {}
+        if (!v.trim() && String(dom.localName(el)).toLowerCase() !== 'input') {
+          v = String(dom.textContent(el) || '');
+        }
+        return v.replace(/\s+/g, ' ').trim();
+      })
+      .filter(Boolean);
+    const shown = names.slice(0, 4).map((t) => (t.length > 30 ? `${t.slice(0, 29)}…` : t));
+    return shown.join(' | ') + (names.length > 4 ? ' | …' : '');
+  }
+
   const occurrences = [];
   let applicableCount = 0;
 
@@ -127,17 +150,28 @@ function runInPage(ctx) {
     if (hasCommonGroup(set)) continue;
 
     const name = String(dom.getAttribute(set[0], 'name'));
+    // Quote the labels: whether they say what they answer is the question.
+    const labels = labelsText(set);
     occurrences.push(
       helpers.reportOccurrence(set[0], {
-        summary: `The ${set.length} radio buttons named "${name}" are not grouped in one fieldset or group.`,
+        summary: `The ${set.length} radio buttons named "${name}" are not grouped in one fieldset or group.${labels ? ` Their labels: "${labels}".` : ''}`,
         hint: 'If the buttons answer a question their own labels don\'t state, put them in a <fieldset> with a <legend>, or in an element with role="radiogroup" and a name, so the question is announced with them. A set whose labels already say what they answer, such as a lone yes/no pair, may need no group (RGAA 11.5.1).',
         i18n: {
-          summaryKey: 'radioGroupPresent_summary_cantTell',
+          summaryKey: labels
+            ? 'radioGroupPresent_summary_cantTell_labels'
+            : 'radioGroupPresent_summary_cantTell',
           hintKey: 'radioGroupPresent_hint_cantTell',
-          params: { count: String(set.length), name }
+          params: labels
+            ? { count: String(set.length), name, labels }
+            : { count: String(set.length), name }
         },
         data: {
-          details: { reasonCode: 'radiosNotGrouped', name, count: set.length },
+          details: {
+            reasonCode: 'radiosNotGrouped',
+            name,
+            count: set.length,
+            ...(labels ? { labels } : {})
+          },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })

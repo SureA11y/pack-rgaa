@@ -34,6 +34,37 @@ test(`${RULE_ID}: possible status messages with none of those roles are asked ab
   }
 });
 
+test(`${RULE_ID}: the summary names the aria-live value, class or id that made the element look like a message`, () => {
+  const occ = (body, locale) =>
+    assertRule(
+      runa11yCoreOnHtml(page(body), { ...RUN, engineOptions: locale ? { locale } : {} }),
+      RULE_ID,
+      'cantTell'
+    ).occurrences[0];
+  const byClass = occ('<p class="box alert-success">Message envoyé avec succès</p>');
+  assert.equal(
+    byClass.i18n.summaryKey,
+    'statusMessageReview_summary_cantTell_possibleStatusMessage_class'
+  );
+  assert.equal(byClass.data.details.class, 'alert-success');
+  assert.equal(
+    byClass.summary,
+    'This element\'s class "alert-success" suggests a status message ("Message envoyé avec succès"), but it has no role="status", "alert", "log" or "progressbar".'
+  );
+  const byId = occ('<div id="toast">Panier mis à jour</div>', 'fr');
+  assert.equal(
+    byId.i18n.summaryKey,
+    'statusMessageReview_summary_cantTell_possibleStatusMessage_id'
+  );
+  assert.equal(
+    byId.summary,
+    'L’id « toast » de cet élément évoque un message de statut (« Panier mis à jour »), mais il n’a pas de role="status", "alert", "log" ni "progressbar".'
+  );
+  const live = occ('<div aria-live="assertive">Votre panier est mis à jour</div>');
+  assert.equal(live.data.details.live, 'assertive');
+  assert.match(live.summary, /^This element has aria-live="assertive" but no role/);
+});
+
 test(`${RULE_ID}: a role 7.5 names, an empty or long block, or a sign is not applicable`, () => {
   for (const body of [
     '<div role="status" class="message">Enregistré avec succès</div>',

@@ -32,6 +32,36 @@ test(`${RULE_ID}: a navigation link marked current by a class only is asked abou
   }
 });
 
+test(`${RULE_ID}: the summary names the class, and whether it is on the link or its list item`, () => {
+  const occ = (body, locale) =>
+    assertRule(
+      runa11yCoreOnHtml(page(body), { ...RUN, engineOptions: locale ? { locale } : {} }),
+      RULE_ID,
+      'cantTell'
+    ).occurrences[0];
+  const item =
+    '<nav><ul><li class="menu-item active"><a href="/">Accueil</a></li><li><a href="/a">A</a></li></ul></nav>';
+  const onItem = occ(item);
+  assert.equal(onItem.i18n.summaryKey, 'currentItemReview_summary_cantTell_item');
+  assert.deepEqual(onItem.i18n.params, { label: 'Accueil', class: 'active' });
+  assert.equal(
+    onItem.summary,
+    'This navigation link ("Accueil") is marked as the current one only by the class "active" on its <li>, with no aria-current and no text that says so.'
+  );
+  assert.equal(
+    occ(item, 'fr').summary,
+    'Ce lien de navigation (« Accueil ») est marqué comme courant par la seule classe « active » de sa balise <li>, sans aria-current ni texte qui le dise.'
+  );
+  const onLink = occ('<nav><a href="/" class="nav-link is-active">Accueil</a></nav>');
+  assert.equal(onLink.i18n.summaryKey, 'currentItemReview_summary_cantTell_link');
+  assert.deepEqual(onLink.data.details, {
+    reasonCode: 'currentByLookOnly',
+    label: 'Accueil',
+    class: 'is-active',
+    classOn: 'link'
+  });
+});
+
 test(`${RULE_ID}: aria-current, a text that says so, or a link outside navigation is not applicable`, () => {
   for (const body of [
     '<nav><a href="/" class="active" aria-current="page">Accueil</a></nav>',

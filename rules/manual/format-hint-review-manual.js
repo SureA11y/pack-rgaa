@@ -178,21 +178,39 @@ function runInPage(ctx) {
     if (HINT.test(around)) continue;
 
     const label = shortLabel(el);
+    // The control as written in the markup, with its value, so the reviewer
+    // sees the format the field expects.
+    const value = (name) => {
+      const v = norm(attr(el, name));
+      return `${name}="${v.length > 60 ? `${v.slice(0, 59)}…` : v}"`;
+    };
+    const control =
+      constraint === 'min/max'
+        ? ['min', 'max']
+            .filter((n) => norm(attr(el, n)))
+            .map(value)
+            .join(' ')
+        : value(constraint);
+    const params = label ? { constraint, control, label } : { constraint, control };
     occurrences.push(
       helpers.reportOccurrence(el, {
-        summary: `This field has an input control (${constraint}) but its label, description and placeholder give no format or example.`,
+        summary: label
+          ? `This field ("${label}") has an input control (${control}) but its label, description and placeholder give no format or example.`
+          : `This field has an input control (${control}) but its label, description and placeholder give no format or example.`,
         hint: 'Check that, when the value is rejected, the error message says which type or format of data is expected and gives an example of a valid value (RGAA 11.11.1, 11.11.2).',
         i18n: {
-          summaryKey: 'formatHintReview_summary_cantTell',
+          summaryKey: label
+            ? 'formatHintReview_summary_cantTell_labelled'
+            : 'formatHintReview_summary_cantTell',
           hintKey: 'formatHintReview_hint_cantTell',
-          params: { constraint }
+          params
         },
         uncertainty: {
           code: 'judgement-required',
           needed: 'Whether an input error suggests the expected format and an example.'
         },
         data: {
-          details: { reasonCode: 'formatWithoutHint', constraint, label },
+          details: { reasonCode: 'formatWithoutHint', constraint, label, control },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })

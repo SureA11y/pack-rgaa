@@ -32,10 +32,19 @@ test(`${RULE_ID}: three checkboxes sharing a name outside any group are asked ab
   });
   const occ = rule.occurrences[0];
   assert.match(occ.html, /id="first"/);
-  assert.deepEqual(occ.data.details, { reasonCode: 'ungroupedCheckboxes', name: 'i', count: 3 });
+  assert.deepEqual(occ.data.details, {
+    reasonCode: 'ungroupedCheckboxes',
+    name: 'i',
+    count: 3,
+    labels: 'Sport | Musique | Lecture'
+  });
+  assert.equal(
+    occ.i18n.summaryKey,
+    'sameNameCheckboxesReview_summary_cantTell_ungroupedCheckboxes_labels'
+  );
   assert.equal(
     occ.summary,
-    'The 3 checkboxes named "i" are not grouped in a fieldset or role="group".'
+    'The 3 checkboxes named "i" are not grouped in a fieldset or role="group". Their labels: "Sport | Musique | Lecture".'
   );
 });
 
@@ -46,7 +55,23 @@ test(`${RULE_ID}: two role="radio" elements in one parent outside any group are 
   });
   const occ = rule.occurrences[0];
   assert.match(occ.html, /id="first"/);
-  assert.deepEqual(occ.data.details, { reasonCode: 'ungroupedRadios', count: 2 });
+  assert.deepEqual(occ.data.details, {
+    reasonCode: 'ungroupedRadios',
+    count: 2,
+    labels: 'Oui | Non'
+  });
+  assert.match(occ.summary, / Their labels: "Oui \| Non"\.$/);
+});
+
+test(`${RULE_ID}: a set with no labels keeps the summary without them`, () => {
+  const body =
+    '<input type="checkbox" name="u"><input type="checkbox" name="u"><input type="checkbox" name="u">';
+  const occ = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'cantTell').occurrences[0];
+  assert.equal(
+    occ.i18n.summaryKey,
+    'sameNameCheckboxesReview_summary_cantTell_ungroupedCheckboxes'
+  );
+  assert.equal(occ.data.details.labels, undefined);
 });
 
 test(`${RULE_ID}: a set split across two fieldsets is asked about`, () => {
@@ -95,7 +120,7 @@ test(`${RULE_ID}: messages follow the scan locale; the map and rollup put it und
   );
   assert.equal(
     rule.occurrences[0].summary,
-    'Les 3 cases à cocher nommées « i » ne sont pas regroupées dans un fieldset ou un role="group".'
+    'Les 3 cases à cocher nommées « i » ne sont pas regroupées dans un fieldset ou un role="group". Leurs étiquettes : « Sport | Musique | Lecture ».'
   );
   assert.deepEqual(RGAA_RULE_TESTS['4.1.2'][RULE_ID].tests, ['11.5.1']);
   const result = runa11yCoreOnHtml(page(RADIOS), { engineOptions: { profile: 'rgaa-4.1.2' } });

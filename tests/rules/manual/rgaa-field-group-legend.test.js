@@ -23,14 +23,58 @@ test(`${RULE_ID}: a fieldset without a legend is flagged, never failed`, () => {
     maxOccurrences: 1
   });
   const occ = rule.occurrences[0];
-  assert.deepEqual(occ.data.details, { reasonCode: 'groupWithoutLegend', element: 'fieldset' });
+  assert.deepEqual(occ.data.details, {
+    reasonCode: 'groupWithoutLegend',
+    element: 'fieldset',
+    fields: 'Street | City'
+  });
   assert.equal(occ.i18n.summaryKey, 'fieldGroupLegend_summary_cantTell_fieldset');
-  assert.equal(occ.summary, 'This fieldset groups form fields but has no legend.');
+  assert.equal(
+    occ.summary,
+    'This fieldset groups 2 form field(s) (Street | City) but has no legend.'
+  );
 });
 
-test(`${RULE_ID}: an empty legend counts as none`, () => {
+test(`${RULE_ID}: an empty legend counts as none, and the summary says it is empty`, () => {
   const html = page('<fieldset><legend> </legend><input aria-label="a"></fieldset>');
-  assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'cantTell');
+  const occ = assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'cantTell').occurrences[0];
+  assert.equal(occ.i18n.summaryKey, 'fieldGroupLegend_summary_cantTell_fieldset_emptyLegend');
+  assert.equal(occ.data.details.emptyLegend, true);
+  assert.equal(
+    occ.summary,
+    'This fieldset groups 1 form field(s) (a), but its <legend> has no text.'
+  );
+});
+
+test(`${RULE_ID}: the summary names what the reviewer sees that is not a legend`, () => {
+  const occ = (body, locale) =>
+    assertRule(
+      runa11yCoreOnHtml(page(body), { ...RUN, engineOptions: locale ? { locale } : {} }),
+      RULE_ID,
+      'cantTell'
+    ).occurrences[0];
+  const nested = occ(
+    '<fieldset><div><legend>Adresse</legend></div><input aria-label="Rue"><input aria-label="Ville"><input aria-label="Code"><input aria-label="Pays"></fieldset>'
+  );
+  assert.equal(nested.i18n.summaryKey, 'fieldGroupLegend_summary_cantTell_fieldset_nestedLegend');
+  assert.equal(
+    nested.summary,
+    'This fieldset groups 4 form field(s) (Rue | Ville | Code | …), but its <legend> ("Adresse") is not a direct child of the fieldset, so it is not the fieldset\'s legend.'
+  );
+  const aria = occ('<fieldset aria-label="Adresse"><input></fieldset>');
+  assert.equal(aria.i18n.summaryKey, 'fieldGroupLegend_summary_cantTell_fieldset_ariaName');
+  assert.equal(
+    aria.summary,
+    "This fieldset groups 1 form field(s) (<input>) but has no <legend>; its aria-label does not count as a fieldset's legend."
+  );
+  const body = '<div role="group" aria-labelledby="absent"><input aria-label="Jour"></div>';
+  const unnamed = occ(body);
+  assert.equal(unnamed.i18n.summaryKey, 'fieldGroupLegend_summary_cantTell_group_emptyName');
+  assert.equal(unnamed.data.details.attribute, 'aria-labelledby="absent"');
+  assert.equal(
+    occ(body, 'fr').summary,
+    'Cet élément role="group" regroupe 1 champ(s) de formulaire (Jour), mais son attribut aria-labelledby="absent" ne donne aucun texte : il n’a donc pas de nom.'
+  );
 });
 
 test(`${RULE_ID}: role="group" without a name is flagged with its own summary`, () => {
@@ -82,10 +126,10 @@ test(`${RULE_ID}: role="radiogroup" without aria-label or aria-labelledby is fla
     }).occurrences[0];
     assert.equal(occ.data.details.element, 'role="radiogroup"');
     assert.equal(occ.i18n.summaryKey, 'fieldGroupLegend_summary_cantTell_group');
-    assert.deepEqual(occ.i18n.params, { role: 'radiogroup' });
+    assert.deepEqual(occ.i18n.params, { role: 'radiogroup', count: 1, fields: 'Mr' });
     assert.equal(
       occ.summary,
-      'This role="radiogroup" element groups form fields but has no aria-label or aria-labelledby.'
+      'This role="radiogroup" element groups 1 form field(s) (Mr) but has no aria-label or aria-labelledby.'
     );
   }
 });
