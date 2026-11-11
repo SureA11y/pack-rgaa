@@ -33,10 +33,10 @@ test(`${RULE_ID}: ISO 639-2 codes pass, including those the IANA registry leaves
 });
 
 test(`${RULE_ID}: a code that is not ISO 639 fails`, () => {
-  for (const [lang, code] of [
+  for (const [lang, code, suggestion] of [
     ['xx', 'xx'],
-    ['english', 'english'],
-    ['en_US', 'en_US'],
+    ['english', 'english', 'en'],
+    ['en_US', 'en_US', 'en-US'],
     ['x-klingon', 'x'],
     ['zzz', 'zzz']
   ]) {
@@ -46,7 +46,12 @@ test(`${RULE_ID}: a code that is not ISO 639 fails`, () => {
     });
     const occ = rule.occurrences[0];
     assert.equal(occ.data.details.reasonCode, 'invalidLanguageCode');
-    assert.deepEqual(occ.i18n.params, { attribute: 'lang', value: lang, code });
+    assert.deepEqual(occ.i18n.params, {
+      attribute: 'lang',
+      value: lang,
+      code,
+      ...(suggestion ? { suggestion } : {})
+    });
     assert.equal(occ.i18n.summaryKey, 'htmlLangCodeValid_summary_fail');
   }
 });
@@ -135,4 +140,29 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
     maxOccurrences: 1
   });
   assert.equal(rule.occurrences[0].data.details.value, 'english');
+});
+
+// The hint names the value the page likely means.
+test(`${RULE_ID}: the hint names the value meant`, () => {
+  for (const [lang, hintKey, hint] of [
+    [
+      'fr_FR',
+      'htmlLangCodeValid_hint_fail_underscore',
+      'Did you mean lang="fr-FR"? A language tag joins its parts with a hyphen, not an underscore.'
+    ],
+    [
+      'french',
+      'htmlLangCodeValid_hint_fail_suggest',
+      'Did you mean lang="fr"? The value starts with the ISO 639 code of the page\'s main language, not its name or a country code.'
+    ],
+    [
+      'jp',
+      'htmlLangCodeValid_hint_fail_suggest',
+      'Did you mean lang="ja"? The value starts with the ISO 639 code of the page\'s main language, not its name or a country code.'
+    ]
+  ]) {
+    const occ = assertRule(run(page(` lang="${lang}"`)), RULE_ID, 'fail').occurrences[0];
+    assert.equal(occ.i18n.hintKey, hintKey, lang);
+    assert.equal(occ.hint, hint, lang);
+  }
 });

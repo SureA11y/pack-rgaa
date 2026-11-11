@@ -104,8 +104,66 @@ test(`${RULE_ID}: one occurrence per attribute, with the attribute and its value
   );
   const occ = rule.occurrences[0];
   assert.equal(occ.i18n.summaryKey, 'ariaAttributeConformance_summary_fail_invalidValue');
-  assert.deepEqual(occ.i18n.params, { element: 'button', attr: 'aria-expanded', value: 'yes' });
+  assert.deepEqual(occ.i18n.params, {
+    element: 'button',
+    attr: 'aria-expanded',
+    value: 'yes',
+    allowed: '"true", "false", "undefined"'
+  });
   assert.equal(occ.summary, 'aria-expanded="yes" on this <button> is not a valid value.');
+  assert.equal(occ.i18n.hintKey, 'ariaAttributeConformance_hint_fail_invalidValueAllowed');
+  assert.equal(
+    occ.hint,
+    'aria-expanded takes one of these values: "true", "false", "undefined". Use one of them, written exactly, in lowercase and with no spaces around it.'
+  );
+});
+
+// A name or token close to a known one is named as the one meant.
+test(`${RULE_ID}: the hint names the attribute or value meant`, () => {
+  for (const [body, hintKey, hint] of [
+    [
+      '<div aria-labeledby="l">a</div><span id="l">b</span>',
+      'ariaAttributeConformance_hint_fail_unknownAttributeSuggest',
+      'aria-labeledby is not an ARIA attribute: did you mean aria-labelledby? Rename it, or remove it.'
+    ],
+    [
+      '<div aria-hiden="true">a</div>',
+      'ariaAttributeConformance_hint_fail_unknownAttributeSuggest',
+      'aria-hiden is not an ARIA attribute: did you mean aria-hidden? Rename it, or remove it.'
+    ],
+    [
+      '<button aria-pressed="ture">a</button>',
+      'ariaAttributeConformance_hint_fail_invalidValueSuggest',
+      'aria-pressed takes one of these values: "true", "false", "mixed", "undefined". Did you mean "true"? Write it exactly, in lowercase and with no spaces around it.'
+    ],
+    [
+      '<div aria-live="Polite">a</div>',
+      'ariaAttributeConformance_hint_fail_invalidValueSuggest',
+      'aria-live takes one of these values: "off", "polite", "assertive". Did you mean "polite"? Write it exactly, in lowercase and with no spaces around it.'
+    ],
+    [
+      '<div aria-zzz="1">a</div>',
+      'ariaAttributeConformance_hint_fail_unknownAttribute',
+      'Correct the attribute name (for example aria-labelledby, not aria-labeledby) or remove it.'
+    ]
+  ]) {
+    const occ = assertRule(run(body), RULE_ID, 'fail', { minOccurrences: 1, maxOccurrences: 1 })
+      .occurrences[0];
+    assert.equal(occ.i18n.hintKey, hintKey, body);
+    assert.equal(occ.hint, hint, body);
+  }
+  const fr = assertRule(
+    runa11yCoreOnHtml(page('<div aria-hiden="true">a</div>'), {
+      ...RUN,
+      engineOptions: { locale: 'fr' }
+    }),
+    RULE_ID,
+    'fail'
+  ).occurrences[0];
+  assert.equal(
+    fr.hint,
+    'aria-hiden n’est pas un attribut ARIA : vouliez-vous écrire aria-hidden ? Renommez-le, ou supprimez-le.'
+  );
 });
 
 test(`${RULE_ID}: a role decides the allowed attributes, and the message names it`, () => {

@@ -92,23 +92,103 @@ function runInPage(ctx) {
     return { ruleId: rule.ruleId, outcome: 'notApplicable', severity: 'minor', occurrences: [] };
   }
 
+  // Language names and country codes often written in place of a language
+  // code, with the code meant.
+  const MEANT = {
+    english: 'en',
+    anglais: 'en',
+    french: 'fr',
+    francais: 'fr',
+    français: 'fr',
+    german: 'de',
+    deutsch: 'de',
+    allemand: 'de',
+    spanish: 'es',
+    espanol: 'es',
+    español: 'es',
+    espagnol: 'es',
+    italian: 'it',
+    italien: 'it',
+    italiano: 'it',
+    portuguese: 'pt',
+    portugais: 'pt',
+    dutch: 'nl',
+    neerlandais: 'nl',
+    néerlandais: 'nl',
+    japanese: 'ja',
+    japonais: 'ja',
+    chinese: 'zh',
+    chinois: 'zh',
+    arabic: 'ar',
+    arabe: 'ar',
+    russian: 'ru',
+    russe: 'ru',
+    jp: 'ja',
+    cn: 'zh',
+    gr: 'el',
+    dk: 'da',
+    cz: 'cs',
+    ua: 'uk',
+    kr: 'ko',
+    vn: 'vi',
+    us: 'en-US',
+    gb: 'en-GB'
+  };
+
+  // The value the page likely means: the same tag with hyphens for
+  // underscores, or the code for a language name or country code.
+  // Returns { suggestion, underscore } or null.
+  function meantValue(value) {
+    if (value.includes('_')) {
+      const fixed = value.replace(/_/g, '-');
+      if (helpers.isIso639LanguageCode(fixed.split('-')[0])) {
+        return { suggestion: fixed, underscore: true };
+      }
+    }
+    const parts = value.split(/[-_]/);
+    const code = MEANT[parts[0].toLowerCase()];
+    if (!code) return null;
+    const rest = parts.slice(1).join('-');
+    return {
+      suggestion: rest && !code.includes('-') ? `${code}-${rest}` : code,
+      underscore: false
+    };
+  }
+
   const occurrences = [];
   for (const [attribute, value] of declared) {
     const code = value.split('-')[0];
     // Any ISO 639 code: the registry's, plus the three-letter ISO 639-2 and
     // 639-3 codes it leaves out and the qaa to qtz local-use range.
     if (helpers.isIso639LanguageCode(code)) continue;
+    const meant = meantValue(value);
     occurrences.push(
       helpers.reportOccurrence(html, {
         summary: `The page's default language is given as ${attribute}="${value}", and "${code}" is not an ISO 639 language code.`,
-        hint: 'Start the value with the two- or three-letter ISO 639 code of the page\'s main language, for example "fr" or "fr-FR".',
+        hint: meant
+          ? meant.underscore
+            ? `Did you mean ${attribute}="${meant.suggestion}"? A language tag joins its parts with a hyphen, not an underscore.`
+            : `Did you mean ${attribute}="${meant.suggestion}"? The value starts with the ISO 639 code of the page's main language, not its name or a country code.`
+          : 'Start the value with the two- or three-letter ISO 639 code of the page\'s main language, for example "fr" or "fr-FR".',
         i18n: {
           summaryKey: 'htmlLangCodeValid_summary_fail',
-          hintKey: 'htmlLangCodeValid_hint_fail',
-          params: { attribute, value, code }
+          hintKey: meant
+            ? meant.underscore
+              ? 'htmlLangCodeValid_hint_fail_underscore'
+              : 'htmlLangCodeValid_hint_fail_suggest'
+            : 'htmlLangCodeValid_hint_fail',
+          params: meant
+            ? { attribute, value, code, suggestion: meant.suggestion }
+            : { attribute, value, code }
         },
         data: {
-          details: { reasonCode: 'invalidLanguageCode', attribute, value, code },
+          details: {
+            reasonCode: 'invalidLanguageCode',
+            attribute,
+            value,
+            code,
+            ...(meant ? { suggestion: meant.suggestion } : {})
+          },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })

@@ -308,3 +308,25 @@ test(`${RULE_ID}: markup inside an open shadow root fails like markup outside it
   assert.equal(occ.data.details.inShadowRoot, undefined);
   assert.equal(occ.uncertainty, undefined);
 });
+
+// A token close to a role is named as the role meant.
+test(`${RULE_ID}: the hint names the role a misspelled token was meant to be`, () => {
+  for (const [body, token, suggestion] of [
+    ['<div role="buton">a</div>', 'buton', 'button'],
+    ['<div role="Button">a</div>', 'Button', 'button'],
+    ['<div role="menu-item">a</div>', 'menu-item', 'menuitem'],
+    ['<ul role="lisbox"><li>a</li></ul>', 'lisbox', 'listbox']
+  ]) {
+    const occ = assertRule(run(body), RULE_ID, 'fail', { minOccurrences: 1 }).occurrences.find(
+      (o) => o.data.details.reasonCode === 'unknownRoleToken'
+    );
+    assert.equal(occ.i18n.hintKey, 'ariaRoleConformance_hint_fail_unknownRoleTokenSuggest', body);
+    assert.equal(occ.data.details.suggestion, suggestion, body);
+    assert.equal(
+      occ.hint,
+      `"${token}" is not a WAI-ARIA role: did you mean "${suggestion}"? Write the role exactly as WAI-ARIA spells it, in lowercase.`
+    );
+  }
+  const widget = assertRule(run('<div role="widget">a</div>'), RULE_ID, 'fail').occurrences[0];
+  assert.equal(widget.i18n.hintKey, 'ariaRoleConformance_hint_fail_unknownRoleToken');
+});

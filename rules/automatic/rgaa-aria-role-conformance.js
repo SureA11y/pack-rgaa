@@ -371,16 +371,58 @@ function runInPage(ctx) {
   const cantTellOccurrences = [];
   let applicableCount = 0;
 
-  function report(el, reasonCode, params) {
+  // Optimal string alignment distance: a transposition counts as one edit.
+  function distance(a, b) {
+    const d = [];
+    for (let i = 0; i <= a.length; i++) d.push([i]);
+    for (let j = 1; j <= b.length; j++) d[0][j] = j;
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+        d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+        if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+          d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+        }
+      }
+    }
+    return d[a.length][b.length];
+  }
+
+  // The role a token not in the list was likely meant to be: the same
+  // once case and hyphens are set aside (Button, menu-item), or within two
+  // edits (one for a short role).
+  function nearestRole(token) {
+    const squash = (x) => x.toLowerCase().replace(/[_-]/g, '');
+    let best = '';
+    let bestDistance = Infinity;
+    for (const r of ROLES) {
+      const d = squash(r) === squash(token) ? 0 : distance(token.toLowerCase(), r);
+      if (d < bestDistance && d <= (r.length > 4 ? 2 : 1)) {
+        best = r;
+        bestDistance = d;
+      }
+    }
+    return best;
+  }
+
+  // A hint that names the role meant, keyed by hint id.
+  const HINTS = {
+    unknownRoleTokenSuggest:
+      '"{{token}}" is not a WAI-ARIA role: did you mean "{{suggestion}}"? Write the role exactly as WAI-ARIA spells it, in lowercase.'
+  };
+
+  function report(el, reasonCode, params, hintId) {
     const msg = MESSAGES[reasonCode];
     let summary = msg.summary;
     for (const k of Object.keys(params)) summary = summary.split(`{{${k}}}`).join(params[k]);
+    let hint = hintId ? HINTS[hintId] : msg.hint;
+    for (const k of Object.keys(params)) hint = hint.split(`{{${k}}}`).join(params[k]);
     const occurrence = helpers.reportOccurrence(el, {
       summary,
-      hint: msg.hint,
+      hint,
       i18n: {
         summaryKey: `ariaRoleConformance_summary_${msg.outcome}_${reasonCode}`,
-        hintKey: `ariaRoleConformance_hint_${msg.outcome}_${reasonCode}`,
+        hintKey: `ariaRoleConformance_hint_${msg.outcome}_${hintId || reasonCode}`,
         params
       },
       ...(msg.outcome === 'cantTell'
@@ -421,7 +463,15 @@ function runInPage(ctx) {
 
     const unknown = tokens.filter((t) => !ROLES.has(t));
     for (const token of unknown) {
-      report(el, 'unknownRoleToken', { element, value: String(value), token });
+      const suggestion = nearestRole(token);
+      if (suggestion) {
+        report(
+          el,
+          'unknownRoleToken',
+          { element, value: String(value), token, suggestion },
+          'unknownRoleTokenSuggest'
+        );
+      } else report(el, 'unknownRoleToken', { element, value: String(value), token });
     }
 
     const role = tokens.find((t) => ROLES.has(t)) || '';

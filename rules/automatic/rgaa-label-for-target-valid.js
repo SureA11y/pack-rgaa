@@ -108,6 +108,77 @@ function runInPage(ctx) {
     return dom.getElementById(root, value);
   }
 
+  // Optimal string alignment distance: a transposition counts as one edit.
+  function distance(a, b) {
+    const d = [];
+    for (let i = 0; i <= a.length; i++) d.push([i]);
+    for (let j = 1; j <= b.length; j++) d[0][j] = j;
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+        d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+        if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+          d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+        }
+      }
+    }
+    return d[a.length][b.length];
+  }
+
+  const isField = (el) => isLabelable(el) || hasFieldRole(el);
+  const fieldsIn = (scope) =>
+    [...(dom.querySelectorAll(scope, '[id]') || [])].filter(
+      (n) => isField(n) && dom.getAttribute(n, 'id')
+    );
+
+  // The field the label most likely means, for the hint: a field whose id
+  // is the value with its case, spaces or # set aside, or within two edits
+  // (one for a short id); else the one field inside the label, or inside
+  // the element the value names. Returns { id, element, inside } or null.
+  function meantField(label, value, target) {
+    if (target) {
+      const inner = fieldsIn(target);
+      if (inner.length === 1) {
+        return {
+          id: String(dom.getAttribute(inner[0], 'id')),
+          element: String(dom.tagName(inner[0])).toLowerCase(),
+          inside: true
+        };
+      }
+      return null;
+    }
+    let root = document;
+    try {
+      const r = dom.getRootNode(label);
+      if (r && typeof dom.get(r, 'querySelectorAll') === 'function') root = r;
+    } catch {
+      // keep the document
+    }
+    const written = value.trim().replace(/^#/, '');
+    let best = null;
+    let bestDistance = Infinity;
+    for (const field of fieldsIn(root)) {
+      const candidate = String(dom.getAttribute(field, 'id'));
+      const d =
+        candidate.toLowerCase() === written.toLowerCase() ? 0 : distance(candidate, written);
+      if (d < bestDistance && d <= (written.length > 5 ? 2 : written.length > 2 ? 1 : 0)) {
+        best = field;
+        bestDistance = d;
+      }
+    }
+    if (!best) {
+      const inner = fieldsIn(label);
+      if (inner.length === 1) best = inner[0];
+    }
+    return best
+      ? {
+          id: String(dom.getAttribute(best, 'id')),
+          element: String(dom.tagName(best)).toLowerCase(),
+          inside: false
+        }
+      : null;
+  }
+
   const nodes = helpers.queryAllSmart
     ? helpers.queryAllSmart('label[for]')
     : helpers.queryAll('label[for]');
@@ -147,17 +218,38 @@ function runInPage(ctx) {
       }
     };
 
+    // The field the label likely means, named in the hint.
+    const meant = reasonCode === 'emptyFor' ? null : meantField(label, value, target);
+    const hint = meant
+      ? `Did you mean "${meant.id}"? It is the id of the <${meant.element}> field${meant.inside ? ` inside that <${element}>` : ''}. Set the for attribute to it, exactly as written, case included.`
+      : 'Set the for attribute to the id of the field this label names, or remove it and put the field inside the label.';
+
     occurrences.push(
       helpers.reportOccurrence(label, {
         summary: summaries[reasonCode].text,
-        hint: 'Set the for attribute to the id of the field this label names, or remove it and put the field inside the label.',
+        hint,
         i18n: {
           summaryKey: summaries[reasonCode].key,
-          hintKey: 'labelForTargetValid_hint_fail',
-          params: { value, element }
+          hintKey: meant
+            ? 'labelForTargetValid_hint_fail_suggest'
+            : 'labelForTargetValid_hint_fail',
+          params: meant
+            ? {
+                value,
+                element,
+                suggestion: meant.id,
+                suggestionElement: meant.element,
+                inside: meant.inside
+              }
+            : { value, element }
         },
         data: {
-          details: { reasonCode, value, target: element || null },
+          details: {
+            reasonCode,
+            value,
+            target: element || null,
+            ...(meant ? { suggestion: meant.id } : {})
+          },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })
