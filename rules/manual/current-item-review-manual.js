@@ -88,10 +88,11 @@ function runInPage(ctx) {
     }
     return false;
   };
+  // The class token that marks the element as current, or ''.
   const markedCurrent = (el) =>
     String(dom.getAttribute(el, 'class') || '')
       .split(/\s+/)
-      .some((c) => CURRENT_CLASS.test(c));
+      .find((c) => c && CURRENT_CLASS.test(c)) || '';
   const hasAriaCurrent = (el) => {
     const v = norm(dom.getAttribute(el, 'aria-current')).toLowerCase();
     return !!v && v !== 'false';
@@ -105,27 +106,34 @@ function runInPage(ctx) {
   for (const link of links) {
     if (!link || !dom.get(link, 'getAttribute') || !inNavigation(link)) continue;
     const item = dom.closest(link, 'li');
-    const marked = markedCurrent(link) || (item && markedCurrent(item));
+    const onLink = markedCurrent(link);
+    const marked = onLink || (item && markedCurrent(item));
     if (!marked) continue;
+    // Where the class is: on the link, or on its list item, which the
+    // report's snippet does not show.
+    const where = onLink ? 'link' : 'item';
     if (hasAriaCurrent(link) || (item && hasAriaCurrent(item))) continue;
     const text = norm(dom.textContent(link)) + ' ' + norm(dom.getAttribute(link, 'title'));
     if (SAYS_CURRENT.test(text)) continue;
     const label = norm(dom.textContent(link)).slice(0, 60);
     occurrences.push(
       helpers.reportOccurrence(link, {
-        summary: `This navigation link ("${label}") is marked as the current one by a class only, with no aria-current and no text that says so.`,
+        summary:
+          where === 'link'
+            ? `This navigation link ("${label}") is marked as the current one only by its class "${marked}", with no aria-current and no text that says so.`
+            : `This navigation link ("${label}") is marked as the current one only by the class "${marked}" on its <li>, with no aria-current and no text that says so.`,
         hint: 'If the class shows the active page, add aria-current="page" to the link, or a text that says so (RGAA 10.9.1).',
         i18n: {
-          summaryKey: 'currentItemReview_summary_cantTell',
+          summaryKey: `currentItemReview_summary_cantTell_${where}`,
           hintKey: 'currentItemReview_hint_cantTell',
-          params: { label }
+          params: { label, class: marked }
         },
         uncertainty: {
           code: 'judgement-required',
           needed: 'Whether the active page is shown only by the look of the link.'
         },
         data: {
-          details: { reasonCode: 'currentByLookOnly', label },
+          details: { reasonCode: 'currentByLookOnly', label, class: marked, classOn: where },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })

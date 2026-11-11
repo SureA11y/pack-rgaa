@@ -134,6 +134,37 @@ function runInPage(ctx) {
     return hasText(dom.getAttribute(el, 'aria-label')) || hasText(labelledbyText(el));
   }
 
+  // The group's fields, in order.
+  function fieldsOf(group) {
+    return [...dom.querySelectorAll(group, `${NATIVE_FIELDS}, ${ROLE_FIELDS}`)].filter(
+      (el) => dom.matches(el, NATIVE_FIELDS) || FIELD_ROLES.includes(explicitRole(el))
+    );
+  }
+
+  // The fields named for a message: the first three, each by its
+  // accessible name (or else its tag), cut at 30 characters, joined with
+  // " | ".
+  function fieldsText(fields) {
+    const names = fields.slice(0, 3).map((el) => {
+      let v = '';
+      try {
+        const info = helpers.getAccessibleNameInfo ? helpers.getAccessibleNameInfo(el, ctx) : null;
+        v = info && info.value ? String(info.value) : '';
+      } catch {}
+      v = v.replace(/\s+/g, ' ').trim();
+      if (!v) v = `<${String(dom.localName(el) || dom.tagName(el)).toLowerCase()}>`;
+      return v.length > 30 ? `${v.slice(0, 29)}…` : v;
+    });
+    return names.join(' | ') + (fields.length > 3 ? ' | …' : '');
+  }
+
+  const cut = (v, n) => {
+    const t = String(v == null ? '' : v)
+      .replace(/\s+/g, ' ')
+      .trim();
+    return t.length > n ? `${t.slice(0, n - 1)}…` : t;
+  };
+
   // Filtered below by the first role token.
   const groups = helpers.queryAllSmart
     ? helpers.queryAllSmart('fieldset, [role]')
@@ -155,29 +186,75 @@ function runInPage(ctx) {
     // RGAA 11.6.1 step 2: a legend for a fieldset, aria-label or
     // aria-labelledby for role="group"/"radiogroup".
     if (isAriaGroup && hasAriaName(group)) continue;
+    let legend = null;
     if (isFieldset) {
-      const legend = [...dom.querySelectorAll(group, ':scope > *')].find(
+      legend = [...dom.querySelectorAll(group, ':scope > *')].find(
         (c) => String(dom.tagName(c)).toLowerCase() === 'legend'
       );
       if (legend && hasText(dom.textContent(legend))) continue;
     }
 
+    // Name the fields, and what the reviewer may see that does not count as
+    // a legend: an empty <legend>, one that is not the fieldset's child, an
+    // aria-label or aria-labelledby that gives no text.
+    const fields = fieldsOf(group);
+    const params = { role, count: fields.length, fields: fieldsText(fields) };
+    let variant = isFieldset ? 'fieldset' : 'group';
+    let why = '';
+    if (isFieldset) {
+      const nested = legend ? null : dom.querySelector(group, 'legend');
+      if (legend) {
+        variant = 'fieldset_emptyLegend';
+        why = ', but its <legend> has no text';
+      } else if (nested && hasText(dom.textContent(nested))) {
+        variant = 'fieldset_nestedLegend';
+        params.legend = cut(dom.textContent(nested), 60);
+        why = `, but its <legend> ("${params.legend}") is not a direct child of the fieldset, so it is not the fieldset's legend`;
+      } else if (hasAriaName(group)) {
+        // RGAA 11.6.1 takes only a <legend> as a fieldset's legend.
+        variant = 'fieldset_ariaName';
+        params.attribute = hasText(dom.getAttribute(group, 'aria-label'))
+          ? 'aria-label'
+          : 'aria-labelledby';
+        why = ` but has no <legend>; its ${params.attribute} does not count as a fieldset's legend`;
+      }
+    } else {
+      const ids = String(dom.getAttribute(group, 'aria-labelledby') || '').trim();
+      if (ids) params.attribute = `aria-labelledby="${cut(ids, 40)}"`;
+      else if (dom.hasAttribute(group, 'aria-label')) params.attribute = 'aria-label';
+      if (params.attribute) {
+        variant = 'group_emptyName';
+        why = `, but its ${params.attribute} gives no text, so it has no name`;
+      }
+    }
+    const lead = isFieldset
+      ? `This fieldset groups ${params.count} form field(s) (${params.fields})`
+      : `This role="${role}" element groups ${params.count} form field(s) (${params.fields})`;
+    const summary = why
+      ? `${lead}${why}.`
+      : isFieldset
+        ? `${lead} but has no legend.`
+        : `${lead} but has no aria-label or aria-labelledby.`;
+
     const element = isFieldset ? 'fieldset' : `role="${role}"`;
     occurrences.push(
       helpers.reportOccurrence(group, {
-        summary: isFieldset
-          ? 'This fieldset groups form fields but has no legend.'
-          : `This role="${role}" element groups form fields but has no aria-label or aria-labelledby.`,
+        summary,
         hint: 'If the fields are of the same kind (an address, a date, a set of choices), give the group a legend: a <legend> for a fieldset, aria-label or aria-labelledby for role="group" or role="radiogroup". Otherwise check that each field has a title, aria-label, aria-labelledby or aria-describedby that names the group.',
         i18n: {
-          summaryKey: isFieldset
-            ? 'fieldGroupLegend_summary_cantTell_fieldset'
-            : 'fieldGroupLegend_summary_cantTell_group',
+          summaryKey: `fieldGroupLegend_summary_cantTell_${variant}`,
           hintKey: 'fieldGroupLegend_hint_cantTell',
-          params: { role }
+          params
         },
         data: {
-          details: { reasonCode: 'groupWithoutLegend', element },
+          details: {
+            reasonCode: 'groupWithoutLegend',
+            element,
+            fields: params.fields,
+            ...(params.legend ? { legend: params.legend } : {}),
+            ...(params.attribute ? { attribute: params.attribute } : {}),
+            ...(variant === 'fieldset_emptyLegend' ? { emptyLegend: true } : {})
+          },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })

@@ -38,6 +38,30 @@ test(`${RULE_ID}: each element 13.1.1 lists as a refresh method is asked about`,
   }
 });
 
+test(`${RULE_ID}: the summary says why each element may refresh`, () => {
+  const body =
+    '<object data="ticker.swf" type="application/x-shockwave-flash"></object><canvas></canvas><svg><script>draw()</script></svg>';
+  const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'cantTell', {
+    minOccurrences: 3,
+    maxOccurrences: 3
+  });
+  assert.deepEqual(
+    rule.occurrences.map((o) => o.i18n.summaryKey),
+    [
+      'embeddedRefreshReview_summary_cantTell_embedded',
+      'embeddedRefreshReview_summary_cantTell_canvas',
+      'embeddedRefreshReview_summary_cantTell_svgScript'
+    ]
+  );
+  assert.equal(rule.occurrences[0].data.details.source, 'ticker.swf');
+  assert.equal(
+    rule.occurrences[0].summary,
+    'This <object> embeds "ticker.swf", which may refresh its content on its own. Check whether it does, and whether the user can control the refresh.'
+  );
+  assert.match(rule.occurrences[1].summary, /^This <canvas> is drawn by a script/);
+  assert.match(rule.occurrences[2].summary, /^This <svg> holds a <script>/);
+});
+
 test(`${RULE_ID}: still images and script-free svg are not applicable`, () => {
   for (const body of [
     '<object data="chart.png"></object>',

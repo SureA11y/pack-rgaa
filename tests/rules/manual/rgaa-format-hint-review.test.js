@@ -24,13 +24,13 @@ const PATTERN = field('Numéro de client', 'pattern="[A-Z]{2}[0-9]{6}"');
 // an example « si nécessaire »; the message shows only once a value is
 // rejected, so a field with a constraint stated nowhere is asked about.
 test(`${RULE_ID}: a field with a constraint and no format or example around it is asked about`, () => {
-  for (const [body, constraint] of [
-    [PATTERN, 'pattern'],
-    [field('Mot de passe', 'type="password" minlength="12"'), 'minlength'],
-    [field('Commentaire', 'minlength="20"', 'textarea'), 'minlength'],
-    [field('Quantité', 'type="number" min="1" max="10"'), 'min/max'],
-    [field('Date d’arrivée', 'type="date" min="2026-01-01"'), 'min/max'],
-    [field('Montant', 'inputmode="decimal"'), 'inputmode']
+  for (const [body, constraint, control] of [
+    [PATTERN, 'pattern', 'pattern="[A-Z]{2}[0-9]{6}"'],
+    [field('Mot de passe', 'type="password" minlength="12"'), 'minlength', 'minlength="12"'],
+    [field('Commentaire', 'minlength="20"', 'textarea'), 'minlength', 'minlength="20"'],
+    [field('Quantité', 'type="number" min="1" max="10"'), 'min/max', 'min="1" max="10"'],
+    [field('Date d’arrivée', 'type="date" min="2026-01-01"'), 'min/max', 'min="2026-01-01"'],
+    [field('Montant', 'inputmode="decimal"'), 'inputmode', 'inputmode="decimal"']
   ]) {
     const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'cantTell', {
       minOccurrences: 1,
@@ -38,11 +38,27 @@ test(`${RULE_ID}: a field with a constraint and no format or example around it i
     });
     const d = rule.occurrences[0].data.details;
     assert.deepEqual([d.reasonCode, d.constraint], ['formatWithoutHint', constraint], body);
+    assert.equal(d.control, control, body);
+    assert.equal(
+      rule.occurrences[0].i18n.summaryKey,
+      'formatHintReview_summary_cantTell_labelled',
+      body
+    );
   }
+  const unlabelled = assertRule(
+    runa11yCoreOnHtml(page('<input pattern="[0-9]{5}">'), RUN),
+    RULE_ID,
+    'cantTell'
+  ).occurrences[0];
+  assert.equal(unlabelled.i18n.summaryKey, 'formatHintReview_summary_cantTell');
+  assert.equal(
+    unlabelled.summary,
+    'This field has an input control (pattern="[0-9]{5}") but its label, description and placeholder give no format or example.'
+  );
   const rule = assertRule(runa11yCoreOnHtml(page(PATTERN), RUN), RULE_ID, 'cantTell');
   assert.equal(
     rule.occurrences[0].summary,
-    'This field has an input control (pattern) but its label, description and placeholder give no format or example.'
+    'This field ("Numéro de client") has an input control (pattern="[A-Z]{2}[0-9]{6}") but its label, description and placeholder give no format or example.'
   );
   assert.equal(rule.occurrences[0].data.details.label, 'Numéro de client');
 });
@@ -83,7 +99,7 @@ test(`${RULE_ID}: messages follow the scan locale; the map and rollup put it und
   );
   assert.equal(
     rule.occurrences[0].summary,
-    'Ce champ a un contrôle de saisie (pattern) mais son étiquette, sa description et son placeholder ne donnent ni format ni exemple.'
+    'Ce champ (« Numéro de client ») a un contrôle de saisie (pattern="[A-Z]{2}[0-9]{6}") mais son étiquette, sa description et son placeholder ne donnent ni format ni exemple.'
   );
   assert.deepEqual(RGAA_RULE_TESTS['4.1.2'][RULE_ID].tests, ['11.11.1', '11.11.2']);
   const result = runa11yCoreOnHtml(page(PATTERN), { engineOptions: { profile: 'rgaa-4.1.2' } });

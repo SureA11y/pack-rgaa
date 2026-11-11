@@ -181,16 +181,29 @@ function runInPage(ctx) {
   }
 
   // aria-describedby counts when one of its ids names an element with text,
-  // in the table's own tree (document or shadow root).
+  // in the table's own tree (document or shadow root). The text of those
+  // elements, joined, or '' when none has any.
   function describedByText(table) {
     const raw = String(dom.getAttribute(table, 'aria-describedby') || '').trim();
-    if (!raw) return false;
+    if (!raw) return '';
     const rootNode = dom.get(table, 'getRootNode') ? dom.getRootNode(table) : document;
     const scope = rootNode && dom.get(rootNode, 'getElementById') ? rootNode : document;
-    return raw.split(/\s+/).some((ref) => {
-      const target = dom.getElementById(scope, ref);
-      return !!target && hasText(dom.textContent(target));
-    });
+    return raw
+      .split(/\s+/)
+      .map((ref) => {
+        const target = dom.getElementById(scope, ref);
+        return target ? String(dom.textContent(target) || '') : '';
+      })
+      .filter(hasText)
+      .join(' ');
+  }
+
+  // A text quoted in a summary: collapsed, cut at 100 characters.
+  function excerpt(v) {
+    const t = String(v == null ? '' : v)
+      .replace(/\s+/g, ' ')
+      .trim();
+    return t.length > 100 ? `${t.slice(0, 99)}…` : t;
   }
 
   const tables = helpers.queryAllSmart
@@ -207,22 +220,40 @@ function runInPage(ctx) {
     if (!isComplex(table)) continue;
 
     const sources = [];
-    if (isNative && table.caption && hasText(dom.textContent(table.caption)))
+    const texts = {};
+    if (isNative && table.caption && hasText(dom.textContent(table.caption))) {
       sources.push('caption');
-    if (describedByText(table)) sources.push('aria-describedby');
-    if (isNative && !isHtml5 && hasText(dom.getAttribute(table, 'summary')))
+      texts.caption = dom.textContent(table.caption);
+    }
+    const described = describedByText(table);
+    if (described) {
+      sources.push('aria-describedby');
+      texts.describedby = described;
+    }
+    if (isNative && !isHtml5 && hasText(dom.getAttribute(table, 'summary'))) {
       sources.push('summary');
+      texts.summaryAttribute = dom.getAttribute(table, 'summary');
+    }
     if (!sources.length) continue;
+
+    // Quote the summary to judge, from the source most likely to hold it:
+    // a linked passage, then a summary attribute, then the caption.
+    const from = ['describedby', 'summaryAttribute', 'caption'].find((k) => texts[k]);
+    const text = excerpt(texts[from]);
+    const WHERE = {
+      describedby: 'in the passage its aria-describedby points to',
+      summaryAttribute: 'in its summary attribute',
+      caption: 'in its <caption>'
+    };
 
     occurrences.push(
       helpers.reportOccurrence(table, {
-        summary:
-          'This table looks like a complex data table and has a summary. Check that it explains how the table is organised.',
+        summary: `This table looks like a complex data table and has a summary ${WHERE[from]}: "${text}". Check that it explains how the table is organised.`,
         hint: 'The summary should say what the table contains and how its headers are arranged, not only repeat its title. It can sit in the <caption>, hidden with CSS if needed, or in a passage linked with aria-describedby.',
         i18n: {
-          summaryKey: 'complexTableSummaryQuality_summary_cantTell',
+          summaryKey: `complexTableSummaryQuality_summary_cantTell_${from}`,
           hintKey: 'complexTableSummaryQuality_hint_cantTell',
-          params: {}
+          params: { text }
         },
         uncertainty: {
           code: 'judgement-required',
@@ -230,7 +261,12 @@ function runInPage(ctx) {
           evidence: { sources }
         },
         data: {
-          details: { reasonCode: 'complexTableSummary', sources, doctype: doctypeKind },
+          details: {
+            reasonCode: 'complexTableSummary',
+            sources,
+            doctype: doctypeKind,
+            summaryText: text
+          },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })

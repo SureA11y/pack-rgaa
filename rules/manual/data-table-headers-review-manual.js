@@ -203,6 +203,20 @@ function runInPage(ctx) {
     return true;
   }
 
+  // Cells' texts for a message: the first four, each cut at 30 characters,
+  // joined with " | ", empty cells left out.
+  function cellsText(cells) {
+    const texts = cells
+      .map((c) =>
+        String(dom.textContent(c) || '')
+          .replace(/\s+/g, ' ')
+          .trim()
+      )
+      .filter(Boolean);
+    const shown = texts.slice(0, 4).map((t) => (t.length > 30 ? `${t.slice(0, 29)}…` : t));
+    return shown.join(' | ') + (texts.length > 4 ? ' | …' : '');
+  }
+
   // In a table with headers, a first row or first column of bold data cells
   // with no header among them may be headers marked up as <td>.
   function boldAxis(table) {
@@ -224,24 +238,25 @@ function runInPage(ctx) {
     if (colCells.length >= 2 && colCells.every((c) => !isHeader(c) && allBold(c)))
       axes.push('column');
     for (const axis of axes) {
+      const cells = cellsText(axis === 'row' ? rowCells : colCells);
       occurrences.push(
         helpers.reportOccurrence(table, {
           summary:
             axis === 'row'
-              ? 'The first row of this table holds bold data cells, which may be column headers marked up as <td>.'
-              : 'The first column of this table holds bold data cells, which may be row headers marked up as <td>.',
+              ? `The first row of this table holds bold data cells ("${cells}"), which may be column headers marked up as <td>.`
+              : `The first column of this table holds bold data cells ("${cells}"), which may be row headers marked up as <td>.`,
           hint: 'If these cells are headers, mark them with <th> (or role="columnheader" or role="rowheader" in an ARIA table), with a scope (RGAA 5.6.1, 5.6.2).',
           i18n: {
             summaryKey: `dataTableHeadersReview_summary_cantTell_bold_${axis}`,
             hintKey: 'dataTableHeadersReview_hint_cantTell_bold',
-            params: {}
+            params: { cells }
           },
           uncertainty: {
             code: 'judgement-required',
             needed: 'Whether the bold cells are headers.'
           },
           data: {
-            details: { reasonCode: 'BOLD_CELLS_MAY_BE_HEADERS', axis },
+            details: { reasonCode: 'BOLD_CELLS_MAY_BE_HEADERS', axis, cells },
             visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
           }
         })
@@ -266,15 +281,20 @@ function runInPage(ctx) {
     }
     if (!size.withText || size.rows < 2 || size.cols < 2) continue;
 
+    // The first row, quoted, so the reviewer sees the likeliest headers.
+    const firstRow = cellsText(gridOf(table).rows[0] || []);
     occurrences.push(
       helpers.reportOccurrence(table, {
-        summary:
-          'This table has no header cells. If it is a data table, check whether its first row or column holds headers.',
+        summary: firstRow
+          ? `This table has no header cells; its first row reads "${firstRow}". If it is a data table, check whether its first row or column holds headers.`
+          : 'This table has no header cells. If it is a data table, check whether its first row or column holds headers.',
         hint: 'Mark each header that applies to a whole column or row with <th> (or role="columnheader" or role="rowheader" in an ARIA table). If the table is only used for layout, give it role="presentation" instead.',
         i18n: {
-          summaryKey: 'dataTableHeadersReview_summary_cantTell',
+          summaryKey: firstRow
+            ? 'dataTableHeadersReview_summary_cantTell_firstRow'
+            : 'dataTableHeadersReview_summary_cantTell',
           hintKey: 'dataTableHeadersReview_hint_cantTell',
-          params: {}
+          params: firstRow ? { firstRow } : {}
         },
         uncertainty: {
           code: 'judgement-required',
@@ -283,7 +303,12 @@ function runInPage(ctx) {
           evidence: { rows: size.rows, columns: size.cols }
         },
         data: {
-          details: { reasonCode: 'NO_HEADER_CELLS', rows: size.rows, columns: size.cols },
+          details: {
+            reasonCode: 'NO_HEADER_CELLS',
+            rows: size.rows,
+            columns: size.cols,
+            ...(firstRow ? { firstRow } : {})
+          },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })

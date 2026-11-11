@@ -124,11 +124,16 @@ function runInPage(ctx) {
     }
     return false;
   };
-  const named = (el) =>
-    String(dom.getAttribute(el, 'class') || '')
+  // The class token, or else the id, that names the element as a message:
+  // { attribute, token }, or null.
+  const named = (el) => {
+    const token = String(dom.getAttribute(el, 'class') || '')
       .split(/\s+/)
-      .concat(String(dom.getAttribute(el, 'id') || ''))
-      .some((t) => t && NAME.test(t));
+      .find((t) => t && NAME.test(t));
+    if (token) return { attribute: 'class', token };
+    const idv = String(dom.getAttribute(el, 'id') || '');
+    return idv && NAME.test(idv) ? { attribute: 'id', token: idv } : null;
+  };
 
   const nodes = helpers.queryAllSmart
     ? helpers.queryAllSmart('[aria-live], [class], [id]')
@@ -141,8 +146,9 @@ function runInPage(ctx) {
     if (flagged.some((f) => dom.contains(f, el))) continue;
     const live = norm(dom.getAttribute(el, 'aria-live')).toLowerCase();
     let kind = null;
+    const name = live && live !== 'off' ? null : named(el);
     if (live && live !== 'off') kind = 'liveWithoutRole';
-    else if (named(el)) {
+    else if (name) {
       const text = norm(dom.textContent(el));
       const words = text.split(' ').filter((w) => /\p{L}/u.test(w)).length;
       if (
@@ -156,24 +162,31 @@ function runInPage(ctx) {
     if (!kind) continue;
     flagged.push(el);
     const text = norm(dom.textContent(el)).slice(0, 60);
+    // Say what made the element look like a status message: its aria-live
+    // value, or the class or id that names it so.
+    const params =
+      kind === 'liveWithoutRole' ? { text, live } : { text, [name.attribute]: name.token };
+    const variant = kind === 'liveWithoutRole' ? '' : `_${name.attribute}`;
     occurrences.push(
       helpers.reportOccurrence(el, {
         summary:
           kind === 'liveWithoutRole'
-            ? `This element has aria-live but no role="status", "alert", "log" or "progressbar" ("${text}").`
-            : `This element looks like a status message ("${text}") but has no role="status", "alert", "log" or "progressbar".`,
+            ? `This element has aria-live="${live}" but no role="status", "alert", "log" or "progressbar" ("${text}").`
+            : name.attribute === 'class'
+              ? `This element's class "${name.token}" suggests a status message ("${text}"), but it has no role="status", "alert", "log" or "progressbar".`
+              : `This element's id "${name.token}" suggests a status message ("${text}"), but it has no role="status", "alert", "log" or "progressbar".`,
         hint: 'If it is a status message, use role="status" for a success, result or state, role="alert" for an error or a suggestion, and role="log", "progressbar" or "status" for a progress (RGAA 7.5).',
         i18n: {
-          summaryKey: `statusMessageReview_summary_cantTell_${kind}`,
+          summaryKey: `statusMessageReview_summary_cantTell_${kind}${variant}`,
           hintKey: 'statusMessageReview_hint_cantTell',
-          params: { text }
+          params
         },
         uncertainty: {
           code: 'judgement-required',
           needed: 'Whether the element is a status message, and which role it needs.'
         },
         data: {
-          details: { reasonCode: kind, text },
+          details: { reasonCode: kind, ...params },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })

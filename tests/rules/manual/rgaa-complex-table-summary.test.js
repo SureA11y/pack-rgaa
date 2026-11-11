@@ -28,9 +28,53 @@ test(`${RULE_ID}: headers outside the first row and column make a complex table,
   assert.deepEqual(occ.data.details, {
     reasonCode: 'complexTableNoSummary',
     reasons: ['headersOutsideFirstRowAndColumn'],
+    evidence: { header: 'Q1' },
     hasCaption: false
   });
-  assert.equal(occ.i18n.summaryKey, 'complexTableSummary_summary_cantTell');
+  assert.equal(
+    occ.i18n.summaryKey,
+    'complexTableSummary_summary_cantTell_headersOutsideFirstRowAndColumn'
+  );
+  assert.equal(
+    occ.summary,
+    'This table looks like a complex data table: its header "Q1" is outside the first row and column. Nothing marks a summary of its structure.'
+  );
+  assert.equal(occ.i18n.hintKey, 'complexTableSummary_hint_cantTell');
+});
+
+test(`${RULE_ID}: the summary names the cells that make the table complex; the hint, what the reviewer sees`, () => {
+  const occ = (body, locale) =>
+    assertRule(
+      runa11yCoreOnHtml(page(body), { ...RUN, engineOptions: locale ? { locale } : {} }),
+      RULE_ID,
+      'cantTell'
+    ).occurrences[0];
+  const groups =
+    '<tr><th colspan="2">2025</th><th colspan="2">2026</th></tr><tr><td>1</td><td>2</td><td>3</td><td>4</td></tr>';
+  const spanning = occ(`<table><caption>Ventes</caption>${groups}</table>`);
+  assert.equal(
+    spanning.i18n.summaryKey,
+    'complexTableSummary_summary_cantTell_groupSpanningHeader_columns'
+  );
+  assert.deepEqual(spanning.i18n.params, { header: '2025', other: '2026', caption: 'Ventes' });
+  assert.equal(spanning.i18n.hintKey, 'complexTableSummary_hint_cantTell_caption');
+  assert.match(spanning.hint, /^Check whether its caption, "Ventes", explains/);
+  assert.equal(
+    occ(`<table><caption>Ventes</caption>${groups}</table>`, 'fr').summary,
+    'Ce tableau semble être un tableau de données complexe : ses en-têtes « 2025 » et « 2026 » portent chacun sur un groupe de colonnes. Rien n’indique un résumé de sa structure.'
+  );
+
+  const scoped = occ('<table><tr><th scope="colgroup">Fruits</th><th>B</th></tr></table>');
+  assert.equal(scoped.i18n.summaryKey, 'complexTableSummary_summary_cantTell_groupScope');
+  assert.match(scoped.summary, /its header "Fruits" has scope="colgroup"\./);
+
+  const unresolved = occ(`<table aria-describedby="nope">${TWO_HEADER_ROWS}</table>`);
+  assert.equal(unresolved.i18n.hintKey, 'complexTableSummary_hint_cantTell_describedbyUnresolved');
+  assert.match(unresolved.hint, /^Its aria-describedby="nope" points to no text/);
+
+  const attr = occ(`<table summary="Quarters by region">${TWO_HEADER_ROWS}</table>`);
+  assert.equal(attr.i18n.hintKey, 'complexTableSummary_hint_cantTell_summaryAttribute');
+  assert.match(attr.hint, /^Its summary attribute does not count in HTML5/);
 });
 
 test(`${RULE_ID}: a headers attribute makes a table complex; a caption is noted, not taken as the summary`, () => {
