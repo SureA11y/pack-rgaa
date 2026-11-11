@@ -71,3 +71,24 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-optgroup-label-present-a
   const ids = rule.occurrences.map((o) => (o.html.match(/id="([^"]+)"/) || [])[1]);
   assert.deepEqual(ids, ['ogl_case_02']);
 });
+
+// The occurrences a body gives, in English or in the locale asked.
+function messagesOf(body, locale) {
+  const result = runa11yCoreOnHtml(
+    `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`,
+    { ...RUN, ...(locale ? { engineOptions: { locale } } : {}) }
+  );
+  return result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+}
+
+test(`${RULE_ID}: a misspelled label is named in the hint`, () => {
+  const [occ] = messagesOf(
+    '<select><optgroup lable="France"><option>Paris</option></optgroup></select>'
+  );
+  assert.equal(occ.data.details.reasonCode, 'missingLabel');
+  assert.equal(occ.i18n.hintKey, 'optgroupLabelPresent_hint_misspelled');
+  assert.equal(
+    occ.hint,
+    'It has lable="France", but browsers do not read lable: did you mean label? Rename the attribute.'
+  );
+});

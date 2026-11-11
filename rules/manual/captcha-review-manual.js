@@ -131,14 +131,14 @@ function runInPage(ctx) {
       helpers.reportOccurrence(el, {
         summary:
           kind === 'imageCaptcha'
-            ? `This image looks like a CAPTCHA (alternative: "${params.alt}").`
-            : `This is a ${params.service} CAPTCHA.`,
+            ? `This image looks like a CAPTCHA: its ${params.attribute} has "${params.match}" (alternative: "${params.alt}").`
+            : `This is a ${params.service} CAPTCHA: its ${params.attribute} has "${params.match}".`,
         hint:
           kind === 'imageCaptcha'
             ? 'Check that its alternative says what the CAPTCHA is and what to do (RGAA 1.4), and that a non-graphic CAPTCHA, or another way to the function it protects, is offered (RGAA 1.5).'
             : 'Check that a non-graphic CAPTCHA, or another way to the function it protects, is offered (RGAA 1.5).',
         i18n: {
-          summaryKey: `captchaReview_summary_cantTell_${kind}`,
+          summaryKey: `captchaReview_summary_cantTell_${kind}_matched`,
           hintKey: `captchaReview_hint_cantTell_${kind}`,
           params
         },
@@ -159,10 +159,17 @@ function runInPage(ctx) {
   for (const el of query('iframe, div, span')) {
     const src = String(attr(el, 'src') || '');
     const cls = String(attr(el, 'class') || '');
-    const w = WIDGETS.find((x) => (tagOf(el) === 'iframe' ? x.src.test(src) : x.cls.test(cls)));
+    const frame = tagOf(el) === 'iframe';
+    const w = WIDGETS.find((x) => (frame ? x.src.test(src) : x.cls.test(cls)));
     if (!w || !visible(el)) continue;
     // A service's frame inside its own container is the same CAPTCHA.
-    ask(el, 'captchaWidget', { service: w.service });
+    // The attribute that matched, and what in it, for the summary.
+    const match = (frame ? w.src.exec(src) : w.cls.exec(cls)) || [''];
+    ask(el, 'captchaWidget', {
+      service: w.service,
+      attribute: frame ? 'src' : 'class',
+      match: match[0]
+    });
   }
 
   for (const el of query('img, area, input, svg, canvas, object, embed, [role~="img" i]')) {
@@ -188,9 +195,28 @@ function runInPage(ctx) {
       String(attr(el, 'class') || ''),
       String(attr(el, 'name') || '')
     ];
-    if (!marks.some((m) => CAPTCHA.test(m))) continue;
+    const at = marks.findIndex((m) => CAPTCHA.test(m));
+    if (at < 0) continue;
     if (tag !== 'area' && !visible(el)) continue;
-    ask(el, 'imageCaptcha', { alt, element: tag });
+    // The attribute that matched, and the value around the match.
+    const attribute =
+      at === 0
+        ? norm(attr(el, 'aria-label'))
+          ? 'aria-label'
+          : norm(attr(el, 'alt'))
+            ? 'alt'
+            : 'title'
+        : at === 1
+          ? attr(el, 'src') != null
+            ? 'src'
+            : 'data'
+          : ['', '', 'id', 'class', 'name'][at];
+    const value = norm(marks[at]);
+    // A long value is shown around the word that matched.
+    const from = Math.max(0, value.search(CAPTCHA) - 30);
+    const cut = value.slice(from, from + 60);
+    const match = (from > 0 ? '…' : '') + cut + (from + 60 < value.length ? '…' : '');
+    ask(el, 'imageCaptcha', { alt, element: tag, attribute, match });
   }
 
   if (!occurrences.length) {

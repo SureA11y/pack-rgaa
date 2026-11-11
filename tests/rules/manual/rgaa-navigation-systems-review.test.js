@@ -151,3 +151,31 @@ test(`${RULE_ID}: notApplicable on a scoped run or a fragment`, () => {
     'notApplicable'
   );
 });
+
+// The occurrences a body gives, in English or in the locale asked.
+function messagesOf(body, locale) {
+  const result = runa11yCoreOnHtml(
+    `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`,
+    { ...RUN, ...(locale ? { engineOptions: { locale } } : {}) }
+  );
+  return result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+}
+
+test(`${RULE_ID}: the <nav> it does not count is named, with the reason`, () => {
+  const [footer] = messagesOf(
+    '<p>x</p></main><footer><nav class="footer-links"><a href="/a">a</a><a href="/b">b</a><a href="/c">c</a></nav></footer><main>'
+  );
+  assert.equal(footer.i18n.hintKey, 'navigationSystemsReview_hint_cantTell_skipped_inFooter');
+  assert.match(
+    footer.hint,
+    /^The <nav class="footer-links"> is in the page footer, so it is not counted as a navigation menu\. Check/
+  );
+  const [few] = messagesOf('<nav><a href="/a">a</a></nav>');
+  assert.equal(few.i18n.hintKey, 'navigationSystemsReview_hint_cantTell_skipped_fewLinks');
+  assert.deepEqual(few.data.details.notCounted, { reason: 'fewLinks', nav: '<nav>', count: 1 });
+  const [search] = messagesOf(
+    '<nav><a href="/a">a</a><a href="/b">b</a><a href="/c">c</a></nav><input type="text" name="q">'
+  );
+  assert.equal(search.i18n.hintKey, 'navigationSystemsReview_hint_cantTell_skipped_search');
+  assert.match(search.hint, /^The <input name="q"> looks like a search field/);
+});

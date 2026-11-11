@@ -89,21 +89,46 @@ function runInPage(ctx) {
       (disabled.length >= 2 ? disabled[0] : null);
     if (!heading) continue;
     const text = norm(dom.textContent(heading)).slice(0, 60);
+    // Every option that looks like a heading, for the summary: framed, or
+    // disabled when two or more are. The first option counts too when it is
+    // framed and does not read as a placeholder ("-- Choose --").
+    const first = dom.querySelectorAll(select, 'option')[0];
+    const firstText = first ? norm(dom.textContent(first)) : '';
+    const PLACEHOLDER =
+      /choisi|choix|s[ée]lection|select|choose|pick|please|veuillez|aucun|none|^\W*(all|tous|toutes)\W*$/i;
+    const looksHeading = (o) =>
+      FRAMED.test(norm(dom.textContent(o))) || (disabled.length >= 2 && disabled.includes(o));
+    const all = options.filter(looksHeading);
+    if (first && FRAMED.test(firstText) && !PLACEHOLDER.test(firstText)) all.unshift(first);
+    const count = all.length;
+    const texts =
+      all
+        .slice(0, 5)
+        .map((o) => {
+          const t = norm(dom.textContent(o));
+          return t.length > 30 ? `${t.slice(0, 29)}…` : t;
+        })
+        .join(' | ') + (count > 5 ? ' | …' : '');
+    const several = count >= 2;
     occurrences.push(
       helpers.reportOccurrence(select, {
-        summary: `This list has no <optgroup>, but its option "${text}" looks like a group heading.`,
+        summary: several
+          ? `This list has no <optgroup>, but ${count} of its options look like group headings: "${texts}".`
+          : `This list has no <optgroup>, but its option "${text}" looks like a group heading.`,
         hint: 'If the items fall into groups, put each group in an <optgroup> whose label names it, instead of a heading option (RGAA 11.8.1).',
         i18n: {
-          summaryKey: 'selectFakeGroupsReview_summary_cantTell',
+          summaryKey: several
+            ? 'selectFakeGroupsReview_summary_cantTell_several'
+            : 'selectFakeGroupsReview_summary_cantTell',
           hintKey: 'selectFakeGroupsReview_hint_cantTell',
-          params: { text }
+          params: several ? { text, count, texts } : { text }
         },
         uncertainty: {
           code: 'judgement-required',
           needed: 'Whether the items of the list should be grouped with <optgroup>.'
         },
         data: {
-          details: { reasonCode: 'fakeGroupHeading', text },
+          details: { reasonCode: 'fakeGroupHeading', text, ...(several ? { count, texts } : {}) },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })

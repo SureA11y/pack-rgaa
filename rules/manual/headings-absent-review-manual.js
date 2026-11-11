@@ -111,6 +111,63 @@ function runInPage(ctx) {
   }
   if (words < 30) return na;
 
+  // The first short bold line that opens a longer block: a <p>, <div>, <li>
+  // or <dt> whose text is all in <b> or <strong>, or set in bold, followed by
+  // a sibling with more text. It may act as a heading; it changes nothing
+  // but the hint.
+  const norm = (v) =>
+    String(v == null ? '' : v)
+      .replace(/\s+/g, ' ')
+      .trim();
+  const view = dom.defaultView(document) || null;
+  const bold = (el) => {
+    try {
+      const w = view ? String(view.getComputedStyle(el).fontWeight || '') : '';
+      return w === 'bold' || w === 'bolder' || Number(w) >= 600;
+    } catch {
+      return false;
+    }
+  };
+  const allBold = (el) => {
+    if (bold(el)) return true;
+    let tw = null;
+    try {
+      tw = dom.createTreeWalker(document, el, 4, null);
+    } catch {
+      return false;
+    }
+    let any = false;
+    for (let n = tw.nextNode(); n; n = tw.nextNode()) {
+      if (!String(dom.nodeValue(n) || '').trim()) continue;
+      any = true;
+      let inBold = false;
+      for (let a = dom.parentElement(n); a && a !== el; a = dom.parentElement(a)) {
+        const tag = String(dom.localName(a) || '').toLowerCase();
+        if (tag === 'b' || tag === 'strong' || bold(a)) {
+          inBold = true;
+          break;
+        }
+      }
+      if (!inBold) return false;
+    }
+    return any;
+  };
+  let boldLine = '';
+  let candidates = [];
+  try {
+    candidates = [...dom.querySelectorAll(body, 'p, div, li, dt')];
+  } catch {}
+  for (const el of candidates.slice(0, 2000)) {
+    const text = norm(dom.textContent(el));
+    if (text.length < 2 || text.length > 80 || !/\p{L}/u.test(text)) continue;
+    if (dom.querySelector(el, 'p, div, li, ul, ol, table')) continue;
+    const next = dom.nextElementSibling(el);
+    if (!next || norm(dom.textContent(next)).length <= text.length) continue;
+    if (!visible(el) || !allBold(el)) continue;
+    boldLine = text.length > 60 ? `${text.slice(0, 59)}…` : text;
+    break;
+  }
+
   return {
     ruleId: rule.ruleId,
     outcome: 'cantTell',
@@ -118,18 +175,22 @@ function runInPage(ctx) {
     occurrences: [
       helpers.reportOccurrence(body, {
         summary: 'This page has text but no heading at all.',
-        hint: 'Check whether some passages act as headings (a title above a section, a bold line opening a block); mark each with <h1>-<h6> (RGAA 9.1.3).',
+        hint: boldLine
+          ? `The bold line "${boldLine}" opens a block and may act as a heading. Check it and the passages like it; mark each one that acts as a heading with <h1>-<h6> (RGAA 9.1.3).`
+          : 'Check whether some passages act as headings (a title above a section, a bold line opening a block); mark each with <h1>-<h6> (RGAA 9.1.3).',
         i18n: {
           summaryKey: 'headingsAbsentReview_summary_cantTell',
-          hintKey: 'headingsAbsentReview_hint_cantTell',
-          params: {}
+          hintKey: boldLine
+            ? 'headingsAbsentReview_hint_cantTell_boldLine'
+            : 'headingsAbsentReview_hint_cantTell',
+          params: boldLine ? { text: boldLine } : {}
         },
         uncertainty: {
           code: 'judgement-required',
           needed: 'Whether some passages of the page act as headings.'
         },
         data: {
-          details: { reasonCode: 'noHeading' },
+          details: { reasonCode: 'noHeading', ...(boldLine ? { boldLine } : {}) },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })

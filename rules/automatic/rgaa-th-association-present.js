@@ -153,21 +153,35 @@ function runInPage(ctx) {
       }
     } else {
       const count = missing.length;
+      // The headers it counts, by their text: the first five, then "…".
+      const clipLabel = (t) => (t.length > 30 ? `${t.slice(0, 29)}…` : t);
+      const headers =
+        missing
+          .slice(0, 5)
+          .map((th) => clipLabel(text(th)))
+          .join(' | ') + (count > 5 ? ' | …' : '');
       cantTells.push(
         helpers.reportOccurrence(table, {
-          summary: `${count} header(s) of this table have no id, scope or header role.`,
+          summary: `${count} header(s) of this table have no id, scope or header role: "${headers}".`,
           hint: 'RGAA 5.7.1 asks each <th> that covers a whole row or column for a scope, a unique id or a header role; add scope="col" or scope="row" (RGAA 5.7.1).',
           i18n: {
             summaryKey: 'thAssociationPresent_summary_cantTell',
             hintKey: 'thAssociationPresent_hint_cantTell',
-            params: { count }
+            params: { count, headers }
           },
           uncertainty: {
             code: 'judgement-required',
             needed:
               'Whether the headers cover whole rows or columns and need a scope, an id or a role.'
           },
-          data: { details: { reasonCode: 'noAssociationSimple', count }, visibilityFilter: VF }
+          data: {
+            details: {
+              reasonCode: 'noAssociationSimple',
+              count,
+              headers: missing.slice(0, 20).map((th) => clipLabel(text(th)))
+            },
+            visibilityFilter: VF
+          }
         })
       );
     }

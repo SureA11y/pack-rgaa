@@ -136,17 +136,22 @@ function runInPage(ctx) {
 
     const element = String(dom.localName(el) || dom.tagName(el) || '').toLowerCase();
     const attrs = keyAttrs.join(', ');
+    // The first handler's code, shortened, so the action it runs shows.
+    const code = String(dom.getAttribute(el, keyAttrs[0]) || '')
+      .replace(/\s+/g, ' ')
+      .trim();
+    const handler = code.length > 60 ? `${code.slice(0, 59)}…` : code;
     occurrences.push(
       helpers.reportOccurrence(el, {
-        summary: `This <${element}> has ${attrs} but no click or pointer handler.`,
+        summary: `This <${element}> has ${attrs} but no click or pointer handler; its ${keyAttrs[0]} runs "${handler}".`,
         hint: 'Check that the action also works with a mouse, touch or stylus, on this element or on another element of the page that does the same thing (RGAA 7.3.1). A handler attached from a script file does not show in the markup.',
         i18n: {
-          summaryKey: 'keyboardOnlyEventHandlers_summary_cantTell',
+          summaryKey: 'keyboardOnlyEventHandlers_summary_cantTell_handler',
           hintKey: 'keyboardOnlyEventHandlers_hint_cantTell',
-          params: { element, attrs }
+          params: { element, attrs, attribute: keyAttrs[0], handler }
         },
         data: {
-          details: { reasonCode: 'keyboardOnlyHandler', element, keyAttrs },
+          details: { reasonCode: 'keyboardOnlyHandler', element, keyAttrs, handler },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })

@@ -155,27 +155,43 @@ function runInPage(ctx) {
   const found = [];
   const reported = new Set();
 
-  function report(el, kind, items) {
+  // firstLine: the text of the first line, marker included.
+  function report(el, kind, items, firstLine) {
     reported.add(el);
     const ordered = kind === 'ordered';
+    // The marker and the first item's text, for the summary.
+    const m = ordered ? /^(\d{1,3}[.)])\s+(.*)$/.exec(firstLine) : /^(.)\s+(.*)$/u.exec(firstLine);
+    const marker = m ? m[1] : '';
+    const rest = m ? m[2] : '';
+    const first = rest.length > 40 ? `${rest.slice(0, 39)}…` : rest;
+    const named = !!(marker && first);
     found.push({
       el,
       occurrence: helpers.reportOccurrence(el, {
-        summary: ordered
-          ? `These ${items} lines start with consecutive numbers but are not marked up as a list.`
-          : `These ${items} lines start with the same bullet but are not marked up as a list.`,
+        summary: named
+          ? ordered
+            ? `These ${items} lines start with consecutive numbers, from "${marker}", but are not marked up as a list; the first reads "${first}".`
+            : `These ${items} lines start with the same bullet, "${marker}", but are not marked up as a list; the first reads "${first}".`
+          : ordered
+            ? `These ${items} lines start with consecutive numbers but are not marked up as a list.`
+            : `These ${items} lines start with the same bullet but are not marked up as a list.`,
         hint: ordered
           ? 'If this is a list, use <ol> and <li> (or role="list" and role="listitem"), and let the list number the items.'
           : 'If this is a list, use <ul> and <li> (or role="list" and role="listitem"), and style the bullets with CSS.',
         i18n: {
-          summaryKey: ordered
-            ? 'fakeList_summary_cantTell_ordered'
-            : 'fakeList_summary_cantTell_unordered',
+          summaryKey:
+            (ordered
+              ? 'fakeList_summary_cantTell_ordered'
+              : 'fakeList_summary_cantTell_unordered') + (named ? '_marker' : ''),
           hintKey: ordered ? 'fakeList_hint_cantTell_ordered' : 'fakeList_hint_cantTell_unordered',
-          params: { items: String(items) }
+          params: named ? { items: String(items), marker, first } : { items: String(items) }
         },
         data: {
-          details: { reasonCode: ordered ? 'orderedListAsText' : 'unorderedListAsText', items },
+          details: {
+            reasonCode: ordered ? 'orderedListAsText' : 'unorderedListAsText',
+            items,
+            ...(named ? { marker, first } : {})
+          },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })
@@ -197,7 +213,7 @@ function runInPage(ctx) {
       continue;
     const lines = linesOf(el);
     const kind = listKind(lines);
-    if (kind) report(el, kind, lines.length);
+    if (kind) report(el, kind, lines.length, lines[0]);
   }
 
   // Runs of consecutive sibling paragraphs.
@@ -232,7 +248,7 @@ function runInPage(ctx) {
         }
       }
       if (end - start >= MIN_ITEMS) {
-        report(run[start], first.kind, end - start);
+        report(run[start], first.kind, end - start, collapse(dom.textContent(run[start])));
         start = end;
       } else {
         start += 1;

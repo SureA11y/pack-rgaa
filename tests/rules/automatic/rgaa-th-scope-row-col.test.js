@@ -167,3 +167,25 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
   const ids = rule.occurrences.map((o) => (o.html.match(/id="([^"]+)"/) || [])[1]);
   assert.deepEqual(ids, ['tsrc_case_01', 'tsrc_case_02', 'tsrc_case_06', 'tsrc_case_07']);
 });
+
+// The occurrences a body gives, in English or in the locale asked.
+function messagesOf(body, locale) {
+  const result = runa11yCoreOnHtml(
+    `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`,
+    { ...RUN, ...(locale ? { engineOptions: { locale } } : {}) }
+  );
+  return result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+}
+
+test(`${RULE_ID}: a scope close to col or row names the value meant`, () => {
+  const [col] = messagesOf(
+    '<table><tr><th scope="column">A</th><th scope="col">B</th></tr><tr><td>1</td><td>2</td></tr></table>'
+  );
+  assert.equal(col.data.details.reasonCode, 'otherScope');
+  assert.equal(col.i18n.hintKey, 'thScopeRowCol_hint_fail_otherScope_col');
+  assert.match(col.hint, /^Did you mean scope="col"\?/);
+  const [group] = messagesOf(
+    '<table><tr><th scope="colgroup">A</th></tr><tr><td>1</td></tr></table>'
+  );
+  assert.equal(group.i18n.hintKey, 'thScopeRowCol_hint_fail_otherScope');
+});

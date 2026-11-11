@@ -41,7 +41,10 @@ test(`${RULE_ID}: a title-only name fails with reasonCode titleOnly`, () => {
     const occ = rule.occurrences[0];
     assert.equal(occ.data.details.reasonCode, 'titleOnly', body);
     assert.equal(occ.i18n.summaryKey, 'roleImgAriaName_summary_fail_titleOnly');
-    assert.deepEqual(occ.i18n.params, { element: 'div' });
+    assert.deepEqual(occ.i18n.params, {
+      element: 'div',
+      title: /title="([^"]+)"/.exec(body)[1]
+    });
   }
 });
 
@@ -177,7 +180,7 @@ test(`${RULE_ID}: the hint names the cause the markup shows`, () => {
     [
       '<div role="img" aria-labelledby="l"></div><p id="l"></p>',
       'labelledbyEmpty',
-      'Its aria-labelledby points to a <p> with id "l" that holds no text, so it gives no text alternative. Put the description in that element, or use aria-label.'
+      'Its aria-labelledby points to the <p> element with id "l" that holds no text, so it gives no text alternative. Put the description in that element, or use aria-label.'
     ],
     [
       '<div role="img" aria-label=""></div>',
@@ -214,4 +217,20 @@ test(`${RULE_ID}: the hint names the cause the markup shows`, () => {
     fr.hint,
     'Il a alt="Graphique", mais alt ne nomme qu’une <img>, une <area> ou un <input type="image">, pas un élément avec role="img". Placez ce texte dans aria-label.'
   );
+});
+
+// The occurrences a body gives, in English or in the locale asked.
+function messagesOf(body, locale) {
+  const result = runa11yCoreOnHtml(
+    `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`,
+    { ...RUN, ...(locale ? { engineOptions: { locale } } : {}) }
+  );
+  return result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+}
+
+test(`${RULE_ID}: a title alone is quoted`, () => {
+  const [occ] = messagesOf('<div role="img" title="Graph"></div>');
+  assert.equal(occ.data.details.reasonCode, 'titleOnly');
+  assert.equal(occ.i18n.hintKey, 'roleImgAriaName_hint_fail_titleOnly');
+  assert.match(occ.hint, /^Its title "Graph" does not count as a text alternative here/);
 });

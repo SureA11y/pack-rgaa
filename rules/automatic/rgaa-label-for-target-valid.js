@@ -213,16 +213,27 @@ function runInPage(ctx) {
         key: 'labelForTargetValid_summary_fail_missing'
       },
       notLabelable: {
-        text: `This label points to id "${value}", which belongs to a <${element}>, not a form field.`,
+        text: `This label points to id "${value}", which belongs to the <${element}> element, not to a form field.`,
         key: 'labelForTargetValid_summary_fail_notLabelable'
       }
     };
 
     // The field the label likely means, named in the hint.
     const meant = reasonCode === 'emptyFor' ? null : meantField(label, value, target);
+    // A wrapper that holds several fields: their ids, for the hint.
+    const several =
+      !meant && reasonCode === 'notLabelable' && target
+        ? fieldsIn(target).map((n) => String(dom.getAttribute(n, 'id')))
+        : [];
+    const fields =
+      several.length > 1
+        ? several.slice(0, 5).join(' | ') + (several.length > 5 ? ' | …' : '')
+        : '';
     const hint = meant
       ? `Did you mean "${meant.id}"? It is the id of the <${meant.element}> field${meant.inside ? ` inside that <${element}>` : ''}. Set the for attribute to it, exactly as written, case included.`
-      : 'Set the for attribute to the id of the field this label names, or remove it and put the field inside the label.';
+      : fields
+        ? `That <${element}> holds several fields, with the ids "${fields}". Set the for attribute to the id of the one this label names, exactly as written, or give each field a label of its own.`
+        : 'Set the for attribute to the id of the field this label names, or remove it and put the field inside the label.';
 
     occurrences.push(
       helpers.reportOccurrence(label, {
@@ -232,7 +243,9 @@ function runInPage(ctx) {
           summaryKey: summaries[reasonCode].key,
           hintKey: meant
             ? 'labelForTargetValid_hint_fail_suggest'
-            : 'labelForTargetValid_hint_fail',
+            : fields
+              ? 'labelForTargetValid_hint_fail_severalFields'
+              : 'labelForTargetValid_hint_fail',
           params: meant
             ? {
                 value,
@@ -241,14 +254,17 @@ function runInPage(ctx) {
                 suggestionElement: meant.element,
                 inside: meant.inside
               }
-            : { value, element }
+            : fields
+              ? { value, element, fields }
+              : { value, element }
         },
         data: {
           details: {
             reasonCode,
             value,
             target: element || null,
-            ...(meant ? { suggestion: meant.id } : {})
+            ...(meant ? { suggestion: meant.id } : {}),
+            ...(fields ? { fields: several.slice(0, 20) } : {})
           },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }

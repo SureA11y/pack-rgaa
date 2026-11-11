@@ -158,17 +158,49 @@ function runInPage(ctx) {
       continue;
     }
 
+    // Optimal string alignment distance: a transposition counts as one edit.
+    const distance = (a, b) => {
+      const d = [];
+      for (let i = 0; i <= a.length; i++) d.push([i]);
+      for (let j = 1; j <= b.length; j++) d[0][j] = j;
+      for (let i = 1; i <= a.length; i++) {
+        for (let j = 1; j <= b.length; j++) {
+          const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+          d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+          if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+            d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+          }
+        }
+      }
+      return d[a.length][b.length];
+    };
+    // An unknown kind written close to captions: caption, captoins, cc.
+    const bare = invalid.length
+      ? String(invalid[0])
+          .toLowerCase()
+          .replace(/[^a-z]/g, '')
+      : '';
+    const meantCaptions =
+      !!bare &&
+      (bare.slice(0, 7) === 'caption' ||
+        bare === 'cc' ||
+        bare === 'closedcaptions' ||
+        distance(bare, 'captions') <= 2);
     occurrences.push(
       helpers.reportOccurrence(video, {
         summary: invalid.length
           ? `This video has a text track with kind="${invalid[0]}", which HTML does not know, so it is never shown; none has kind="captions".`
           : 'This video has text tracks, but none with kind="captions".',
-        hint: 'Mark the track that carries the captions with kind="captions".',
+        hint: meantCaptions
+          ? 'Did you mean kind="captions"? Write that value, exactly, on the track that carries the captions.'
+          : 'Mark the track that carries the captions with kind="captions".',
         i18n: {
           summaryKey: invalid.length
             ? 'videoCaptionsTrackKind_summary_fail_invalidKind'
             : 'videoCaptionsTrackKind_summary_fail',
-          hintKey: 'videoCaptionsTrackKind_hint_fail',
+          hintKey: meantCaptions
+            ? 'videoCaptionsTrackKind_hint_fail_suggest'
+            : 'videoCaptionsTrackKind_hint_fail',
           params: invalid.length ? { kind: invalid[0] } : {}
         },
         data: {

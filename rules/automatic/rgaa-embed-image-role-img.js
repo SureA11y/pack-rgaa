@@ -254,7 +254,7 @@ function runInPage(ctx) {
       cantTells.push(
         helpers.reportOccurrence(el, {
           summary: `This embedded image has a text alternative (${source}) but no role="img".`,
-          hint: 'RGAA 1.1.7 asks for a text alternative and role="img". Add role="img" if the image carries information, or aria-hidden="true" in place of the alternative if it is decorative.',
+          hint: 'RGAA 1.1.7 asks for a text alternative and role="img". Add role="img", or check that the alternative is rendered by assistive technologies.',
           i18n: {
             summaryKey: 'embedImageRoleImg_summary_cantTell_noRole',
             hintKey: 'embedImageRoleImg_hint_cantTell_noRole',

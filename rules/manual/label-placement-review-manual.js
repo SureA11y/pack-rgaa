@@ -411,20 +411,60 @@ function runInPage(ctx) {
     dirsByForm.set(it.form, dirs);
   }
 
+  // The side of the field the label is on, by the axis with the larger
+  // gap: 'above', 'below', 'left' or 'right'; '' when the boxes overlap.
+  function sideOf(L, F) {
+    const vertical =
+      L.bottom <= F.top ? F.top - L.bottom : L.top >= F.bottom ? L.top - F.bottom : -1;
+    const horizontal =
+      L.right <= F.left ? F.left - L.right : L.left >= F.right ? L.left - F.right : -1;
+    if (vertical < 0 && horizontal < 0) {
+      // Overlapping boxes: the side of the label's center.
+      const cx = (L.left + L.right) / 2 - (F.left + F.right) / 2;
+      const cy = (L.top + L.bottom) / 2 - (F.top + F.bottom) / 2;
+      if (Math.abs(cx) >= Math.abs(cy)) return cx < 0 ? 'left' : cx > 0 ? 'right' : '';
+      return cy < 0 ? 'above' : 'below';
+    }
+    if (vertical >= horizontal) return L.bottom <= F.top ? 'above' : 'below';
+    return L.right <= F.left ? 'left' : 'right';
+  }
+
   const occurrences = [];
   function report(it, code, label, extra) {
     const params = { label: label.text.slice(0, 80), ...extra };
+    // Where the label is, for the questions about its side.
+    const side = code === 'labelFarFromField' ? '' : sideOf(label.box, it.F);
+    if (side) {
+      params.distance = gapOf(label.box, it.F);
+      params[side] = true;
+    }
+    const SIDE_TEXT = {
+      above: 'above this field',
+      below: 'below this field',
+      left: 'to the left of this field',
+      right: 'to the right of this field'
+    };
+    const SIDE_CHOICE_TEXT = {
+      above: 'above this check box, radio button or switch',
+      below: 'below this check box, radio button or switch',
+      left: 'to the left of this check box, radio button or switch',
+      right: 'to the right of this check box, radio button or switch'
+    };
     const MESSAGES = {
       labelFarFromField: [
         `The label "${params.label}" is ${params.distance} px away from this field.`,
         'Check that the label and its field are close enough for their relation to be clear (RGAA 11.4.1).'
       ],
       labelNotAboveOrLeft: [
-        `The label "${params.label}" is neither just above this field nor just before it on the same line.`,
+        side
+          ? `The label "${params.label}" is ${SIDE_TEXT[side]}, ${params.distance} px away, not just above it or before it on the same line.`
+          : `The label "${params.label}" is neither just above this field nor just before it on the same line.`,
         'Check that the label sits immediately above the field or on its left (on its right for a right-to-left language), unless a particular case applies (RGAA 11.4.2).'
       ],
       labelNotBelowOrRight: [
-        `The label "${params.label}" is neither just below this check box, radio button or switch nor just after it on the same line.`,
+        side
+          ? `The label "${params.label}" is ${SIDE_CHOICE_TEXT[side]}, ${params.distance} px away, not just below it or after it on the same line.`
+          : `The label "${params.label}" is neither just below this check box, radio button or switch nor just after it on the same line.`,
         'Check that the label sits immediately below the field or on its right (on its left for a right-to-left language), unless a particular case applies, such as a field not shown as a check box or radio button (RGAA 11.4.3).'
       ]
     };
@@ -433,7 +473,7 @@ function runInPage(ctx) {
         summary: MESSAGES[code][0],
         hint: MESSAGES[code][1],
         i18n: {
-          summaryKey: `labelPlacementReview_summary_cantTell_${code}`,
+          summaryKey: `labelPlacementReview_summary_cantTell_${code}${side ? '_side' : ''}`,
           hintKey: `labelPlacementReview_hint_cantTell_${code}`,
           params
         },
@@ -442,7 +482,14 @@ function runInPage(ctx) {
           needed: 'Whether the label and its field are next to each other as RGAA 11.4 asks.'
         },
         data: {
-          details: { reasonCode: code, ...params, kind: it.kind, direction: label.dir },
+          details: {
+            reasonCode: code,
+            label: params.label,
+            ...(params.distance != null ? { distance: params.distance } : {}),
+            ...(side ? { side } : {}),
+            kind: it.kind,
+            direction: label.dir
+          },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })

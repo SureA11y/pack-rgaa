@@ -151,16 +151,31 @@ function runInPage(ctx) {
     const scope = scopeOf(el);
 
     if (scope !== 'row' && scope !== 'col') {
+      // A value written close to row or col (column, rows, colonne), but not
+      // rowgroup or colgroup, which the generic hint covers.
+      const bare = scope.replace(/[^a-z]/g, '');
+      const meant = /^(col(s|umns?|onnes?)?|colum|cl|coll|clo|ocl)$/.test(bare)
+        ? 'col'
+        : /^(rows?|lignes?|rwo|raw|ro|rw|orw)$/.test(bare)
+          ? 'row'
+          : '';
       occurrences.push(
         helpers.reportOccurrence(el, {
           summary: `This header has scope="${scope}": RGAA accepts only scope="row" or scope="col".`,
-          hint: 'If the header covers a whole row or column, use scope="row" or scope="col". If it covers only part of one, remove scope, give the <th> a unique id and list that id in the headers attribute of the cells it covers.',
+          hint: meant
+            ? `Did you mean scope="${meant}"? Use it if the header covers a whole ${meant === 'col' ? 'column' : 'row'}. If it covers only part of one, remove scope, give the <th> a unique id and list that id in the headers attribute of the cells it covers.`
+            : 'If the header covers a whole row or column, use scope="row" or scope="col". If it covers only part of one, remove scope, give the <th> a unique id and list that id in the headers attribute of the cells it covers.',
           i18n: {
             summaryKey: 'thScopeRowCol_summary_fail_otherScope',
-            hintKey: 'thScopeRowCol_hint_fail_otherScope',
+            hintKey: meant
+              ? `thScopeRowCol_hint_fail_otherScope_${meant}`
+              : 'thScopeRowCol_hint_fail_otherScope',
             params: { scope }
           },
-          data: { details: { reasonCode: 'otherScope', scope }, visibilityFilter: VF }
+          data: {
+            details: { reasonCode: 'otherScope', scope, ...(meant ? { suggestion: meant } : {}) },
+            visibilityFilter: VF
+          }
         })
       );
       continue;

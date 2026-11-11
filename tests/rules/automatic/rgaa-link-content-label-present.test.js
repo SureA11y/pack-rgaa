@@ -279,17 +279,17 @@ test(`${RULE_ID}: the hint names the cause the markup shows`, () => {
     [
       '<a href="/"><span style="display:none">Accueil</span></a>',
       'hiddenText',
-      'Its text "Accueil" is in a <span> with display: none, which hides it from screen readers as well as from view, so the link has no label. Let screen readers read it (a visually-hidden class keeps it off screen but read).'
+      'Its text "Accueil" is in the <span> element with display: none, which hides it from screen readers as well as from view, so the link has no label. Let screen readers read it (a visually-hidden class keeps it off screen but read).'
     ],
     [
       '<a href="/"><span aria-hidden="true">Accueil</span></a>',
       'ariaHiddenText',
-      'Its text "Accueil" is in a <span> with aria-hidden="true", which hides it from screen readers, so the link has no label. Remove aria-hidden from that element.'
+      'Its text "Accueil" is in the <span> element with aria-hidden="true", which hides it from screen readers, so the link has no label. Remove aria-hidden from that element.'
     ],
     [
       '<a href="/"><img src="i.png"></a>',
       'imageNoAlt',
-      'Its content is an <img> with no text alternative, so the link has no label. Give the image a text alternative that says where the link goes.'
+      'Its content is the <img> element, with no text alternative, so the link has no label. Give the image a text alternative that says where the link goes.'
     ],
     [
       '<a href="/"><svg><path d="M0 0h1"/></svg></a>',
@@ -314,11 +314,11 @@ test(`${RULE_ID}: the question names the content that is not plain text`, () => 
   const summaries = [
     [
       '<a href="/aide" aria-label="Aide"><span aria-hidden="true">?</span></a>',
-      'This link\'s text "?" is in a <span> with aria-hidden="true", so assistive technologies read only its aria-label, not text between <a> and </a>.'
+      'This link\'s text "?" is in the <span> element with aria-hidden="true", so assistive technologies read only its aria-label, not text between <a> and </a>.'
     ],
     [
       '<a href="/"><span aria-label="Accueil"></span></a>',
-      'This link has no text of its own: its only label is the aria-label "Accueil" of a <span> inside it.'
+      'This link has no text of its own: its only label is the aria-label "Accueil" of the <span> element inside it.'
     ],
     [
       '<a href="/"><video src="v.mp4"></video></a>',
@@ -335,6 +335,6 @@ test(`${RULE_ID}: the question names the content that is not plain text`, () => 
   );
   assert.equal(
     fr.occurrences[0].summary,
-    'Ce lien n’a pas de texte propre : son seul intitulé est l’attribut aria-label « Accueil » d’un <span> placé à l’intérieur.'
+    'Ce lien n’a pas de texte propre : son seul intitulé est l’attribut aria-label « Accueil » d’un élément <span> placé à l’intérieur.'
   );
 });

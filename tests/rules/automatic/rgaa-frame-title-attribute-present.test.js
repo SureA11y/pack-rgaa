@@ -209,3 +209,19 @@ test(`${RULE_ID}: the hint names a misspelled title or an ARIA name`, () => {
     assert.equal(occ.hint, hint, body);
   }
 });
+
+// The occurrences a body gives, in English or in the locale asked.
+function messagesOf(body, locale) {
+  const result = runa11yCoreOnHtml(
+    `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`,
+    { ...RUN, ...(locale ? { engineOptions: { locale } } : {}) }
+  );
+  return result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+}
+
+test(`${RULE_ID}: an empty title beside an aria-label names that text`, () => {
+  const [occ] = messagesOf('<iframe src="a.html" title="" aria-label="Map"></iframe>');
+  assert.equal(occ.data.details.reasonCode, 'emptyTitle');
+  assert.equal(occ.i18n.hintKey, 'frameTitleAttributePresent_hint_empty_ariaLabel');
+  assert.match(occ.hint, /^Its aria-label holds "Map"/);
+});

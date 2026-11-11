@@ -141,3 +141,25 @@ test(`${RULE_ID}: an alt of only spaces fails with its own message, and a spacer
   assert.ok(!images || images.outcome !== 'fail', images && images.outcome);
   assert.equal(rollup(result, 'rgaa-4.1.2-1.2').outcome, 'fail');
 });
+
+// The occurrences a body gives, in English or in the locale asked.
+function messagesOf(body, locale) {
+  const result = runa11yCoreOnHtml(
+    `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`,
+    { ...RUN, ...(locale ? { engineOptions: { locale } } : {}) }
+  );
+  return result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+}
+
+test(`${RULE_ID}: a misspelled alt is named in the hint`, () => {
+  const [occ] = messagesOf('<img src="a.png" atl="Logo">');
+  assert.equal(occ.data.details.reasonCode, 'noAltMayBeDecorative');
+  assert.equal(occ.i18n.hintKey, 'imgAltPresent_hint_misspelled');
+  assert.equal(occ.data.details.misspelledAttribute, 'atl');
+  assert.equal(
+    occ.hint,
+    'It has atl="Logo", but browsers do not read atl: did you mean alt? Rename the attribute.'
+  );
+  const [fr] = messagesOf('<img src="a.png" atl="Logo">', 'fr');
+  assert.match(fr.hint, /vouliez-vous écrire alt \?/);
+});

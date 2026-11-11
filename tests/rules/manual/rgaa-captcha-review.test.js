@@ -40,16 +40,20 @@ test(`${RULE_ID}: images marked as CAPTCHAs are asked about`, () => {
 });
 
 test(`${RULE_ID}: reCAPTCHA and hCaptcha widgets are asked about once`, () => {
-  for (const [body, service] of [
+  for (const [body, service, attribute, match] of [
     [
       '<div class="g-recaptcha" data-sitekey="x"><iframe src="https://www.google.com/recaptcha/api2/anchor?k=x" title="reCAPTCHA"></iframe></div>',
-      'reCAPTCHA'
+      'reCAPTCHA',
+      'class',
+      'g-recaptcha'
     ],
     [
       '<iframe src="https://newassets.hcaptcha.com/captcha/v1/x" title="hCaptcha"></iframe>',
-      'hCaptcha'
+      'hCaptcha',
+      'src',
+      'hcaptcha.com/'
     ],
-    ['<div class="h-captcha" data-sitekey="x"></div>', 'hCaptcha']
+    ['<div class="h-captcha" data-sitekey="x"></div>', 'hCaptcha', 'class', 'h-captcha']
   ]) {
     const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'cantTell', {
       minOccurrences: 1,
@@ -57,7 +61,7 @@ test(`${RULE_ID}: reCAPTCHA and hCaptcha widgets are asked about once`, () => {
     });
     assert.deepEqual(
       rule.occurrences[0].data.details,
-      { reasonCode: 'captchaWidget', service },
+      { reasonCode: 'captchaWidget', service, attribute, match },
       body
     );
   }
@@ -84,7 +88,7 @@ test(`${RULE_ID}: messages follow the scan locale; the map links it to 1.4 and 1
   );
   assert.equal(
     rule.occurrences[0].summary,
-    'Cette image semble être un CAPTCHA (alternative : « Image CAPTCHA »).'
+    'Cette image semble être un CAPTCHA : son attribut alt contient « Image CAPTCHA » (alternative : « Image CAPTCHA »).'
   );
   const tests = RGAA_RULE_TESTS['4.1.2'][RULE_ID].tests;
   assert.ok(tests.includes('1.4.1') && tests.includes('1.5.1'));
@@ -107,4 +111,26 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
   const ids = rule.occurrences.map((o) => (o.html.match(/id="([^"]+)"/) || [])[1]);
   // Widgets are read first, then images.
   assert.deepEqual(ids, ['cpr_case_02', 'cpr_case_01']);
+});
+
+// The occurrences a body gives, in English or in the locale asked.
+function messagesOf(body, locale) {
+  const result = runa11yCoreOnHtml(
+    `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`,
+    { ...RUN, ...(locale ? { engineOptions: { locale } } : {}) }
+  );
+  return result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+}
+
+test(`${RULE_ID}: the attribute that matched is named`, () => {
+  const occs = messagesOf(
+    '<div class="g-recaptcha" data-sitekey="x"></div><img src="a.png" alt="Captcha image">'
+  );
+  assert.equal(occs[0].i18n.summaryKey, 'captchaReview_summary_cantTell_captchaWidget_matched');
+  assert.equal(occs[0].summary, 'This is a reCAPTCHA CAPTCHA: its class has "g-recaptcha".');
+  assert.equal(occs[1].i18n.summaryKey, 'captchaReview_summary_cantTell_imageCaptcha_matched');
+  assert.equal(
+    occs[1].summary,
+    'This image looks like a CAPTCHA: its alt has "Captcha image" (alternative: "Captcha image").'
+  );
 });

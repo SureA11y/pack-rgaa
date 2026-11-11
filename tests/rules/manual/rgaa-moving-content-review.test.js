@@ -56,3 +56,23 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
   const ids = rule.occurrences.map((o) => (o.html.match(/id="([^"]+)"/) || [])[1]);
   assert.deepEqual(ids, ['mcr_case_01', 'mcr_case_02']);
 });
+
+// The occurrences a body gives, in English or in the locale asked.
+function messagesOf(body, locale) {
+  const result = runa11yCoreOnHtml(
+    `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`,
+    { ...RUN, ...(locale ? { engineOptions: { locale } } : {}) }
+  );
+  return result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+}
+
+test(`${RULE_ID}: an SVG animation names the attribute it changes`, () => {
+  const [occ] = messagesOf(
+    '<svg width="50" height="50"><circle r="5" cx="10" cy="10"><animate attributeName="r" values="5;10;5" dur="1s" repeatCount="indefinite"/></circle></svg>'
+  );
+  assert.equal(occ.i18n.summaryKey, 'movingContentReview_summary_svgAnimation_attribute');
+  assert.equal(
+    occ.summary,
+    'This SVG animation repeats indefinitely: its <animate> changes the r attribute.'
+  );
+});

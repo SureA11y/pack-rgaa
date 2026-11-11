@@ -356,6 +356,16 @@ function runInPage(ctx) {
     return /^javascript:/i.test(v.slice(i));
   }
 
+  // The element that gave the evidence, as short markup, for the summary:
+  // <script src="app.js">, <my-widget>, <div onclick>, <a href="javascript:…">.
+  let evidenceMarkup = '';
+  const clipValue = (v) => {
+    const t = String(v == null ? '' : v)
+      .replace(/\s+/g, ' ')
+      .trim();
+    return t.length > 40 ? `${t.slice(0, 39)}…` : t;
+  };
+
   // Every element of the document and of each open shadow root inside it.
   function scriptEvidence() {
     const scopes = [document];
@@ -374,16 +384,27 @@ function runInPage(ctx) {
 
         const name = localNameOf(el);
         if (name === 'script') {
-          if (isExecutableScript(el) && !isEngineScript(el)) return 'scriptElement';
+          if (isExecutableScript(el) && !isEngineScript(el)) {
+            const src = clipValue(dom.getAttribute(el, 'src'));
+            evidenceMarkup = src ? `<script src="${src}">` : '<script>';
+            return 'scriptElement';
+          }
           continue;
         }
-        if (name.indexOf('-') !== -1) return 'customElement';
+        if (name.indexOf('-') !== -1) {
+          evidenceMarkup = `<${name}>`;
+          return 'customElement';
+        }
 
         const attrs = dom.attributes(el) || [];
         for (let a = 0; a < attrs.length; a++) {
           const attrName = lower(attrs[a].name);
-          if (isEventHandlerAttr(el, attrName)) return 'inlineHandler';
+          if (isEventHandlerAttr(el, attrName)) {
+            evidenceMarkup = `<${name} ${attrName}>`;
+            return 'inlineHandler';
+          }
           if (URL_ATTRIBUTES.has(attrName) && isJavascriptUrl(attrs[a].value)) {
+            evidenceMarkup = `<${name} ${attrName}="${clipValue(attrs[a].value)}">`;
             return 'javascriptUrl';
           }
         }
@@ -408,16 +429,23 @@ function runInPage(ctx) {
 
   const occurrences = [
     helpers.reportOccurrence(scanRoot, {
-      summary:
-        'Check every scripted component: the engine cannot see behaviour attached from script files, so this check is needed even when no candidate is listed.',
+      summary: evidenceMarkup
+        ? `This page runs script (first sign: ${evidenceMarkup}). Check every scripted component: the engine cannot see behaviour attached from script files, so this check is needed even when no candidate is listed.`
+        : 'Check every scripted component: the engine cannot see behaviour attached from script files, so this check is needed even when no candidate is listed.',
       hint: 'Check that each scripted component exposes its name, role, value, settings and state changes to assistive technologies (RGAA 7.1.1), is correctly rendered by them (7.1.2) and has a relevant name and role, with a name that contains its visible label (7.1.3), or that an accessible alternative exists. The candidates listed with this check come from the markup and are a starting point, not a complete list.',
       i18n: {
-        summaryKey: 'scriptedComponentsReview_summary_cantTell_page',
+        summaryKey: evidenceMarkup
+          ? 'scriptedComponentsReview_summary_cantTell_page_evidence'
+          : 'scriptedComponentsReview_summary_cantTell_page',
         hintKey: 'scriptedComponentsReview_hint_cantTell_page',
-        params: {}
+        params: evidenceMarkup ? { evidence: evidenceMarkup } : {}
       },
       data: {
-        details: { reasonCode: 'pageReview', scriptEvidence: evidence },
+        details: {
+          reasonCode: 'pageReview',
+          scriptEvidence: evidence,
+          ...(evidenceMarkup ? { scriptEvidenceElement: evidenceMarkup } : {})
+        },
         visibilityFilter
       }
     })

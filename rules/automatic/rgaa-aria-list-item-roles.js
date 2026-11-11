@@ -165,18 +165,61 @@ function runInPage(ctx) {
       (liOnly ? 'liWithoutListitemRole' : 'childWithoutListitemRole') +
       (numbered(items) ? 'Ordered' : '');
 
+    // The first child that is not an item, by its tag and role attribute,
+    // and whether that role is listitem misspelled (list-item, listitme).
+    const firstOther = others.find(
+      (c) => !(String(dom.tagName(c)).toLowerCase() === 'li' && !dom.hasAttribute(c, 'role'))
+    );
+    const element = firstOther ? String(dom.tagName(firstOther)).toLowerCase() : '';
+    // eslint-disable-next-line safe-dom/no-raw-role -- the attribute as written, quoted in the message
+    const roleAttr = firstOther ? dom.getAttribute(firstOther, 'role') : '';
+    const rawRole = String(roleAttr || '')
+      .replace(/\s+/g, ' ')
+      .trim();
+    const role = rawRole.length > 40 ? `${rawRole.slice(0, 39)}…` : rawRole;
+    const token = rawRole.toLowerCase().split(' ')[0];
+    const bare = token.replace(/[^a-z]/g, '');
+    let misspelled = false;
+    if (bare && token !== 'listitem') {
+      if (bare === 'listitem' || bare === 'item' || bare === 'li') misspelled = true;
+      else {
+        // Optimal string alignment distance to "listitem".
+        const b = 'listitem';
+        const d = [];
+        for (let i = 0; i <= bare.length; i++) d.push([i]);
+        for (let j = 1; j <= b.length; j++) d[0][j] = j;
+        for (let i = 1; i <= bare.length; i++) {
+          for (let j = 1; j <= b.length; j++) {
+            const cost = bare[i - 1] === b[j - 1] ? 0 : 1;
+            d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+            if (i > 1 && j > 1 && bare[i - 1] === b[j - 2] && bare[i - 2] === b[j - 1]) {
+              d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+            }
+          }
+        }
+        misspelled = d[bare.length][b.length] <= 2;
+      }
+    }
+    const count = others.length;
+    const params = liOnly ? {} : { count, element, ...(role ? { role } : {}) };
+    const tagText = `<${element}${role ? ` role="${role}"` : ''}>`;
+
     occurrences.push(
       helpers.reportOccurrence(el, {
         summary: liOnly
           ? 'This role="list" holds <li> elements without role="listitem".'
-          : 'This role="list" has children without role="listitem".',
-        hint: 'If the content reads as a list, build it with <ul> or <ol> and <li>, or give each item role="listitem".',
+          : `This role="list" has ${count} child element(s) without role="listitem", the first ${tagText}.`,
+        hint: misspelled
+          ? `Its child ${tagText} has no WAI-ARIA role: did you mean role="listitem"? Correct the role of each item, or build the list with <ul> or <ol> and <li>.`
+          : 'If the content reads as a list, build it with <ul> or <ol> and <li>, or give each item role="listitem".',
         i18n: {
           summaryKey: liOnly
             ? 'ariaListItemRoles_summary_cantTell_li'
             : 'ariaListItemRoles_summary_cantTell_other',
-          hintKey: 'ariaListItemRoles_hint_cantTell',
-          params: {}
+          hintKey: misspelled
+            ? 'ariaListItemRoles_hint_cantTell_misspelled'
+            : 'ariaListItemRoles_hint_cantTell',
+          params
         },
         uncertainty: {
           code: 'judgement-required',
@@ -185,7 +228,12 @@ function runInPage(ctx) {
           evidence: { itemsWithoutListitemRole: others.length }
         },
         data: {
-          details: { reasonCode, itemsWithoutListitemRole: others.length, items: items.length },
+          details: {
+            reasonCode,
+            itemsWithoutListitemRole: others.length,
+            items: items.length,
+            ...(liOnly ? {} : { firstChild: element, ...(role ? { firstChildRole: role } : {}) })
+          },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })

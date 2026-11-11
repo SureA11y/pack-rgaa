@@ -102,3 +102,19 @@ test(`${RULE_ID}: the hint names the cause the markup shows`, () => {
     'It has aria-lable="Fermer", but browsers do not read aria-lable: did you mean aria-label? Rename the attribute so that it names the button.'
   );
 });
+
+// The occurrences a body gives, in English or in the locale asked.
+function messagesOf(body, locale) {
+  const result = runa11yCoreOnHtml(
+    `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`,
+    { ...RUN, ...(locale ? { engineOptions: { locale } } : {}) }
+  );
+  return result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+}
+
+test(`${RULE_ID}: an image button with a misspelled alt names it`, () => {
+  const [occ] = messagesOf('<input type="image" src="go.png" atl="Go">');
+  assert.equal(occ.data.details.reasonCode, 'imageButtonNoAlt');
+  assert.equal(occ.i18n.hintKey, 'buttonNameCause_hint_misspelledAttribute');
+  assert.match(occ.hint, /did you mean alt\?/);
+});

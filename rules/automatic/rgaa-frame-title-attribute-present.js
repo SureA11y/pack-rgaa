@@ -143,10 +143,15 @@ function runInPage(ctx) {
     const element = String(dom.tagName(el)).toLowerCase();
     const reasonCode = present ? 'emptyTitle' : 'missingTitle';
     const standIn = present ? null : titleStandIn(el);
+    // An empty title beside an aria-label that holds text: that text is
+    // likely the title meant.
+    const ariaLabel = present ? clip(dom.getAttribute(el, 'aria-label')) : '';
     let hint = present
       ? 'Write in the title what the frame contains, for example the name of the map or video it shows.'
       : 'Add a title attribute that says what the frame contains. aria-label does not replace it.';
-    if (standIn && standIn.kind === 'misspelled') {
+    if (ariaLabel) {
+      hint = `Its aria-label holds "${ariaLabel}", but RGAA 2.1.1 asks for the title attribute, which aria-label does not replace. Copy that text into the title, if it says what the frame contains.`;
+    } else if (standIn && standIn.kind === 'misspelled') {
       hint = `It has ${standIn.attribute}="${standIn.value}", but browsers do not read ${standIn.attribute}: did you mean title? Rename the attribute.`;
     } else if (standIn) {
       hint = `It has ${standIn.attribute}="${standIn.value}", but RGAA 2.1.1 asks for the title attribute, which ${standIn.attribute} does not replace. Add a title that says what the frame contains.`;
@@ -162,13 +167,17 @@ function runInPage(ctx) {
             ? 'frameTitleAttributePresent_summary_empty'
             : 'frameTitleAttributePresent_summary_fail',
           hintKey: present
-            ? 'frameTitleAttributePresent_hint_empty'
+            ? ariaLabel
+              ? 'frameTitleAttributePresent_hint_empty_ariaLabel'
+              : 'frameTitleAttributePresent_hint_empty'
             : standIn
               ? `frameTitleAttributePresent_hint_fail_${standIn.kind}`
               : 'frameTitleAttributePresent_hint_fail',
           params: standIn
             ? { element, attribute: standIn.attribute, value: standIn.value }
-            : { element }
+            : ariaLabel
+              ? { element, value: ariaLabel }
+              : { element }
         },
         data: {
           details: { reasonCode, element },

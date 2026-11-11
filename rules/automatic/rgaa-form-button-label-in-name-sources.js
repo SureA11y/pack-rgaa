@@ -576,7 +576,8 @@ function runInPage(ctx) {
       outcome: 'fail',
       summaryKey: 'formButtonLabelInNameSources_summary_fail_name',
       hintKey: 'formButtonLabelInNameSources_hint_fail_name',
-      summary: 'The accessible name of this button does not contain its visible label.',
+      summary: (p) =>
+        `The accessible name of this button (from ${p.sources}) does not contain its visible label "${p.visibleLabel}".`,
       hint: 'Make the attribute that names the element contain the visible label, ideally at its start, or remove it so the visible text names the element.'
     },
     POSSIBLE_SYMBOL: {
@@ -584,8 +585,8 @@ function runInPage(ctx) {
       outcome: 'cantTell',
       summaryKey: 'formButtonLabelInNameSources_summary_cantTell_symbol',
       hintKey: 'formButtonLabelInNameSources_hint_cantTell_symbol',
-      summary:
-        'The visible label of this button may be a symbol, and a label source does not contain it.',
+      summary: (p) =>
+        `The visible label "${p.visibleLabel}" of this button may be a symbol, and the ${p.sources} does not contain it.`,
       hint: 'If the visible text is a symbol (an icon glyph, "X" for close, ">" for next), check that the name says what the symbol means. If it is literal text, the name must contain it.',
       needed: 'Whether the visible text is a symbol whose function the name expresses.'
     }
@@ -667,13 +668,14 @@ function runInPage(ctx) {
     const msg = MESSAGES[reasonCode] || MESSAGES.NAME_LACKS_VISIBLE_LABEL;
     const sources = reported.map((s) => s.source).join(', ');
 
+    const params = { element: describe(el), visibleLabel: clip(label.text), sources };
     const occurrence = helpers.reportOccurrence(el, {
-      summary: msg.summary,
+      summary: msg.summary(params),
       hint: msg.hint,
       i18n: {
         summaryKey: msg.summaryKey,
         hintKey: msg.hintKey,
-        params: { element: describe(el), visibleLabel: clip(label.text), sources }
+        params
       },
       ...(msg.outcome === 'cantTell' && msg.needed
         ? {

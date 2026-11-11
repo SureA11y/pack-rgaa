@@ -127,3 +127,45 @@ test(`${RULE_ID}: a value that contradicts the input type is asked about`, () =>
     assert.equal(result.checksResults.find((c) => c.ruleId === RULE_ID).outcome, 'pass', body);
   }
 });
+
+// The occurrences a body gives, in English or in the locale asked.
+function messagesOf(body, locale) {
+  const result = runa11yCoreOnHtml(
+    `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`,
+    { ...RUN, ...(locale ? { engineOptions: { locale } } : {}) }
+  );
+  return result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+}
+
+test(`${RULE_ID}: a value close to one of the list names the value meant`, () => {
+  const cases = [
+    ['<label>E-mail <input autocomplete="e-mail"></label>', 'e-mail', 'email', 'email'],
+    [
+      '<label>Code postal <input autocomplete="shipping postcode"></label>',
+      'postcode',
+      'postal-code',
+      'shipping postal-code'
+    ],
+    [
+      '<label>Nom <input autocomplete="famly-name"></label>',
+      'famly-name',
+      'family-name',
+      'family-name'
+    ]
+  ];
+  for (const [body, token, suggestion, suggested] of cases) {
+    const [occ] = messagesOf(body);
+    assert.equal(occ.data.details.reasonCode, 'noFieldName', body);
+    assert.equal(occ.i18n.hintKey, 'autocompleteUserField_hint_cantTell_nearValue');
+    assert.deepEqual(
+      { token: occ.i18n.params.token, suggestion: occ.i18n.params.suggestion },
+      { token, suggestion }
+    );
+    assert.equal(
+      occ.hint,
+      `"${token}" is not a value of the list: did you mean "${suggestion}"? If the field asks for information about the user, write autocomplete="${suggested}".`
+    );
+  }
+  const [none] = messagesOf('<label>Nom <input autocomplete="xyz"></label>');
+  assert.equal(none.i18n.hintKey, 'autocompleteUserField_hint_cantTell');
+});

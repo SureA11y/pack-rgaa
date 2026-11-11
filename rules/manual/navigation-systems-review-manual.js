@@ -198,10 +198,31 @@ function runInPage(ctx) {
     const role = roleOf(el);
     return !inert(el) && (role === 'navigation' || (tagOf(el) === 'nav' && !role));
   });
+  // The element as a short tag: <nav class="footer-links">, for the hint.
+  const clip = (v, max) => {
+    const t = norm(v);
+    return t.length > max ? `${t.slice(0, max - 1)}…` : t;
+  };
+  const shortTag = (el) => {
+    const tag = tagOf(el);
+    for (const name of ['id', 'name', 'class', 'aria-label', 'role']) {
+      const v = clip(attr(el, name), 40);
+      if (v) return `<${tag} ${name}="${v}">`;
+    }
+    return `<${tag}>`;
+  };
+  // The first navigation region not counted as a menu, and why.
+  let skippedNav = null;
   let menu = navCandidates.some((el) => {
-    if (NOT_MENU.test(named(el)) || inFooter(el)) return false;
+    const notMenu = NOT_MENU.exec(named(el));
     const ls = links(el);
-    return ls.length >= 3 && !ls.every(isInPage);
+    let why = null;
+    if (notMenu) why = { reason: 'notMenu', word: clip(notMenu[0], 30) };
+    else if (inFooter(el)) why = { reason: 'inFooter' };
+    else if (ls.length < 3) why = { reason: 'fewLinks', count: ls.length };
+    else if (ls.every(isInPage)) why = { reason: 'inPageOnly' };
+    if (why && !skippedNav) skippedNav = { nav: shortTag(el), ...why };
+    return !why;
   });
   if (!menu) {
     const headers = all(body, 'header, [role~="banner" i]').filter(
@@ -280,6 +301,18 @@ function runInPage(ctx) {
     }
     return fields.some(searchField);
   });
+  // A field that looks like a search field outside any form or search
+  // region, which is not counted.
+  let skippedSearch = null;
+  if (!search) {
+    const loose = all(body, 'input').find(
+      (f) =>
+        !inert(f) &&
+        searchField(f) &&
+        !ancestorIs(f, (a) => tagOf(a) === 'form' || roleOf(a) === 'search')
+    );
+    if (loose) skippedSearch = { field: shortTag(loose) };
+  }
   if (!search) {
     // Indirect access: a link to a search page, or a button that opens the form.
     const SEARCH_LABEL = /^(?:rechercher|recherche|search)\b/i;
@@ -305,6 +338,28 @@ function runInPage(ctx) {
     search: 'This page shows a search engine, but no navigation menu or site map link.'
   };
 
+  // What the page has that was not counted, named before the generic hint.
+  const BASE_HINT =
+    'Check that the set of pages this page belongs to offers two of a navigation menu, a site map and a search engine (RGAA 12.1). The criterion does not apply to a site of very few pages, all reachable from the home page, nor to a step of a process such as a payment.';
+  const skipped =
+    !menu && skippedNav ? skippedNav : !search && skippedSearch ? skippedSearch : null;
+  const skippedReason = skipped ? (skipped.field ? 'search' : skipped.reason) : '';
+  const SKIPPED = {
+    notMenu: (p) =>
+      `The ${p.nav} reads as a breadcrumb or pagination ("${p.word}"), so it is not counted as a navigation menu.`,
+    inFooter: (p) =>
+      `The ${p.nav} is in the page footer, so it is not counted as a navigation menu.`,
+    fewLinks: (p) =>
+      `The ${p.nav} has ${p.count} link(s), fewer than 3, so it is not counted as a navigation menu.`,
+    inPageOnly: (p) =>
+      `The ${p.nav} has only links within the page, so it is not counted as a navigation menu.`,
+    search: (p) =>
+      `The ${p.field} looks like a search field, but is in no <form> and no role="search" region, so it is not counted as a search engine.`
+  };
+  const skippedParams = skipped
+    ? Object.fromEntries(Object.entries(skipped).filter(([k]) => k !== 'reason'))
+    : {};
+
   return {
     ruleId: rule.ruleId,
     outcome: 'cantTell',
@@ -312,11 +367,13 @@ function runInPage(ctx) {
     occurrences: [
       helpers.reportOccurrence(body, {
         summary: SUMMARY[kind],
-        hint: 'Check that the set of pages this page belongs to offers two of a navigation menu, a site map and a search engine (RGAA 12.1). The criterion does not apply to a site of very few pages, all reachable from the home page, nor to a step of a process such as a payment.',
+        hint: skipped ? `${SKIPPED[skippedReason](skipped)} ${BASE_HINT}` : BASE_HINT,
         i18n: {
           summaryKey: `navigationSystemsReview_summary_cantTell_${kind}`,
-          hintKey: 'navigationSystemsReview_hint_cantTell',
-          params: {}
+          hintKey: skipped
+            ? `navigationSystemsReview_hint_cantTell_skipped_${skippedReason}`
+            : 'navigationSystemsReview_hint_cantTell',
+          params: skippedParams
         },
         uncertainty: {
           code: 'judgement-required',
@@ -324,7 +381,11 @@ function runInPage(ctx) {
             'Whether the set of pages offers two navigation systems, and whether the site has very few pages.'
         },
         data: {
-          details: { reasonCode: 'fewerThanTwoSystems', found: found.join(',') },
+          details: {
+            reasonCode: 'fewerThanTwoSystems',
+            found: found.join(','),
+            ...(skipped ? { notCounted: { reason: skippedReason, ...skippedParams } } : {})
+          },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })

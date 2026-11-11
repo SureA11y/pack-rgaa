@@ -36,7 +36,7 @@ test(`${RULE_ID}: known players are asked about`, () => {
     });
     assert.deepEqual(
       rule.occurrences[0].data.details,
-      { reasonCode: 'embeddedPlayer', service },
+      { reasonCode: 'embeddedPlayer', service, title: 'Vidéo' },
       src
     );
   }
@@ -96,7 +96,10 @@ test(`${RULE_ID}: messages follow the scan locale; RGAA 4.1 asks under the profi
     RULE_ID,
     'cantTell'
   );
-  assert.equal(rule.occurrences[0].summary, 'Ce lecteur Vimeo affiche un média.');
+  assert.equal(
+    rule.occurrences[0].summary,
+    'Ce lecteur Vimeo, intitulé « Vidéo », affiche un média.'
+  );
   const r = runa11yCoreOnHtml(html, RGAA).rulesResults.find((x) => x.ruleId === 'rgaa-4.1.2-4.1');
   assert.equal(r.outcome, 'cantTell');
 });
@@ -107,4 +110,21 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
   const rule = assertRule(result, RULE_ID, 'cantTell', { minOccurrences: 2, maxOccurrences: 2 });
   const ids = rule.occurrences.map((o) => (o.html.match(/id="([^"]+)"/) || [])[1]);
   assert.deepEqual(ids, ['epr_case_01', 'epr_case_02']);
+});
+
+// The occurrences a body gives, in English or in the locale asked.
+function messagesOf(body, locale) {
+  const result = runa11yCoreOnHtml(
+    `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`,
+    { ...RUN, ...(locale ? { engineOptions: { locale } } : {}) }
+  );
+  return result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+}
+
+test(`${RULE_ID}: the player's title is quoted`, () => {
+  const [occ] = messagesOf(
+    '<iframe src="https://player.vimeo.com/video/1" title="Our film"></iframe>'
+  );
+  assert.equal(occ.i18n.summaryKey, 'embeddedPlayerReview_summary_cantTell_embeddedPlayer_titled');
+  assert.equal(occ.summary, 'This Vimeo player titled "Our film" shows a media.');
 });

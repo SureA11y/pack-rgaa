@@ -26,11 +26,16 @@ test(`${RULE_ID}: lines split by <br> starting with the same bullet are flagged 
     maxOccurrences: 1
   });
   const occ = rule.occurrences[0];
-  assert.deepEqual(occ.data.details, { reasonCode: 'unorderedListAsText', items: 3 });
-  assert.equal(occ.i18n.summaryKey, 'fakeList_summary_cantTell_unordered');
+  assert.deepEqual(occ.data.details, {
+    reasonCode: 'unorderedListAsText',
+    items: 3,
+    marker: '•',
+    first: 'Apples'
+  });
+  assert.equal(occ.i18n.summaryKey, 'fakeList_summary_cantTell_unordered_marker');
   assert.equal(
     occ.summary,
-    'These 3 lines start with the same bullet but are not marked up as a list.'
+    'These 3 lines start with the same bullet, "•", but are not marked up as a list; the first reads "Apples".'
   );
 });
 
@@ -42,7 +47,12 @@ test(`${RULE_ID}: paragraphs with consecutive numbers are flagged as an ordered 
   });
   const occ = rule.occurrences[0];
   assert.match(occ.html, /id="first"/);
-  assert.deepEqual(occ.data.details, { reasonCode: 'orderedListAsText', items: 3 });
+  assert.deepEqual(occ.data.details, {
+    reasonCode: 'orderedListAsText',
+    items: 3,
+    marker: '1)',
+    first: 'Mix'
+  });
   assert.equal(occ.i18n.hintKey, 'fakeList_hint_cantTell_ordered');
 });
 
@@ -89,4 +99,22 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-fake-list-all-scenarios.
   const rule = assertRule(result, RULE_ID, 'cantTell', { minOccurrences: 3, maxOccurrences: 3 });
   const ids = rule.occurrences.map((o) => (o.html.match(/id="([^"]+)"/) || [])[1]);
   assert.deepEqual(ids, ['fkl_case_01', 'fkl_case_02', 'fkl_case_03']);
+});
+
+// The occurrences a body gives, in English or in the locale asked.
+function messagesOf(body, locale) {
+  const result = runa11yCoreOnHtml(
+    `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`,
+    { ...RUN, ...(locale ? { engineOptions: { locale } } : {}) }
+  );
+  return result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+}
+
+test(`${RULE_ID}: the bullet and the first item are quoted`, () => {
+  const [occ] = messagesOf('<p>• Apples<br>• Pears<br>• Plums</p>');
+  assert.equal(occ.i18n.summaryKey, 'fakeList_summary_cantTell_unordered_marker');
+  assert.equal(
+    occ.summary,
+    'These 3 lines start with the same bullet, "•", but are not marked up as a list; the first reads "Apples".'
+  );
 });

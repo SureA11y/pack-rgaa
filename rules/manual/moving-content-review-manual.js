@@ -163,24 +163,29 @@ function runInPage(ctx) {
 
   const occurrences = [];
   const seen = new Set();
-  function report(el, kind) {
+  // extra: { element, attribute } of an SVG animation that names the
+  // attribute it changes, for the summary.
+  function report(el, kind, extra) {
     if (!el || seen.has(el)) return;
     seen.add(el);
+    const params = extra || {};
     occurrences.push(
       helpers.reportOccurrence(el, {
-        summary: SUMMARY[kind],
+        summary: extra
+          ? `This SVG animation repeats indefinitely: its <${extra.element}> changes the ${extra.attribute} attribute.`
+          : SUMMARY[kind],
         hint: HINT,
         i18n: {
-          summaryKey: `movingContentReview_summary_${kind}`,
+          summaryKey: `movingContentReview_summary_${kind}${extra ? '_attribute' : ''}`,
           hintKey: 'movingContentReview_hint_cantTell',
-          params: {}
+          params
         },
         uncertainty: {
           code: 'judgement-required',
           needed: 'Whether the user can stop, hide or do without the movement.'
         },
         data: {
-          details: { reasonCode: kind },
+          details: { reasonCode: kind, ...params },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })
@@ -202,7 +207,15 @@ function runInPage(ctx) {
     if (attr(el, 'repeatCount').toLowerCase() !== 'indefinite') continue;
     const svg = dom.closest(el, 'svg') || dom.parentElement(el);
     if (!svg || !visible(svg)) continue;
-    report(svg, 'svgAnimation');
+    const changed = String(attr(el, 'attributeName') || '')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 40);
+    report(
+      svg,
+      'svgAnimation',
+      changed ? { element: String(dom.localName(el) || dom.tagName(el)), attribute: changed } : null
+    );
   }
 
   // Animations, where the page has a layout to run them. The engine moves

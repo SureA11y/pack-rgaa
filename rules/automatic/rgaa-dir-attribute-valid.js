@@ -162,21 +162,58 @@ function runInPage(ctx) {
       );
       continue;
     }
+    // Optimal string alignment distance: a transposition counts as one edit.
+    const distance = (a, b) => {
+      const d = [];
+      for (let i = 0; i <= a.length; i++) d.push([i]);
+      for (let j = 1; j <= b.length; j++) d[0][j] = j;
+      for (let i = 1; i <= a.length; i++) {
+        for (let j = 1; j <= b.length; j++) {
+          const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+          d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+          if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+            d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+          }
+        }
+      }
+      return d[a.length][b.length];
+    };
+    // The value meant, for a misspelled one: rlt, right, left-to-right.
+    const bare = isAuto
+      ? ''
+      : String(raw)
+          .toLowerCase()
+          .replace(/[^a-z]/g, '');
+    let meant = '';
+    if (/^(right(toleft)?|droite)$/.test(bare)) meant = 'rtl';
+    else if (/^(left(toright)?|gauche)$/.test(bare)) meant = 'ltr';
+    else if (bare) {
+      const toRtl = distance(bare, 'rtl');
+      const toLtr = distance(bare, 'ltr');
+      if (toRtl <= 1 && toRtl < toLtr) meant = 'rtl';
+      else if (toLtr <= 1 && toLtr < toRtl) meant = 'ltr';
+    }
     occurrences.push(
       helpers.reportOccurrence(el, {
         summary: isAuto
           ? 'This element uses dir="auto"; RGAA accepts only ltr or rtl.'
           : `This element has dir="${raw}", which is neither ltr nor rtl.`,
-        hint: 'Set dir to ltr (left to right) or rtl (right to left), whichever the text reads in.',
+        hint: meant
+          ? `Did you mean dir="${meant}"? Set dir to ltr (left to right) or rtl (right to left), whichever the text reads in.`
+          : 'Set dir to ltr (left to right) or rtl (right to left), whichever the text reads in.',
         i18n: {
           summaryKey: isAuto
             ? 'dirAttributeValid_summary_fail_auto'
             : 'dirAttributeValid_summary_fail_invalid',
-          hintKey: 'dirAttributeValid_hint_fail',
-          params: { value: raw }
+          hintKey: meant ? 'dirAttributeValid_hint_fail_suggest' : 'dirAttributeValid_hint_fail',
+          params: meant ? { value: raw, suggestion: meant } : { value: raw }
         },
         data: {
-          details: { reasonCode: isAuto ? 'autoDir' : 'invalidDir', value: raw },
+          details: {
+            reasonCode: isAuto ? 'autoDir' : 'invalidDir',
+            value: raw,
+            ...(meant ? { suggestion: meant } : {})
+          },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })

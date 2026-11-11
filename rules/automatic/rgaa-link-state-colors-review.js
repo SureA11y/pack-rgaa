@@ -612,8 +612,8 @@ function runInPage(ctx) {
     STATE_COLOR_CHANGE: {
       reasonCode: 'STATE_COLOR_CHANGE',
       summaryKey: 'linkStateColorsReview_summary_cantTell_stateColor',
-      summary:
-        'This link in a run of text is shown only by its color, and a style rule changes that color in some of its states.',
+      summary: (p) =>
+        `This link in a run of text is shown only by its color, and a style rule changes that color in these states: ${p.states}.`,
       needed: 'Whether the link color in each listed state contrasts 3:1 with the surrounding text.'
     },
     BROWSER_STATE_COLORS: {

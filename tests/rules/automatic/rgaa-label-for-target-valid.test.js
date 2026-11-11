@@ -159,3 +159,30 @@ test(`${RULE_ID}: the hint names the id the label likely means`, () => {
   ).occurrences[0];
   assert.equal(none.i18n.hintKey, 'labelForTargetValid_hint_fail');
 });
+
+// The occurrences a body gives, in English or in the locale asked.
+function messagesOf(body, locale) {
+  const result = runa11yCoreOnHtml(
+    `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`,
+    { ...RUN, ...(locale ? { engineOptions: { locale } } : {}) }
+  );
+  return result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+}
+
+test(`${RULE_ID}: a wrapper of several fields names their ids`, () => {
+  const [occ] = messagesOf(
+    '<label for="g">Date</label><div id="g" role="group"><input id="d"><input id="m"><input id="y"></div>'
+  );
+  assert.equal(occ.data.details.reasonCode, 'notLabelable');
+  assert.equal(occ.i18n.hintKey, 'labelForTargetValid_hint_fail_severalFields');
+  assert.equal(
+    occ.summary,
+    'This label points to id "g", which belongs to the <div> element, not to a form field.'
+  );
+  assert.match(occ.hint, /^That <div> holds several fields, with the ids "d \| m \| y"\./);
+  const [fr] = messagesOf(
+    '<label for="g">Date</label><div id="g"><input id="d"><input id="m"></div>',
+    'fr'
+  );
+  assert.match(fr.summary, /appartient à un élément <div>/);
+});

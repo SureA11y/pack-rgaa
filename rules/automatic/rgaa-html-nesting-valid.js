@@ -150,7 +150,7 @@ function runInPage(ctx) {
   const TEXTS = {
     listChild: [
       (p) =>
-        `This <${p.element}> is a direct child of a <${p.parent}>, which may only hold <li>, <script> and <template>.`,
+        `This <${p.element}> is a direct child of the <${p.parent}> element, which may only hold <li>, <script> and <template>.`,
       'Wrap the content in an <li>, or move it out of the list.'
     ],
     listText: [
@@ -158,7 +158,7 @@ function runInPage(ctx) {
       'Put the text in an <li>, or move it out of the list.'
     ],
     listItemParent: [
-      (p) => `This <li> is inside a <${p.parent}>, not a <ul>, <ol> or <menu>.`,
+      (p) => `This <li> is inside the <${p.parent}> element, not in a <ul>, <ol> or <menu>.`,
       'Put list items in a <ul>, <ol> or <menu>. A role on the parent does not make it a list for HTML.'
     ],
     dlChild: [
@@ -181,7 +181,7 @@ function runInPage(ctx) {
     ],
     dlItemParent: [
       (p) =>
-        `This <${p.element}> is inside a <${p.parent}>, not a <dl> or a <div> child of a <dl>.`,
+        `This <${p.element}> is inside the <${p.parent}> element, not in a <dl> or in a <div> child of a <dl>.`,
       'Put <dt> and <dd> elements in a <dl>.'
     ],
     interactiveDescendant: [
@@ -194,7 +194,7 @@ function runInPage(ctx) {
     ],
     flowInPhrasing: [
       (p) =>
-        `This <${p.element}> is inside a <${p.parent}>, which may only hold phrasing content such as text, <span> or <img>.`,
+        `This <${p.element}> is inside the <${p.parent}> element, which may only hold phrasing content such as text, <span> or <img>.`,
       'Use a phrasing element such as <span> inside it, or move the block out of it.'
     ],
     ismapOutsideLink: [
