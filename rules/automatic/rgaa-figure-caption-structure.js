@@ -130,6 +130,7 @@ function runInPage(ctx) {
 
     const role = helpers.aria.getExplicitRole(figure);
     const label = collapse(dom.getAttribute(figure, 'aria-label'));
+    const clip = (t) => (t.length > 120 ? `${t.slice(0, 119)}…` : t);
 
     const reasons = [];
     if (role !== 'figure' && role !== 'group') reasons.push('missingRole');
@@ -148,19 +149,24 @@ function runInPage(ctx) {
         'figureCaptionStructure_summary_fail_label'
       ],
       ariaLabelMismatch: [
-        "This figure's aria-label differs from its caption.",
+        `This figure's aria-label, "${clip(label)}", differs from its caption, "${clip(captionText)}".`,
         'figureCaptionStructure_summary_fail_mismatch'
       ]
     };
+    const mismatch = reasonCode === 'ariaLabelMismatch';
 
     occurrences.push(
       helpers.reportOccurrence(figure, {
         summary: texts[reasonCode][0],
-        hint: 'Give the <figure> role="figure" and an aria-label with the same text as its <figcaption>.',
+        hint: mismatch
+          ? `Give the aria-label the caption's text, exactly: aria-label="${clip(captionText)}".`
+          : 'Give the <figure> role="figure" and an aria-label with the same text as its <figcaption>.',
         i18n: {
           summaryKey: texts[reasonCode][1],
-          hintKey: 'figureCaptionStructure_hint_fail',
-          params: {}
+          hintKey: mismatch
+            ? 'figureCaptionStructure_hint_fail_mismatch'
+            : 'figureCaptionStructure_hint_fail',
+          params: mismatch ? { label: clip(label), caption: clip(captionText) } : {}
         },
         data: {
           details: { reasonCode, reasons, imageKind: kind, caption: captionText },

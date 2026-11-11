@@ -137,6 +137,50 @@ function runInPage(ctx) {
     }
   }
 
+  // Optimal string alignment distance: a transposition counts as one edit.
+  function distance(a, b) {
+    const d = [];
+    for (let i = 0; i <= a.length; i++) d.push([i]);
+    for (let j = 1; j <= b.length; j++) d[0][j] = j;
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+        d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+        if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+          d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+        }
+      }
+    }
+    return d[a.length][b.length];
+  }
+
+  // An id of the page close to `ref`: the same once case or a leading # is
+  // set aside, or within two edits (one for a short id, none for one of one
+  // or two characters). '' when there is none.
+  function nearId(el, ref) {
+    let root = null;
+    try {
+      root = dom.getRootNode(el);
+    } catch {}
+    const written = ref.replace(/^#/, '');
+    let best = '';
+    let bestDistance = Infinity;
+    const withId =
+      root && dom.get(root, 'querySelectorAll') ? [...dom.querySelectorAll(root, '[id]')] : [];
+    for (const n of withId) {
+      const candidate = String(attr(n, 'id') || '');
+      if (!candidate) continue;
+      const d =
+        candidate.toLowerCase() === written.toLowerCase() ? 0 : distance(candidate, written);
+      const limit = written.length > 5 ? 2 : written.length > 2 ? 1 : 0;
+      if (d < bestDistance && d <= limit) {
+        best = candidate;
+        bestDistance = d;
+      }
+    }
+    return best;
+  }
+
   const nodes = helpers.queryAllSmart
     ? helpers.queryAllSmart('[aria-describedby]')
     : helpers.queryAll('[aria-describedby]');
@@ -158,16 +202,29 @@ function runInPage(ctx) {
     const value = refs.join(' ');
     const params = { value, missing: missing.join(' ') };
     if (missing.length === refs.length) {
+      // The id the image likely means, when one of the page is close.
+      const suggestion = nearId(el, refs[0]);
       fails.push(
         helpers.reportOccurrence(el, {
           summary: `This image's aria-describedby="${value}" points to no element of the page: it associates no description.`,
-          hint: 'Point aria-describedby at the id of the passage that holds the detailed description, or remove it (RGAA 1.6.9).',
+          hint: suggestion
+            ? `Did you mean "${suggestion}"? An element of the page has that id. Point aria-describedby at it, exactly as written, case included (RGAA 1.6.9).`
+            : 'Point aria-describedby at the id of the passage that holds the detailed description, or remove it (RGAA 1.6.9).',
           i18n: {
             summaryKey: 'imgDescribedbyTarget_summary_fail',
-            hintKey: 'imgDescribedbyTarget_hint_fail',
-            params
+            hintKey: suggestion
+              ? 'imgDescribedbyTarget_hint_fail_suggest'
+              : 'imgDescribedbyTarget_hint_fail',
+            params: suggestion ? { ...params, suggestion } : params
           },
-          data: { details: { reasonCode: 'targetMissing', ...params }, visibilityFilter: VF }
+          data: {
+            details: {
+              reasonCode: 'targetMissing',
+              ...params,
+              ...(suggestion ? { suggestion } : {})
+            },
+            visibilityFilter: VF
+          }
         })
       );
       continue;

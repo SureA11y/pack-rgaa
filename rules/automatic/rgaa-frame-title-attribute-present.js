@@ -80,6 +80,55 @@ function runInPage(ctx) {
     return false;
   }
 
+  // Optimal string alignment distance: a transposition counts as one edit.
+  function distance(a, b) {
+    const d = [];
+    for (let i = 0; i <= a.length; i++) d.push([i]);
+    for (let j = 1; j <= b.length; j++) d[0][j] = j;
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+        d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+        if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+          d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+        }
+      }
+    }
+    return d[a.length][b.length];
+  }
+  const clip = (v) => {
+    const t = String(v == null ? '' : v)
+      .replace(/\s+/g, ' ')
+      .trim();
+    return t.length > 60 ? `${t.slice(0, 59)}…` : t;
+  };
+
+  // What a frame with no title holds in its place, for the hint: an
+  // attribute written close to title (tittle, titel), or an aria-label or
+  // aria-labelledby, which RGAA does not take for the title.
+  const NOT_TITLE = ['style', 'type', 'name', 'tabindex', 'width', 'height'];
+  function titleStandIn(el) {
+    const attrs = dom.attributes(el) || [];
+    for (let i = 0; i < attrs.length; i++) {
+      const name = String(attrs[i].name || '').toLowerCase();
+      const value = clip(attrs[i].value);
+      if (!value || NOT_TITLE.includes(name) || name === 'title') continue;
+      if (distance(name, 'title') <= 1 || name === 'titre') {
+        return { kind: 'misspelled', attribute: name, value };
+      }
+    }
+    const label = clip(dom.getAttribute(el, 'aria-label'));
+    if (label) return { kind: 'ariaName', attribute: 'aria-label', value: label };
+    if (clip(dom.getAttribute(el, 'aria-labelledby'))) {
+      return {
+        kind: 'ariaName',
+        attribute: 'aria-labelledby',
+        value: clip(dom.getAttribute(el, 'aria-labelledby'))
+      };
+    }
+    return null;
+  }
+
   const occurrences = [];
   let applicableCount = 0;
 
@@ -93,22 +142,33 @@ function runInPage(ctx) {
 
     const element = String(dom.tagName(el)).toLowerCase();
     const reasonCode = present ? 'emptyTitle' : 'missingTitle';
+    const standIn = present ? null : titleStandIn(el);
+    let hint = present
+      ? 'Write in the title what the frame contains, for example the name of the map or video it shows.'
+      : 'Add a title attribute that says what the frame contains. aria-label does not replace it.';
+    if (standIn && standIn.kind === 'misspelled') {
+      hint = `It has ${standIn.attribute}="${standIn.value}", but browsers do not read ${standIn.attribute}: did you mean title? Rename the attribute.`;
+    } else if (standIn) {
+      hint = `It has ${standIn.attribute}="${standIn.value}", but RGAA 2.1.1 asks for the title attribute, which ${standIn.attribute} does not replace. Add a title that says what the frame contains.`;
+    }
     occurrences.push(
       helpers.reportOccurrence(el, {
         summary: present
           ? `This <${element}> has an empty title attribute.`
           : `This <${element}> has no title attribute.`,
-        hint: present
-          ? 'Write in the title what the frame contains, for example the name of the map or video it shows.'
-          : 'Add a title attribute that says what the frame contains. aria-label does not replace it.',
+        hint,
         i18n: {
           summaryKey: present
             ? 'frameTitleAttributePresent_summary_empty'
             : 'frameTitleAttributePresent_summary_fail',
           hintKey: present
             ? 'frameTitleAttributePresent_hint_empty'
-            : 'frameTitleAttributePresent_hint_fail',
-          params: { element }
+            : standIn
+              ? `frameTitleAttributePresent_hint_fail_${standIn.kind}`
+              : 'frameTitleAttributePresent_hint_fail',
+          params: standIn
+            ? { element, attribute: standIn.attribute, value: standIn.value }
+            : { element }
         },
         data: {
           details: { reasonCode, element },

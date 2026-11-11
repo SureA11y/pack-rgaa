@@ -188,3 +188,24 @@ test(`${RULE_ID}: a title of only non-breaking spaces is empty`, () => {
   );
   assert.equal(rule.occurrences[0].data.details.reasonCode, 'emptyTitle');
 });
+
+// The hint names what the frame holds in place of a title.
+test(`${RULE_ID}: the hint names a misspelled title or an ARIA name`, () => {
+  for (const [body, hintKey, hint] of [
+    [
+      '<iframe src="a.html" tittle="Carte"></iframe>',
+      'frameTitleAttributePresent_hint_fail_misspelled',
+      'It has tittle="Carte", but browsers do not read tittle: did you mean title? Rename the attribute.'
+    ],
+    [
+      '<iframe src="a.html" aria-label="Carte"></iframe>',
+      'frameTitleAttributePresent_hint_fail_ariaName',
+      'It has aria-label="Carte", but RGAA 2.1.1 asks for the title attribute, which aria-label does not replace. Add a title that says what the frame contains.'
+    ]
+  ]) {
+    const occ = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'fail').occurrences[0];
+    assert.equal(occ.data.details.reasonCode, 'missingTitle');
+    assert.equal(occ.i18n.hintKey, hintKey, body);
+    assert.equal(occ.hint, hint, body);
+  }
+});

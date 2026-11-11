@@ -81,7 +81,12 @@ test(`${RULE_ID}: each missing piece has its own reason and summary`, () => {
     assert.deepEqual(occ.data.details.reasons, reasons, attrs);
     assert.equal(occ.data.details.caption, 'Sales in 2025');
     assert.equal(occ.i18n.summaryKey, summaryKey, attrs);
-    assert.equal(occ.i18n.hintKey, 'figureCaptionStructure_hint_fail');
+    assert.equal(
+      occ.i18n.hintKey,
+      reasonCode === 'ariaLabelMismatch'
+        ? 'figureCaptionStructure_hint_fail_mismatch'
+        : 'figureCaptionStructure_hint_fail'
+    );
   }
 });
 
@@ -193,4 +198,33 @@ test(`${RULE_ID}: a hidden caption or a hidden image is left out`, () => {
   ]) {
     assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'notApplicable');
   }
+});
+
+// A mismatch shows both texts, so a near difference (a final period, a
+// capital) can be seen.
+test(`${RULE_ID}: a mismatch names the aria-label and the caption`, () => {
+  const html = page(
+    figure('role="figure" aria-label="Sales in 2025"', undefined, 'Sales in 2025.')
+  );
+  const occ = assertRule(runa11yCoreOnHtml(html, RUN), RULE_ID, 'fail').occurrences[0];
+  assert.equal(occ.data.details.reasonCode, 'ariaLabelMismatch');
+  assert.deepEqual(occ.i18n.params, { label: 'Sales in 2025', caption: 'Sales in 2025.' });
+  assert.equal(
+    occ.summary,
+    'This figure\'s aria-label, "Sales in 2025", differs from its caption, "Sales in 2025.".'
+  );
+  assert.equal(occ.i18n.hintKey, 'figureCaptionStructure_hint_fail_mismatch');
+  assert.equal(
+    occ.hint,
+    'Give the aria-label the caption\'s text, exactly: aria-label="Sales in 2025.".'
+  );
+  const fr = assertRule(
+    runa11yCoreOnHtml(html, { ...RUN, engineOptions: { locale: 'fr' } }),
+    RULE_ID,
+    'fail'
+  ).occurrences[0];
+  assert.equal(
+    fr.summary,
+    'L’aria-label de cette figure, « Sales in 2025 », diffère de sa légende, « Sales in 2025. ».'
+  );
 });
