@@ -124,19 +124,47 @@ function runInPage(ctx) {
     return false;
   }
 
+  // The fields' labels for a message: the first four accessible names (or,
+  // for an ARIA radio, its text), each cut at 30 characters, joined with
+  // " | ", or '' when none has a name.
+  function labelsText(set) {
+    const names = set
+      .map((el) => {
+        let v = '';
+        try {
+          const info = helpers.getAccessibleNameInfo
+            ? helpers.getAccessibleNameInfo(el, ctx)
+            : null;
+          v = String((info && info.value) || '');
+        } catch {}
+        if (!v.trim() && String(dom.localName(el)).toLowerCase() !== 'input') {
+          v = String(dom.textContent(el) || '');
+        }
+        return v.replace(/\s+/g, ' ').trim();
+      })
+      .filter(Boolean);
+    const shown = names.slice(0, 4).map((t) => (t.length > 30 ? `${t.slice(0, 29)}…` : t));
+    return shown.join(' | ') + (names.length > 4 ? ' | …' : '');
+  }
+
   const occurrences = [];
-  function ask(set, kind, params) {
+  function ask(set, kind, base) {
     const checkboxes = kind === 'ungroupedCheckboxes';
+    // Quote the labels: whether they say which question they answer is
+    // what the reviewer decides.
+    const labels = labelsText(set);
+    const params = labels ? { ...base, labels } : base;
+    const quoted = labels ? ` Their labels: "${labels}".` : '';
     occurrences.push(
       helpers.reportOccurrence(set[0], {
         summary: checkboxes
-          ? `The ${params.count} checkboxes named "${params.name}" are not grouped in a fieldset or role="group".`
-          : `These ${params.count} role="radio" elements are not grouped in a fieldset, role="group" or role="radiogroup".`,
+          ? `The ${params.count} checkboxes named "${params.name}" are not grouped in a fieldset or role="group".${quoted}`
+          : `These ${params.count} role="radio" elements are not grouped in a fieldset, role="group" or role="radiogroup".${quoted}`,
         hint: checkboxes
           ? 'If their labels do not say which question they answer, group them in a <fieldset> with a <legend>, or in an element with role="group" and a name (RGAA 11.5.1).'
           : 'If their labels do not say which question they answer, group them in an element with role="radiogroup" (or a <fieldset> or role="group") and a name (RGAA 11.5.1).',
         i18n: {
-          summaryKey: `sameNameCheckboxesReview_summary_cantTell_${kind}`,
+          summaryKey: `sameNameCheckboxesReview_summary_cantTell_${kind}${labels ? '_labels' : ''}`,
           hintKey: `sameNameCheckboxesReview_hint_cantTell_${kind}`,
           params
         },

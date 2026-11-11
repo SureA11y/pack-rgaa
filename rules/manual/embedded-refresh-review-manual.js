@@ -113,15 +113,32 @@ function runInPage(ctx) {
     if (!applies(el, tag)) continue;
     if (tag === 'object') askedObjects.push(el);
 
+    // Why the element is asked about: what it embeds, or the script that
+    // draws or drives it.
+    const params = { element: tag };
+    let variant = '';
+    let why = 'This element may refresh its content on its own.';
+    const url = tag === 'object' ? attr(el, 'data') : tag === 'embed' ? attr(el, 'src') : '';
+    if (url) {
+      variant = '_embedded';
+      params.source = url.length > 80 ? `${url.slice(0, 79)}…` : url;
+      why = `This <${tag}> embeds "${params.source}", which may refresh its content on its own.`;
+    } else if (tag === 'canvas') {
+      variant = '_canvas';
+      why = 'This <canvas> is drawn by a script, which may redraw it on its own.';
+    } else if (tag === 'svg') {
+      variant = '_svgScript';
+      why = 'This <svg> holds a <script>, which may refresh its content on its own.';
+    }
+
     occurrences.push(
       helpers.reportOccurrence(el, {
-        summary:
-          'This element may refresh its content on its own. Check whether it does, and whether the user can control the refresh.',
+        summary: `${why} Check whether it does, and whether the user can control the refresh.`,
         hint: 'A refresh passes when the user can stop and restart it, can make the delay at least ten times longer, is warned in time to do so, or when the delay is at least twenty hours.',
         i18n: {
-          summaryKey: 'embeddedRefreshReview_summary_cantTell',
+          summaryKey: `embeddedRefreshReview_summary_cantTell${variant}`,
           hintKey: 'embeddedRefreshReview_hint_cantTell',
-          params: { element: tag }
+          params
         },
         uncertainty: {
           code: 'judgement-required',
@@ -130,7 +147,11 @@ function runInPage(ctx) {
           evidence: { element: tag }
         },
         data: {
-          details: { reasonCode: 'POSSIBLE_REFRESH_SOURCE', element: tag },
+          details: {
+            reasonCode: 'POSSIBLE_REFRESH_SOURCE',
+            element: tag,
+            ...(params.source ? { source: params.source } : {})
+          },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })

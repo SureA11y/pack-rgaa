@@ -34,9 +34,11 @@ test(`${RULE_ID}: a table of two rows and two columns with no header cell is ask
   assert.equal(occ.data.details.rows, 2);
   assert.equal(occ.data.details.columns, 2);
   assert.equal(occ.uncertainty.code, 'judgement-required');
+  assert.equal(occ.data.details.firstRow, 'Name | Age');
+  assert.equal(occ.i18n.summaryKey, 'dataTableHeadersReview_summary_cantTell_firstRow');
   assert.equal(
     occ.summary,
-    'This table has no header cells. If it is a data table, check whether its first row or column holds headers.'
+    'This table has no header cells; its first row reads "Name | Age". If it is a data table, check whether its first row or column holds headers.'
   );
 });
 
@@ -172,17 +174,27 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
   assert.deepEqual(ids, ['dthr_case_01', 'dthr_case_02', 'dthr_case_03']);
 });
 
+test(`${RULE_ID}: the first row is quoted cut to four cells of 30 characters`, () => {
+  const body =
+    '<table><tr><td>A</td><td></td><td>Une très longue cellule qui dépasse trente caractères</td><td>C</td><td>D</td><td>E</td></tr>' +
+    '<tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td></tr></table>';
+  const occ = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'cantTell').occurrences[0];
+  assert.equal(occ.i18n.params.firstRow, 'A | Une très longue cellule qui d… | C | D | …');
+});
+
 // Headers marked up as bold <td> fail 5.6.1 or 5.6.2; only a person can say
 // they are headers.
 test(`${RULE_ID}: a first row or column of bold data cells in a table with headers is asked about`, () => {
-  for (const [body, axis] of [
+  for (const [body, axis, cells] of [
     [
       '<table><tr><th>Ville</th><th>2024</th></tr><tr><td><strong>Paris</strong></td><td>1</td></tr><tr><td><b>Lyon</b></td><td>2</td></tr></table>',
-      'column'
+      'column',
+      'Paris | Lyon'
     ],
     [
       '<table><tr><td></td><td><strong>2023</strong></td><td><strong>2024</strong></td></tr><tr><th>Paris</th><td>1</td><td>2</td></tr></table>',
-      'row'
+      'row',
+      '2023 | 2024'
     ]
   ]) {
     const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'cantTell', {
@@ -194,6 +206,8 @@ test(`${RULE_ID}: a first row or column of bold data cells in a table with heade
       ['BOLD_CELLS_MAY_BE_HEADERS', axis],
       body
     );
+    assert.equal(rule.occurrences[0].i18n.params.cells, cells);
+    assert.ok(rule.occurrences[0].summary.includes(`bold data cells ("${cells}")`), body);
   }
   for (const body of [
     '<table><tr><th>Ville</th><th>2024</th></tr><tr><td>Paris</td><td>1</td></tr><tr><td>Lyon</td><td>2</td></tr></table>',
