@@ -354,3 +354,18 @@ test(`${RULE_ID}: while a modal dialog is open, only a skip link whose target do
     assertRule(run(body), RULE_ID, 'notApplicable');
   }
 });
+
+// A skip link to a missing id names the id it likely means.
+test(`${RULE_ID}: a skip link to a missing id names the id meant`, () => {
+  const occ = assertRule(
+    run('<a href="#Main">Aller au contenu</a>' + NAV + MAIN),
+    RULE_ID,
+    'fail'
+  ).occurrences.find((o) => o.data.details.reasonCode === 'skipLinkTargetMissing');
+  assert.equal(occ.data.details.suggestion, 'main');
+  assert.equal(occ.i18n.hintKey, 'skipLinkPresent_hint_fail_targetMissing_suggest');
+  assert.equal(
+    occ.hint,
+    'Did you mean "#main"? It is the id of the <main> element. Point the skip link at it, exactly as written, case included.'
+  );
+});
