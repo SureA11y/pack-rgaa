@@ -130,3 +130,32 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-label-for-target-valid-a
   const ids = rule.occurrences.map((o) => (o.html.match(/id="([^"]+)"/) || [])[1]);
   assert.deepEqual(ids, ['lft_case_03', 'lft_case_04', 'lft_case_05', 'lft_case_06']);
 });
+
+// The hint names the field the label most likely means.
+test(`${RULE_ID}: the hint names the id the label likely means`, () => {
+  for (const [body, suggestion, hint] of [
+    [
+      '<label for="Email">Courriel</label><input id="email">',
+      'email',
+      'Did you mean "email"? It is the id of the <input> field. Set the for attribute to it, exactly as written, case included.'
+    ],
+    ['<label for="#email">Courriel</label><input id="email">', 'email', null],
+    ['<label for="emial">Courriel</label><input id="email">', 'email', null],
+    [
+      '<label for="bloc">Courriel</label><div id="bloc"><input id="mail"></div>',
+      'mail',
+      'Did you mean "mail"? It is the id of the <input> field inside that <div>. Set the for attribute to it, exactly as written, case included.'
+    ]
+  ]) {
+    const occ = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'fail').occurrences[0];
+    assert.equal(occ.i18n.hintKey, 'labelForTargetValid_hint_fail_suggest', body);
+    assert.equal(occ.data.details.suggestion, suggestion, body);
+    if (hint) assert.equal(occ.hint, hint, body);
+  }
+  const none = assertRule(
+    runa11yCoreOnHtml(page('<label for="a">A</label><input id="b">'), RUN),
+    RULE_ID,
+    'fail'
+  ).occurrences[0];
+  assert.equal(none.i18n.hintKey, 'labelForTargetValid_hint_fail');
+});

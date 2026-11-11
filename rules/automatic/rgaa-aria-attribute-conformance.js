@@ -796,19 +796,65 @@ function runInPage(ctx) {
   const cantTellOccurrences = [];
   let applicableCount = 0;
 
-  function report(el, reasonCode, params, messageId) {
+  // Hints that name the value meant, when the one written is close to a
+  // known name or token; keyed by hint id.
+  const HINTS = {
+    unknownAttributeSuggest:
+      '{{attr}} is not an ARIA attribute: did you mean {{suggestion}}? Rename it, or remove it.',
+    invalidValueSuggest:
+      '{{attr}} takes one of these values: {{allowed}}. Did you mean "{{suggestion}}"? Write it exactly, in lowercase and with no spaces around it.',
+    invalidValueAllowed:
+      '{{attr}} takes one of these values: {{allowed}}. Use one of them, written exactly, in lowercase and with no spaces around it.'
+  };
+
+  // Optimal string alignment distance: a transposition counts as one edit.
+  function distance(a, b) {
+    const d = [];
+    for (let i = 0; i <= a.length; i++) d.push([i]);
+    for (let j = 1; j <= b.length; j++) d[0][j] = j;
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+        d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+        if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+          d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+        }
+      }
+    }
+    return d[a.length][b.length];
+  }
+
+  // The candidate closest to `written`: the same once case, spaces and
+  // hyphens are set aside, or within two edits (one for a short word).
+  function closest(written, candidates) {
+    const squash = (x) => x.toLowerCase().replace(/[\s_-]/g, '');
+    let best = '';
+    let bestDistance = Infinity;
+    for (const c of candidates) {
+      const d = squash(c) === squash(written) ? 0 : distance(written.toLowerCase().trim(), c);
+      if (d < bestDistance && d <= (c.length > 4 ? 2 : 1)) {
+        best = c;
+        bestDistance = d;
+      }
+    }
+    return best;
+  }
+
+  function report(el, reasonCode, params, messageId, hintId) {
     const key = messageId || reasonCode;
     const msg = MESSAGES[key];
     const outcome = msg.outcome || 'fail';
     let summary = msg.summary;
     for (const k of Object.keys(params)) summary = summary.split(`{{${k}}}`).join(params[k]);
+    let hint = hintId ? HINTS[hintId] : msg.hint;
+    for (const k of Object.keys(params)) hint = hint.split(`{{${k}}}`).join(params[k]);
     (outcome === 'fail' ? failOccurrences : cantTellOccurrences).push(
       helpers.reportOccurrence(el, {
         summary,
-        hint: msg.hint,
+        hint,
         i18n: {
           summaryKey: `ariaAttributeConformance_summary_${outcome}_${key}`,
-          hintKey: `ariaAttributeConformance_hint_${outcome}_${key}`,
+          hintKey: `ariaAttributeConformance_hint_${outcome}_${hintId || key}`,
           params
         },
         ...(outcome === 'cantTell'
@@ -848,7 +894,16 @@ function runInPage(ctx) {
     for (const a of ariaNames) {
       const value = String(attr(el, a) == null ? '' : attr(el, a));
       if (!Object.prototype.hasOwnProperty.call(TYPES, a)) {
-        report(el, 'unknownAttribute', { element, attr: a });
+        const suggestion = closest(a, Object.keys(TYPES));
+        if (suggestion) {
+          report(
+            el,
+            'unknownAttribute',
+            { element, attr: a, suggestion },
+            null,
+            'unknownAttributeSuggest'
+          );
+        } else report(el, 'unknownAttribute', { element, attr: a });
         continue;
       }
       if (!valueIsValid(el, a, value)) {
@@ -866,7 +921,36 @@ function runInPage(ctx) {
         ) {
           report(el, 'idReferenceOtherTree', { element, attr: a, value });
         } else {
-          report(el, 'invalidValue', { element, attr: a, value });
+          // A value from a list: name the list, and the value meant when
+          // the one written is close to it.
+          const type = TYPES[a];
+          const tokens =
+            type === 'boolean'
+              ? ['true', 'false']
+              : /^[a-z]+( [a-z]+)+$/.test(type)
+                ? words(type)
+                : null;
+          if (tokens) {
+            const allowed = tokens.map((t) => `"${t}"`).join(', ');
+            const suggestion = closest(value, tokens);
+            if (suggestion) {
+              report(
+                el,
+                'invalidValue',
+                { element, attr: a, value, allowed, suggestion },
+                null,
+                'invalidValueSuggest'
+              );
+            } else {
+              report(
+                el,
+                'invalidValue',
+                { element, attr: a, value, allowed },
+                null,
+                'invalidValueAllowed'
+              );
+            }
+          } else report(el, 'invalidValue', { element, attr: a, value });
         }
         continue;
       }

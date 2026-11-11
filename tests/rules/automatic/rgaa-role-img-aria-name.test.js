@@ -165,3 +165,53 @@ test(`${RULE_ID}: the only content of a link or a button is left out`, () => {
     assertRule(run(body), RULE_ID, 'notApplicable');
   }
 });
+
+// The hint names what the markup holds in place of a text alternative.
+test(`${RULE_ID}: the hint names the cause the markup shows`, () => {
+  for (const [body, cause, hint] of [
+    [
+      '<div role="img" aria-labelledby="Legende"></div><p id="legende">Ventes 2024</p>',
+      'labelledbyMissing',
+      'Its aria-labelledby names "Legende", but no element of the page has that id (did you mean "legende"?), so it gives no text alternative. Point aria-labelledby at the id of the text that describes the image, or use aria-label.'
+    ],
+    [
+      '<div role="img" aria-labelledby="l"></div><p id="l"></p>',
+      'labelledbyEmpty',
+      'Its aria-labelledby points to a <p> with id "l" that holds no text, so it gives no text alternative. Put the description in that element, or use aria-label.'
+    ],
+    [
+      '<div role="img" aria-label=""></div>',
+      'ariaLabelBlank',
+      'Its aria-label is empty, so it gives no text alternative. Write in aria-label what the image shows.'
+    ],
+    [
+      '<span role="img" aria-labell="Étoile"></span>',
+      'misspelledAttribute',
+      'It has aria-labell="Étoile", but browsers do not read aria-labell: did you mean aria-label? Rename the attribute so that it names the image.'
+    ],
+    [
+      '<div role="img" alt="Graphique"></div>',
+      'altNotRead',
+      'It has alt="Graphique", but alt names only an <img>, an <area> or an <input type="image">, not an element with role="img". Move the text to aria-label.'
+    ]
+  ]) {
+    const occ = assertRule(run(body), RULE_ID, 'fail', { minOccurrences: 1, maxOccurrences: 1 })
+      .occurrences[0];
+    assert.equal(occ.data.details.reasonCode, 'missingAlternative', body);
+    assert.equal(occ.data.details.alternativeCause, cause, body);
+    assert.equal(occ.i18n.hintKey, `roleImgAriaName_hint_fail_${cause}`, body);
+    assert.equal(occ.hint, hint, body);
+  }
+  const fr = assertRule(
+    runa11yCoreOnHtml(page('<div role="img" alt="Graphique"></div>'), {
+      ...RUN,
+      engineOptions: { locale: 'fr' }
+    }),
+    RULE_ID,
+    'fail'
+  ).occurrences[0];
+  assert.equal(
+    fr.hint,
+    'Il a alt="Graphique", mais alt ne nomme qu’une <img>, une <area> ou un <input type="image">, pas un élément avec role="img". Placez ce texte dans aria-label.'
+  );
+});

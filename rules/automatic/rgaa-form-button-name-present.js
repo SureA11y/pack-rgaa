@@ -282,7 +282,7 @@ function runInPage(ctx) {
             candidate === ref || candidate.toLowerCase() === ref.toLowerCase()
               ? 0
               : distance(candidate, ref);
-          if (d < best && d <= (ref.length > 5 ? 2 : 1)) {
+          if (d < best && d <= (ref.length > 5 ? 2 : ref.length > 2 ? 1 : 0)) {
             best = d;
             suggestion = candidate;
           }

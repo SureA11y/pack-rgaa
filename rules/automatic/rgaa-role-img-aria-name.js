@@ -112,6 +112,136 @@ function runInPage(ctx) {
     return '';
   }
 
+  // Optimal string alignment distance: a transposition counts as one edit.
+  function distance(a, b) {
+    const d = [];
+    for (let i = 0; i <= a.length; i++) d.push([i]);
+    for (let j = 1; j <= b.length; j++) d[0][j] = j;
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+        d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+        if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+          d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+        }
+      }
+    }
+    return d[a.length][b.length];
+  }
+  const clip = (v, max) => {
+    const t = trim(v);
+    return t.length > max ? `${t.slice(0, max - 1)}…` : t;
+  };
+
+  // Why an element with role="img" has no text alternative, when its
+  // markup holds something a reader could take for one: a misspelled
+  // aria-label or aria-labelledby, an alt (which names only images), an
+  // aria-labelledby that finds no text, or a blank aria-label. Returns
+  // { cause, params } or null; it changes no outcome.
+  function alternativeCause(el) {
+    const KNOWN = new Set(
+      (
+        'aria-activedescendant aria-atomic aria-autocomplete aria-braillelabel ' +
+        'aria-brailleroledescription aria-busy aria-checked aria-colcount aria-colindex ' +
+        'aria-colindextext aria-colspan aria-controls aria-current aria-describedby ' +
+        'aria-description aria-details aria-disabled aria-dropeffect aria-errormessage ' +
+        'aria-expanded aria-flowto aria-grabbed aria-haspopup aria-hidden aria-invalid ' +
+        'aria-keyshortcuts aria-label aria-labelledby aria-level aria-live aria-modal ' +
+        'aria-multiline aria-multiselectable aria-orientation aria-owns aria-placeholder ' +
+        'aria-posinset aria-pressed aria-readonly aria-relevant aria-required ' +
+        'aria-roledescription aria-rowcount aria-rowindex aria-rowindextext aria-rowspan ' +
+        'aria-selected aria-setsize aria-sort aria-valuemax aria-valuemin aria-valuenow ' +
+        'aria-valuetext alt title value label lang style class id href src role type name ' +
+        'tabindex hidden dir for form size width height rel target'
+      ).split(' ')
+    );
+    const attrs = dom.attributes(el) || [];
+    for (let i = 0; i < attrs.length; i++) {
+      const name = String(attrs[i].name || '').toLowerCase();
+      const value = clip(attrs[i].value, 60);
+      if (!value) continue;
+      if (name === 'alt') return { cause: 'altNotRead', params: { value } };
+      if (KNOWN.has(name) || name.slice(0, 5) === 'data-') continue;
+      for (const target of ['aria-labelledby', 'aria-label']) {
+        if (
+          name.replace(/[-_:]/g, '') === target.replace(/[-_:]/g, '') ||
+          distance(name, target) <= 2
+        ) {
+          return {
+            cause: 'misspelledAttribute',
+            params: { attribute: name, value, suggestion: target }
+          };
+        }
+      }
+    }
+
+    const labelledby = trim(attr(el, 'aria-labelledby'));
+    if (labelledby) {
+      const ids = labelledby.split(' ');
+      const found = [];
+      for (const ref of ids) {
+        let target = null;
+        try {
+          target = helpers.getElementByIdInTree
+            ? helpers.getElementByIdInTree(el, ref)
+            : dom.getElementById(dom.getRootNode(el), ref);
+        } catch {}
+        if (target) found.push(target);
+      }
+      if (!found.length) {
+        // An id of the page close to the first one named: a case or
+        // spelling slip, or a leading #.
+        let suggestion = '';
+        let best = Infinity;
+        let root = null;
+        try {
+          root = dom.getRootNode(el);
+        } catch {}
+        const ref = ids[0].replace(/^#/, '');
+        const withId =
+          root && dom.get(root, 'querySelectorAll') ? [...dom.querySelectorAll(root, '[id]')] : [];
+        for (const n of withId) {
+          const candidate = String(attr(n, 'id') || '');
+          if (!candidate) continue;
+          const d =
+            candidate === ref || candidate.toLowerCase() === ref.toLowerCase()
+              ? 0
+              : distance(candidate, ref);
+          if (d < best && d <= (ref.length > 5 ? 2 : ref.length > 2 ? 1 : 0)) {
+            best = d;
+            suggestion = candidate;
+          }
+        }
+        return { cause: 'labelledbyMissing', params: { ids: clip(labelledby, 60), suggestion } };
+      }
+      if (found.every((t) => !trim(dom.textContent(t)))) {
+        return {
+          cause: 'labelledbyEmpty',
+          params: { id: String(attr(found[0], 'id') || ''), element: tagOf(found[0]) }
+        };
+      }
+    }
+    const ariaLabel = attr(el, 'aria-label');
+    if (ariaLabel != null && !trim(ariaLabel)) return { cause: 'ariaLabelBlank', params: {} };
+    return null;
+  }
+
+  function causeHint(c) {
+    const p = c.params;
+    switch (c.cause) {
+      case 'misspelledAttribute':
+        return `It has ${p.attribute}="${p.value}", but browsers do not read ${p.attribute}: did you mean ${p.suggestion}? Rename the attribute so that it names the image.`;
+      case 'altNotRead':
+        return `It has alt="${p.value}", but alt names only an <img>, an <area> or an <input type="image">, not an element with role="img". Move the text to aria-label.`;
+      case 'labelledbyMissing':
+        return `Its aria-labelledby names "${p.ids}", but no element of the page has that id${p.suggestion ? ` (did you mean "${p.suggestion}"?)` : ''}, so it gives no text alternative. Point aria-labelledby at the id of the text that describes the image, or use aria-label.`;
+      case 'labelledbyEmpty':
+        return `Its aria-labelledby points to a <${p.element}> with id "${p.id}" that holds no text, so it gives no text alternative. Put the description in that element, or use aria-label.`;
+      default:
+        return 'Its aria-label is empty, so it gives no text alternative. Write in aria-label what the image shows.';
+    }
+  }
+
   const nodes = helpers.queryAllSmart
     ? helpers.queryAllSmart('[role]')
     : helpers.queryAll('[role]');
@@ -157,21 +287,28 @@ function runInPage(ctx) {
     if (svgTitleChildText(el)) continue;
 
     const titleOnly = !!trim(attr(el, 'title'));
+    // A cause the markup shows replaces the generic hint.
+    const cause = titleOnly ? null : alternativeCause(el);
     fails.push(
       helpers.reportOccurrence(el, {
         summary: titleOnly
           ? `This <${element}> with role="img" is named only by its title attribute; RGAA accepts only aria-labelledby or aria-label.`
           : `This <${element}> with role="img" has no text alternative.`,
-        hint: 'Give it an aria-label, or an aria-labelledby that points to text describing the image.',
+        hint: cause
+          ? causeHint(cause)
+          : 'Give it an aria-label, or an aria-labelledby that points to text describing the image.',
         i18n: {
           summaryKey: titleOnly
             ? 'roleImgAriaName_summary_fail_titleOnly'
             : 'roleImgAriaName_summary_fail_missing',
-          hintKey: 'roleImgAriaName_hint_fail',
-          params: { element }
+          hintKey: cause ? `roleImgAriaName_hint_fail_${cause.cause}` : 'roleImgAriaName_hint_fail',
+          params: { element, ...(cause ? cause.params : {}) }
         },
         data: {
-          details: { reasonCode: titleOnly ? 'titleOnly' : 'missingAlternative' },
+          details: {
+            reasonCode: titleOnly ? 'titleOnly' : 'missingAlternative',
+            ...(cause ? { alternativeCause: cause.cause } : {})
+          },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })
