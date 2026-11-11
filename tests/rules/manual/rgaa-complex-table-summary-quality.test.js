@@ -36,12 +36,13 @@ test(`${RULE_ID}: a complex table with a caption is asked about`, () => {
   assert.deepEqual(occ.data.details, {
     reasonCode: 'complexTableSummary',
     sources: ['caption'],
-    doctype: 'html5'
+    doctype: 'html5',
+    summaryText: 'Sales by year and quarter'
   });
-  assert.equal(occ.i18n.summaryKey, 'complexTableSummaryQuality_summary_cantTell');
+  assert.equal(occ.i18n.summaryKey, 'complexTableSummaryQuality_summary_cantTell_caption');
   assert.equal(
     occ.summary,
-    'This table looks like a complex data table and has a summary. Check that it explains how the table is organised.'
+    'This table looks like a complex data table and has a summary in its <caption>: "Sales by year and quarter". Check that it explains how the table is organised.'
   );
   assert.equal(occ.uncertainty.code, 'judgement-required');
 });
@@ -59,6 +60,11 @@ test(`${RULE_ID}: aria-describedby pointing to text is a summary, on a <table> o
       maxOccurrences: 1
     }).occurrences[0];
     assert.deepEqual(occ.data.details.sources, ['aria-describedby']);
+    assert.equal(occ.i18n.summaryKey, 'complexTableSummaryQuality_summary_cantTell_describedby');
+    assert.equal(
+      occ.summary,
+      'This table looks like a complex data table and has a summary in the passage its aria-describedby points to: "Years, then quarters.". Check that it explains how the table is organised.'
+    );
   }
 });
 
@@ -68,6 +74,11 @@ test(`${RULE_ID}: the summary attribute is a summary only before HTML5`, () => {
   const body = `<table summary="Years head groups of quarters">${TWO_HEADER_ROWS}</table>`;
   const html4 = assertRule(runa11yCoreOnHtml(page(body, HTML401), RUN), RULE_ID, 'cantTell');
   assert.deepEqual(html4.occurrences[0].data.details.sources, ['summary']);
+  assert.equal(
+    html4.occurrences[0].i18n.summaryKey,
+    'complexTableSummaryQuality_summary_cantTell_summaryAttribute'
+  );
+  assert.equal(html4.occurrences[0].i18n.params.text, 'Years head groups of quarters');
   assert.equal(html4.occurrences[0].data.details.doctype, 'html4');
   const none = assertRule(runa11yCoreOnHtml(page(body, ''), RUN), RULE_ID, 'cantTell');
   assert.equal(none.occurrences[0].data.details.doctype, 'none');
@@ -102,7 +113,7 @@ test(`${RULE_ID}: messages follow the scan locale`, () => {
   );
   assert.equal(
     rule.occurrences[0].summary,
-    'Ce tableau semble être un tableau de données complexe et a un résumé. Vérifiez qu’il explique comment le tableau est organisé.'
+    'Ce tableau semble être un tableau de données complexe et a un résumé dans sa balise <caption> : « Sales ». Vérifiez qu’il explique comment le tableau est organisé.'
   );
 });
 

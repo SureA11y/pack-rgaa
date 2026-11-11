@@ -152,6 +152,12 @@ function runInPage(ctx) {
   // Every element, shown or not: a tooltip is usually hidden until needed.
   const query = (sel) => [...dom.querySelectorAll(document, sel)];
 
+  // A text quoted in a summary: collapsed, cut at 80 characters.
+  function excerpt(v) {
+    const t = norm(v);
+    return t.length > 80 ? `${t.slice(0, 79)}…` : t;
+  }
+
   const occurrences = [];
   const seen = new Set();
   function ask(el, kind, params) {
@@ -160,15 +166,17 @@ function runInPage(ctx) {
     for (const test of ['Dismiss', 'Hover', 'Persist']) askOne(el, kind, params, kind + test);
   }
   function askOne(el, kind, params, reasonCode) {
+    // With the tooltip's text known, the summary quotes it.
+    const saying = params.text ? `, saying "${params.text}"` : '';
     occurrences.push(
       helpers.reportOccurrence(el, {
         summary:
           kind === 'tooltipRole'
-            ? 'This element shows a tooltip (role="tooltip") on hover or focus.'
-            : `This element shows a tooltip or popover (${params.attribute}) on hover or focus.`,
+            ? `This element shows a tooltip (role="tooltip") on hover or focus${saying}.`
+            : `This element shows a tooltip or popover (${params.attribute}) on hover or focus${saying}.`,
         hint: 'Check that what appears can be hidden without moving the pointer or the focus (with Escape, say), can be hovered without disappearing, and stays visible until the pointer or focus leaves it (RGAA 10.13).',
         i18n: {
-          summaryKey: `tooltipReview_summary_cantTell_${kind}`,
+          summaryKey: `tooltipReview_summary_cantTell_${kind}${params.text ? 'Text' : ''}`,
           hintKey: 'tooltipReview_hint_cantTell',
           params
         },
@@ -199,10 +207,21 @@ function runInPage(ctx) {
     const ref = norm(dom.getAttribute(tip, 'id'));
     const trigger = ref && referrers.get(ref);
     if (trigger && !visible(trigger)) continue;
-    ask(trigger || tip, 'tooltipRole', {});
+    const text = excerpt(dom.textContent(tip));
+    ask(trigger || tip, 'tooltipRole', text ? { text } : {});
   }
 
   const ATTRS = ['data-tooltip', 'data-tippy-content', 'data-balloon'];
+  // Where each library keeps the text it shows: the attribute itself, or
+  // Bootstrap's title and content attributes.
+  const TEXT_ATTRS = [
+    ...ATTRS,
+    'data-bs-title',
+    'data-bs-content',
+    'data-original-title',
+    'data-content',
+    'title'
+  ];
   for (const el of query(
     '[data-tooltip], [data-tippy-content], [data-balloon], [data-toggle], [data-bs-toggle]'
   )) {
@@ -221,7 +240,9 @@ function runInPage(ctx) {
         }
       }
     }
-    if (attribute) ask(el, 'tooltipAttribute', { attribute });
+    if (!attribute) continue;
+    const text = excerpt(TEXT_ATTRS.map((a) => dom.getAttribute(el, a)).find((v) => norm(v)));
+    ask(el, 'tooltipAttribute', text ? { attribute, text } : { attribute });
   }
 
   if (!occurrences.length) {

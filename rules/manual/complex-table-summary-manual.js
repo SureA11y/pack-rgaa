@@ -172,8 +172,17 @@ function runInPage(ctx) {
     return { rows, colspan: 'aria-colspan', rowspan: 'aria-rowspan' };
   }
 
+  // A cell's text, collapsed and cut at 40 characters, for a message.
+  function cellText(cell) {
+    const t = String(dom.textContent(cell) || '')
+      .replace(/\s+/g, ' ')
+      .trim();
+    return t.length > 40 ? `${t.slice(0, 39)}…` : t;
+  }
+
   // Why the table is complex: a list of reasons, empty for a simple table.
-  function complexity(table) {
+  // `evidence` gets, for each reason, the cell that shows it.
+  function complexity(table, evidence) {
     const reasons = [];
     const taken = [];
     const grid = gridOf(table);
@@ -193,20 +202,36 @@ function runInPage(ctx) {
           for (let dc = 0; dc < cols; dc += 1) taken[r + dr][c + dc] = true;
         }
         if (isHeader(cell)) {
-          if (r > 0 && c > 0) outside = true;
-          placed.push({ r, c, cols, rows: rowsSpanned });
+          if (r > 0 && c > 0) {
+            outside = true;
+            if (!evidence.headersOutsideFirstRowAndColumn) {
+              evidence.headersOutsideFirstRowAndColumn = { header: cellText(cell) };
+            }
+          }
+          placed.push({ r, c, cols, rows: rowsSpanned, cell });
           const scope = String(dom.getAttribute(cell, 'scope') || '')
             .trim()
             .toLowerCase();
-          if (scope === 'rowgroup' || scope === 'colgroup') groupScope = true;
+          if (scope === 'rowgroup' || scope === 'colgroup') {
+            groupScope = true;
+            if (!evidence.groupScope) evidence.groupScope = { header: cellText(cell), scope };
+          }
         }
         if (hasText(dom.getAttribute(cell, 'headers'))) headersAttr = true;
         c += cols;
       }
     });
-    const groupSpan =
-      placed.filter((h) => h.r === 0 && h.cols > 1).length > 1 ||
-      placed.filter((h) => h.c === 0 && h.rows > 1).length > 1;
+    const overColumns = placed.filter((h) => h.r === 0 && h.cols > 1);
+    const overRows = placed.filter((h) => h.c === 0 && h.rows > 1);
+    const groupSpan = overColumns.length > 1 || overRows.length > 1;
+    if (groupSpan) {
+      const [a, b] = overColumns.length > 1 ? overColumns : overRows;
+      evidence.groupSpanningHeader = {
+        header: cellText(a.cell),
+        other: cellText(b.cell),
+        axis: overColumns.length > 1 ? 'columns' : 'rows'
+      };
+    }
     if (outside) reasons.push('headersOutsideFirstRowAndColumn');
     if (headersAttr) reasons.push('headersAttribute');
     if (groupScope) reasons.push('groupScope');
@@ -226,7 +251,8 @@ function runInPage(ctx) {
     const role = explicitRole(table);
     const isNative = String(dom.tagName(table)).toLowerCase() === 'table';
     if (isNative ? role === 'presentation' || role === 'none' : role !== 'table') continue;
-    const reasons = complexity(table);
+    const evidence = {};
+    const reasons = complexity(table, evidence);
     if (!reasons.length) continue;
     applicableCount += 1;
     if (describedByText(table)) continue;
@@ -237,20 +263,59 @@ function runInPage(ctx) {
 
     const caption =
       isNative && table.caption ? String(dom.textContent(table.caption) || '').trim() : '';
+
+    // The summary names what makes the table complex, on the first cell
+    // that shows it; the hint names what the reviewer sees and why it does
+    // not count, or where a summary may already be.
+    const why = reasons[0];
+    const shown = evidence[why] || {};
+    const params = { ...shown };
+    delete params.axis;
+    const named = why === 'headersAttribute' || Object.values(shown).every((v) => v);
+    const WHY = {
+      headersOutsideFirstRowAndColumn: `its header "${shown.header}" is outside the first row and column`,
+      headersAttribute: 'its cells are tied to their headers with the headers attribute',
+      groupScope: `its header "${shown.header}" has scope="${shown.scope}"`,
+      groupSpanningHeader: `its headers "${shown.header}" and "${shown.other}" each head a group of ${shown.axis}`
+    };
+    const keyOf = (w) =>
+      w === 'groupSpanningHeader' ? `${w}_${shown.axis === 'rows' ? 'rows' : 'columns'}` : w;
+    const summary = named
+      ? `This table looks like a complex data table: ${WHY[why]}. Nothing marks a summary of its structure.`
+      : 'This table looks like a complex data table, and nothing marks a summary of its structure.';
+    const ids = String(dom.getAttribute(table, 'aria-describedby') || '').trim();
+    let hintVariant = '';
+    let hint =
+      'Check that a summary explains how the table is organised, in its <caption> or in a passage tied to it with aria-describedby (RGAA 5.1.1).';
+    if (describedby) {
+      hintVariant = '_describedbyUnresolved';
+      params.ids = ids;
+      hint = `Its aria-describedby="${ids}" points to no text, so it gives no summary. Point it at a passage that explains how the table is organised, or put that explanation in the <caption> (RGAA 5.1.1).`;
+    } else if (hasSummaryAttr) {
+      hintVariant = '_summaryAttribute';
+      hint =
+        'Its summary attribute does not count in HTML5: RGAA 5.1.1 accepts it only in earlier versions. Put the summary in the <caption>, or in a passage tied to the table with aria-describedby.';
+    } else if (caption) {
+      hintVariant = '_caption';
+      params.caption = caption.length > 80 ? `${caption.slice(0, 79)}…` : caption;
+      hint = `Check whether its caption, "${params.caption}", explains how the table is organised; if not, add that explanation there or in a passage tied to the table with aria-describedby (RGAA 5.1.1).`;
+    }
     occurrences.push(
       helpers.reportOccurrence(table, {
-        summary:
-          'This table looks like a complex data table, and nothing marks a summary of its structure.',
-        hint: 'Check that a summary explains how the table is organised, in its <caption> or in a passage tied to it with aria-describedby (RGAA 5.1.1).',
+        summary,
+        hint,
         i18n: {
-          summaryKey: 'complexTableSummary_summary_cantTell',
-          hintKey: 'complexTableSummary_hint_cantTell',
-          params: {}
+          summaryKey: named
+            ? `complexTableSummary_summary_cantTell_${keyOf(why)}`
+            : 'complexTableSummary_summary_cantTell',
+          hintKey: `complexTableSummary_hint_cantTell${hintVariant}`,
+          params
         },
         data: {
           details: {
             reasonCode: 'complexTableNoSummary',
             reasons,
+            ...(named && why !== 'headersAttribute' ? { evidence: shown } : {}),
             hasCaption: Boolean(caption),
             ...(describedby ? { describedbyUnresolved: true } : {}),
             ...(hasSummaryAttr ? { summaryAttributeIgnored: true } : {})

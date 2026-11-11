@@ -33,6 +33,21 @@ test(`${RULE_ID}: a role="tooltip" is asked about on the element that references
   const occ = rule.occurrences[0];
   assert.match(occ.html, /^<button id="b"|^<button type="button" id="b"/);
   assert.equal(occ.uncertainty.code, 'judgement-required');
+  assert.equal(occ.i18n.summaryKey, 'tooltipReview_summary_cantTell_tooltipRoleText');
+  assert.equal(occ.i18n.params.text, 'Partager cette page');
+  assert.equal(
+    occ.summary,
+    'This element shows a tooltip (role="tooltip") on hover or focus, saying "Partager cette page".'
+  );
+});
+
+test(`${RULE_ID}: a tooltip with no text keeps the summary without a quote`, () => {
+  const occ = assertRule(
+    runa11yCoreOnHtml(page('<div role="tooltip" id="t"></div>'), RUN),
+    RULE_ID,
+    'cantTell'
+  ).occurrences[0];
+  assert.equal(occ.i18n.summaryKey, 'tooltipReview_summary_cantTell_tooltipRole');
   assert.equal(occ.summary, 'This element shows a tooltip (role="tooltip") on hover or focus.');
 });
 
@@ -47,15 +62,20 @@ test(`${RULE_ID}: an unreferenced role="tooltip" is asked about on itself, hidde
 });
 
 test(`${RULE_ID}: tooltip library attributes are asked about`, () => {
-  for (const [body, attribute] of [
-    ['<a href="/a" data-tooltip="Aide">Aide</a>', 'data-tooltip'],
-    ['<button type="button" data-tippy-content="Copier">Copier</button>', 'data-tippy-content'],
-    ['<span tabindex="0" data-balloon="Info">i</span>', 'data-balloon'],
+  for (const [body, attribute, text] of [
+    ['<a href="/a" data-tooltip="Aide">Aide</a>', 'data-tooltip', 'Aide'],
+    [
+      '<button type="button" data-tippy-content="Copier">Copier</button>',
+      'data-tippy-content',
+      'Copier'
+    ],
+    ['<span tabindex="0" data-balloon="Info">i</span>', 'data-balloon', 'Info'],
     [
       '<a href="/a" data-bs-toggle="tooltip" data-bs-title="Aide">Aide</a>',
-      'data-bs-toggle="tooltip"'
+      'data-bs-toggle="tooltip"',
+      'Aide'
     ],
-    ['<a href="/a" data-toggle="tooltip" title="Aide">Aide</a>', 'data-toggle="tooltip"'],
+    ['<a href="/a" data-toggle="tooltip" title="Aide">Aide</a>', 'data-toggle="tooltip"', 'Aide'],
     [
       '<button type="button" data-bs-toggle="popover" data-bs-trigger="hover focus">Info</button>',
       'data-bs-toggle="popover"'
@@ -69,8 +89,14 @@ test(`${RULE_ID}: tooltip library attributes are asked about`, () => {
       rule.occurrences.map((o) => o.data.details),
       ['Dismiss', 'Hover', 'Persist'].map((t) => ({
         reasonCode: `tooltipAttribute${t}`,
-        attribute
+        attribute,
+        ...(text ? { text } : {})
       })),
+      body
+    );
+    assert.equal(
+      rule.occurrences[0].i18n.summaryKey,
+      `tooltipReview_summary_cantTell_tooltipAttribute${text ? 'Text' : ''}`,
       body
     );
   }
@@ -101,7 +127,7 @@ test(`${RULE_ID}: messages follow the scan locale; the map links it to 10.13.1-1
   );
   assert.equal(
     rule.occurrences[0].summary,
-    'Cet élément affiche une infobulle ou un popover (data-tooltip) au survol ou à la prise de focus.'
+    'Cet élément affiche une infobulle ou un popover (data-tooltip) au survol ou à la prise de focus, qui dit « Aide ».'
   );
   assert.deepEqual(RGAA_RULE_TESTS['4.1.2'][RULE_ID].tests, ['10.13.1', '10.13.2', '10.13.3']);
 });
