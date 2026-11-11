@@ -272,14 +272,41 @@ function runInPage(ctx) {
       return [...(dom.childNodes(node) || [])];
     }
 
+    const clip = (t, max) => {
+      const v = norm(t);
+      return v.length > max ? `${v.slice(0, max - 1)}…` : v;
+    };
+
+    // `atHidden` is the aria-hidden="true" element the walk is under, if any.
+    // What hides or replaces the label is kept, for the message: the first
+    // hidden text, image with no alternative, embedded element, named
+    // descendant and empty icon element.
     function walk(node, atHidden, depth) {
       if (depth > 200) return;
       for (const child of childrenOf(node)) {
         if (dom.nodeType(child) === 3) {
           if (!norm(child.data)) continue;
-          if (isVisibilityHidden(dom.parentElement(child))) continue;
-          if (atHidden) found.hiddenText = true;
-          else found.text = true;
+          const parent = dom.parentElement(child);
+          if (isVisibilityHidden(parent)) {
+            if (!found.notRendered && parent) {
+              found.notRendered = {
+                text: clip(dom.textContent(parent), 60),
+                element: tagOf(parent),
+                property: 'visibility: hidden',
+                hiddenAttribute: false
+              };
+            }
+            continue;
+          }
+          if (atHidden) {
+            found.hiddenText = true;
+            if (!found.ariaHiddenAt) {
+              found.ariaHiddenAt = {
+                text: clip(dom.textContent(atHidden), 60),
+                element: tagOf(atHidden)
+              };
+            }
+          } else found.text = true;
           continue;
         }
         if (dom.nodeType(child) !== 1) continue;
@@ -294,14 +321,36 @@ function runInPage(ctx) {
           }
           continue;
         }
-        if (isNotRendered(child)) continue;
-        const hidden = atHidden || String(attr(child, 'aria-hidden') || '').trim() === 'true';
+        if (isNotRendered(child)) {
+          const text = norm(dom.textContent(child));
+          if (text && !found.notRendered) {
+            found.notRendered = {
+              text: clip(text, 60),
+              element: tag,
+              property: 'display: none',
+              hiddenAttribute: !!(
+                dom.get(child, 'hasAttribute') && dom.hasAttribute(child, 'hidden')
+              )
+            };
+          }
+          continue;
+        }
+        const hidden =
+          atHidden || (String(attr(child, 'aria-hidden') || '').trim() === 'true' ? child : null);
         if (!hidden && hasGeneratedContent(child)) found.generated = true;
 
         if (isImage(child)) {
           if (hidden) continue;
           if (imageAlternative(child)) found.alternative = true;
-          else found.unlabelledImage = true;
+          else {
+            found.unlabelledImage = true;
+            if (!found.imageAt) {
+              found.imageAt = {
+                element: tag,
+                emptyAlt: tag === 'img' && attr(child, 'alt') != null
+              };
+            }
+          }
           continue;
         }
         if (EMBEDDED.has(tag)) {
@@ -325,6 +374,7 @@ function runInPage(ctx) {
               found.unlabelledImage = true;
             } else {
               found.embedded = true;
+              if (!found.embeddedAt) found.embeddedAt = { element: tag };
             }
           }
           if (tag === 'object' || tag === 'canvas') walk(child, hidden, depth + 1);
@@ -332,12 +382,30 @@ function runInPage(ctx) {
         }
         if (!hidden && (norm(attr(child, 'aria-label')) || norm(attr(child, 'aria-labelledby')))) {
           found.descendantAriaName = true;
+          if (!found.namedAt) {
+            const label = norm(attr(child, 'aria-label'));
+            found.namedAt = {
+              element: tag,
+              attribute: label ? 'aria-label' : 'aria-labelledby',
+              name: clip(label || idRefText(child, attr(child, 'aria-labelledby')), 60)
+            };
+          }
+        }
+        if (!hidden && !found.emptyIcon) {
+          const className = clip(attr(child, 'class'), 40);
+          if (
+            className &&
+            !norm(dom.textContent(child)) &&
+            !childrenOf(child).some((n) => dom.nodeType(n) === 1)
+          ) {
+            found.emptyIcon = { element: tag, className };
+          }
         }
         walk(child, hidden, depth + 1);
       }
     }
 
-    walk(root, false, 0);
+    walk(root, null, 0);
     return found;
   }
 
@@ -401,15 +469,37 @@ function runInPage(ctx) {
         embedded: found.embedded,
         descendantAriaName: found.descendantAriaName
       };
+      // Which content keeps the label from assistive technologies, when the
+      // walk found it.
+      let variant = null;
+      let params = {};
+      if (found.hiddenText && source && found.ariaHiddenAt) {
+        variant = 'ariaHiddenText';
+        params = { ...found.ariaHiddenAt, source };
+      } else if (found.namedAt) {
+        variant = 'descendantName';
+        params = found.namedAt;
+      } else if (found.embeddedAt) {
+        variant = 'embedded';
+        params = found.embeddedAt;
+      }
+      const summaries = {
+        ariaHiddenText: `This link's text "${params.text}" is in a <${params.element}> with aria-hidden="true", so assistive technologies read only its ${params.source}, not text between <a> and </a>.`,
+        descendantName: `This link has no text of its own: its only label is the ${params.attribute} "${params.name}" of a <${params.element}> inside it.`,
+        embedded: `This link holds an embedded <${params.element}>, and no text or image text alternative that assistive technologies read.`
+      };
       questions.push(
         helpers.reportOccurrence(el, {
-          summary:
-            'This link has content but no text or image text alternative that assistive technologies read: hidden text, an embedded element, or an element named by aria-label.',
+          summary: variant
+            ? summaries[variant]
+            : 'This link has content but no text or image text alternative that assistive technologies read: hidden text, an embedded element, or an element named by aria-label.',
           hint: 'Check whether the link content gives it a label. Put the link text inside the link, or give its image a text alternative.',
           i18n: {
-            summaryKey: 'linkContentLabelPresent_summary_cantTell_contentNotReadable',
+            summaryKey: variant
+              ? `linkContentLabelPresent_summary_cantTell_contentNotReadable_${variant}`
+              : 'linkContentLabelPresent_summary_cantTell_contentNotReadable',
             hintKey: 'linkContentLabelPresent_hint_cantTell_contentNotReadable',
-            params: {}
+            params
           },
           uncertainty: {
             code: 'judgement-required',
@@ -447,24 +537,48 @@ function runInPage(ctx) {
       continue;
     }
 
+    // What hides the label, or stands where it should be, when the walk
+    // found it: the hint names it.
+    let cause = null;
+    if (found.notRendered) cause = { cause: 'hiddenText', params: found.notRendered };
+    else if (found.ariaHiddenAt) cause = { cause: 'ariaHiddenText', params: found.ariaHiddenAt };
+    else if (found.imageAt && found.imageAt.element === 'svg') {
+      cause = { cause: 'svgNoName', params: {} };
+    } else if (found.imageAt) cause = { cause: 'imageNoAlt', params: found.imageAt };
+    else if (found.emptyIcon) cause = { cause: 'emptyIcon', params: found.emptyIcon };
+    const p = cause ? cause.params : {};
+    const causeHints = {
+      hiddenText: `Its text "${p.text}" is in a <${p.element}> with ${p.hiddenAttribute ? 'the hidden attribute' : p.property}, which hides it from screen readers as well as from view, so the link has no label. Let screen readers read it (a visually-hidden class keeps it off screen but read).`,
+      ariaHiddenText: `Its text "${p.text}" is in a <${p.element}> with aria-hidden="true", which hides it from screen readers, so the link has no label. Remove aria-hidden from that element.`,
+      imageNoAlt: `Its content is an <${p.element}> with ${p.emptyAlt ? 'an empty alt, which marks it as decorative' : 'no text alternative'}, so the link has no label. Give the image a text alternative that says where the link goes.`,
+      svgNoName:
+        'Its content is an <svg> with no <title>, aria-label or aria-labelledby, so the link has no label. Give the <svg> role="img" and an aria-label that says where the link goes, or put text in the link.',
+      emptyIcon: `Its content is an empty <${p.element} class="${p.className}">, probably an icon drawn by CSS, which gives no text, so the link has no label. Put text in the link, visually hidden if need be, that says where it goes.`
+    };
+
     fails.push(
       helpers.reportOccurrence(el, {
         summary: source
           ? `This link has no text or image text alternative in its content; its name comes only from ${source}.`
           : 'This link has no text or image text alternative in its content.',
-        hint: 'Put the link text inside the link, or an image with a text alternative. A name given only by aria-label, aria-labelledby or title does not count for RGAA 6.2.',
+        hint: cause
+          ? causeHints[cause.cause]
+          : 'Put the link text inside the link, or an image with a text alternative. A name given only by aria-label, aria-labelledby or title does not count for RGAA 6.2.',
         i18n: {
           summaryKey: source
             ? 'linkContentLabelPresent_summary_fail_nameOutsideContent'
             : 'linkContentLabelPresent_summary_fail_noLabel',
-          hintKey: 'linkContentLabelPresent_hint_fail',
-          params: { source }
+          hintKey: cause
+            ? `linkContentLabelPresent_hint_fail_${cause.cause}`
+            : 'linkContentLabelPresent_hint_fail',
+          params: { source, ...p }
         },
         data: {
           details: {
             reasonCode: source ? 'nameOutsideContent' : 'noContentLabel',
             nameSource: source || null,
-            unlabelledImage: found.unlabelledImage
+            unlabelledImage: found.unlabelledImage,
+            ...(cause ? { contentCause: cause.cause } : {})
           },
           visibilityFilter
         }

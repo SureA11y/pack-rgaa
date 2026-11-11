@@ -21,12 +21,19 @@ function reasons(rule) {
 }
 
 test(`${RULE_ID}: a button in a form with no label fails`, () => {
-  for (const body of [
-    '<form><button></button></form>',
-    '<form><input type="button"></form>',
-    '<form><button><img src="a.png" alt=""></button></form>',
-    '<div role="form" aria-label="Filtres"><span role="button" tabindex="0"></span></div>',
-    '<form><fieldset><div><button type="submit"> </button></div></fieldset></form>'
+  // The hint names a cause the markup shows, when there is one.
+  for (const [body, hintKey] of [
+    ['<form><button></button></form>', 'formButtonNamePresent_hint_fail_nameMissing'],
+    ['<form><input type="button"></form>', 'buttonNameCause_hint_inputNoValue'],
+    ['<form><button><img src="a.png" alt=""></button></form>', 'buttonNameCause_hint_imageNoAlt'],
+    [
+      '<div role="form" aria-label="Filtres"><span role="button" tabindex="0"></span></div>',
+      'formButtonNamePresent_hint_fail_nameMissing'
+    ],
+    [
+      '<form><fieldset><div><button type="submit"> </button></div></fieldset></form>',
+      'formButtonNamePresent_hint_fail_nameMissing'
+    ]
   ]) {
     const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'fail', {
       minOccurrences: 1,
@@ -35,7 +42,7 @@ test(`${RULE_ID}: a button in a form with no label fails`, () => {
     assert.deepEqual(reasons(rule), [['fail', 'nameMissing']], body);
     const occ = rule.occurrences[0];
     assert.equal(occ.i18n.summaryKey, 'formButtonNamePresent_summary_fail_nameMissing');
-    assert.equal(occ.i18n.hintKey, 'formButtonNamePresent_hint_fail_nameMissing');
+    assert.equal(occ.i18n.hintKey, hintKey, body);
     assert.equal(occ.summary, 'This button in a form has no label.');
   }
 });
@@ -225,4 +232,90 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-form-button-name-present
     ['fbnp_case_05', 'fail', 'formAttributeOnly'],
     ['fbnp_case_10', 'cantTell', 'imageButtonNoAlt']
   ]);
+});
+
+// The hint names what the markup shows in place of a label, so a reader who
+// sees text or a name-like attribute in the button knows why it does not
+// count.
+test(`${RULE_ID}: the hint names the cause the markup shows`, () => {
+  for (const [body, cause, hint] of [
+    [
+      '<style>.nav-text{display:none}</style><form><button><span class="nav-text">Menü</span><span class="nav-bars"></span></button></form>',
+      'hiddenText',
+      'Its text "Menü" is in a <span> with display: none, which hides it from screen readers as well as from view, so it gives no name. Let screen readers read it (a visually-hidden class keeps it off screen but read), or name the button with aria-label.'
+    ],
+    [
+      '<form><button><span hidden>Envoyer</span></button></form>',
+      'hiddenText',
+      'Its text "Envoyer" is in a <span> with the hidden attribute, which hides it from screen readers as well as from view, so it gives no name. Let screen readers read it (a visually-hidden class keeps it off screen but read), or name the button with aria-label.'
+    ],
+    [
+      '<form><button><span aria-hidden="true">OK</span></button></form>',
+      'ariaHiddenText',
+      'Its text "OK" is in a <span> with aria-hidden="true", which hides it from screen readers, so it gives no name. Remove aria-hidden from that element, or name the button with aria-label.'
+    ],
+    [
+      '<form><button arialabel="Rechercher"></button></form>',
+      'misspelledAttribute',
+      'It has arialabel="Rechercher", but browsers do not read arialabel: did you mean aria-label? Rename the attribute so that it names the button.'
+    ],
+    [
+      '<form><button aria-labelledby="Lbl"></button><span id="lbl">Rechercher</span></form>',
+      'labelledbyMissing',
+      'Its aria-labelledby names "Lbl", but no element of the page has that id (did you mean "lbl"?), so it gives no name. Point aria-labelledby at the id of the element that holds the button\'s text, or name the button with aria-label.'
+    ],
+    [
+      '<form><button aria-labelledby="lbl"></button><span id="lbl"></span></form>',
+      'labelledbyEmpty',
+      'Its aria-labelledby points to a <span> with id "lbl" that holds no text, so it gives no name. Put the button\'s text in that element, or name the button with aria-label.'
+    ],
+    [
+      '<form><button aria-label=" "></button></form>',
+      'ariaLabelBlank',
+      'Its aria-label is empty, so it gives no name. Write in aria-label what the button does, or give the button visible text.'
+    ],
+    [
+      '<form><button><img src="loupe.png"></button></form>',
+      'imageNoAlt',
+      'Its content is an <img> with no alt, so it gives no name. Give the image an alt that says what the button does, or name the button with aria-label.'
+    ],
+    [
+      '<form><button><svg><path d="M0 0h1"/></svg></button></form>',
+      'svgNoName',
+      'Its content is an <svg> with no <title>, aria-label or aria-labelledby, so it gives no name. Name the button with aria-label, or give the <svg> role="img" and an aria-label that says what the button does.'
+    ],
+    [
+      '<form><button><i class="fa fa-search"></i></button></form>',
+      'emptyIcon',
+      'Its content is an empty <i class="fa fa-search">, probably an icon drawn by CSS, which gives no text, so the button has no name. Name the button with aria-label, or add text, visually hidden if need be, that says what it does.'
+    ]
+  ]) {
+    const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'fail', {
+      minOccurrences: 1,
+      maxOccurrences: 1
+    });
+    const occ = rule.occurrences[0];
+    assert.equal(occ.data.details.reasonCode, 'nameMissing', body);
+    assert.equal(occ.data.details.nameCause, cause, body);
+    assert.equal(occ.i18n.hintKey, `buttonNameCause_hint_${cause}`, body);
+    assert.equal(occ.hint, hint, body);
+  }
+});
+
+test(`${RULE_ID}: the cause hint follows the scan locale`, () => {
+  const rule = assertRule(
+    runa11yCoreOnHtml(
+      page('<form><button><span style="display:none">Menü</span></button></form>'),
+      {
+        ...RUN,
+        engineOptions: { locale: 'fr' }
+      }
+    ),
+    RULE_ID,
+    'fail'
+  );
+  assert.equal(
+    rule.occurrences[0].hint,
+    'Son texte « Menü » se trouve dans un <span> avec display: none, qui le masque aux lecteurs d’écran comme à la vue : il ne donne donc aucun nom. Laissez les lecteurs d’écran le lire (une classe de masquage accessible le retire de l’écran tout en le laissant lu), ou nommez le bouton avec aria-label.'
+  );
 });

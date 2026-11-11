@@ -252,14 +252,43 @@ function runInPage(ctx) {
     };
     if (hasGeneratedContent(root)) found.generated = true;
 
+    const clip = (t, max) => {
+      const v = norm(t);
+      return v.length > max ? `${v.slice(0, max - 1)}…` : v;
+    };
+    const elementChildren = (n) =>
+      [...(dom.childNodes(n) || [])].filter((c) => dom.nodeType(c) === 1);
+
+    // `atHidden` is the aria-hidden="true" element the walk is under, if any.
+    // What hides or replaces the text is kept, for the message: the first
+    // hidden text, image with no alternative, embedded element and empty
+    // icon element.
     function walk(node, atHidden, depth) {
       if (depth > 200) return;
       for (const child of [...(dom.childNodes(node) || [])]) {
         if (dom.nodeType(child) === 3) {
           if (!norm(child.data)) continue;
-          if (isVisibilityHidden(dom.parentElement(child))) continue;
-          if (atHidden) found.hiddenText = true;
-          else found.text = true;
+          const parent = dom.parentElement(child);
+          if (isVisibilityHidden(parent)) {
+            if (!found.notRendered && parent) {
+              found.notRendered = {
+                text: clip(dom.textContent(parent), 60),
+                element: tagOf(parent),
+                property: 'visibility: hidden',
+                hiddenAttribute: false
+              };
+            }
+            continue;
+          }
+          if (atHidden) {
+            found.hiddenText = true;
+            if (!found.ariaHiddenAt) {
+              found.ariaHiddenAt = {
+                text: clip(dom.textContent(atHidden), 60),
+                element: tagOf(atHidden)
+              };
+            }
+          } else found.text = true;
           continue;
         }
         if (dom.nodeType(child) !== 1) continue;
@@ -274,14 +303,31 @@ function runInPage(ctx) {
           }
           continue;
         }
-        if (isNotRendered(child)) continue;
-        const hidden = atHidden || String(attr(child, 'aria-hidden') || '').trim() === 'true';
+        if (isNotRendered(child)) {
+          const text = norm(dom.textContent(child));
+          if (text && !found.notRendered) {
+            found.notRendered = {
+              text: clip(text, 60),
+              element: tag,
+              property: 'display: none',
+              hiddenAttribute: !!(
+                dom.get(child, 'hasAttribute') && dom.hasAttribute(child, 'hidden')
+              )
+            };
+          }
+          continue;
+        }
+        const hidden =
+          atHidden || (String(attr(child, 'aria-hidden') || '').trim() === 'true' ? child : null);
         if (!hidden && hasGeneratedContent(child)) found.generated = true;
 
         if (isImage(child)) {
           if (hidden) continue;
           if (imageAlternative(child)) found.alternative = true;
-          else found.unlabelledImage = true;
+          else {
+            found.unlabelledImage = true;
+            if (!found.imageAt) found.imageAt = { element: tag };
+          }
           continue;
         }
         if (EMBEDDED.has(tag)) {
@@ -294,6 +340,7 @@ function runInPage(ctx) {
               found.alternative = true;
             } else {
               found.embedded = true;
+              if (!found.embeddedAt) found.embeddedAt = { element: tag };
             }
           }
           if (tag === 'object' || tag === 'canvas') walk(child, hidden, depth + 1);
@@ -302,11 +349,17 @@ function runInPage(ctx) {
         if (!hidden && (norm(attr(child, 'aria-label')) || norm(attr(child, 'aria-labelledby')))) {
           found.descendantAriaName = true;
         }
+        if (!hidden && !found.emptyIcon) {
+          const className = clip(attr(child, 'class'), 40);
+          if (className && !norm(dom.textContent(child)) && !elementChildren(child).length) {
+            found.emptyIcon = { element: tag, className };
+          }
+        }
         walk(child, hidden, depth + 1);
       }
     }
 
-    walk(root, false, 0);
+    walk(root, null, 0);
     return found;
   }
 
@@ -377,15 +430,37 @@ function runInPage(ctx) {
     }
 
     if (found.hiddenText || found.unlabelledImage || found.generated || found.embedded) {
+      // Which content keeps the text from assistive technologies, when the
+      // walk found it.
+      let variant = null;
+      let params = {};
+      if (found.ariaHiddenAt) {
+        variant = 'ariaHiddenText';
+        params = found.ariaHiddenAt;
+      } else if (found.imageAt) {
+        variant = 'image';
+        params = found.imageAt;
+      } else if (found.embeddedAt) {
+        variant = 'embedded';
+        params = found.embeddedAt;
+      }
+      const summaries = {
+        ariaHiddenText: `This heading's text "${params.text}" is in a <${params.element}> with aria-hidden="true", which hides it from assistive technologies.`,
+        image: `This heading's content is an <${params.element}> with no text alternative, and no text.`,
+        embedded: `This heading holds an embedded <${params.element}>, and no text that assistive technologies read.`
+      };
       questions.push(
         helpers.reportOccurrence(el, {
-          summary:
-            'This heading has content but no text that assistive technologies read: hidden text, an image with no text alternative, CSS-generated text or an embedded element.',
+          summary: variant
+            ? summaries[variant]
+            : 'This heading has content but no text that assistive technologies read: hidden text, an image with no text alternative, CSS-generated text or an embedded element.',
           hint: 'Check what the heading shows. Give it text, or give its image a text alternative, so the heading says what the section is about.',
           i18n: {
-            summaryKey: 'headingContentPresent_summary_cantTell_contentNotReadable',
+            summaryKey: variant
+              ? `headingContentPresent_summary_cantTell_contentNotReadable_${variant}`
+              : 'headingContentPresent_summary_cantTell_contentNotReadable',
             hintKey: 'headingContentPresent_hint_cantTell_contentNotReadable',
-            params: {}
+            params
           },
           uncertainty: {
             code: 'judgement-required',
@@ -413,16 +488,43 @@ function runInPage(ctx) {
       continue;
     }
 
+    // Text the CSS hides, or an empty icon element, is named: the reader
+    // sees text or an icon in the markup of a heading said to be empty.
+    const hiddenBy = found.notRendered;
+    const icon = !hiddenBy && found.emptyIcon;
+    const p = hiddenBy || icon || {};
     fails.push(
       helpers.reportOccurrence(el, {
-        summary: 'This heading is empty: it has no text and no image with a text alternative.',
-        hint: 'Put the heading text inside the heading, or remove the heading if it is not needed.',
+        summary: hiddenBy
+          ? `This heading shows no text: its text "${p.text}" is in a <${p.element}> with ${p.hiddenAttribute ? 'the hidden attribute' : p.property}, which hides it from screen readers as well as from view.`
+          : 'This heading is empty: it has no text and no image with a text alternative.',
+        hint: hiddenBy
+          ? 'Let screen readers read the text (a visually-hidden class keeps it off screen but read), or remove the heading if it is not needed.'
+          : icon
+            ? `Its only content is an empty <${p.element} class="${p.className}">, probably an icon drawn by CSS, which gives no text. Put the heading text inside the heading, or remove the heading if it is not needed.`
+            : 'Put the heading text inside the heading, or remove the heading if it is not needed.',
         i18n: {
-          summaryKey: 'headingContentPresent_summary_fail_empty',
-          hintKey: 'headingContentPresent_hint_fail_empty',
-          params: {}
+          summaryKey: hiddenBy
+            ? 'headingContentPresent_summary_fail_empty_hiddenText'
+            : 'headingContentPresent_summary_fail_empty',
+          hintKey: hiddenBy
+            ? 'headingContentPresent_hint_fail_empty_hiddenText'
+            : icon
+              ? 'headingContentPresent_hint_fail_empty_emptyIcon'
+              : 'headingContentPresent_hint_fail_empty',
+          params: p
         },
-        data: { details: { reasonCode: 'emptyHeading' }, visibilityFilter }
+        data: {
+          details: {
+            reasonCode: 'emptyHeading',
+            ...(hiddenBy
+              ? { contentCause: 'hiddenText' }
+              : icon
+                ? { contentCause: 'emptyIcon' }
+                : {})
+          },
+          visibilityFilter
+        }
       })
     );
   }

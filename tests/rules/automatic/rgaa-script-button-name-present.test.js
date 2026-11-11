@@ -74,3 +74,31 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
   const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 1, maxOccurrences: 1 });
   assert.match(rule.occurrences[0].html, /id="sbn_case_01"/);
 });
+
+// The hint names what the markup shows in place of a name.
+test(`${RULE_ID}: the hint names the cause the markup shows`, () => {
+  for (const [body, cause] of [
+    ['<button type="button"><span style="display:none">Menu</span></button>', 'hiddenText'],
+    ['<button type="button" aria-labelledby="nope"></button>', 'labelledbyMissing'],
+    ['<button type="button" aria-lable="Fermer"></button>', 'misspelledAttribute'],
+    ['<button type="button"><span class="icon-close"></span></button>', 'emptyIcon'],
+    ['<input type="button">', 'inputNoValue']
+  ]) {
+    const rule = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'fail', {
+      minOccurrences: 1,
+      maxOccurrences: 1
+    });
+    const occ = rule.occurrences[0];
+    assert.equal(occ.data.details.nameCause, cause, body);
+    assert.equal(occ.i18n.hintKey, `buttonNameCause_hint_${cause}`, body);
+  }
+  const occ = assertRule(
+    runa11yCoreOnHtml(page('<button type="button" aria-lable="Fermer"></button>'), RUN),
+    RULE_ID,
+    'fail'
+  ).occurrences[0];
+  assert.equal(
+    occ.hint,
+    'It has aria-lable="Fermer", but browsers do not read aria-lable: did you mean aria-label? Rename the attribute so that it names the button.'
+  );
+});
