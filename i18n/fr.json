@@ -555,7 +555,7 @@
   "lettersSpacedWithSpaces_hint_cantTell": "S’il s’agit d’un mot, écrivez-le sans espaces et utilisez la propriété CSS letter-spacing pour l’effet d’espacement.",
   "imageAltLong_title": "Les alternatives textuelles des images sont courtes",
   "imageAltLong_description": "Signale une image dont l’alternative textuelle dépasse 80 caractères, pour qu’une personne décide si elle est assez courte et concise.",
-  "imageAltLong_summary_cantTell": "L’alternative textuelle de cette image fait {{length}} caractères.",
+  "imageAltLong_summary_cantTell": "L’alternative textuelle de cette image ({{source}}) fait {{length}} caractères : « {{excerpt}} ».",
   "imageAltLong_hint_cantTell": "Vérifiez que l’alternative est courte et concise pour ce que l’image transmet dans son contexte. Une alternative plus longue peut convenir dans les cas particuliers que prévoit le RGAA 1.3.9. Placez une description détaillée dans une description détaillée à côté de l’image ou liée depuis elle (RGAA 1.6).",
   "complexTableSummary_title": "Les tableaux de données complexes ont un résumé",
   "complexTableSummary_description": "Signale un tableau de données dont les en-têtes ne sont pas tous dans la première ligne ou colonne, ou ne portent que sur un groupe de lignes ou de colonnes, sans aria-describedby (ni, avant HTML5, d’attribut summary), pour qu’une personne vérifie qu’un résumé est disponible.",

@@ -555,7 +555,7 @@
   "lettersSpacedWithSpaces_hint_cantTell": "If this is a word, write it without spaces and use the CSS letter-spacing property for the spaced-out look.",
   "imageAltLong_title": "Text alternatives of images are short",
   "imageAltLong_description": "Flags an image whose text alternative is longer than 80 characters, for a person to decide whether it is short and concise enough.",
-  "imageAltLong_summary_cantTell": "This image's text alternative is {{length}} characters long.",
+  "imageAltLong_summary_cantTell": "This image's text alternative ({{source}}) is {{length}} characters long: \"{{excerpt}}\".",
   "imageAltLong_hint_cantTell": "Check that the alternative is short and concise for what the image conveys in context. A longer one can be right in the particular cases RGAA 1.3.9 allows. Put a detailed description in a long description next to the image or linked from it (RGAA 1.6).",
   "complexTableSummary_title": "Complex data tables have a summary",
   "complexTableSummary_description": "Flags a data table whose headers are not all in the first row or column, or head only a group of rows or columns, and that has no aria-describedby (nor, before HTML5, a summary attribute), for a person to check that a summary is available.",
