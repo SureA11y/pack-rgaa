@@ -70,6 +70,60 @@ function runInPage(ctx) {
     return typeof r === 'boolean' ? r : !!(r && r.eligible);
   }
 
+  // Optimal string alignment distance: a transposition counts as one edit.
+  function distance(a, b) {
+    const d = [];
+    for (let i = 0; i <= a.length; i++) d.push([i]);
+    for (let j = 1; j <= b.length; j++) d[0][j] = j;
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+        d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+        if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+          d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+        }
+      }
+    }
+    return d[a.length][b.length];
+  }
+
+  // An attribute written close to aria-level (arialevel, aria-lvl), which
+  // browsers do not read; ARIA's own attributes do not count.
+  const ARIA_NEAR = ['aria-label', 'aria-level', 'aria-live', 'aria-hidden', 'aria-modal'];
+  function misspelledLevel(el) {
+    const attrs = dom.attributes(el) || [];
+    for (let i = 0; i < attrs.length; i++) {
+      const name = String(attrs[i].name || '').toLowerCase();
+      if (ARIA_NEAR.includes(name)) continue;
+      if (name.replace(/[-_]/g, '') === 'arialevel' || distance(name, 'aria-level') <= 2) {
+        return { attribute: name, attrValue: String(attrs[i].value || '') };
+      }
+    }
+    return null;
+  }
+
+  // The number a level written otherwise likely means: h2, "level 2",
+  // two, deux.
+  const WORDS = {
+    one: 1,
+    two: 2,
+    three: 3,
+    four: 4,
+    five: 5,
+    six: 6,
+    un: 1,
+    deux: 2,
+    trois: 3,
+    quatre: 4,
+    cinq: 5
+  };
+  function levelMeant(raw) {
+    const v = String(raw).trim().toLowerCase();
+    const digits = v.match(/^(?:h|level|niveau)?\s*-?\s*(\d+)$/);
+    if (digits) return digits[1];
+    return WORDS[v] ? String(WORDS[v]) : '';
+  }
+
   const nodes = helpers.queryAllSmart
     ? helpers.queryAllSmart('[role]')
     : helpers.queryAll('[role]');
@@ -94,18 +148,37 @@ function runInPage(ctx) {
       ? helpers.getEligibilityInfo(el, ctx, { targetSet: 'acc' })
       : null;
 
+    // What the markup holds in place of a numeric aria-level, when it is
+    // close: a misspelled attribute, or a level written with letters.
+    const slip = missing ? misspelledLevel(el) : null;
+    const suggestion = missing ? '' : levelMeant(raw);
+    let hint =
+      'Add aria-level with the heading level (for example aria-level="2"), or use an <h1>-<h6> element instead.';
+    let hintKey = 'headingRoleLevelPresent_hint_fail';
+    if (slip) {
+      hint = `It has ${slip.attribute}="${slip.attrValue}", but browsers do not read ${slip.attribute}: did you mean aria-level? Rename the attribute.`;
+      hintKey = 'headingRoleLevelPresent_hint_fail_misspelled';
+    } else if (suggestion) {
+      hint = `Did you mean aria-level="${suggestion}"? aria-level takes the level as a number alone.`;
+      hintKey = 'headingRoleLevelPresent_hint_fail_suggest';
+    }
+
     occurrences.push(
       helpers.reportOccurrence(el, {
         summary: missing
           ? 'This element has role="heading" but no aria-level attribute.'
           : `This element has role="heading" and aria-level="${raw}", which is not a number.`,
-        hint: 'Add aria-level with the heading level (for example aria-level="2"), or use an <h1>-<h6> element instead.',
+        hint,
         i18n: {
           summaryKey: missing
             ? 'headingRoleLevelPresent_summary_fail_missing'
             : 'headingRoleLevelPresent_summary_fail_notNumber',
-          hintKey: 'headingRoleLevelPresent_hint_fail',
-          params: { value: missing ? '' : raw }
+          hintKey,
+          params: {
+            value: missing ? '' : raw,
+            ...(slip || {}),
+            ...(suggestion ? { suggestion } : {})
+          }
         },
         data: {
           details: {

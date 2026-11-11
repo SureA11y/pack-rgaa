@@ -42,7 +42,36 @@ test(`${RULE_ID}: an aria-level that is empty or not a number fails with its own
     assert.equal(occ.data.details.reasonCode, 'ariaLevelNotNumber', JSON.stringify(value));
     assert.equal(occ.data.details.ariaLevel, value);
     assert.equal(occ.i18n.summaryKey, 'headingRoleLevelPresent_summary_fail_notNumber');
-    assert.deepEqual(occ.i18n.params, { value });
+    assert.deepEqual(
+      occ.i18n.params,
+      value === 'two' ? { value, suggestion: '2' } : { value },
+      JSON.stringify(value)
+    );
+  }
+});
+
+// The hint names what the markup holds in place of a numeric aria-level.
+test(`${RULE_ID}: the hint names a misspelled attribute or the level meant`, () => {
+  for (const [body, hintKey, hint] of [
+    [
+      '<div role="heading" arialevel="2">News</div>',
+      'headingRoleLevelPresent_hint_fail_misspelled',
+      'It has arialevel="2", but browsers do not read arialevel: did you mean aria-level? Rename the attribute.'
+    ],
+    [
+      '<div role="heading" aria-level="h3">News</div>',
+      'headingRoleLevelPresent_hint_fail_suggest',
+      'Did you mean aria-level="3"? aria-level takes the level as a number alone.'
+    ],
+    [
+      '<div role="heading" aria-label="News">News</div>',
+      'headingRoleLevelPresent_hint_fail',
+      'Add aria-level with the heading level (for example aria-level="2"), or use an <h1>-<h6> element instead.'
+    ]
+  ]) {
+    const occ = assertRule(run(body), RULE_ID, 'fail').occurrences[0];
+    assert.equal(occ.i18n.hintKey, hintKey, body);
+    assert.equal(occ.hint, hint, body);
   }
 });
 

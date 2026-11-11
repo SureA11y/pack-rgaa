@@ -80,3 +80,24 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
   const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 1, maxOccurrences: 1 });
   assert.match(rule.occurrences[0].html, /id="idt_case_01"/);
 });
+
+// An id of the page close to the one written is named as the one meant.
+test(`${RULE_ID}: the hint names a close id of the page`, () => {
+  const occ = assertRule(
+    runa11yCoreOnHtml(
+      page(
+        '<img src="a.png" alt="Carte" aria-describedby="Desc-carte"><p id="desc-carte">Détail</p>'
+      ),
+      RUN
+    ),
+    RULE_ID,
+    'fail'
+  ).occurrences[0];
+  assert.equal(occ.data.details.reasonCode, 'targetMissing');
+  assert.equal(occ.data.details.suggestion, 'desc-carte');
+  assert.equal(occ.i18n.hintKey, 'imgDescribedbyTarget_hint_fail_suggest');
+  assert.equal(
+    occ.hint,
+    'Did you mean "desc-carte"? An element of the page has that id. Point aria-describedby at it, exactly as written, case included (RGAA 1.6.9).'
+  );
+});
