@@ -33,6 +33,46 @@ test(`${RULE_ID}: a field whose label is visually hidden is asked about`, () => 
   }
 });
 
+test(`${RULE_ID}: the summary names the CSS that hides the label, and the element it is on`, () => {
+  const run = (body, locale) =>
+    assertRule(
+      runa11yCoreOnHtml(page(body), { ...RUN, engineOptions: locale ? { locale } : {} }),
+      RULE_ID,
+      'cantTell'
+    ).occurrences[0];
+  const self = run(
+    '<style>.sr{position:absolute;clip:rect(0 0 0 0)}</style><label for="q" class="sr">Rechercher</label><input id="q" title="Rechercher sur le site">'
+  );
+  assert.equal(self.i18n.summaryKey, 'fieldHiddenLabelReview_summary_cantTell_hiddenBySelf_title');
+  assert.deepEqual(self.data.details.hiddenBy, {
+    element: 'label class="sr"',
+    css: 'clip: rect(0 0 0 0)'
+  });
+  assert.equal(
+    self.summary,
+    'This field\'s label ("Rechercher") is visually hidden by clip: rect(0 0 0 0) on the <label class="sr">. Its title attribute is "Rechercher sur le site".'
+  );
+
+  const body =
+    '<div id="zone" style="opacity:0"><label for="m">Courriel</label></div><input id="m">';
+  const ancestor = run(body);
+  assert.equal(
+    ancestor.i18n.summaryKey,
+    'fieldHiddenLabelReview_summary_cantTell_hiddenByAncestor'
+  );
+  assert.equal(
+    ancestor.summary,
+    'This field\'s label ("Courriel") is visually hidden by opacity: 0 on the <div id="zone"> around it.'
+  );
+  assert.equal(
+    run(body, 'fr').summary,
+    'L’étiquette de ce champ (« Courriel ») est masquée visuellement par opacity: 0 sur la balise <div id="zone"> qui la contient.'
+  );
+
+  const none = run('<label for="n" style="display:none">Nom</label><input id="n">');
+  assert.deepEqual(none.data.details.hiddenBy, { element: 'label', css: 'display: none' });
+});
+
 test(`${RULE_ID}: a visible label, or visible text linked by aria-labelledby, is not applicable`, () => {
   for (const body of [
     '<label for="q">Rechercher</label><input id="q">',

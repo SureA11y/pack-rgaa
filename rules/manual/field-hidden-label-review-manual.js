@@ -115,6 +115,78 @@ function runInPage(ctx) {
       .filter(Boolean);
   }
 
+  function styleOf(el) {
+    try {
+      const view = dom.ownerDocument(el) && dom.defaultView(dom.ownerDocument(el));
+      return view && typeof view.getComputedStyle === 'function' ? view.getComputedStyle(el) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  // The CSS by which this element itself hides what it holds, as a
+  // declaration the reviewer can search for, or '' when it hides nothing.
+  function ownHidingCss(el) {
+    const cs = styleOf(el);
+    if (!cs) return '';
+    if (String(cs.display) === 'none') return 'display: none';
+    const visibility = String(cs.visibility || '');
+    if (visibility === 'hidden' || visibility === 'collapse') {
+      // Inherited: name it on the element that sets it.
+      const parent = dom.parentElement(el);
+      const ps = parent ? styleOf(parent) : null;
+      if (!ps || String(ps.visibility) !== visibility) return `visibility: ${visibility}`;
+    }
+    let hidden = false;
+    try {
+      hidden = typeof helpers.isVisuallyHidden === 'function' && helpers.isVisuallyHidden(el);
+    } catch {}
+    let info = null;
+    try {
+      info = helpers.getVisibilityHintsInfo ? helpers.getVisibilityHintsInfo(el, ctx) : null;
+    } catch {}
+    const hints = (info && info.hints) || [];
+    const m = (info && info.metrics) || {};
+    const opacity = Number.parseFloat(cs.opacity);
+    if (Number.isFinite(opacity) && opacity <= 0.0001) return 'opacity: 0';
+    if (hidden && hints.includes('clipped')) {
+      if (m.clipPath && m.clipPath !== 'none') return `clip-path: ${m.clipPath}`;
+      if (m.clip) return `clip: ${m.clip}`;
+    }
+    const overflow = String(cs.overflow || '').toLowerCase();
+    if (hidden && /hidden|clip/.test(overflow)) {
+      return `width: ${cs.width}; height: ${cs.height}; overflow: ${overflow}`;
+    }
+    if (hints.includes('offscreen')) {
+      const indent = String(m.textIndent || '');
+      if (/^-/.test(indent)) return `text-indent: ${indent}`;
+      if (/^-/.test(String(m.left || ''))) return `left: ${m.left}`;
+      if (/^-/.test(String(m.top || ''))) return `top: ${m.top}`;
+    }
+    return '';
+  }
+
+  // How to point at an element: its tag, with its id or else its class.
+  function describe(el) {
+    const tag = String(dom.localName(el) || dom.tagName(el) || '').toLowerCase();
+    const idv = norm(dom.getAttribute(el, 'id'));
+    const cls = norm(dom.getAttribute(el, 'class'));
+    const cut = (v) => (v.length > 40 ? `${v.slice(0, 39)}…` : v);
+    if (idv) return `${tag} id="${cut(idv)}"`;
+    if (cls) return `${tag} class="${cut(cls)}"`;
+    return tag;
+  }
+
+  // The label, or the nearest element around it, that hides it, with the
+  // CSS that does it; null when none is found.
+  function hiderOf(label) {
+    for (let a = label; a && dom.nodeType(a) === 1; a = dom.parentElement(a)) {
+      const css = ownHidingCss(a);
+      if (css) return { el: a, css };
+    }
+    return null;
+  }
+
   const SELECTOR =
     'input:not([type="hidden" i]):not([type="submit" i]):not([type="reset" i]):not([type="button" i]):not([type="image" i]), select, textarea';
   const nodes = helpers.queryAllSmart
@@ -128,22 +200,47 @@ function runInPage(ctx) {
     if (!labels.length || labels.some(seen)) continue;
     if (refsOf(el).some((r) => seen(r) && norm(dom.textContent(r)))) continue;
     const label = norm(dom.textContent(labels[0])).slice(0, 80);
-    const title = !!norm(dom.getAttribute(el, 'title'));
+    const titleText = norm(dom.getAttribute(el, 'title'));
+    const title = !!titleText;
+    // What hides the label, so the reviewer does not look for a label that
+    // is not there: the CSS, and the element it is on.
+    const hider = hiderOf(labels[0]);
+    const where = !hider ? '' : hider.el === labels[0] ? 'Self' : 'Ancestor';
+    const params = { label };
+    let summary = `This field's label ("${label}") is visually hidden`;
+    if (hider) {
+      params.css = hider.css;
+      params.element = describe(hider.el);
+      summary +=
+        where === 'Self'
+          ? ` by ${params.css} on the <${params.element}>`
+          : ` by ${params.css} on the <${params.element}> around it`;
+    }
+    summary += '.';
+    if (title) {
+      params.title = titleText.length > 80 ? `${titleText.slice(0, 79)}…` : titleText;
+      summary += ` Its title attribute is "${params.title}".`;
+    }
     occurrences.push(
       helpers.reportOccurrence(el, {
-        summary: `This field's label ("${label}") is visually hidden.`,
+        summary,
         hint: 'Check that a title, or text next to the field that is visible or becomes visible on focus, makes the expected input understandable (RGAA 11.1.3).',
         i18n: {
-          summaryKey: 'fieldHiddenLabelReview_summary_cantTell',
+          summaryKey: `fieldHiddenLabelReview_summary_cantTell${where ? `_hiddenBy${where}` : ''}${title ? '_title' : ''}`,
           hintKey: 'fieldHiddenLabelReview_hint_cantTell',
-          params: { label }
+          params
         },
         uncertainty: {
           code: 'judgement-required',
           needed: 'Whether what is on screen makes the expected input understandable.'
         },
         data: {
-          details: { reasonCode: 'hiddenLabel', label, title },
+          details: {
+            reasonCode: 'hiddenLabel',
+            label,
+            title,
+            ...(hider ? { hiddenBy: { element: params.element, css: params.css } } : {})
+          },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })

@@ -137,6 +137,19 @@ function runInPage(ctx) {
     return !shownModally(el) && !outOfTabOrder(el);
   });
 
+  // A short name for an element outside the dialog: its accessible name,
+  // else its text, cut at 60 characters.
+  function nameOf(el) {
+    let v = '';
+    try {
+      const info = helpers.getAccessibleNameInfo ? helpers.getAccessibleNameInfo(el, ctx) : null;
+      v = info && info.value ? info.value : '';
+    } catch {}
+    if (!v) v = dom.textContent(el) || '';
+    v = String(v).replace(/\s+/g, ' ').trim();
+    return v.length > 60 ? `${v.slice(0, 59)}…` : v;
+  }
+
   const occurrences = [];
   for (const dialog of dialogs) {
     const outside = [...dom.querySelectorAll(document, FOCUSABLE)].filter((el) => {
@@ -146,21 +159,33 @@ function runInPage(ctx) {
     });
     if (!outside.length) continue;
     const count = outside.length;
+    // The first of them, named, so the reviewer knows where to look.
+    const first = outside[0];
+    const element = tagOf(first);
+    const name = nameOf(first);
+    const which = name ? 'Named' : 'Element';
+    const tail = name
+      ? `; the first is the <${element}> "${name}"`
+      : `; the first is an unnamed <${element}>`;
     occurrences.push(
       helpers.reportOccurrence(dialog, {
-        summary: `This dialog is marked aria-modal="true", but ${count} element(s) outside it can still take focus with the Tab key.`,
+        summary: `This dialog is marked aria-modal="true", but ${count} element(s) outside it can still take focus with the Tab key${tail}.`,
         hint: 'Check that focus stays inside the dialog while it is open, for instance by making the rest of the page inert or by opening a <dialog> with showModal() (RGAA 12.8.1).',
         i18n: {
-          summaryKey: 'modalTabOrder_summary_cantTell',
+          summaryKey: `modalTabOrder_summary_cantTell_first${which}`,
           hintKey: 'modalTabOrder_hint_cantTell',
-          params: { count }
+          params: { count, element, name }
         },
         uncertainty: {
           code: 'judgement-required',
           needed: 'Whether a script keeps focus inside the dialog while it is open.'
         },
         data: {
-          details: { reasonCode: 'focusableOutsideModal', count },
+          details: {
+            reasonCode: 'focusableOutsideModal',
+            count,
+            firstOutside: { element, name }
+          },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })

@@ -38,6 +38,11 @@ test(`${RULE_ID}: a generic link whose only context is an aria-describedby text 
   assert.equal(occ.i18n.summaryKey, 'linkContextReview_summary_cantTell_describedBy');
   assert.equal(occ.i18n.hintKey, 'linkContextReview_hint_cantTell');
   assert.equal(occ.data.details.context, 'sur le rapport 2025');
+  assert.equal(occ.i18n.params.context, 'sur le rapport 2025');
+  assert.equal(
+    occ.summary,
+    'The link "En savoir plus" has a generic name, and its only context is "sur le rapport 2025", the text its aria-describedby points to, which RGAA does not count as link context.'
+  );
   assert.equal(occ.uncertainty.code, 'judgement-required');
 });
 
@@ -60,7 +65,23 @@ test(`${RULE_ID}: a generic link whose only context is a dd, dt, blockquote or f
     assert.equal(occ.data.details.container, container);
     assert.equal(occ.i18n.summaryKey, 'linkContextReview_summary_cantTell_container');
     assert.equal(occ.i18n.params.element, container);
+    assert.ok(
+      occ.summary.includes(`is "${occ.i18n.params.context}", the text of the <${container}>`),
+      occ.summary
+    );
   }
+});
+
+test(`${RULE_ID}: a long context is quoted cut at 80 characters`, () => {
+  const long =
+    'Le rapport annuel détaille les ventes, les embauches et les projets de chaque région en 2025';
+  const occ = assertRule(
+    run(`<dl><dt>Rapport</dt><dd>${long} <a href="/r">en savoir plus</a></dd></dl>`),
+    RULE_ID,
+    'cantTell'
+  ).occurrences[0];
+  assert.equal(occ.i18n.params.context, `${long.slice(0, 79)}…`);
+  assert.equal(occ.data.details.context, long);
 });
 
 test(`${RULE_ID}: context RGAA lists, no context at all, and descriptive links are not applicable`, () => {

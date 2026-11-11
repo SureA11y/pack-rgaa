@@ -30,9 +30,37 @@ test(`${RULE_ID}: an open aria-modal dialog with focusable elements outside is a
       maxOccurrences: 1
     });
     const occ = rule.occurrences[0];
-    assert.deepEqual(occ.data.details, { reasonCode: 'focusableOutsideModal', count: 2 }, dialog);
+    assert.deepEqual(
+      occ.data.details,
+      {
+        reasonCode: 'focusableOutsideModal',
+        count: 2,
+        firstOutside: { element: 'a', name: 'Accueil' }
+      },
+      dialog
+    );
     assert.equal(occ.uncertainty.code, 'judgement-required');
   }
+});
+
+test(`${RULE_ID}: the summary names the first element outside the dialog that takes focus`, () => {
+  const dialog =
+    '<div role="dialog" aria-modal="true" aria-label="Connexion"><button>Fermer</button></div>';
+  const named = assertRule(runa11yCoreOnHtml(page(PAGE + dialog), RUN), RULE_ID, 'cantTell')
+    .occurrences[0];
+  assert.equal(named.i18n.summaryKey, 'modalTabOrder_summary_cantTell_firstNamed');
+  assert.deepEqual(named.i18n.params, { count: 2, element: 'a', name: 'Accueil' });
+  assert.equal(
+    named.summary,
+    'This dialog is marked aria-modal="true", but 2 element(s) outside it can still take focus with the Tab key; the first is the <a> "Accueil".'
+  );
+  const unnamed = assertRule(
+    runa11yCoreOnHtml(page('<main><input></main>' + dialog), RUN),
+    RULE_ID,
+    'cantTell'
+  ).occurrences[0];
+  assert.equal(unnamed.i18n.summaryKey, 'modalTabOrder_summary_cantTell_firstElement');
+  assert.match(unnamed.summary, /the first is an unnamed <input>\.$/);
 });
 
 test(`${RULE_ID}: no modal, a hidden one, or an inert page behind it is not applicable`, () => {

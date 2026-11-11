@@ -424,18 +424,24 @@ function runInPage(ctx) {
 
     const name = rawName.replace(/\s+/g, ' ').trim();
     const byDescription = reasonCode === 'DESCRIBEDBY_CONTEXT_ONLY';
+    const contextText = String(byDescription ? described : block.text)
+      .replace(/\s+/g, ' ')
+      .trim();
+    // The context quoted, cut at 80 characters, so the reviewer reads what
+    // the link has around it without opening the page.
+    const context = contextText.length > 80 ? `${contextText.slice(0, 79)}…` : contextText;
     occurrences.push(
       helpers.reportOccurrence(el, {
         summary: byDescription
-          ? 'This link has a generic name, and its only context is the text its aria-describedby points to, which RGAA does not count as link context.'
-          : 'This link has a generic name, and its only context is the text of the element around it, which RGAA does not count as link context.',
+          ? `The link "${name}" has a generic name, and its only context is "${context}", the text its aria-describedby points to, which RGAA does not count as link context.`
+          : `The link "${name}" has a generic name, and its only context is "${context}", the text of the <${block.tag}> around it, which RGAA does not count as link context.`,
         hint: 'Check whether the sentence, paragraph, list item, table cell or preceding heading makes the link explicit. Otherwise, put its destination in the link text.',
         i18n: {
           summaryKey: byDescription
             ? 'linkContextReview_summary_cantTell_describedBy'
             : 'linkContextReview_summary_cantTell_container',
           hintKey: 'linkContextReview_hint_cantTell',
-          params: { name, element: block.tag || '' }
+          params: { name, element: block.tag || '', context }
         },
         uncertainty: {
           code: 'judgement-required',
