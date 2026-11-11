@@ -242,17 +242,17 @@ test(`${RULE_ID}: the hint names the cause the markup shows`, () => {
     [
       '<style>.nav-text{display:none}</style><form><button><span class="nav-text">Menü</span><span class="nav-bars"></span></button></form>',
       'hiddenText',
-      'Its text "Menü" is in a <span> with display: none, which hides it from screen readers as well as from view, so it gives no name. Let screen readers read it (a visually-hidden class keeps it off screen but read), or name the button with aria-label.'
+      'Its text "Menü" is in the <span> element with display: none, which hides it from screen readers as well as from view, so it gives no name. Let screen readers read it (a visually-hidden class keeps it off screen but read), or name the button with aria-label.'
     ],
     [
       '<form><button><span hidden>Envoyer</span></button></form>',
       'hiddenText',
-      'Its text "Envoyer" is in a <span> with the hidden attribute, which hides it from screen readers as well as from view, so it gives no name. Let screen readers read it (a visually-hidden class keeps it off screen but read), or name the button with aria-label.'
+      'Its text "Envoyer" is in the <span> element with the hidden attribute, which hides it from screen readers as well as from view, so it gives no name. Let screen readers read it (a visually-hidden class keeps it off screen but read), or name the button with aria-label.'
     ],
     [
       '<form><button><span aria-hidden="true">OK</span></button></form>',
       'ariaHiddenText',
-      'Its text "OK" is in a <span> with aria-hidden="true", which hides it from screen readers, so it gives no name. Remove aria-hidden from that element, or name the button with aria-label.'
+      'Its text "OK" is in the <span> element with aria-hidden="true", which hides it from screen readers, so it gives no name. Remove aria-hidden from that element, or name the button with aria-label.'
     ],
     [
       '<form><button arialabel="Rechercher"></button></form>',
@@ -267,7 +267,7 @@ test(`${RULE_ID}: the hint names the cause the markup shows`, () => {
     [
       '<form><button aria-labelledby="lbl"></button><span id="lbl"></span></form>',
       'labelledbyEmpty',
-      'Its aria-labelledby points to a <span> with id "lbl" that holds no text, so it gives no name. Put the button\'s text in that element, or name the button with aria-label.'
+      'Its aria-labelledby points to the <span> element with id "lbl" that holds no text, so it gives no name. Put the button\'s text in that element, or name the button with aria-label.'
     ],
     [
       '<form><button aria-label=" "></button></form>',
@@ -316,6 +316,22 @@ test(`${RULE_ID}: the cause hint follows the scan locale`, () => {
   );
   assert.equal(
     rule.occurrences[0].hint,
-    'Son texte « Menü » se trouve dans un <span> avec display: none, qui le masque aux lecteurs d’écran comme à la vue : il ne donne donc aucun nom. Laissez les lecteurs d’écran le lire (une classe de masquage accessible le retire de l’écran tout en le laissant lu), ou nommez le bouton avec aria-label.'
+    'Son texte « Menü » se trouve dans un élément <span> avec display: none, qui le masque aux lecteurs d’écran comme à la vue : il ne donne donc aucun nom. Laissez les lecteurs d’écran le lire (une classe de masquage accessible le retire de l’écran tout en le laissant lu), ou nommez le bouton avec aria-label.'
   );
+});
+
+// The occurrences a body gives, in English or in the locale asked.
+function messagesOf(body, locale) {
+  const result = runa11yCoreOnHtml(
+    `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`,
+    { ...RUN, ...(locale ? { engineOptions: { locale } } : {}) }
+  );
+  return result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+}
+
+test(`${RULE_ID}: an image button with a misspelled alt names it`, () => {
+  const [occ] = messagesOf('<form><input type="image" src="go.png" atl="Go"></form>');
+  assert.equal(occ.data.details.reasonCode, 'imageButtonNoAlt');
+  assert.equal(occ.i18n.hintKey, 'buttonNameCause_hint_misspelledAttribute');
+  assert.match(occ.hint, /It has atl="Go", but browsers do not read atl: did you mean alt\?/);
 });

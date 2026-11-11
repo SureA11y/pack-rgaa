@@ -100,14 +100,22 @@ function runInPage(ctx) {
 
     const element = String(dom.tagName(el)).toLowerCase();
     const src = String(dom.getAttribute(el, 'src') || '').trim();
+    // The host the frame comes from, when its src names one, to help judge
+    // whether the title says what it shows.
+    const hostMatch = /^(?:https?:)?\/\/([^/?#:]+)/i.exec(src);
+    const host = hostMatch ? hostMatch[1].toLowerCase() : '';
     occurrences.push(
       helpers.reportOccurrence(el, {
-        summary: `This <${element}> has the title "${title}".`,
+        summary: host
+          ? `This <${element}> from ${host} has the title "${title}".`
+          : `This <${element}> has the title "${title}".`,
         hint: 'Check that the title says what the frame contains, for example the name of the map or video it shows. A frame used only for technical purposes may have a generic title.',
         i18n: {
-          summaryKey: 'frameTitleRelevant_summary_cantTell',
+          summaryKey: host
+            ? 'frameTitleRelevant_summary_cantTell_host'
+            : 'frameTitleRelevant_summary_cantTell',
           hintKey: 'frameTitleRelevant_hint_cantTell',
-          params: { element, title }
+          params: host ? { element, title, host } : { element, title }
         },
         uncertainty: {
           code: 'judgement-required',

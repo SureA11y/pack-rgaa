@@ -241,7 +241,7 @@ test(`${RULE_ID}: text hidden by CSS, or an empty icon, is named`, () => {
   assert.equal(hidden.i18n.summaryKey, 'headingContentPresent_summary_fail_empty_hiddenText');
   assert.equal(
     hidden.summary,
-    'This heading shows no text: its text "Actualités" is in a <span> with display: none, which hides it from screen readers as well as from view.'
+    'This heading shows no text: its text "Actualités" is in the <span> element with display: none, which hides it from screen readers as well as from view.'
   );
   const icon = assertRule(run('<h2><i class="fa fa-star"></i></h2>'), RULE_ID, 'fail')
     .occurrences[0];
@@ -260,7 +260,7 @@ test(`${RULE_ID}: text hidden by CSS, or an empty icon, is named`, () => {
   ).occurrences[0];
   assert.equal(
     fr.summary,
-    'Ce titre n’affiche aucun texte : son texte « Actualités » se trouve dans un <span> avec l’attribut hidden, qui le masque aux lecteurs d’écran comme à la vue.'
+    'Ce titre n’affiche aucun texte : son texte « Actualités » se trouve dans un élément <span> avec l’attribut hidden, qui le masque aux lecteurs d’écran comme à la vue.'
   );
 });
 
@@ -269,6 +269,6 @@ test(`${RULE_ID}: the question names the content that gives no text`, () => {
     .occurrences[0];
   assert.equal(
     occ.summary,
-    'This heading\'s text "★" is in a <span> with aria-hidden="true", which hides it from assistive technologies.'
+    'This heading\'s text "★" is in the <span> element with aria-hidden="true", which hides it from assistive technologies.'
   );
 });

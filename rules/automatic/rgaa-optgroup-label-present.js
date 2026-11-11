@@ -51,6 +51,41 @@ function runInPage(ctx) {
     ? helpers.queryAllSmart('select optgroup')
     : helpers.queryAll('select optgroup');
 
+  // An attribute written close to label (lable, labell, libelle), which
+  // browsers do not read: the hint names it.
+  function misspelledLabel(el) {
+    const attrs = dom.attributes(el) || [];
+    for (let i = 0; i < attrs.length; i++) {
+      const name = String(attrs[i].name || '').toLowerCase();
+      if (!name || name === 'label' || /^(aria|data)-/.test(name)) continue;
+      if (['class', 'id', 'style', 'disabled', 'title', 'lang', 'dir', 'hidden'].includes(name)) {
+        continue;
+      }
+      // Optimal string alignment distance to "label".
+      const a = name;
+      const b = 'label';
+      const d = [];
+      for (let x = 0; x <= a.length; x++) d.push([x]);
+      for (let y = 1; y <= b.length; y++) d[0][y] = y;
+      for (let x = 1; x <= a.length; x++) {
+        for (let y = 1; y <= b.length; y++) {
+          const cost = a[x - 1] === b[y - 1] ? 0 : 1;
+          d[x][y] = Math.min(d[x - 1][y] + 1, d[x][y - 1] + 1, d[x - 1][y - 1] + cost);
+          if (x > 1 && y > 1 && a[x - 1] === b[y - 2] && a[x - 2] === b[y - 1]) {
+            d[x][y] = Math.min(d[x][y], d[x - 2][y - 2] + 1);
+          }
+        }
+      }
+      if (d[a.length][b.length] <= 1 || ['libelle', 'libellé', 'labelle'].includes(name)) {
+        const value = String(attrs[i].value || '')
+          .replace(/\s+/g, ' ')
+          .trim();
+        return { attribute: name, value: value.length > 60 ? `${value.slice(0, 59)}…` : value };
+      }
+    }
+    return null;
+  }
+
   const occurrences = [];
   let applicableCount = 0;
 
@@ -59,18 +94,26 @@ function runInPage(ctx) {
     applicableCount += 1;
 
     if (dom.hasAttribute(el, 'label')) continue;
+    const misspelled = misspelledLabel(el);
 
     occurrences.push(
       helpers.reportOccurrence(el, {
         summary: 'This option group has no label attribute.',
-        hint: 'Give the <optgroup> a label attribute naming what its options have in common.',
+        hint: misspelled
+          ? `It has ${misspelled.attribute}="${misspelled.value}", but browsers do not read ${misspelled.attribute}: did you mean label? Rename the attribute.`
+          : 'Give the <optgroup> a label attribute naming what its options have in common.',
         i18n: {
           summaryKey: 'optgroupLabelPresent_summary_fail_missing',
-          hintKey: 'optgroupLabelPresent_hint_fail',
-          params: {}
+          hintKey: misspelled
+            ? 'optgroupLabelPresent_hint_misspelled'
+            : 'optgroupLabelPresent_hint_fail',
+          params: misspelled || {}
         },
         data: {
-          details: { reasonCode: 'missingLabel' },
+          details: {
+            reasonCode: 'missingLabel',
+            ...(misspelled ? { misspelledAttribute: misspelled.attribute } : {})
+          },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })

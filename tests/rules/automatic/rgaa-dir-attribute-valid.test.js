@@ -102,7 +102,8 @@ test(`${RULE_ID}: any other value fails and is quoted as written`, () => {
     assert.equal(occ.data.details.reasonCode, 'invalidDir', value);
     assert.equal(occ.data.details.value, value);
     assert.equal(occ.i18n.summaryKey, 'dirAttributeValid_summary_fail_invalid');
-    assert.deepEqual(occ.i18n.params, { value });
+    // rlt and right name the value meant.
+    assert.deepEqual(occ.i18n.params, value ? { value, suggestion: 'rtl' } : { value });
   }
 });
 
@@ -152,4 +153,22 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-dir-attribute-valid-all-
   const rule = assertRule(result, RULE_ID, 'fail', { minOccurrences: 4, maxOccurrences: 4 });
   const ids = rule.occurrences.map((o) => (o.html.match(/id="([^"]+)"/) || [])[1]);
   assert.deepEqual(ids, ['dav_case_01', 'dav_case_02', 'dav_case_03', 'dav_case_06']);
+});
+
+// The occurrences a body gives, in English or in the locale asked.
+function messagesOf(body, locale) {
+  const result = runa11yCoreOnHtml(
+    `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`,
+    { ...RUN, ...(locale ? { engineOptions: { locale } } : {}) }
+  );
+  return result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+}
+
+test(`${RULE_ID}: a value close to ltr or rtl names the one meant`, () => {
+  const [occ] = messagesOf('<p dir="rlt">x</p>');
+  assert.equal(occ.data.details.reasonCode, 'invalidDir');
+  assert.equal(occ.i18n.hintKey, 'dirAttributeValid_hint_fail_suggest');
+  assert.match(occ.hint, /^Did you mean dir="rtl"\?/);
+  const [none] = messagesOf('<p dir="xyz">x</p>');
+  assert.equal(none.i18n.hintKey, 'dirAttributeValid_hint_fail');
 });

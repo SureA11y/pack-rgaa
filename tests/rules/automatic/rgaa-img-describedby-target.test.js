@@ -101,3 +101,22 @@ test(`${RULE_ID}: the hint names a close id of the page`, () => {
     'Did you mean "desc-carte"? An element of the page has that id. Point aria-describedby at it, exactly as written, case included (RGAA 1.6.9).'
   );
 });
+
+// The occurrences a body gives, in English or in the locale asked.
+function messagesOf(body, locale) {
+  const result = runa11yCoreOnHtml(
+    `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`,
+    { ...RUN, ...(locale ? { engineOptions: { locale } } : {}) }
+  );
+  return result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+}
+
+test(`${RULE_ID}: some missing ids name the ids close to them`, () => {
+  const [occ] = messagesOf(
+    '<img src="a.png" alt="x" aria-describedby="a Descr"><p id="a">x</p><p id="descr">d</p>'
+  );
+  assert.equal(occ.data.details.reasonCode, 'someTargetsMissing');
+  assert.equal(occ.i18n.hintKey, 'imgDescribedbyTarget_hint_cantTell_suggest');
+  assert.deepEqual(occ.data.details.suggestions, ['descr']);
+  assert.match(occ.hint, /^Did you mean "descr"\?/);
+});

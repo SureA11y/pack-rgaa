@@ -216,3 +216,28 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
   assert.deepEqual(ids, ['alir_case_01', 'alir_case_02', 'alir_case_03', 'alir_case_07']);
   assert.equal(rule.occurrences[3].data.details.reasonCode, 'childWithoutListitemRoleOrdered');
 });
+
+// The occurrences a body gives, in English or in the locale asked.
+function messagesOf(body, locale) {
+  const result = runa11yCoreOnHtml(
+    `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`,
+    { ...RUN, ...(locale ? { engineOptions: { locale } } : {}) }
+  );
+  return result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+}
+
+test(`${RULE_ID}: the first child that is not an item is named, and a misspelled role`, () => {
+  const [occ] = messagesOf(
+    '<div role="list"><div role="list-item">a</div><div role="list-item">b</div></div>'
+  );
+  assert.equal(occ.i18n.hintKey, 'ariaListItemRoles_hint_cantTell_misspelled');
+  assert.equal(occ.data.details.firstChildRole, 'list-item');
+  assert.equal(
+    occ.summary,
+    'This role="list" has 2 child element(s) without role="listitem", the first <div role="list-item">.'
+  );
+  assert.match(occ.hint, /did you mean role="listitem"\?/);
+  const [plain] = messagesOf('<div role="list"><span>a</span></div>');
+  assert.equal(plain.i18n.hintKey, 'ariaListItemRoles_hint_cantTell');
+  assert.match(plain.summary, /the first <span>\.$/);
+});

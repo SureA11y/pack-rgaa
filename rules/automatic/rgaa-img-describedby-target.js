@@ -232,22 +232,36 @@ function runInPage(ctx) {
     const empty = found.filter(Boolean).every((t) => !String(dom.textContent(t) || '').trim());
     if (!missing.length && !empty) continue;
     const kind = missing.length ? 'someTargetsMissing' : 'emptyDescription';
+    // The ids of the page close to the missing ones, which the image may mean.
+    const close = [];
+    for (const ref of missing) {
+      const near = nearId(el, ref);
+      if (near && !refs.includes(near) && !close.includes(near)) close.push(near);
+    }
+    const suggestions = close.join(' ');
     cantTells.push(
       helpers.reportOccurrence(el, {
         summary: missing.length
           ? `This image's aria-describedby lists ids that do not exist: "${params.missing}".`
           : "The passages this image's aria-describedby points to hold no text.",
-        hint: 'Check that aria-describedby associates the detailed description of the image (RGAA 1.6.9).',
+        hint: suggestions
+          ? `Did you mean "${suggestions}"? An element of the page has that id. Correct aria-describedby, case included, and check that it associates the detailed description of the image (RGAA 1.6.9).`
+          : 'Check that aria-describedby associates the detailed description of the image (RGAA 1.6.9).',
         i18n: {
           summaryKey: `imgDescribedbyTarget_summary_cantTell_${kind}`,
-          hintKey: 'imgDescribedbyTarget_hint_cantTell',
-          params
+          hintKey: suggestions
+            ? 'imgDescribedbyTarget_hint_cantTell_suggest'
+            : 'imgDescribedbyTarget_hint_cantTell',
+          params: suggestions ? { ...params, suggestions } : params
         },
         uncertainty: {
           code: 'judgement-required',
           needed: 'Whether aria-describedby associates the detailed description.'
         },
-        data: { details: { reasonCode: kind, ...params }, visibilityFilter: VF }
+        data: {
+          details: { reasonCode: kind, ...params, ...(suggestions ? { suggestions: close } : {}) },
+          visibilityFilter: VF
+        }
       })
     );
   }

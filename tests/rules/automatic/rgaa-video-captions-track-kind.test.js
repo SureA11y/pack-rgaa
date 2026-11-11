@@ -167,3 +167,21 @@ test(`${RULE_ID}: under the rgaa-4.1.2 profile: translation cantTell, subtitles 
   });
   assert.ok(!wcag.checksResults.some((r) => r.ruleId === RULE_ID));
 });
+
+// The occurrences a body gives, in English or in the locale asked.
+function messagesOf(body, locale) {
+  const result = runa11yCoreOnHtml(
+    `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`,
+    { ...RUN, ...(locale ? { engineOptions: { locale } } : {}) }
+  );
+  return result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+}
+
+test(`${RULE_ID}: a kind close to captions names it`, () => {
+  const [occ] = messagesOf(
+    '<video src="a.mp4" controls><track kind="caption" src="a.vtt" srclang="en"></video>'
+  );
+  assert.equal(occ.data.details.reasonCode, 'invalidKind');
+  assert.equal(occ.i18n.hintKey, 'videoCaptionsTrackKind_hint_fail_suggest');
+  assert.match(occ.hint, /^Did you mean kind="captions"\?/);
+});

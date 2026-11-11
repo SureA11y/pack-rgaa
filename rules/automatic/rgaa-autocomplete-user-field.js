@@ -267,6 +267,82 @@ function runInPage(ctx) {
     return ['name', 'id'].some((a) => NAME_ATTR_WORDS.test(trim(dom.getAttribute(el, a))));
   }
 
+  // Values often written for a field of the list, and the one meant.
+  const NEAR_TOKENS = {
+    'e-mail': 'email',
+    mail: 'email',
+    courriel: 'email',
+    postcode: 'postal-code',
+    postalcode: 'postal-code',
+    'post-code': 'postal-code',
+    zip: 'postal-code',
+    zipcode: 'postal-code',
+    'zip-code': 'postal-code',
+    phone: 'tel',
+    telephone: 'tel',
+    'phone-number': 'tel',
+    firstname: 'given-name',
+    'first-name': 'given-name',
+    fname: 'given-name',
+    lastname: 'family-name',
+    'last-name': 'family-name',
+    surname: 'family-name',
+    lname: 'family-name',
+    birthday: 'bday',
+    birthdate: 'bday',
+    login: 'username',
+    city: 'address-level2',
+    address: 'street-address',
+    company: 'organization'
+  };
+  // Optimal string alignment distance: a transposition counts as one edit.
+  function distance(a, b) {
+    const d = [];
+    for (let i = 0; i <= a.length; i++) d.push([i]);
+    for (let j = 1; j <= b.length; j++) d[0][j] = j;
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+        d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+        if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+          d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+        }
+      }
+    }
+    return d[a.length][b.length];
+  }
+  // The field name meant by a token of the value that is not in the list
+  // (e-mail, postcode, given_name, emial), when the value with it in its
+  // place is well formed. Returns { token, suggestion, suggested } or null.
+  function nearValue(tokens) {
+    for (let i = 0; i < tokens.length; i++) {
+      const t = tokens[i];
+      if (FIELD_NAMES.has(t) || CONTACT_MODALITY.has(t)) continue;
+      if (t === 'shipping' || t === 'billing' || t === 'webauthn' || t.startsWith('section-')) {
+        continue;
+      }
+      let suggestion = NEAR_TOKENS[t] || NEAR_TOKENS[t.replace(/_/g, '-')] || '';
+      if (!suggestion && FIELD_NAMES.has(t.replace(/_/g, '-'))) suggestion = t.replace(/_/g, '-');
+      if (!suggestion && t.length > 3) {
+        let best = '';
+        let bestD = Infinity;
+        for (const f of FIELD_NAMES) {
+          const dd = distance(t, f);
+          if (dd < bestD) {
+            bestD = dd;
+            best = f;
+          }
+        }
+        if (bestD <= (best.length > 5 ? 2 : 1)) suggestion = best;
+      }
+      if (!suggestion) continue;
+      const fixed = tokens.slice();
+      fixed[i] = suggestion;
+      if (isValid(fixed)) return { token: t, suggestion, suggested: fixed.join(' ') };
+    }
+    return null;
+  }
+
   const nodes = helpers.queryAllSmart
     ? helpers.queryAllSmart('input, select, textarea')
     : helpers.queryAll('input, select, textarea');
@@ -319,17 +395,30 @@ function runInPage(ctx) {
       continue;
     }
 
+    const near = value ? nearValue(tokens) : null;
+    const nearHint = near
+      ? `"${near.token}" is not a value of the list: did you mean "${near.suggestion}"? Write autocomplete="${near.suggested}".`
+      : '';
+    const nearDetails = near ? { suggestion: near.suggested } : {};
+
     if (namesField) {
       fails.push(
         helpers.reportOccurrence(el, {
           summary: `This field's autocomplete value "${value}" names a field about the user but is not well formed, so the browser cannot use it.`,
-          hint: 'Write the value as the list gives it: an optional section-*, shipping or billing, home, work or mobile before a contact field only, then one field name, such as "shipping postal-code" or "work email".',
+          hint:
+            nearHint ||
+            'Write the value as the list gives it: an optional section-*, shipping or billing, home, work or mobile before a contact field only, then one field name, such as "shipping postal-code" or "work email".',
           i18n: {
             summaryKey: 'autocompleteUserField_summary_fail',
-            hintKey: 'autocompleteUserField_hint_fail',
-            params: { value }
+            hintKey: near
+              ? 'autocompleteUserField_hint_nearValue'
+              : 'autocompleteUserField_hint_fail',
+            params: near ? { value, ...near } : { value }
           },
-          data: { details: { reasonCode: 'malformedUserField', value }, visibilityFilter: VF }
+          data: {
+            details: { reasonCode: 'malformedUserField', value, ...nearDetails },
+            visibilityFilter: VF
+          }
         })
       );
       continue;
@@ -348,18 +437,22 @@ function runInPage(ctx) {
     cantTells.push(
       helpers.reportOccurrence(el, {
         summary: summaries[reasonCode],
-        hint: 'If the field asks for information about the user, give it the autocomplete value of the list that matches it, such as "email", "tel" or "family-name".',
+        hint: near
+          ? `"${near.token}" is not a value of the list: did you mean "${near.suggestion}"? If the field asks for information about the user, write autocomplete="${near.suggested}".`
+          : 'If the field asks for information about the user, give it the autocomplete value of the list that matches it, such as "email", "tel" or "family-name".',
         i18n: {
           summaryKey: `autocompleteUserField_summary_cantTell_${reasonCode}`,
-          hintKey: 'autocompleteUserField_hint_cantTell',
-          params: { value }
+          hintKey: near
+            ? 'autocompleteUserField_hint_cantTell_nearValue'
+            : 'autocompleteUserField_hint_cantTell',
+          params: near ? { value, ...near } : { value }
         },
         uncertainty: {
           code: 'judgement-required',
           needed: 'Whether the field asks for information about the user.',
           evidence: { reasonCode, value }
         },
-        data: { details: { reasonCode, value }, visibilityFilter: VF }
+        data: { details: { reasonCode, value, ...nearDetails }, visibilityFilter: VF }
       })
     );
   }

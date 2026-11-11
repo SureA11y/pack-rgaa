@@ -286,7 +286,7 @@ function runInPage(ctx) {
     const ids = String(dom.getAttribute(table, 'aria-describedby') || '').trim();
     let hintVariant = '';
     let hint =
-      'Check that a summary explains how the table is organised, in its <caption> or in a passage tied to it with aria-describedby (RGAA 5.1.1).';
+      'Check that a summary explains how the table is organised, in its <caption> or in a passage next to it, ideally linked with aria-describedby.';
     if (describedby) {
       hintVariant = '_describedbyUnresolved';
       params.ids = ids;

@@ -64,3 +64,21 @@ test(`${RULE_ID}: notApplicable on a scoped run or a fragment`, () => {
     'notApplicable'
   );
 });
+
+// The occurrences a body gives, in English or in the locale asked.
+function messagesOf(body, locale) {
+  const result = runa11yCoreOnHtml(
+    `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`,
+    { ...RUN, ...(locale ? { engineOptions: { locale } } : {}) }
+  );
+  return result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+}
+
+test(`${RULE_ID}: a bold line that opens a block is quoted`, () => {
+  const text =
+    'lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation';
+  const [occ] = messagesOf(`<p>${text}</p><p><strong>Our services</strong></p><p>${text}</p>`);
+  assert.equal(occ.i18n.hintKey, 'headingsAbsentReview_hint_cantTell_boldLine');
+  assert.equal(occ.data.details.boldLine, 'Our services');
+  assert.match(occ.hint, /^The bold line "Our services" opens a block and may act as a heading\./);
+});

@@ -154,6 +154,27 @@ function runInPage(ctx) {
     return true;
   }
 
+  // Optimal string alignment distance: a transposition counts as one edit.
+  function distance(a, b) {
+    const d = [];
+    for (let i = 0; i <= a.length; i++) d.push([i]);
+    for (let j = 1; j <= b.length; j++) d[0][j] = j;
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+        d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+        if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+          d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+        }
+      }
+    }
+    return d[a.length][b.length];
+  }
+  const clip = (v) => {
+    const t = trim(v);
+    return t.length > 40 ? `${t.slice(0, 39)}…` : t;
+  };
+
   function titleChildText(el) {
     for (const child of [...dom.querySelectorAll(el, ':scope > *')]) {
       if (tagOf(child) === 'title') return trim(dom.textContent(child));
@@ -182,6 +203,16 @@ function runInPage(ctx) {
     const isRoleImg = trim(attr(svg, 'role')).toLowerCase().split(' ')[0] === 'img';
     if (isRoleImg) continue;
 
+    // A role attribute that is not img: a misspelling (image, imge) reads
+    // as no role at all, so the message names it.
+    const roleValue = trim(attr(svg, 'role'));
+    const roleToken = roleValue.toLowerCase().split(' ')[0];
+    const misspelled =
+      !!roleToken &&
+      (roleToken.replace(/[-_]/g, '') === 'img' ||
+        distance(roleToken, 'img') <= 1 ||
+        (roleToken.slice(0, 2) === 'im' && distance(roleToken, 'img') <= 2));
+    const roleParams = roleValue ? { role: clip(roleValue) } : {};
     const found = [];
     if (mechanism) found.push(mechanism);
     if (title) found.push('<title>');
@@ -194,19 +225,31 @@ function runInPage(ctx) {
     if (!certainlyInformative(svg)) {
       cantTells.push(
         helpers.reportOccurrence(svg, {
-          summary: `This <svg> has a text alternative (${alternatives}) but no role="img". If it carries information, it fails 1.1.5; if it is decorative, 1.2.4.`,
-          hint: 'If the image carries information, add role="img" and name it with aria-label or aria-labelledby. If it is decorative, remove the alternative and add aria-hidden="true".',
+          summary: roleValue
+            ? `This <svg> has a text alternative (${alternatives}), but its role is "${roleParams.role}", not "img". If it carries information, it fails 1.1.5; if it is decorative, 1.2.4.`
+            : `This <svg> has a text alternative (${alternatives}) but no role="img". If it carries information, it fails 1.1.5; if it is decorative, 1.2.4.`,
+          hint: misspelled
+            ? `Its role="${roleParams.role}" is not a WAI-ARIA role: did you mean role="img"? Correct it, or, if the image is decorative, remove the alternative and add aria-hidden="true".`
+            : 'Add role="img" to the <svg>, and name it with aria-label or aria-labelledby. If the image is decorative, remove the alternative and add aria-hidden="true".',
           i18n: {
-            summaryKey: 'svgRoleImg_summary_cantTell_missingRole',
-            hintKey: 'svgRoleImg_hint_fail_missingRole',
-            params: { alternatives }
+            summaryKey: roleValue
+              ? 'svgRoleImg_summary_cantTell_missingRole_otherRole'
+              : 'svgRoleImg_summary_cantTell_missingRole',
+            hintKey: misspelled
+              ? 'svgRoleImg_hint_fail_missingRole_misspelled'
+              : 'svgRoleImg_hint_fail_missingRole',
+            params: { alternatives, ...roleParams }
           },
           uncertainty: {
             code: 'judgement-required',
             needed: 'Whether the image carries information or is decorative.'
           },
           data: {
-            details: { reasonCode: 'missingRoleMayBeDecorative', alternatives: found },
+            details: {
+              reasonCode: 'missingRoleMayBeDecorative',
+              alternatives: found,
+              ...(roleValue ? { role: roleParams.role } : {})
+            },
             visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
           }
         })
@@ -215,15 +258,27 @@ function runInPage(ctx) {
     }
     fails.push(
       helpers.reportOccurrence(svg, {
-        summary: `This <svg> has a text alternative (${alternatives}) but no role="img".`,
-        hint: 'Add role="img" to the <svg>, and name it with aria-label or aria-labelledby. If the image is decorative, remove the alternative and add aria-hidden="true".',
+        summary: roleValue
+          ? `This <svg> has a text alternative (${alternatives}), but its role is "${roleParams.role}", not "img".`
+          : `This <svg> has a text alternative (${alternatives}) but no role="img".`,
+        hint: misspelled
+          ? `Its role="${roleParams.role}" is not a WAI-ARIA role: did you mean role="img"? Correct it, or, if the image is decorative, remove the alternative and add aria-hidden="true".`
+          : 'Add role="img" to the <svg>, and name it with aria-label or aria-labelledby. If the image is decorative, remove the alternative and add aria-hidden="true".',
         i18n: {
-          summaryKey: 'svgRoleImg_summary_fail_missingRole',
-          hintKey: 'svgRoleImg_hint_fail_missingRole',
-          params: { alternatives }
+          summaryKey: roleValue
+            ? 'svgRoleImg_summary_fail_missingRole_otherRole'
+            : 'svgRoleImg_summary_fail_missingRole',
+          hintKey: misspelled
+            ? 'svgRoleImg_hint_fail_missingRole_misspelled'
+            : 'svgRoleImg_hint_fail_missingRole',
+          params: { alternatives, ...roleParams }
         },
         data: {
-          details: { reasonCode: 'missingRoleImg', alternatives: found },
+          details: {
+            reasonCode: 'missingRoleImg',
+            alternatives: found,
+            ...(roleValue ? { role: roleParams.role } : {})
+          },
           visibilityFilter: { targetSet: 'dom', accEligible: null, reasons: [] }
         }
       })

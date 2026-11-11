@@ -52,8 +52,12 @@ test(`${RULE_ID}: a page with script and no candidate still asks, once, at the s
   });
   const occ = rule.occurrences[0];
   assert.equal(occ.selector, 'html');
-  assert.deepEqual(occ.data.details, { reasonCode: 'pageReview', scriptEvidence: 'scriptElement' });
-  assert.equal(occ.i18n.summaryKey, 'scriptedComponentsReview_summary_cantTell_page');
+  assert.deepEqual(occ.data.details, {
+    reasonCode: 'pageReview',
+    scriptEvidence: 'scriptElement',
+    scriptEvidenceElement: '<script src="/js/app.js">'
+  });
+  assert.equal(occ.i18n.summaryKey, 'scriptedComponentsReview_summary_cantTell_page_evidence');
   assert.match(occ.summary, /cannot see behaviour attached from script files/);
   assert.match(occ.hint, /7\.1\.1.*7\.1\.2.*7\.1\.3/);
   assert.match(occ.hint, /starting point, not a complete list/);
@@ -346,4 +350,23 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-scripted-components-revi
     'stateAttribute',
     'widgetRole'
   ]);
+});
+
+// The occurrences a body gives, in English or in the locale asked.
+function messagesOf(body, locale) {
+  const result = runa11yCoreOnHtml(
+    `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`,
+    { ...RUN, ...(locale ? { engineOptions: { locale } } : {}) }
+  );
+  return result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+}
+
+test(`${RULE_ID}: the page occurrence names the first sign of script`, () => {
+  const [occ] = messagesOf('<script src="/js/app.js"></script><p>x</p>');
+  assert.equal(occ.i18n.summaryKey, 'scriptedComponentsReview_summary_cantTell_page_evidence');
+  assert.equal(occ.data.details.scriptEvidenceElement, '<script src="/js/app.js">');
+  assert.match(
+    occ.summary,
+    /^This page runs script \(first sign: <script src="\/js\/app\.js">\)\./
+  );
 });

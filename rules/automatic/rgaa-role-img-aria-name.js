@@ -236,7 +236,7 @@ function runInPage(ctx) {
       case 'labelledbyMissing':
         return `Its aria-labelledby names "${p.ids}", but no element of the page has that id${p.suggestion ? ` (did you mean "${p.suggestion}"?)` : ''}, so it gives no text alternative. Point aria-labelledby at the id of the text that describes the image, or use aria-label.`;
       case 'labelledbyEmpty':
-        return `Its aria-labelledby points to a <${p.element}> with id "${p.id}" that holds no text, so it gives no text alternative. Put the description in that element, or use aria-label.`;
+        return `Its aria-labelledby points to the <${p.element}> element with id "${p.id}" that holds no text, so it gives no text alternative. Put the description in that element, or use aria-label.`;
       default:
         return 'Its aria-label is empty, so it gives no text alternative. Write in aria-label what the image shows.';
     }
@@ -286,7 +286,9 @@ function runInPage(ctx) {
     const element = tagOf(el);
     if (svgTitleChildText(el)) continue;
 
-    const titleOnly = !!trim(attr(el, 'title'));
+    const titleText = trim(attr(el, 'title'));
+    const titleOnly = !!titleText;
+    const title = titleText.length > 60 ? `${titleText.slice(0, 59)}…` : titleText;
     // A cause the markup shows replaces the generic hint.
     const cause = titleOnly ? null : alternativeCause(el);
     fails.push(
@@ -296,13 +298,19 @@ function runInPage(ctx) {
           : `This <${element}> with role="img" has no text alternative.`,
         hint: cause
           ? causeHint(cause)
-          : 'Give it an aria-label, or an aria-labelledby that points to text describing the image.',
+          : titleOnly
+            ? `Its title "${title}" does not count as a text alternative here: move that text to aria-label, if it says what the image shows.`
+            : 'Give it an aria-label, or an aria-labelledby that points to text describing the image.',
         i18n: {
           summaryKey: titleOnly
             ? 'roleImgAriaName_summary_fail_titleOnly'
             : 'roleImgAriaName_summary_fail_missing',
-          hintKey: cause ? `roleImgAriaName_hint_fail_${cause.cause}` : 'roleImgAriaName_hint_fail',
-          params: { element, ...(cause ? cause.params : {}) }
+          hintKey: cause
+            ? `roleImgAriaName_hint_fail_${cause.cause}`
+            : titleOnly
+              ? 'roleImgAriaName_hint_fail_titleOnly'
+              : 'roleImgAriaName_hint_fail',
+          params: { element, ...(titleOnly ? { title } : {}), ...(cause ? cause.params : {}) }
         },
         data: {
           details: {

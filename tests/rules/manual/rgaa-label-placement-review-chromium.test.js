@@ -245,6 +245,35 @@ test(`${RULE_ID} in Chromium: label placement`, { skip }, async (t) => {
     }
   });
 
+  await t.test('the summary names the side of the field the label is on', async () => {
+    const occurrencesOf = async (body) =>
+      (await run(page(body))).checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+    const [below] = await occurrencesOf(
+      '<input id="a" style="display:block"><label for="a">Nom</label>'
+    );
+    assert.equal(
+      below.i18n.summaryKey,
+      'labelPlacementReview_summary_cantTell_labelNotAboveOrLeft_side'
+    );
+    assert.equal(below.data.details.side, 'below');
+    assert.match(
+      below.summary,
+      /^The label "Nom" is below this field, \d+ px away, not just above it or before it on the same line\.$/
+    );
+    const [left] = await occurrencesOf(
+      '<label for="c">J’accepte</label> <input id="c" type="checkbox">'
+    );
+    assert.equal(
+      left.i18n.summaryKey,
+      'labelPlacementReview_summary_cantTell_labelNotBelowOrRight_side'
+    );
+    assert.equal(left.data.details.side, 'left');
+    assert.match(
+      left.summary,
+      /is to the left of this check box, radio button or switch, \d+ px away/
+    );
+  });
+
   await t.test('French messages and the RGAA rollup', async () => {
     const result = await run(page('<input id="a"> <label for="a">Nom</label>'), {
       locale: 'fr',
@@ -252,9 +281,9 @@ test(`${RULE_ID} in Chromium: label placement`, { skip }, async (t) => {
     });
     const rule = result.checksResults.find((r) => r.ruleId === RULE_ID);
     assert.equal(rule.outcome, 'cantTell');
-    assert.equal(
+    assert.match(
       rule.occurrences[0].summary,
-      'L’étiquette « Nom » n’est ni juste au-dessus de ce champ ni juste avant lui sur la même ligne.'
+      /^L’étiquette « Nom » se trouve à droite de ce champ, à \d+ px, et non juste au-dessus de lui ni juste avant lui sur la même ligne\.$/
     );
     // The full RGAA profile rolls the question up into criterion 11.4.
     const all = await run(page('<input id="a"> <label for="a">Nom</label>'), {

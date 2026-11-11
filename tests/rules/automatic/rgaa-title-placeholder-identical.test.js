@@ -145,3 +145,20 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-title-placeholder-identi
     ['tpi_case_03', 'cantTell', 'TITLE_PLACEHOLDER_DIFFER']
   ]);
 });
+
+// The occurrences a body gives, in English or in the locale asked.
+function messagesOf(body, locale) {
+  const result = runa11yCoreOnHtml(
+    `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`,
+    { ...RUN, ...(locale ? { engineOptions: { locale } } : {}) }
+  );
+  return result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+}
+
+test(`${RULE_ID}: the code's English text quotes the title and placeholder, as en.json does`, () => {
+  const [occ] = messagesOf('<input title="Nom de famille" placeholder="Dupont">');
+  assert.equal(
+    occ.summary,
+    'The title ("Nom de famille") and the placeholder ("Dupont") of this form field differ.'
+  );
+});

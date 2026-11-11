@@ -122,17 +122,23 @@ function runInPage(ctx) {
     if (!player || !visible(frame)) continue;
     const autoplay = AUTOPLAY.test(src);
     const kind = autoplay ? 'embeddedPlayerAutoplay' : 'embeddedPlayer';
-    const params = { service: player.service };
+    // The frame's title, which names the media, for the summary.
+    const rawTitle = String(attr(frame, 'title') || '')
+      .replace(/\s+/g, ' ')
+      .trim();
+    const title = rawTitle.length > 60 ? `${rawTitle.slice(0, 59)}…` : rawTitle;
+    const params = { service: player.service, ...(title ? { title } : {}) };
+    const titled = title ? ` titled "${title}"` : '';
     occurrences.push(
       helpers.reportOccurrence(frame, {
         summary: autoplay
-          ? `This ${player.service} player starts playing by itself.`
-          : `This ${player.service} player shows a media.`,
+          ? `This ${player.service} player${titled} starts playing by itself.`
+          : `This ${player.service} player${titled} shows a media.`,
         hint: autoplay
           ? 'Check that its sound stops within 3 seconds or can be stopped or turned down (RGAA 4.10), and that the media has the transcript, captions and audio description it needs, is identified by the text next to it, and can be controlled by keyboard (RGAA 4.1, 4.3, 4.5, 4.7, 4.11, 4.13).'
           : 'Check that the media has the transcript, captions and audio description it needs, is identified by the text next to it, and can be controlled by keyboard (RGAA 4.1, 4.3, 4.5, 4.7, 4.11, 4.13).',
         i18n: {
-          summaryKey: `embeddedPlayerReview_summary_cantTell_${kind}`,
+          summaryKey: `embeddedPlayerReview_summary_cantTell_${kind}${title ? '_titled' : ''}`,
           hintKey: `embeddedPlayerReview_hint_cantTell_${kind}`,
           params
         },

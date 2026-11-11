@@ -240,7 +240,12 @@ function runInPage(ctx) {
       if (!name || KNOWN.has(name) || name.slice(0, 5) === 'data-') continue;
       const value = clip(attrs[i].value, 60);
       if (!value) continue;
-      for (const target of ['aria-labelledby', 'aria-label', 'title']) {
+      // An image button takes its name from alt, too (atl, al).
+      const targets =
+        tagOf(el) === 'input' && norm(attrOf(el, 'type')).toLowerCase() === 'image'
+          ? ['alt', 'aria-labelledby', 'aria-label', 'title']
+          : ['aria-labelledby', 'aria-label', 'title'];
+      for (const target of targets) {
         if (near(name, target)) {
           return {
             cause: 'misspelledAttribute',
@@ -366,15 +371,15 @@ function runInPage(ctx) {
       case 'labelledbyMissing':
         return `Its aria-labelledby names "${p.ids}", but no element of the page has that id${p.suggestion ? ` (did you mean "${p.suggestion}"?)` : ''}, so it gives no name. Point aria-labelledby at the id of the element that holds the button's text, or name the button with aria-label.`;
       case 'labelledbyEmpty':
-        return `Its aria-labelledby points to a <${p.element}> with id "${p.id}" that holds no text, so it gives no name. Put the button's text in that element, or name the button with aria-label.`;
+        return `Its aria-labelledby points to the <${p.element}> element with id "${p.id}" that holds no text, so it gives no name. Put the button's text in that element, or name the button with aria-label.`;
       case 'ariaLabelBlank':
         return 'Its aria-label is empty, so it gives no name. Write in aria-label what the button does, or give the button visible text.';
       case 'inputNoValue':
         return 'This <input type="button"> has no value, which is where its text goes. Give it a value that says what the button does.';
       case 'hiddenText':
-        return `Its text "${p.text}" is in a <${p.element}> with ${p.hiddenAttribute ? 'the hidden attribute' : p.property}, which hides it from screen readers as well as from view, so it gives no name. Let screen readers read it (a visually-hidden class keeps it off screen but read), or name the button with aria-label.`;
+        return `Its text "${p.text}" is in the <${p.element}> element with ${p.hiddenAttribute ? 'the hidden attribute' : p.property}, which hides it from screen readers as well as from view, so it gives no name. Let screen readers read it (a visually-hidden class keeps it off screen but read), or name the button with aria-label.`;
       case 'ariaHiddenText':
-        return `Its text "${p.text}" is in a <${p.element}> with aria-hidden="true", which hides it from screen readers, so it gives no name. Remove aria-hidden from that element, or name the button with aria-label.`;
+        return `Its text "${p.text}" is in the <${p.element}> element with aria-hidden="true", which hides it from screen readers, so it gives no name. Remove aria-hidden from that element, or name the button with aria-label.`;
       case 'imageNoAlt':
         return `Its content is an <img> with ${p.emptyAlt ? 'an empty alt, which marks it as decorative' : 'no alt'}, so it gives no name. Give the image an alt that says what the button does, or name the button with aria-label.`;
       case 'svgNoName':
@@ -462,7 +467,12 @@ function runInPage(ctx) {
         : 'nameMissing';
     const msg = MESSAGES[reasonCode];
     // A cause the markup shows replaces the generic hint.
-    const cause = reasonCode === 'imageButtonNoAlt' ? null : nameCause(el);
+    let cause = nameCause(el);
+    // An image button with no alt keeps its own hint, unless it has a
+    // misspelled alt or naming attribute.
+    if (cause && reasonCode === 'imageButtonNoAlt' && cause.cause !== 'misspelledAttribute') {
+      cause = null;
+    }
     const occurrence = helpers.reportOccurrence(el, {
       summary: msg.summary,
       hint: cause ? causeHint(cause) : msg.hint,

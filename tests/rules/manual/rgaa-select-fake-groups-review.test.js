@@ -53,3 +53,28 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
   const rule = assertRule(result, RULE_ID, 'cantTell', { minOccurrences: 1, maxOccurrences: 1 });
   assert.match(rule.occurrences[0].html, /id="sfg_case_01"/);
 });
+
+// The occurrences a body gives, in English or in the locale asked.
+function messagesOf(body, locale) {
+  const result = runa11yCoreOnHtml(
+    `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`,
+    { ...RUN, ...(locale ? { engineOptions: { locale } } : {}) }
+  );
+  return result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+}
+
+test(`${RULE_ID}: every option that looks like a heading is named`, () => {
+  const [occ] = messagesOf(
+    '<select><option>-- Fruits --</option><option>Apple</option><option>-- Veg --</option><option>Leek</option></select>'
+  );
+  assert.equal(occ.i18n.summaryKey, 'selectFakeGroupsReview_summary_cantTell_several');
+  assert.equal(
+    occ.summary,
+    'This list has no <optgroup>, but 2 of its options look like group headings: "-- Fruits -- | -- Veg --".'
+  );
+  // A first option that reads as a placeholder is left out.
+  const [placeholder] = messagesOf(
+    '<select><option value="">-- Choose --</option><option>-- Fruits --</option><option>Apple</option></select>'
+  );
+  assert.equal(placeholder.i18n.summaryKey, 'selectFakeGroupsReview_summary_cantTell');
+});

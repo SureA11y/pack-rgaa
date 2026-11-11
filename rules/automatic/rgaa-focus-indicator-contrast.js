@@ -1384,7 +1384,7 @@ function runInPage(ctx) {
     },
     notComputable: {
       summary: () =>
-        "The contrast of this element's focus indicator could not be computed (a background image, a gradient, a blurred shadow, an animation, a CSS variable, a condition such as @media, or rules the engine cannot order).",
+        "The contrast of this element's focus indicator could not be computed (a background image, a gradient, a pseudo-element's fill, an element painted over it, a blurred shadow, an animation, a CSS variable, a condition such as @media, or rules the engine cannot order).",
       hint: 'Measure the contrast of the focus indicator on the page: it needs a ratio of at least 3:1 with the colors next to it (RGAA 10.7.1).'
     },
     notMeasured: {

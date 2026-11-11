@@ -206,6 +206,46 @@ function runInPage(ctx) {
     // Rendered at 0 by 0, an image says nothing about its size.
     !(s.width === 0 && s.height === 0);
 
+  // Optimal string alignment distance: a transposition counts as one edit.
+  function distance(a, b) {
+    const d = [];
+    for (let i = 0; i <= a.length; i++) d.push([i]);
+    for (let j = 1; j <= b.length; j++) d[0][j] = j;
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+        d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+        if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+          d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+        }
+      }
+    }
+    return d[a.length][b.length];
+  }
+
+  // An attribute written close to alt (atl, al, alt-text), which browsers
+  // do not read: the image reads as having no alt, and the hint names it.
+  const IMG_ATTRS = new Set(
+    (
+      'src srcset sizes width height class id style title usemap ismap loading decoding ' +
+      'role lang dir crossorigin referrerpolicy fetchpriority name align border hspace ' +
+      'vspace longdesc tabindex hidden draggable alt'
+    ).split(' ')
+  );
+  function misspelledAlt(el) {
+    const attrs = dom.attributes(el) || [];
+    for (let i = 0; i < attrs.length; i++) {
+      const name = String(attrs[i].name || '').toLowerCase();
+      if (!name || IMG_ATTRS.has(name) || /^(aria|data)-/.test(name)) continue;
+      const bare = name.replace(/[-_:]/g, '');
+      if (distance(name, 'alt') <= 1 || /^alt(text|ernative|e)?$/.test(bare)) {
+        const value = trim(attrs[i].value);
+        return { attribute: name, value: value.length > 60 ? `${value.slice(0, 59)}…` : value };
+      }
+    }
+    return null;
+  }
+
   const nodes = helpers.queryAllSmart ? helpers.queryAllSmart('img') : helpers.queryAll('img');
   const layout = hasLayout();
 
@@ -245,6 +285,10 @@ function runInPage(ctx) {
     if (alt === '' || (alt != null && trim(alt))) continue;
     if (ariaNamed(el)) continue;
     if (trim(attr(el, 'title'))) continue;
+    const misspelled = blank ? null : misspelledAlt(el);
+    const misspelledHint = misspelled
+      ? `It has ${misspelled.attribute}="${misspelled.value}", but browsers do not read ${misspelled.attribute}: did you mean alt? Rename the attribute.`
+      : '';
 
     // Only an image that certainly carries information fails 1.1.1: one
     // that may be decorative (glossary « Image de décoration »: « Une image
@@ -257,20 +301,25 @@ function runInPage(ctx) {
           summary: blank
             ? 'This <img> has an alt of only spaces. If it carries information, it fails 1.1.1; if it is decorative, 1.2.1.'
             : 'This <img> has no alt attribute. If it carries information, it fails 1.1.1; if it is decorative, 1.2.1.',
-          hint: 'If the image carries information, give it an alt that says what it shows. If it is decorative, give it an empty alt (alt="").',
+          hint:
+            misspelledHint ||
+            'If the image carries information, give it an alt that says what it shows. If it is decorative, give it an empty alt (alt="").',
           i18n: {
             summaryKey: blank
               ? 'imgAltPresent_summary_cantTell_blank'
               : 'imgAltPresent_summary_cantTell',
-            hintKey: 'imgAltPresent_hint_cantTell',
-            params: {}
+            hintKey: misspelled ? 'imgAltPresent_hint_misspelled' : 'imgAltPresent_hint_cantTell',
+            params: misspelled || {}
           },
           uncertainty: {
             code: 'judgement-required',
             needed: 'Whether the image carries information or is decorative.'
           },
           data: {
-            details: { reasonCode: blank ? 'blankAltMayBeDecorative' : 'noAltMayBeDecorative' },
+            details: {
+              reasonCode: blank ? 'blankAltMayBeDecorative' : 'noAltMayBeDecorative',
+              ...(misspelled ? { misspelledAttribute: misspelled.attribute } : {})
+            },
             visibilityFilter: { targetSet: 'acc', accEligible: null, reasons: [] }
           }
         })
@@ -283,14 +332,19 @@ function runInPage(ctx) {
         summary: blank
           ? 'This <img> has an alt of only spaces.'
           : 'This <img> has no alt attribute.',
-        hint: 'Add an alt attribute that says what the image shows, or alt="" if the image is decorative.',
+        hint:
+          misspelledHint ||
+          'Add an alt attribute that says what the image shows, or alt="" if the image is decorative.',
         i18n: {
           summaryKey: blank ? 'imgAltPresent_summary_blank' : 'imgAltPresent_summary_fail',
-          hintKey: 'imgAltPresent_hint_fail',
-          params: {}
+          hintKey: misspelled ? 'imgAltPresent_hint_misspelled' : 'imgAltPresent_hint_fail',
+          params: misspelled || {}
         },
         data: {
-          details: { reasonCode: blank ? 'blankAlt' : 'missingAlt' },
+          details: {
+            reasonCode: blank ? 'blankAlt' : 'missingAlt',
+            ...(misspelled ? { misspelledAttribute: misspelled.attribute } : {})
+          },
           visibilityFilter: { targetSet: 'acc', accEligible: null, reasons: [] }
         }
       })

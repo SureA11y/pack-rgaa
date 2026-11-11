@@ -53,7 +53,12 @@ test(`${RULE_ID}: an alternative without role="img" is asked about and names the
     const occ = rule.occurrences[0];
     assert.equal(occ.data.details.reasonCode, 'missingRoleMayBeDecorative', body);
     assert.deepEqual(occ.data.details.alternatives, alternatives, body);
-    assert.deepEqual(occ.i18n.params, { alternatives: alternatives.join(', ') });
+    // A role attribute that is not img is named too.
+    const role = (/role="([^"]+)"/.exec(body) || [])[1];
+    assert.deepEqual(occ.i18n.params, {
+      alternatives: alternatives.join(', '),
+      ...(role ? { role } : {})
+    });
     assert.equal(occ.uncertainty.code, 'judgement-required');
   }
 });
@@ -193,4 +198,28 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/rgaa-svg-role-img-all-scenari
       ['sri_case_03', 'cantTell']
     ]
   );
+});
+
+// The occurrences a body gives, in English or in the locale asked.
+function messagesOf(body, locale) {
+  const result = runa11yCoreOnHtml(
+    `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`,
+    { ...RUN, ...(locale ? { engineOptions: { locale } } : {}) }
+  );
+  return result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+}
+
+test(`${RULE_ID}: a misspelled role is named, with the role meant`, () => {
+  const [occ] = messagesOf('<svg role="image" aria-label="Logo"></svg>');
+  assert.equal(occ.i18n.summaryKey, 'svgRoleImg_summary_cantTell_missingRole_otherRole');
+  assert.equal(occ.i18n.hintKey, 'svgRoleImg_hint_fail_missingRole_misspelled');
+  assert.equal(occ.data.details.role, 'image');
+  assert.match(occ.summary, /its role is "image", not "img"/);
+  assert.match(occ.hint, /Its role="image" is not a WAI-ARIA role: did you mean role="img"\?/);
+  const [fr] = messagesOf('<svg role="image" aria-label="Logo"></svg>', 'fr');
+  assert.match(fr.summary, /son rôle est « image », et non « img »/);
+  // Another role is named, without a suggestion.
+  const [other] = messagesOf('<svg role="presentation" aria-label="Logo"></svg>');
+  assert.equal(other.i18n.hintKey, 'svgRoleImg_hint_fail_missingRole');
+  assert.match(other.summary, /its role is "presentation"/);
 });

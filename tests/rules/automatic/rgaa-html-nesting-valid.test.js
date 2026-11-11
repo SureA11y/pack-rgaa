@@ -353,3 +353,20 @@ test(`${RULE_ID}: markup inside an open shadow root fails like markup outside it
   assert.equal(occ.data.details.inShadowRoot, undefined);
   assert.equal(occ.uncertainty, undefined);
 });
+
+// The occurrences a body gives, in English or in the locale asked.
+function messagesOf(body, locale) {
+  const result = runa11yCoreOnHtml(
+    `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`,
+    { ...RUN, ...(locale ? { engineOptions: { locale } } : {}) }
+  );
+  return result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+}
+
+test(`${RULE_ID}: an element is named as "the <x> element", whatever its tag`, () => {
+  const occ = messagesOf('<i><div>x</div></i>').find(
+    (o) => o.i18n.summaryKey === 'htmlNestingValid_summary_fail_flowInPhrasing'
+  );
+  assert.ok(occ);
+  assert.match(occ.summary, /^This <div> is inside the <i> element, which may only hold/);
+});

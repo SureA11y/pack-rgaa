@@ -29,11 +29,20 @@ test(`${RULE_ID}: a div with a key handler and no pointer handler is asked about
   assert.deepEqual(occ.data.details, {
     reasonCode: 'keyboardOnlyHandler',
     element: 'div',
-    keyAttrs: ['onkeydown']
+    keyAttrs: ['onkeydown'],
+    handler: 'go()'
   });
-  assert.equal(occ.i18n.summaryKey, 'keyboardOnlyEventHandlers_summary_cantTell');
-  assert.deepEqual(occ.i18n.params, { element: 'div', attrs: 'onkeydown' });
-  assert.equal(occ.summary, 'This <div> has onkeydown but no click or pointer handler.');
+  assert.equal(occ.i18n.summaryKey, 'keyboardOnlyEventHandlers_summary_cantTell_handler');
+  assert.deepEqual(occ.i18n.params, {
+    element: 'div',
+    attrs: 'onkeydown',
+    attribute: 'onkeydown',
+    handler: 'go()'
+  });
+  assert.equal(
+    occ.summary,
+    'This <div> has onkeydown but no click or pointer handler; its onkeydown runs "go()".'
+  );
 });
 
 test(`${RULE_ID}: every key handler is listed, and a hover handler is not a pointer equivalent`, () => {
@@ -120,7 +129,7 @@ test(`${RULE_ID}: messages follow the scan locale`, () => {
   );
   assert.equal(
     rule.occurrences[0].summary,
-    'Cet élément <div> a onkeydown mais aucun gestionnaire de clic ou de pointage.'
+    'Cet élément <div> a onkeydown mais aucun gestionnaire de clic ou de pointage ; son onkeydown exécute « go() ».'
   );
 });
 
@@ -184,4 +193,24 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
   const rule = assertRule(result, RULE_ID, 'cantTell', { minOccurrences: 4, maxOccurrences: 4 });
   const ids = rule.occurrences.map((o) => (o.html.match(/id="([^"]+)"/) || [])[1]);
   assert.deepEqual(ids, ['koh_case_01', 'koh_case_02', 'koh_case_03', 'koh_case_04']);
+});
+
+// The occurrences a body gives, in English or in the locale asked.
+function messagesOf(body, locale) {
+  const result = runa11yCoreOnHtml(
+    `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`,
+    { ...RUN, ...(locale ? { engineOptions: { locale } } : {}) }
+  );
+  return result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+}
+
+test(`${RULE_ID}: the handler's code is quoted`, () => {
+  const [occ] = messagesOf(
+    `<div tabindex="0" onkeydown="if(event.key==='Enter')openMenu()">Menu</div>`
+  );
+  assert.equal(occ.i18n.summaryKey, 'keyboardOnlyEventHandlers_summary_cantTell_handler');
+  assert.equal(
+    occ.summary,
+    `This <div> has onkeydown but no click or pointer handler; its onkeydown runs "if(event.key==='Enter')openMenu()".`
+  );
 });

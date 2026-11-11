@@ -123,7 +123,7 @@ function runInPage(ctx) {
     occurrences.push(
       helpers.reportOccurrence(el, {
         occurrenceOutcome: 'cantTell',
-        summary: 'The title and the placeholder of this form field differ.',
+        summary: `The title ("${title}") and the placeholder ("${placeholder}") of this form field differ.`,
         hint: 'A screen reader may read the placeholder instead of the title. Give both attributes the same text, or remove the one that is not needed.',
         i18n: {
           summaryKey: 'titlePlaceholderIdentical_summary_cantTell',

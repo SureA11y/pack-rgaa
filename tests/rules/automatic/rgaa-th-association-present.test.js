@@ -91,3 +91,24 @@ test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html
   assert.equal(rule.occurrences[1].occurrenceOutcome, 'cantTell');
   assert.match(rule.occurrences[1].html, /id="tap_case_02"/);
 });
+
+// The occurrences a body gives, in English or in the locale asked.
+function messagesOf(body, locale) {
+  const result = runa11yCoreOnHtml(
+    `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`,
+    { ...RUN, ...(locale ? { engineOptions: { locale } } : {}) }
+  );
+  return result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+}
+
+test(`${RULE_ID}: the headers it counts are named`, () => {
+  const [occ] = messagesOf(
+    '<table><tr><th>Nom</th><th>Âge</th></tr><tr><td>a</td><th>b</th></tr></table>'
+  );
+  assert.equal(occ.data.details.reasonCode, 'noAssociationSimple');
+  assert.deepEqual(occ.data.details.headers, ['Nom', 'Âge', 'b']);
+  assert.equal(
+    occ.summary,
+    '3 header(s) of this table have no id, scope or header role: "Nom | Âge | b".'
+  );
+});

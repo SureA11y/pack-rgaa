@@ -80,3 +80,18 @@ test(`${RULE_ID}: a long title is quoted cut to 80 characters`, () => {
   assert.equal(occ.data.details.title, quoted);
   assert.equal(occ.summary, `This <iframe> has the title "${quoted}".`);
 });
+
+// The occurrences a body gives, in English or in the locale asked.
+function messagesOf(body, locale) {
+  const result = runa11yCoreOnHtml(
+    `<!doctype html><html lang="en"><head><title>t</title></head><body><main>${body}</main></body></html>`,
+    { ...RUN, ...(locale ? { engineOptions: { locale } } : {}) }
+  );
+  return result.checksResults.find((r) => r.ruleId === RULE_ID).occurrences;
+}
+
+test(`${RULE_ID}: the host the frame comes from is named`, () => {
+  const [occ] = messagesOf('<iframe src="https://maps.example.com/embed" title="iframe"></iframe>');
+  assert.equal(occ.i18n.summaryKey, 'frameTitleRelevant_summary_cantTell_host');
+  assert.equal(occ.summary, 'This <iframe> from maps.example.com has the title "iframe".');
+});
