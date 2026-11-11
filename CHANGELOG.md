@@ -10,6 +10,8 @@ All notable changes to this package are documented here. This project adheres to
 
 ### Fixed
 
+- **`rgaa-link-state-colors-review` counts only text on the link's own line**, with a letter or a digit, as `link-in-text-block` reads it. A link alone on its line, after a `<br>` or a child laid out as a block, or between separators such as `|`, is in no run of text: an e-mail address under two phone numbers and their labels was put in scope.
+
 - `rgaa-css-colors-paired` no longer changes the page while it runs. To keep a page of many broken images fast, it gave each such image an inline color and put its `style` attribute back afterwards, which core reported ("changed the page while it ran"). It now hides images in its own temporary style sheet for the time of its read instead: no element of the page is touched, the results are the same, and the read is as fast or faster (4,000 broken images side by side: about 0.1 s before, 0.075 s now).
 - A required field with no indication, and one whose « * » the page never explains, count toward 11.10.2 only, no longer toward 11.10.1 too (`requiredNotIndicated`, `markerNotExplained`). Both are given only for a field with `required` or `aria-required="true"`, which condition 2 of 11.10.1 accepts. Criterion 11.10's verdict is unchanged; its result now names the right test.
 

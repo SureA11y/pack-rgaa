@@ -9,7 +9,9 @@
  * @standard RGAA 4.1.2 (no WCAG Success Criterion)
  * @applicability
  *   Applies to links (<a href> and role="link") inside a run of text (their
- *   parent has text of its own, as for link-in-text-block) that carry no
+ *   parent has text of its own, with a letter or a digit, on the link's own
+ *   line: a <br>, or a child laid out as a block, starts another, as for
+ *   link-in-text-block) that carry no
  *   mark other than color at rest: no underline, no weight or style
  *   difference from the surrounding text, no border, outline, box-shadow,
  *   background image, background color of its own (a highlight, as
@@ -410,25 +412,47 @@ function runInPage(ctx) {
     return false;
   }
 
-  // Whether the parent has text of its own: a text node child that is not
-  // only whitespace. The link is an element, so it never is one. Read once
-  // per parent, as links often share one.
-  const parentHasText = new Map();
+  // Whether the parent has text of its own on the link's line, as
+  // link-in-text-block reads it: a text node child with a letter or a digit
+  // (a "|" or "·" between a row of links is no text for them to sit in), on
+  // the line the link is on. A <br>, or a child laid out as a block, starts
+  // another line, so a link alone on its line ("Phone 555 (Fax)<br><a>mail</a>")
+  // is in no run of text, whatever the lines around it hold. Read once per
+  // parent, a line at a time, as links often share one.
+  const TEXT = /[\p{L}\p{N}]/u;
+  const INLINE_LEVEL = /^(inline|contents|none|ruby)|^$/;
+  function breaksLine(n) {
+    if ((dom.tagName(n) || '').toLowerCase() === 'br') return true;
+    const display = String((safeComputedStyle(n) || {}).display || '');
+    return !INLINE_LEVEL.test(display.split(/\s+/)[0]);
+  }
+  const linesByParent = new Map();
   function hasSurroundingText(el, parent) {
     if (!parent) return false;
-    if (parentHasText.has(parent)) return parentHasText.get(parent);
-    let found = false;
-    const children = dom.childNodes(parent);
-    const count = children ? children.length : 0;
-    for (let i = 0; i < count && !found; i++) {
-      const n = children[i];
-      if (n === el) continue;
-      if (dom.nodeType(n) === 3 && dom.nodeValue(n) && dom.nodeValue(n).trim().length > 0) {
-        found = true;
+    if (!linesByParent.has(parent)) {
+      const lineOf = new Map();
+      let line = { text: false };
+      const children = dom.childNodes(parent);
+      const count = children ? children.length : 0;
+      for (let i = 0; i < count; i++) {
+        const n = children[i];
+        const type = dom.nodeType(n);
+        if (type === 3) {
+          if (TEXT.test(dom.nodeValue(n) || '')) line.text = true;
+          continue;
+        }
+        if (type !== 1) continue;
+        if (breaksLine(n)) {
+          lineOf.set(n, { text: false });
+          line = { text: false };
+          continue;
+        }
+        lineOf.set(n, line);
       }
+      linesByParent.set(parent, lineOf);
     }
-    parentHasText.set(parent, found);
-    return found;
+    const line = linesByParent.get(parent).get(el);
+    return !!(line && line.text);
   }
 
   // A background color of the link's own, different from the one behind

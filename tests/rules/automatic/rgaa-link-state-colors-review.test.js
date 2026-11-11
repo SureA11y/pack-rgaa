@@ -93,6 +93,26 @@ test(`${RULE_ID}: links marked by more than color, or whose states keep one colo
 
 const PAGE = page('p a{color:#d00;text-decoration:none} a:visited{color:#333}', TEXT_LINK);
 
+test(`${RULE_ID}: only text on the link's own line puts it in a run of text`, () => {
+  const css = 'p a{color:#d00;text-decoration:none} a:visited{color:#333}';
+  // Alone on its line after a <br>, after a block-level child, or between
+  // separators: no run of text, whatever the lines around it hold.
+  for (const body of [
+    '<p>+41 44 445 30 56 (Fax)<br><a href="/x">contact@example.com</a></p>',
+    '<p>Opening hours<span style="display:block">Mon to Fri</span><a href="/x">Contact</a></p>',
+    '<p><a href="/x">Privacy</a> | <a href="/y">Terms</a></p>'
+  ]) {
+    assertRule(run(css, body), RULE_ID, 'notApplicable', { maxOccurrences: 0 });
+  }
+  // With its label on its line, it is in one.
+  assertRule(
+    run(css, '<p><a href="/x">+41 44 445 30 56</a> (Fax)<br>contact@example.com</p>'),
+    RULE_ID,
+    'cantTell',
+    { minOccurrences: 1, maxOccurrences: 1 }
+  );
+});
+
 test(`${RULE_ID}: opt-in, so a default run, a WCAG profile and an EN 301 549 profile do not include it`, () => {
   for (const engineOptions of [{}, { profile: 'wcag22-aa' }, { profile: 'en301549-v4.1.1' }]) {
     const result = runa11yCoreOnHtml(PAGE, { engineOptions });
