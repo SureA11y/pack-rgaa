@@ -30,8 +30,26 @@ test(`${RULE_ID}: an alt over 80 characters is flagged with its length`, () => {
     maxLength: 80,
     sources: [{ source: 'alt', length: 81 }]
   });
-  assert.deepEqual(occ.i18n.params, { length: '81' });
-  assert.equal(occ.summary, "This image's text alternative is 81 characters long.");
+  assert.deepEqual(occ.i18n.params, {
+    length: '81',
+    source: 'alt',
+    excerpt: `${'x'.repeat(59)}…`
+  });
+  assert.equal(
+    occ.summary,
+    `This image's text alternative (alt) is 81 characters long: "${'x'.repeat(59)}…".`
+  );
+});
+
+test(`${RULE_ID}: a long name from aria-labelledby is named and quoted, since the markup does not show it`, () => {
+  const body =
+    '<p id="d">Ventes trimestrielles par région, en millions d’euros, de 2020 à 2025, avec les prévisions</p><img src="a.png" alt="Graphique" aria-labelledby="d">';
+  const occ = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'cantTell').occurrences[0];
+  assert.equal(occ.i18n.params.source, 'aria-labelledby');
+  assert.equal(
+    occ.summary,
+    'This image\'s text alternative (aria-labelledby) is 90 characters long: "Ventes trimestrielles par région, en millions d’euros, de 2…".'
+  );
 });
 
 test(`${RULE_ID}: exactly 80 characters, spaces collapsed, is not flagged`, () => {

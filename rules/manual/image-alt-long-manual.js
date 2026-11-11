@@ -160,16 +160,21 @@ function runInPage(ctx) {
     applicableCount += 1;
     const long = found.filter((a) => a.text.length > MAX_LENGTH);
     if (!long.length) continue;
-    const text = long.reduce((a, b) => (b.text.length > a.text.length ? b : a)).text;
+    const longest = long.reduce((a, b) => (b.text.length > a.text.length ? b : a));
+    const { text } = longest;
+    // Name where the long text comes from, and quote its start: from
+    // aria-labelledby it is not in the image's markup at all.
+    const source = longest.source;
+    const excerpt = text.length > 60 ? `${text.slice(0, 59)}…` : text;
 
     occurrences.push(
       helpers.reportOccurrence(el, {
-        summary: `This image's text alternative is ${text.length} characters long.`,
+        summary: `This image's text alternative (${source}) is ${text.length} characters long: "${excerpt}".`,
         hint: 'Check that the alternative is short and concise for what the image conveys in context. A longer one can be right in the particular cases RGAA 1.3.9 allows. Put a detailed description in a long description next to the image or linked from it (RGAA 1.6).',
         i18n: {
           summaryKey: 'imageAltLong_summary_cantTell',
           hintKey: 'imageAltLong_hint_cantTell',
-          params: { length: String(text.length) }
+          params: { length: String(text.length), source, excerpt }
         },
         data: {
           details: {
