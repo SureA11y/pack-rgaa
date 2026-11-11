@@ -343,16 +343,68 @@ function runInPage(ctx) {
   const navigations = query('nav, [role~="navigation" i]').filter(isNavigation);
   const links = query('a[href]');
 
+  // Optimal string alignment distance: a transposition counts as one edit.
+  function distance(a, b) {
+    const d = [];
+    for (let i = 0; i <= a.length; i++) d.push([i]);
+    for (let j = 1; j <= b.length; j++) d[0][j] = j;
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+        d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+        if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+          d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+        }
+      }
+    }
+    return d[a.length][b.length];
+  }
+
+  // The id the link likely means: the <main> element's, when it has one;
+  // else an id of the page close to the fragment (case aside, or within
+  // two edits, one for a short id). Returns { id, isMain } or null.
+  function meantTarget(href) {
+    const mainId = main ? String(attr(main, 'id') || '') : '';
+    if (mainId) return { id: mainId, isMain: true };
+    const fragment = href.replace(/^[^#]*#/, '');
+    if (!fragment) return null;
+    let best = '';
+    let bestDistance = Infinity;
+    for (const n of query('[id]')) {
+      const candidate = String(attr(n, 'id') || '');
+      if (!candidate) continue;
+      const d =
+        candidate.toLowerCase() === fragment.toLowerCase() ? 0 : distance(candidate, fragment);
+      const limit = fragment.length > 5 ? 2 : fragment.length > 2 ? 1 : 0;
+      if (d < bestDistance && d <= limit) {
+        best = candidate;
+        bestDistance = d;
+      }
+    }
+    return best ? { id: best, isMain: false } : null;
+  }
+
   function targetMissing(el, href) {
+    const meant = meantTarget(href);
     return helpers.reportOccurrence(el, {
       summary: `This skip link points to "${href}", which does not exist in the page.`,
-      hint: 'Point the skip link at the id of the <main> element, or add that id.',
+      hint: meant
+        ? `Did you mean "#${meant.id}"? ${meant.isMain ? 'It is the id of the <main> element.' : 'An element of the page has that id.'} Point the skip link at it, exactly as written, case included.`
+        : 'Point the skip link at the id of the <main> element, or add that id.',
       i18n: {
         summaryKey: 'skipLinkPresent_summary_fail_targetMissing',
-        hintKey: 'skipLinkPresent_hint_fail_targetMissing',
-        params: { href }
+        hintKey: meant
+          ? 'skipLinkPresent_hint_fail_targetMissing_suggest'
+          : 'skipLinkPresent_hint_fail_targetMissing',
+        params: meant ? { href, suggestion: meant.id, isMain: meant.isMain } : { href }
       },
-      data: { details: { reasonCode: 'skipLinkTargetMissing', href } }
+      data: {
+        details: {
+          reasonCode: 'skipLinkTargetMissing',
+          href,
+          ...(meant ? { suggestion: meant.id } : {})
+        }
+      }
     });
   }
 

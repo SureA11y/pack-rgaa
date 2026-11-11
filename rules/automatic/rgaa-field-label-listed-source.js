@@ -282,6 +282,128 @@ function runInPage(ctx) {
     return !!norm(dom.textContent(el));
   }
 
+  // Optimal string alignment distance: a transposition counts as one edit.
+  function distance(a, b) {
+    const d = [];
+    for (let i = 0; i <= a.length; i++) d.push([i]);
+    for (let j = 1; j <= b.length; j++) d[0][j] = j;
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+        d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+        if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+          d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+        }
+      }
+    }
+    return d[a.length][b.length];
+  }
+  // Within two edits, one for a short word, none for one of one or two
+  // characters; case, spaces and a leading # aside.
+  function close(written, wanted) {
+    const a = String(written).trim().replace(/^#/, '');
+    if (a.toLowerCase() === String(wanted).toLowerCase()) return true;
+    return distance(a, wanted) <= (wanted.length > 5 ? 2 : wanted.length > 2 ? 1 : 0);
+  }
+  const clip = (v, max) => {
+    const t = norm(v);
+    return t.length > max ? `${t.slice(0, max - 1)}…` : t;
+  };
+
+  // Why a field with no label source has none, when its markup or a label
+  // near it shows something a reader could take for one. Returns
+  // { cause, params } or null; it changes no outcome.
+  function noLabelCause(el) {
+    let root = null;
+    try {
+      root = dom.getRootNode(el);
+    } catch {}
+    const all = (sel) =>
+      root && dom.get(root, 'querySelectorAll') ? [...dom.querySelectorAll(root, sel)] : [];
+
+    const labelledby = norm(dom.getAttribute(el, 'aria-labelledby'));
+    if (labelledby) {
+      const first = labelledby.split(' ')[0];
+      const near = all('[id]').find((n) => close(first, String(dom.getAttribute(n, 'id'))));
+      return {
+        cause: 'labelledbyMissing',
+        params: {
+          ids: clip(labelledby, 60),
+          suggestion: near ? String(dom.getAttribute(near, 'id')) : ''
+        }
+      };
+    }
+
+    const KNOWN = ['aria-label', 'aria-labelledby', 'aria-level', 'aria-live', 'title', 'style'];
+    const attrs = dom.attributes(el) || [];
+    for (let i = 0; i < attrs.length; i++) {
+      const name = String(attrs[i].name || '').toLowerCase();
+      const value = clip(attrs[i].value, 60);
+      if (!value || KNOWN.includes(name) || name.slice(0, 5) === 'data-') continue;
+      for (const target of ['aria-labelledby', 'aria-label', 'title']) {
+        if (
+          name.replace(/[-_:]/g, '') === target.replace(/[-_:]/g, '') ||
+          distance(name, target) <= (target.length > 5 ? 2 : 1)
+        ) {
+          return {
+            cause: 'misspelledAttribute',
+            params: { attribute: name, value, suggestion: target }
+          };
+        }
+      }
+    }
+
+    const fieldId = String(dom.getAttribute(el, 'id') || '');
+    const fieldName = String(dom.getAttribute(el, 'name') || '');
+    for (const label of all('label[for]')) {
+      const value = String(dom.getAttribute(label, 'for') || '');
+      if (!value) continue;
+      const pointsNowhere = !(root && dom.get(root, 'getElementById')
+        ? dom.getElementById(root, value)
+        : null);
+      if (fieldId && value !== fieldId && pointsNowhere && close(value, fieldId)) {
+        return {
+          cause: 'labelForMismatch',
+          params: { value, id: fieldId, caseOnly: value.toLowerCase() === fieldId.toLowerCase() }
+        };
+      }
+      if (fieldName && value === fieldName && value !== fieldId) {
+        return { cause: 'labelForName', params: { value } };
+      }
+    }
+
+    // A <label> with no for right before or after the field, labelling
+    // nothing.
+    for (const sibling of [dom.previousElementSibling(el), dom.nextElementSibling(el)]) {
+      if (
+        sibling &&
+        tagOf(sibling) === 'label' &&
+        !dom.hasAttribute(sibling, 'for') &&
+        norm(dom.textContent(sibling)) &&
+        !dom.querySelector(sibling, LABELABLE.join(', '))
+      ) {
+        return {
+          cause: 'labelNotAssociated',
+          params: { text: clip(dom.textContent(sibling), 60), id: fieldId }
+        };
+      }
+    }
+    return null;
+  }
+
+  const CAUSE_HINTS = {
+    labelledbyMissing: (p) =>
+      `Point aria-labelledby at the id of the text that labels the field${p.suggestion ? ` (did you mean "${p.suggestion}"?)` : ''}, or give the field a <label for>.`,
+    misspelledAttribute: (p) =>
+      `It has ${p.attribute}="${p.value}", but browsers do not read ${p.attribute}: did you mean ${p.suggestion}? Rename the attribute.`,
+    labelForMismatch: (p) =>
+      `A <label for="${p.value}"> is on the page, but no element has that id, and this field's id is "${p.id}". Set for="${p.id}" exactly${p.caseOnly ? ': ids are case-sensitive' : ''}.`,
+    labelForName: (p) =>
+      `A <label for="${p.value}"> matches this field's name attribute, but for refers to an id, not a name. Give the field id="${p.value}".`,
+    labelNotAssociated: (p) =>
+      `The <label> "${p.text}" next to it has no for attribute and does not wrap it, so it labels nothing. ${p.id ? `Give the label for="${p.id}".` : 'Give the field an id, and the label a for attribute with the same value.'}`
+  };
+
   const MESSAGES = {
     noLabel: {
       outcome: 'fail',
@@ -501,14 +623,26 @@ function runInPage(ctx) {
     }
 
     const msg = MESSAGES[reasonCode];
-    const summary = msg.summary.replace('{{source}}', source);
+    // A cause the markup shows replaces the generic hint; an aria-labelledby
+    // that finds nothing replaces the summary too, which would say the field
+    // has none.
+    const cause = reasonCode === 'noLabel' ? noLabelCause(el) : null;
+    const summary =
+      cause && cause.cause === 'labelledbyMissing'
+        ? `This form field's aria-labelledby names "${cause.params.ids}", but no element of the page has that id, so it has no label.`
+        : msg.summary.replace('{{source}}', source);
     const occurrence = helpers.reportOccurrence(el, {
       summary,
-      hint: msg.hint,
+      hint: cause ? CAUSE_HINTS[cause.cause](cause.params) : msg.hint,
       i18n: {
-        summaryKey: `fieldLabelListedSource_summary_${msg.outcome}_${reasonCode}`,
-        hintKey: `fieldLabelListedSource_hint_${msg.outcome}_${reasonCode}`,
-        params: source ? { source } : {}
+        summaryKey:
+          cause && cause.cause === 'labelledbyMissing'
+            ? 'fieldLabelListedSource_summary_fail_noLabel_labelledbyMissing'
+            : `fieldLabelListedSource_summary_${msg.outcome}_${reasonCode}`,
+        hintKey: cause
+          ? `fieldLabelListedSource_hint_fail_noLabel_${cause.cause}`
+          : `fieldLabelListedSource_hint_${msg.outcome}_${reasonCode}`,
+        params: cause ? cause.params : source ? { source } : {}
       },
       ...(msg.outcome === 'cantTell'
         ? {
@@ -520,7 +654,12 @@ function runInPage(ctx) {
           }
         : {}),
       data: {
-        details: { reasonCode, field: kind, ...(source ? { source } : {}) },
+        details: {
+          reasonCode,
+          field: kind,
+          ...(source ? { source } : {}),
+          ...(cause ? { labelCause: cause.cause } : {})
+        },
         visibilityFilter: { targetSet: 'acc', accEligible: true, reasons: [] }
       }
     });

@@ -74,10 +74,52 @@ test(`${RULE_ID}: a field with nothing fails, and a dangling aria-labelledby cou
       maxOccurrences: 1
     });
     assert.deepEqual(reasons(rule), [['fail', 'noLabel']], body);
+    // A dangling aria-labelledby is named, not said to be absent.
     assert.equal(
       rule.occurrences[0].summary,
-      'This form field has no aria-labelledby, aria-label, <label for> or title.'
+      body.includes('nowhere')
+        ? 'This form field\'s aria-labelledby names "nowhere", but no element of the page has that id, so it has no label.'
+        : 'This form field has no aria-labelledby, aria-label, <label for> or title.',
+      body
     );
+  }
+});
+
+// The hint names what the markup, or a label near the field, holds in place
+// of a label source.
+test(`${RULE_ID}: the hint names a label that does not reach the field`, () => {
+  for (const [body, cause, hint] of [
+    [
+      '<label>Nom</label><input id="nom">',
+      'labelNotAssociated',
+      'The <label> "Nom" next to it has no for attribute and does not wrap it, so it labels nothing. Give the label for="nom".'
+    ],
+    [
+      '<label for="Nom">Nom</label><input id="nom">',
+      'labelForMismatch',
+      'A <label for="Nom"> is on the page, but no element has that id, and this field\'s id is "nom". Set for="nom" exactly: ids are case-sensitive.'
+    ],
+    [
+      '<label for="ville">Ville</label><div><input name="ville"></div>',
+      'labelForName',
+      'A <label for="ville"> matches this field\'s name attribute, but for refers to an id, not a name. Give the field id="ville".'
+    ],
+    [
+      '<input arialabel="Ville">',
+      'misspelledAttribute',
+      'It has arialabel="Ville", but browsers do not read arialabel: did you mean aria-label? Rename the attribute.'
+    ],
+    [
+      '<input aria-labelledby="Lib"><span id="lib">Ville</span>',
+      'labelledbyMissing',
+      'Point aria-labelledby at the id of the text that labels the field (did you mean "lib"?), or give the field a <label for>.'
+    ]
+  ]) {
+    const occ = assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'fail').occurrences[0];
+    assert.equal(occ.data.details.reasonCode, 'noLabel', body);
+    assert.equal(occ.data.details.labelCause, cause, body);
+    assert.equal(occ.i18n.hintKey, `fieldLabelListedSource_hint_fail_noLabel_${cause}`, body);
+    assert.equal(occ.hint, hint, body);
   }
 });
 
