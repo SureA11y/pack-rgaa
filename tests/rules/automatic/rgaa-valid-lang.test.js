@@ -36,17 +36,17 @@ test(`${RULE_ID}: ISO 639-2 codes the IANA registry leaves out pass, and the loc
 });
 
 test(`${RULE_ID}: a code that is not ISO 639 fails, with the variant's messages`, () => {
-  for (const [lang, summaryKey] of [
+  for (const [lang, summaryKey, hintKey = 'validLangRgaa_hint_fail'] of [
     ['xx', 'validLangRgaa_summary_unknown'],
     ['qza', 'validLangRgaa_summary_unknown'],
     ['english', 'validLangRgaa_summary_unknown'],
-    ['en_US', 'validLangRgaa_summary_fail']
+    ['en_US', 'validLangRgaa_summary_fail', 'validLangRgaa_hint_fail_underscore']
   ]) {
     const rule = assertRule(run(page(lang)), RULE_ID, 'fail', { maxOccurrences: 1 });
     const occ = rule.occurrences[0];
     assert.equal(occ.data.details.reasonCode, 'ELEMENT_LANG_INVALID', lang);
     assert.equal(occ.i18n.summaryKey, summaryKey, lang);
-    assert.equal(occ.i18n.hintKey, 'validLangRgaa_hint_fail', lang);
+    assert.equal(occ.i18n.hintKey, hintKey, lang);
   }
 });
 

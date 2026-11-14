@@ -1507,6 +1507,27 @@ const RGAA_RULE_TESTS = {
       tests: ['5.4.1'],
       note: "Asks about a data table (with a <th>, not a presentation table) that has no <caption>, title, aria-label or aria-labelledby and comes right after a heading: the heading may be the table's title given as plain text, which 5.4.1 wants « correctement associé au tableau », or the title of its section. table-fake-caption asks about the other plain-text title, a first row of one cell."
     },
+    'target-size-enhanced': {
+      tests: [],
+      note: 'Checks the 44x44 CSS px target size of WCAG 2.5.5, a AAA criterion: RGAA 4.1.2 restates only levels A and AA. No RGAA test measures pointer target size.'
+    },
+    'focus-not-obscured-minimum': {
+      tests: [],
+      note: 'Asks about fixed or sticky boxes that an element in the tab order can take focus entirely hidden behind, WCAG 2.4.11, a WCAG 2.2 criterion RGAA 4.1.2 does not include. Not mapped to 10.7.1: its methodology checks the focus indicator itself (the native style kept, or a visible replacement at 3:1), not whether other content covers the focused element.'
+    },
+    'focus-not-obscured-enhanced': {
+      tests: [],
+      note: 'Asks about fixed or sticky boxes that can hide any part of a focused element, WCAG 2.4.12, a AAA criterion of WCAG 2.2: RGAA 4.1.2 includes neither. Not mapped to 10.7.1, as focus-not-obscured-minimum is not.'
+    },
+    'page-zones-landmark': {
+      tests: ['9.2.1'],
+      reasonCodes: {
+        HEADER_NESTED: { tests: [] },
+        FOOTER_NESTED: { tests: [] },
+        SEARCH_NOT_EXPOSED: { tests: [] }
+      },
+      note: 'Asks about a block named as the page header, a navigation or the page footer that is not a <header>, <nav> or <footer> and has no landmark role: 9.2.1 conditions 1, 2 and 6 (the header zone structured with <header>, the main and secondary navigation zones with <nav>, the footer zone with <footer>), and whether the block is that zone is for a person. A block with the role but not the element passes the rule though 9.2.1 asks for the element, so the rule finds fewer cases than 9.2.1 fails, never more. A <header> or <footer> nested in a section (HEADER_NESTED, FOOTER_NESTED) is still the element 9.2.1 asks for, and a search form (SEARCH_NOT_EXPOSED) is no zone 9.2.1 names: those go to no test. Not linked to 12.6.1: a landmark is one of its five conditions, and rgaa-page-zones-reachable reports 12.6.1 zone by zone. On a page not in HTML5, where 9.2 does not apply, the question is answered as not applicable.'
+    },
     'target-size-minimum': {
       tests: [],
       note: 'Checks the 24x24 CSS px target size and spacing exception of WCAG 2.5.8, a WCAG 2.2 criterion RGAA 4.1.2 does not include. No RGAA test measures pointer target size.'

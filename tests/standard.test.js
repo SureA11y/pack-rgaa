@@ -105,7 +105,7 @@ test('the profile serves article 47, which results and describePacks name', () =
     described.standard.laws.map((l) => [l.id, l.profiles]),
     [['fr-article-47', ['rgaa-4.1.2']]]
   );
-  // The experimental APIs of core it uses, for which its range is ~1.16.1.
+  // The experimental APIs of core it uses, for which its range is ~1.17.0.
   assert.deepEqual(described.experimental.map((e) => e.id).sort(), [
     'ruleMappedStandard tests',
     'skip-link details.lean',
