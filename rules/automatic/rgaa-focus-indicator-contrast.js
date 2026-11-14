@@ -1066,16 +1066,13 @@ function runInPage(ctx) {
   }
 
   // Runs fn(before, after) with the element focused as by the keyboard,
-  // transitions switched off so the focused values are read at once, then
-  // puts focus and the style attribute back. undefined when the element
-  // could not be focused.
+  // then puts focus back. Transitions are off for the whole run
+  // (freezeTransitions), so the focused values are read at once. undefined
+  // when the element could not be focused.
   function whileFocused(el, fn) {
     const previous = deepActiveElement();
-    const hadStyle = dom.hasAttribute(el, 'style');
-    const styleAttr = dom.getAttribute(el, 'style');
     const related = relatedOf(el);
     try {
-      el.style.setProperty('transition', 'none', 'important');
       if (previous === el) dom.blur(el);
       const before = snapshot(el);
       const relatedBefore = related.map(relatedSnapshot);
@@ -1097,11 +1094,6 @@ function runInPage(ctx) {
           dom.blur(el);
         }
       } catch {}
-      // Reading the attribute first makes Chromium write the inline style
-      // back to it; removed before that, it comes back as style="".
-      dom.getAttribute(el, 'style');
-      if (hadStyle) dom.setAttribute(el, 'style', styleAttr);
-      else dom.removeAttribute(el, 'style');
     }
   }
 
@@ -1424,7 +1416,7 @@ function runInPage(ctx) {
   // ancestor of a candidate slotted into it.
   // A shadow tree's own rules (:host, ::slotted) lose to the tree around
   // it, whatever their layer, so an element that hosts an open shadow root
-  // or is the child of one is marked and left out too, and so is a custom
+  // or is the child of one is left out too, and so is a custom
   // element or the child of one, which may host a closed root; so are the
   // hosts around a candidate in a shadow tree, whose ancestors are then
   // left out as the candidate's are.
@@ -1434,8 +1426,39 @@ function runInPage(ctx) {
   // whose own sheets declare a cascade layer, or cannot be read, is left
   // out: an adopted sheet comes after them, and its layer would not be the
   // lowest. So is a root whose adoptedStyleSheets cannot be set.
-  const NO_RING_ATTR = 'data-surea11y-no-ring';
-  const RING_CSS = `@layer surea11y-focus-ring{:is(${CANDIDATES}):not(label, [${NO_RING_ATTR}], :has(:is(${CANDIDATES}, slot, [${NO_RING_ATTR}]))){outline-style:auto}}`;
+  // The elements left out are named in the ring's own style sheet, by
+  // their place in their tree, rather than marked on the page: the rule
+  // changes nothing the page holds.
+  const noRing = new Map(); // tree root -> Set of elements left out
+  const isNoRing = (el) => {
+    try {
+      const set = noRing.get(dom.getRootNode(el));
+      return !!set && set.has(el);
+    } catch {
+      return false;
+    }
+  };
+  // A selector for one element by its place: :nth-child from the top of
+  // its tree (the root element, or a shadow root's own children, which
+  // have no element above them in their tree).
+  function placeOf(el) {
+    const steps = [];
+    for (let n = el; n && dom.nodeType(n) === 1; n = dom.parentElement(n)) {
+      let i = 1;
+      for (let s = dom.previousElementSibling(n); s; s = dom.previousElementSibling(s)) i += 1;
+      steps.unshift(`:nth-child(${i})`);
+    }
+    if (steps.length) steps[0] += ':not(* *)';
+    return steps.join(' > ');
+  }
+  function ringCss(root) {
+    const set = noRing.get(root);
+    const out = set && set.size ? [...set].map(placeOf).join(', ') : '';
+    const not = out ? `, :is(${out})` : '';
+    return `@layer surea11y-focus-ring{:is(${CANDIDATES}):not(label${not}, :has(:is(${CANDIDATES}, slot${not}))){outline-style:auto}}`;
+  }
+  const FREEZE_CSS =
+    '@layer surea11y-no-transitions{*,*::before,*::after{transition:none!important}}';
 
   // Whether the root's own style sheets declare a cascade layer (or may:
   // one cannot be read).
@@ -1486,14 +1509,14 @@ function runInPage(ctx) {
     }
     const adopted = [];
     if (!roots.size) return () => {};
-    let sheet;
-    try {
-      sheet = new Sheet();
-      sheet.replaceSync(css);
-    } catch {
-      return () => {};
-    }
     for (const root of roots) {
+      let sheet;
+      try {
+        sheet = new Sheet();
+        sheet.replaceSync(typeof css === 'function' ? css(root) : css);
+      } catch {
+        continue;
+      }
       try {
         if (declaresLayer(root)) continue;
         const own = dom.get(root, 'adoptedStyleSheets');
@@ -1507,11 +1530,11 @@ function runInPage(ctx) {
           }
           continue;
         }
-        adopted.push([root, before]);
+        adopted.push([root, before, sheet]);
       } catch {}
     }
     return () => {
-      for (const [root, before] of adopted) {
+      for (const [root, before, sheet] of adopted) {
         try {
           const now = [...dom.get(root, 'adoptedStyleSheets')];
           const untouched =
@@ -1575,7 +1598,7 @@ function runInPage(ctx) {
     const outline = new Map(); // tree key -> whether focus draws one
     for (const el of candidates) {
       try {
-        if (!el || dom.nodeType(el) !== 1 || dom.hasAttribute(el, NO_RING_ATTR)) continue;
+        if (!el || dom.nodeType(el) !== 1 || isNoRing(el)) continue;
         const root = dom.getRootNode(el);
         if (!root) continue;
         if (!keyOf.has(root)) keyOf.set(root, treeKey(root));
@@ -1595,12 +1618,12 @@ function runInPage(ctx) {
 
   function drawRings() {
     if (!layout) return () => {};
-    const marked = [];
     const hostsSeen = new Set();
     const mark = (el) => {
-      if (dom.hasAttribute(el, NO_RING_ATTR)) return false;
-      dom.setAttribute(el, NO_RING_ATTR, '');
-      marked.push(el);
+      if (isNoRing(el)) return false;
+      const root = dom.getRootNode(el);
+      if (!noRing.has(root)) noRing.set(root, new Set());
+      noRing.get(root).add(el);
       return true;
     };
     for (const el of candidates) {
@@ -1628,7 +1651,7 @@ function runInPage(ctx) {
       if (ringed.has(document)) {
         const host = dom.head(document) || dom.documentElement(document);
         sheet = dom.createElement(document, 'style');
-        sheet.textContent = RING_CSS;
+        sheet.textContent = ringCss(document);
         dom.insertBefore(host, sheet, dom.firstChild(host));
       }
     } catch {
@@ -1642,20 +1665,45 @@ function runInPage(ctx) {
           return false;
         }
       }),
-      RING_CSS
+      ringCss
     );
     return () => {
       unadopt();
       try {
         if (sheet && dom.parentNode(sheet)) dom.removeChild(dom.parentNode(sheet), sheet);
       } catch {}
-      for (const el of marked) {
-        try {
-          dom.removeAttribute(el, NO_RING_ATTR);
-        } catch {}
-      }
+      noRing.clear();
     };
   }
+  // Transitions are off while the rule focuses elements, so a focused value
+  // is read at once: a style sheet adopted by the document and the shadow
+  // roots holding candidates, which changes no node of the page.
+  function freezeTransitions() {
+    if (!layout) return () => {};
+    const Sheet = view && view.CSSStyleSheet;
+    let undoDocument = () => {};
+    try {
+      const own = dom.get(document, 'adoptedStyleSheets');
+      if (typeof Sheet === 'function' && own && typeof own.length === 'number') {
+        const sheet = new Sheet();
+        sheet.replaceSync(FREEZE_CSS);
+        const before = [...own];
+        document.adoptedStyleSheets = [...before, sheet];
+        undoDocument = () => {
+          try {
+            const now = [...dom.get(document, 'adoptedStyleSheets')];
+            document.adoptedStyleSheets = now.filter((x) => x !== sheet);
+          } catch {}
+        };
+      }
+    } catch {}
+    const undoShadow = adoptInShadowRoots([...candidates], FREEZE_CSS);
+    return () => {
+      undoShadow();
+      undoDocument();
+    };
+  }
+  const thaw = freezeTransitions();
   const removeRings = drawRings();
   try {
     for (const el of candidates) {
@@ -1721,6 +1769,7 @@ function runInPage(ctx) {
     }
   } finally {
     removeRings();
+    thaw();
   }
 
   if (!failOccurrences.length && !cantTellOccurrences.length && !passCount) {

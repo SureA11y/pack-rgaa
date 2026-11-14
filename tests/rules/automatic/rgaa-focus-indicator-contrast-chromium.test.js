@@ -337,6 +337,51 @@ test(`${RULE_ID} in Chromium`, { skip }, async (t) => {
     assert.deepEqual(outcomes(result).d2, ['fail', 'lowContrast']);
   });
 
+  // A rule only reads the page: core watches it run and warns of any change.
+  // Transitions were switched off in each element's style attribute, and
+  // the elements left without the ring were marked with an attribute, both
+  // put back after, and both seen as changes.
+  await t.test('the page is left as it was, with nothing changed while it ran', async () => {
+    const html = PAGE.replace(
+      '</body>',
+      `<x-btn id="xb" tabindex="0"></x-btn>
+      <div id="h"><template shadowrootmode="open"><style>a{transition:color 1s} a:focus{outline:2px solid #dddddd}</style><p><a id="in" href="/s">In</a></p><div><template shadowrootmode="open"><a id="deep" href="/d">Deep</a></template></div></template></div>
+      <script>document.getElementById('xb').attachShadow({ mode: 'closed' }).innerHTML = 'Button';</script></body>`
+    );
+    const p = await browser.newPage();
+    const warnings = [];
+    p.on('console', (m) => {
+      if (m.type() === 'warning') warnings.push(m.text());
+    });
+    try {
+      await p.setContent(html);
+      await p.addScriptTag({ content: BUNDLE });
+      const after = await p.evaluate(async () => {
+        const before = document.documentElement.outerHTML;
+        const res = await window.a11ycore.runa11yCoreInPage(
+          null,
+          null,
+          { rules: { include: 'rgaa-focus-indicator-contrast' } },
+          null
+        );
+        const shadow = document.getElementById('h').shadowRoot;
+        return {
+          ran: !!res.checksResults.find((r) => r.ruleId === 'rgaa-focus-indicator-contrast'),
+          same: document.documentElement.outerHTML === before,
+          sheets: document.adoptedStyleSheets.length + shadow.adoptedStyleSheets.length,
+          transition: getComputedStyle(document.getElementById('slow')).transitionDuration
+        };
+      });
+      assert.deepEqual(after, { ran: true, same: true, sheets: 0, transition: '2s' });
+      assert.deepEqual(
+        warnings.filter((w) => /changed the page/.test(w)),
+        []
+      );
+    } finally {
+      await p.close();
+    }
+  });
+
   await t.test('the same elements in jsdom are asked about, not failed', () => {
     const rule = runa11yCoreOnHtml(PAGE, {
       runOnly: { includeRuleIds: [RULE_ID] }

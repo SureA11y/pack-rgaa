@@ -1,6 +1,6 @@
 {
   "name": "@surea11y/pack-rgaa",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "RGAA 4.1.2, the French accessibility standard, as a pack for @surea11y/core: its criteria, tests, methodology and glossary, one result per criterion, the rgaa-4.1.2 profile and rules for what RGAA requires beyond WCAG.",
   "keywords": [
     "accessibility",

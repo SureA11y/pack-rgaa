@@ -2,6 +2,12 @@
 
 All notable changes to this package are documented here. This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2026-11-14
+
+### Fixed
+
+- `rgaa-focus-indicator-contrast` no longer changes the page while it runs, which core reported in the browser as "changed the page while it ran". It switched transitions off in each element's `style` attribute while focusing it, and marked the elements left without its ring at rest with an attribute, putting both back after. Transitions are now switched off by a style sheet the document and shadow roots adopt for the run, and the elements left without the ring are named in the ring's own style sheet by their place in their tree. Verdicts are unchanged, except for an element whose own `style` attribute sets a transition with `!important`: that one still wins over the style sheet, so the element may be measured before its transition ends.
+
 ## [1.2.0] - 2026-11-14
 
 Needs `@surea11y/core` 1.17 (`~1.17.0`). For core 1.16, use 1.1.
