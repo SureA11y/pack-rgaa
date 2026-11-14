@@ -226,7 +226,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-8.8` | Dans chaque page web, le code de langue de chaque changement de langue est-il valide et pertinent ? | `rgaa-valid-lang` |
 | `rgaa-4.1.2-8.9` | Dans chaque page web, les balises ne doivent pas être utilisées uniquement à des fins de présentation. Cette règle est-elle respectée ? | `rgaa-markup-for-presentation` |
 | `rgaa-4.1.2-9.1` | Dans chaque page web, l’information est-elle structurée par l’utilisation appropriée de titres ? | `heading-order`, `heading-quality`, `p-as-heading`, `rgaa-heading-content-present`, `rgaa-heading-role-level-present`, `rgaa-headings-absent-review` |
-| `rgaa-4.1.2-9.2` | Dans chaque page web, la structure du document est-elle cohérente (hors cas particuliers) ? | `rgaa-main-element-structure` |
+| `rgaa-4.1.2-9.2` | Dans chaque page web, la structure du document est-elle cohérente (hors cas particuliers) ? | `page-zones-landmark`, `rgaa-main-element-structure` |
 | `rgaa-4.1.2-9.3` | Dans chaque page web, chaque liste est-elle correctement structurée ? | `definition-list-children-valid`, `dlitem-parent-valid`, `list-children-valid`, `listitem-parent-valid`, `rgaa-aria-list-item-roles`, `rgaa-fake-list` |
 | `rgaa-4.1.2-9.4` | Dans chaque page web, chaque citation est-elle correctement indiquée ? | `rgaa-quotation-review` |
 

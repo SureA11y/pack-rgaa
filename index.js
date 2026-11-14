@@ -134,9 +134,9 @@ module.exports = definePack({
   // tests under its criteria and its law, and the pack uses skip-link's
   // details.lean and the standard.review dictionary keys: experimental in
   // core until 1.18.0, so a later minor may change them and the range takes
-  // none. 1.16.1 is the first core that reads the standard's steps in French
-  // in a French scan.
-  core: '~1.16.1',
+  // none. 1.17 sends core's new hints to rgaa-valid-lang and asks
+  // page-zones-landmark, which the map links to 9.2.1.
+  core: '~1.17.0',
   description: 'RGAA 4.1.2, the French accessibility standard',
   rules,
   standard,

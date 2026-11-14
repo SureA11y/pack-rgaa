@@ -233,7 +233,15 @@ test(`${RULE_ID}: RGAA 9.2 fails role="main" and a CSS-hidden duplicate that the
   const cssHidden = page('<main><p>a</p></main><main style="display:none"><p>b</p></main>');
   const result = runa11yCoreOnHtml(cssHidden, RGAA);
   assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-9.2')), 'fail');
-  assert.deepEqual(rollup(result, 'rgaa-4.1.2-9.2').data.details.checksIds, [RULE_ID]);
+  // page-zones-landmark (core 1.17) asks about 9.2.1's other zones, and finds none here.
+  assert.deepEqual(rollup(result, 'rgaa-4.1.2-9.2').data.details.checksIds, [
+    'page-zones-landmark',
+    RULE_ID
+  ]);
+  assert.equal(
+    result.checksResults.find((r) => r.ruleId === 'page-zones-landmark').outcome,
+    'notApplicable'
+  );
   assert.ok(!result.checksResults.some((r) => r.ruleId === 'landmark-no-duplicate-main'));
   assert.equal(landmarks(cssHidden).duplicate, 'pass');
 });

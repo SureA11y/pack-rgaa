@@ -265,3 +265,29 @@ test('a required field with no indication fails 11.10.2, not 11.10.1, which its 
   assert.deepEqual(tests(rollup), ['11.10.2']);
   assert.deepEqual(contributor(rollup, 'rgaa-required-field-indication').requirements, ['11.10.2']);
 });
+
+test('page-zones-landmark asks about 9.2.1 for a header, navigation or footer zone, and not for search', () => {
+  const page = (body) =>
+    runa11yCoreOnHtml(
+      `<!doctype html><html lang="fr"><head><title>Page</title></head><body>${body}<main><h1>Titre</h1><p>Texte</p></main></body></html>`,
+      { engineOptions: { profile: 'rgaa-4.1.2' } }
+    );
+  const zones = page(
+    '<div class="site-header"><p>Le site</p></div>' +
+      '<div class="menu"><a href="/a">A</a> <a href="/b">B</a></div>'
+  );
+  const own = contributor(criterion(zones, '9.2'), 'page-zones-landmark');
+  assert.equal(own.outcome, 'cantTell');
+  assert.deepEqual(own.requirements, ['9.2.1']);
+
+  const search = page(
+    '<form action="/recherche"><input type="search" name="q" aria-label="Rechercher"></form>'
+  );
+  const asked = search.checksResults.find((r) => r.ruleId === 'page-zones-landmark');
+  assert.equal(asked.outcome, 'cantTell');
+  assert.equal(asked.occurrences[0].data.details.reasonCode, 'SEARCH_NOT_EXPOSED');
+  // Its finding goes to no test, so it doesn't make 9.2 a question.
+  const routed = contributor(criterion(search, '9.2'), 'page-zones-landmark');
+  assert.equal(routed.byReasonCode, true);
+  assert.equal(routed.outcome, 'pass');
+});

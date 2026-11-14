@@ -1630,6 +1630,44 @@ const REVIEW = {
         facet: 'test-8-6-1'
       }
     },
+    'page-zones-landmark': {
+      BANNER_NOT_EXPOSED: {
+        steps: [
+          'Check that the page has the HTML5 doctype (<!DOCTYPE html>). If it has another, RGAA criterion 9.2 is not applicable.',
+          "Find the block the report names, and decide whether it is the page's header zone: the area at the top with the site's name or logo, often with its main menu.",
+          "If it is, inspect it in the browser's developer tools and check whether it is a <header> element, or is inside one."
+        ],
+        passWhen:
+          "The page's doctype is not HTML5's, the block is not the page's header zone, or it is structured with a <header> element.",
+        failWhen:
+          "The block is the page's header zone and is not structured with a <header> element, which fails RGAA test 9.2.1.",
+        facet: 'test-9-2-1'
+      },
+      CONTENTINFO_NOT_EXPOSED: {
+        steps: [
+          'Check that the page has the HTML5 doctype (<!DOCTYPE html>). If it has another, RGAA criterion 9.2 is not applicable.',
+          "Find the block the report names, and decide whether it is the page's footer zone: the area at the bottom with information about the site, such as contact details, legal notices or copyright.",
+          "If it is, inspect it in the browser's developer tools and check whether it is a <footer> element, or is inside one."
+        ],
+        passWhen:
+          "The page's doctype is not HTML5's, the block is not the page's footer zone, or it is structured with a <footer> element.",
+        failWhen:
+          "The block is the page's footer zone and is not structured with a <footer> element, which fails RGAA test 9.2.1.",
+        facet: 'test-9-2-1'
+      },
+      NAVIGATION_NOT_EXPOSED: {
+        steps: [
+          'Check that the page has the HTML5 doctype (<!DOCTYPE html>). If it has another, RGAA criterion 9.2 is not applicable.',
+          "Find the block the report names, and decide whether it is a main or secondary navigation zone: a menu or navigation bar of links to the site's pages or sections.",
+          "If it is, inspect it in the browser's developer tools and check whether it is a <nav> element, or is inside one."
+        ],
+        passWhen:
+          "The page's doctype is not HTML5's, the block is not a main or secondary navigation zone, or it is structured with a <nav> element.",
+        failWhen:
+          'The block is a main or secondary navigation zone and is not structured with a <nav> element, which fails RGAA test 9.2.1.',
+        facet: 'test-9-2-1'
+      }
+    },
     'server-side-image-map-absent': {
       SERVER_SIDE_IMAGE_MAP: {
         steps: [
@@ -2162,6 +2200,8 @@ const CORE_MANUAL_RULES = [
   'css-hidden-focus',
   'embed-text-alternative-quality',
   'empty-table-header',
+  'focus-not-obscured-enhanced',
+  'focus-not-obscured-minimum',
   'focus-order-semantics',
   'form-control-label-quality',
   'form-control-programmatic-label-quality',
@@ -2197,6 +2237,7 @@ const CORE_MANUAL_RULES = [
   'p-as-heading',
   'page-has-heading-one',
   'page-title-patterns',
+  'page-zones-landmark',
   'password-paste-enabled',
   'presentation-role-conflict',
   'region',

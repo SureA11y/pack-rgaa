@@ -366,6 +366,54 @@ function overrides(lang) {
     'Cherchez sur la page un mécanisme de remplacement qui permet de remplacer les images texte par du texte stylé.'
   );
 
+  // 9.2.1: each zone structured with its element. 9.2 does not apply under
+  // another doctype than HTML5's (its particular case).
+  const DOCTYPE_STEP = t(
+    'Check that the page has the HTML5 doctype (<!DOCTYPE html>). If it has another, RGAA criterion 9.2 is not applicable.',
+    'Vérifiez que la page a le doctype HTML5 (<!DOCTYPE html>). Si elle en a un autre, le critère 9.2 du RGAA est non applicable.'
+  );
+  const zone = (what, element) => ({
+    steps: [
+      DOCTYPE_STEP,
+      what.find,
+      t(
+        `If it is, inspect it in the browser's developer tools and check whether it is a ${element} element, or is inside one.`,
+        `Si c’est le cas, inspectez-le dans les outils de développement du navigateur et vérifiez qu’il s’agit d’un élément ${element}, ou qu’il se trouve dans un tel élément.`
+      )
+    ],
+    passWhen: t(
+      `The page's doctype is not HTML5's, the block is not ${what.en}, or it is structured with a ${element} element.`,
+      `Le doctype de la page n’est pas celui de HTML5, le bloc n’est pas ${what.fr}, ou il est structuré au moyen d’un élément ${element}.`
+    ),
+    failWhen: t(
+      `The block is ${what.en} and is not structured with a ${element} element, which fails @TESTS@.`,
+      `Le bloc est ${what.fr} et n’est pas structuré au moyen d’un élément ${element}, ce qui ne respecte pas @TESTS@.`
+    )
+  });
+  const HEADER_ZONE = {
+    en: "the page's header zone",
+    fr: 'la zone d’en-tête de la page',
+    find: t(
+      "Find the block the report names, and decide whether it is the page's header zone: the area at the top with the site's name or logo, often with its main menu.",
+      'Retrouvez le bloc que le rapport désigne, et décidez s’il s’agit de la zone d’en-tête de la page : la zone en haut de page avec le nom ou le logo du site, souvent avec son menu principal.'
+    )
+  };
+  const NAVIGATION_ZONE = {
+    en: 'a main or secondary navigation zone',
+    fr: 'une zone de navigation principale ou secondaire',
+    find: t(
+      "Find the block the report names, and decide whether it is a main or secondary navigation zone: a menu or navigation bar of links to the site's pages or sections.",
+      'Retrouvez le bloc que le rapport désigne, et décidez s’il s’agit d’une zone de navigation principale ou secondaire : un menu ou une barre de navigation de liens vers les pages ou les rubriques du site.'
+    )
+  };
+  const FOOTER_ZONE = {
+    en: "the page's footer zone",
+    fr: 'la zone de pied de page',
+    find: t(
+      "Find the block the report names, and decide whether it is the page's footer zone: the area at the bottom with information about the site, such as contact details, legal notices or copyright.",
+      'Retrouvez le bloc que le rapport désigne, et décidez s’il s’agit de la zone de pied de page : la zone en bas de page avec des informations sur le site, comme les coordonnées, les mentions légales ou le copyright.'
+    )
+  };
   return {
     'aria-expanded-state-mismatch': {
       EXPANDED_FALSE_CONTROLLED_SHOWN: {
@@ -529,6 +577,12 @@ function overrides(lang) {
     'dialog-name-present': { name_internals: NAME_NEEDED, name_missing: NAME_NEEDED },
     // 7.3.2 asks only that focus stay where it is received; whether it shows is
     // 10.7's.
+    // 9.2.1 asks for the element, where core's steps ask for the landmark.
+    'page-zones-landmark': {
+      BANNER_NOT_EXPOSED: zone(HEADER_ZONE, '<header>'),
+      NAVIGATION_NOT_EXPOSED: zone(NAVIGATION_ZONE, '<nav>'),
+      CONTENTINFO_NOT_EXPOSED: zone(FOOTER_ZONE, '<footer>')
+    },
     'focus-not-removed-by-script': {
       FOCUS_HANDLER_BLURS_SELF: {
         passWhen: t(

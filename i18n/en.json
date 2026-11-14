@@ -621,6 +621,8 @@
   "validLangRgaa_summary_fail": "This lang value (\"{{value}}\") is not a valid language tag.",
   "validLangRgaa_summary_unknown": "This lang value (\"{{value}}\") is well formed, but \"{{subtag}}\" is not an ISO 639 language code.",
   "validLangRgaa_hint_fail": "Start the value with the two- or three-letter ISO 639 code of the passage's language, for example \"fr\" or \"fr-FR\".",
+  "validLangRgaa_hint_fail_underscore": "Language tags use a hyphen, not an underscore: lang=\"{{suggestion}}\".",
+  "validLangRgaa_hint_fail_country": "\"{{subtag}}\" is a country code, not a language code: for the language, use lang=\"{{suggestion}}\".",
   "cssColorsPaired_title": "CSS text and background colors are declared together",
   "cssColorsPaired_description": "Checks that a CSS text color reaching text comes with a background color, a background color with a text color, and a background image with a background color, at least on an ancestor (RGAA 10.5).",
   "cssColorsPaired_summary_fail_colorWithoutBackground": "This <{{element}}> declares a text color, but neither it nor any ancestor declares a background color.",
