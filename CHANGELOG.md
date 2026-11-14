@@ -2,14 +2,20 @@
 
 All notable changes to this package are documented here. This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.2.0] - 2026-11-14
+
+Needs `@surea11y/core` 1.17 (`~1.17.0`). For core 1.16, use 1.1.
 
 ### Added
 
+- **Core's new `page-zones-landmark` counts toward 9.2.1.** It asks about a block named as the page header, a navigation or the page footer that is not a `<header>`, `<nav>` or `<footer>` and has no landmark role: 9.2.1's conditions 1, 2 and 6. Its steps, in English and French, ask for the element 9.2.1 names, where core's ask for the landmark, and check the HTML5 doctype first (9.2's particular case). A nested `<header>` or `<footer>` and a search form go to no test: 9.2.1 asks only for the element, and names no search zone. 12.6.1 stays `rgaa-page-zones-reachable`'s.
 - `rgaa-cryptic-content-review` reports cryptic content whose meaning only a `title` may give under a reason code of its own, `titleOnly`, which RGAA's map counts toward no test: RGAA accepts a title (13.5.1). A standard that doesn't, such as RAWeb 1.1, maps it to its own test. Under RGAA, such content now counts as checked for 13.5.1 rather than not found.
 
 ### Changed
 
+- The pack's `core` range is `~1.17.0`: the experimental APIs it uses are still experimental in core until 1.18.0.
+- `rgaa-valid-lang`, a variant of core's `valid-lang`, gives core 1.17's new hints in RGAA's dictionaries, in English and French: a language tag written with an underscore (`en_US`), and a country code given as a language.
+- Core 1.17's other new rules count toward no RGAA test, as `docs/RGAA_MAPPING.md` says of each: `focus-not-obscured-minimum` checks WCAG 2.4.11, which RGAA 4.1.2, built on WCAG 2.1, doesn't include, and `focus-not-obscured-enhanced` and `target-size-enhanced` check AAA criteria. Core's new WCAG mappings (1.4.11, 2.1.3 and 2.4.13 for some rules) change no RGAA test, which the map states rule by rule.
 - **Messages name the root cause the rules already find.** Outcomes and reason codes are unchanged; new message keys, `i18n.params` and `data.details` fields carry it.
   - Automatic rules: why a button, link or heading has no name or text (text hidden by `display: none`, `visibility: hidden`, `aria-hidden` or `hidden`, a misspelled `arialabel` or `tittle`, an `aria-labelledby` to a missing or empty element, an image with no alt, an unnamed `<svg>`, an empty icon element); the value meant when an id, role, attribute or language is misspelled (`aria-hiden` → `aria-hidden`, `role="menu-item"` → `menuitem`, `<label for="Email">` → `email`, `lang="fr_FR"` → `fr-FR`, a skip link's `#Content` → `#content`); what stands in place of a frame title (`aria-label`), a heading level (`arialevel`, `aria-level="h2"`) or a description; the aria-label and caption that differ in a figure.
   - Review rules: the evidence each found — the first element outside a modal that takes focus, the text quoted as a link's context or a tooltip, the CSS that visually hides a field's label, why a table looks complex and where its summary is, the class that suggests a status message or marks the current item, what may refresh an embedded element, a table's first row, the fields a fieldset groups and why its legend doesn't count, the labels of ungrouped check boxes and radios, a field's input constraint and its value, and the source and text of a long text alternative.
