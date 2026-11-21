@@ -155,10 +155,11 @@ function rollups(css, body = TEXT_LINK) {
   };
   return { rgaa: outcome('rgaa-4.1.2-10.6'), wcag: outcome('wcag-1.4.1-use-of-color') };
 }
-
-// A highlight is a mark other than color, for link-in-text-block and here.
+// A highlight is a mark other than color, for link-in-text-block and here,
+// where its background reaches 3:1 against the white around it (#036 is
+// 12.6:1; core counts a fainter one as no mark).
 test(`${RULE_ID}: a highlighted link whose hover changes only its color passes under WCAG and RGAA`, () => {
-  const css = 'p a{color:#000;background:#ff0;text-decoration:none} a:hover{color:#900}';
+  const css = 'p a{color:#fff;background:#036;text-decoration:none} a:hover{color:#ff0}';
   assert.equal(run(css).checksResults.find((r) => r.ruleId === RULE_ID).outcome, 'notApplicable');
   const r = rollups(css);
   assert.equal(r.wcag, 'passedInPart');

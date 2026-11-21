@@ -960,12 +960,13 @@ const RGAA_RULE_TESTS = {
     'link-name-quality': {
       tests: ['6.1.1', '6.1.2', '6.1.3', '6.1.4'],
       findings: [
+        { when: { reasonCode: 'GENERIC_LINK_TEXT_IN_CONTEXT' }, tests: [] },
         { when: { linkKind: 'text' }, tests: ['6.1.1'] },
         { when: { linkKind: 'image' }, tests: ['6.1.2'] },
         { when: { linkKind: 'composite' }, tests: ['6.1.3'] },
         { when: { linkKind: 'svg' }, tests: ['6.1.4'] }
       ],
-      note: 'Flags a[href], area[href] and role=link elements whose full accessible name, whatever its source (text, img alt, SVG), is a generic phrase or a bare file format with no adjacent context. That is the question 6.1.1 to 6.1.4 step 2 asks per link type: does the name alone or with its context give the link\'s purpose and destination. Unnamed links are explicitly left out, so 6.2.1 is not covered. It accepts an aria-describedby text or a <dd>, <dt>, <blockquote> or <figcaption> as context, which the glossary "Contexte du lien" does not list; rgaa-link-context-review asks about those links. It also accepts the text of a <th> that contains the link, where the glossary names only the <th> associated with the link\'s <td>, and counts it: a header cell is context for what it contains as much as for its column. Each question goes to the test of its kind of link, which core gives in linkKind (stable): text 6.1.1, image (an <area>, or images only) 6.1.2, composite (text and an image) 6.1.3, SVG 6.1.4.'
+      note: "Flags a[href], area[href] and role=link elements whose full accessible name, whatever its source (text, img alt, SVG), is a generic phrase or a bare file format with no adjacent context. That is the question 6.1.1 to 6.1.4 step 2 asks per link type: does the name alone or with its context give the link's purpose and destination. Unnamed links are explicitly left out, so 6.2.1 is not covered. It accepts an aria-describedby text or a <dd>, <dt>, <blockquote> or <figcaption> as context, which the glossary \"Contexte du lien\" does not list; rgaa-link-context-review asks about those links. It also accepts the text of a <th> that contains the link, where the glossary names only the <th> associated with the link's <td>, and counts it: a header cell is context for what it contains as much as for its column. Each question goes to the test of its kind of link, which core gives in linkKind (stable): text 6.1.1, image (an <area>, or images only) 6.1.2, composite (text and an image) 6.1.3, SVG 6.1.4. With its setting whenContextFound: 'ask', it asks about a generic name its context explains (GENERIC_LINK_TEXT_IN_CONTEXT, WCAG 2.4.9, AAA), which goes to no test: 6.1 accepts the link's context, so such a link is explicit."
     },
     'rgaa-link-state-colors-review': {
       tests: ['10.6.1'],
@@ -1062,7 +1063,7 @@ const RGAA_RULE_TESTS = {
           outcome: 'fail'
         }
       ],
-      note: 'Fails an <li> whose parent is not <ul>/<ol>/<menu> or role=list/none/presentation, so items grouped as a list are not structured with a ul/ol container. That is step 2 of 9.3.1 or 9.3.2. An <li> under an <ol> whose role replaces list counts toward 9.3.2; any other, toward 9.3.1: an <li> outside any list says nothing of an order, and unordered lists are far the more common. Not linked to 8.2.1: HTML does not accept an li in a role=list container, which this rule passes; rgaa-html-nesting-valid reports it under 8.2.1. An <li> whose <ul> or <ol> has a widget role (LIST_ROLE_OVERRIDDEN: role="tablist", "menu"…) is asked about instead, under the test of its list: 9.3\'s technical note says such roles are not lists, so whether the content is a list is for a person. Core asks about a loose <li>, as only HTML breaks; RGAA 9.3 names the elements a list is structured with, so it fails here.',
+      note: 'Fails an <li> whose parent is not <ul>/<ol>/<menu> or role=list/none/presentation, so items grouped as a list are not structured with a ul/ol container. That is step 2 of 9.3.1 or 9.3.2. An <li> under an <ol> whose role replaces list counts toward 9.3.2; any other, toward 9.3.1: an <li> outside any list says nothing of an order, and unordered lists are far the more common. Not linked to 8.2.1: HTML does not accept an li in a role=list container, which this rule passes; rgaa-html-nesting-valid reports it under 8.2.1. An <li> whose <ul> or <ol> has a role that replaces list (LIST_ROLE_OVERRIDDEN) is asked about instead, under the test of its list: under a composite widget role (role="tablist", "menu"…) core fails it, as the <li> breaks the widget, but 9.3\'s technical note says such roles are not lists, and under a landmark or structure role (role="navigation", "group"…) core asks too, so whether the content is a list is for a person. Core asks about a loose <li>, as only HTML breaks; RGAA 9.3 names the elements a list is structured with, so it fails here.',
       reasonCodes: {
         LISTITEM_INVALID_PARENT: {
           outcome: 'fail'
@@ -1527,6 +1528,14 @@ const RGAA_RULE_TESTS = {
         SEARCH_NOT_EXPOSED: { tests: [] }
       },
       note: 'Asks about a block named as the page header, a navigation or the page footer that is not a <header>, <nav> or <footer> and has no landmark role: 9.2.1 conditions 1, 2 and 6 (the header zone structured with <header>, the main and secondary navigation zones with <nav>, the footer zone with <footer>), and whether the block is that zone is for a person. A block with the role but not the element passes the rule though 9.2.1 asks for the element, so the rule finds fewer cases than 9.2.1 fails, never more. A <header> or <footer> nested in a section (HEADER_NESTED, FOOTER_NESTED) is still the element 9.2.1 asks for, and a search form (SEARCH_NOT_EXPOSED) is no zone 9.2.1 names: those go to no test. Not linked to 12.6.1: a landmark is one of its five conditions, and rgaa-page-zones-reachable reports 12.6.1 zone by zone. On a page not in HTML5, where 9.2 does not apply, the question is answered as not applicable.'
+    },
+    'link-name-quality-link-only': {
+      tests: [],
+      note: "Asks about a link whose whole name is a generic phrase (« cliquez ici ») that only the text around it explains, WCAG 2.4.9, a AAA criterion: RGAA 4.1.2 restates only levels A and AA. 6.1 accepts the link's context (glossary « Contexte du lien »), as WCAG 2.4.4 does, so such a link is explicit for RGAA; link-name-quality, which clears it, asks under 6.1 about a generic name with no context."
+    },
+    'reflow-horizontal-scroll': {
+      tests: ['10.11.1'],
+      note: "Measures the page at a viewport 320 CSS px wide or less and asks about what sticks out past its edge and makes the page scroll sideways (HORIZONTAL_SCROLL, HORIZONTAL_SCROLL_UNATTRIBUTED), a box that scrolls sideways itself to show it (SCROLLS_IN_CONTAINER), or what the edge or a box cuts off (CLIPPED_AT_VIEWPORT_EDGE, CLIPPED_BY_CONTAINER): 10.11.1 step 2, the window reduced to 320 px with the information and features available without horizontal scrolling. A wide table, image, video or preformatted text (WIDE_TABLE, WIDE_MEDIA, WIDE_PREFORMATTED) is asked about too, since 10.11's particular cases exempt content that needs two dimensions, such as images, graphics, videos and data tables, which a person judges. It never fails, and at a wider viewport it is not applicable, so a scan at the usual width leaves 10.11.1 to a person. Not linked to 10.11.2: it measures only content read horizontally, and never a window 256 px high."
     },
     'target-size-minimum': {
       tests: [],

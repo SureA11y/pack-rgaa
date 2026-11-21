@@ -297,7 +297,7 @@ const REVIEW = {
       },
       BACKGROUND_OVERLAP: {
         steps: [
-          'Find the text the report names and check which element actually paints behind it (inspect it and toggle the overlapping element off and on).',
+          'Find the text the report names and check which element actually paints behind it (inspect it and toggle the overlapping element off and on). If the text is in a box fixed in place, or one that sticks as the page scrolls, scroll the page and check the text over each part of the page that passes under it.',
           "Use the color picker in the browser's developer tools, or a contrast calculator with colors picked by an eyedropper, to measure the text color against the color actually seen behind the letters.",
           'Compare the ratio with 4.5:1, or with 3:1 if the text is at least 24px, or at least 18.5px and bold (rendered size).'
         ],
@@ -1544,6 +1544,18 @@ const REVIEW = {
           'The text visually titles a section but is not a heading, so its structure is shown only by style, which fails RGAA test 9.1.3.',
         facet: 'test-9-1-3'
       },
+      BOLD_SHORT_PARAGRAPH: {
+        steps: [
+          'Find the bold paragraph the report names and read it together with the text that follows it.',
+          'Decide whether it introduces that text as a section title does, such as "Opening hours" above the hours, or is emphasis that belongs to the text.',
+          "If it acts as a title, check in the Accessibility pane of the developer tools, or with a screen reader's heading list, whether it is exposed as a heading."
+        ],
+        passWhen:
+          'The bold line is emphasis, a label or a note that reads as part of the text, or it is marked up as a heading (h1 to h6 or role="heading").',
+        failWhen:
+          'The bold line titles the text after it but is not a heading, so its structure is shown only by style, which fails RGAA test 9.1.3.',
+        facet: 'test-9-1-3'
+      },
       HEADING_LIKE_LINK: {
         steps: [
           'Find the bold, large linked text the report names and look at it in the page.',
@@ -1666,6 +1678,100 @@ const REVIEW = {
         failWhen:
           'The block is a main or secondary navigation zone and is not structured with a <nav> element, which fails RGAA test 9.2.1.',
         facet: 'test-9-2-1'
+      }
+    },
+    'reflow-horizontal-scroll': {
+      CLIPPED_AT_VIEWPORT_EDGE: {
+        steps: [
+          "Make the browser window 320 CSS pixels wide, as in the developer tools' device toolbar, and find the element the report names.",
+          "Look at the part of it past the edge of the window: the page doesn't scroll there.",
+          "Check whether that part can be reached another way, such as a carousel's next button or a menu's toggle, with the keyboard as well as a pointer."
+        ],
+        passWhen:
+          'Everything in it can be reached another way, none of it is cut off, or it is cut off the same way in a wide window too: then the problem is not one of reflow.',
+        failWhen: "Part of it is cut off and can't be reached, which fails RGAA test 10.11.1.",
+        facet: 'test-10-11-1'
+      },
+      CLIPPED_BY_CONTAINER: {
+        steps: [
+          "Make the browser window 320 CSS pixels wide, as in the developer tools' device toolbar, and find the element the report names.",
+          "Look at the part of it that sticks out past the edge of the box around it (a card, panel or wrapper that hides overflow): that part is hidden, and the box doesn't scroll.",
+          "Check whether that part can be reached another way, such as a carousel's next button or a tab's arrows, with the keyboard as well as a pointer. A data table in a box that hides overflow is cut off, not scrollable."
+        ],
+        passWhen:
+          'Everything in it can be reached another way, none of it is cut off, or it is cut off the same way in a wide window too: then the problem is not one of reflow.',
+        failWhen:
+          "Part of it is cut off by a box around it and can't be reached, which fails RGAA test 10.11.1.",
+        facet: 'test-10-11-1'
+      },
+      HORIZONTAL_SCROLL: {
+        steps: [
+          "Make the browser window 320 CSS pixels wide, as in the developer tools' device toolbar, and find the element the report names.",
+          'Scroll the page sideways and see what is only reached that way: the part of the element past the edge, and anything beside it.',
+          'Decide whether that content has to be read or used, and whether it needs two dimensions, as a data table, a map or a diagram does. Text, fields and menus do not: they have to fit the width.'
+        ],
+        passWhen:
+          'Scrolling sideways shows nothing that has to be read or used, or only content that needs two dimensions, such as a data table or a map.',
+        failWhen:
+          'Reading or using the page at this width needs scrolling sideways, and what that reaches is not a data table, a map or other content that needs two dimensions, which fails RGAA test 10.11.1.',
+        facet: 'test-10-11-1'
+      },
+      HORIZONTAL_SCROLL_UNATTRIBUTED: {
+        steps: [
+          "Make the browser window 320 CSS pixels wide, as in the developer tools' device toolbar.",
+          "Scroll the page sideways and find what makes it wider than the window, such as a margin, generated content or a component whose inside the scan can't read.",
+          'Decide whether anything reached only by scrolling sideways has to be read or used, and whether it needs two dimensions, as a data table or a map does.'
+        ],
+        passWhen:
+          'Scrolling sideways shows nothing that has to be read or used, or only content that needs two dimensions, such as a data table or a map.',
+        failWhen:
+          'Reading or using the page at this width needs scrolling sideways, and what that reaches is not content that needs two dimensions, which fails RGAA test 10.11.1.',
+        facet: 'test-10-11-1'
+      },
+      SCROLLS_IN_CONTAINER: {
+        steps: [
+          "Make the browser window 320 CSS pixels wide, as in the developer tools' device toolbar, and find the element the report names.",
+          'Look at the box around it (a dialog, panel or card that scrolls): scroll it sideways and see what is only reached that way.',
+          'Decide whether that content needs its layout to be understood, as a data table, code or a map does. Fields, text and menus do not: they have to fit the width.'
+        ],
+        passWhen:
+          'It is a data table, code or a map that needs its layout, or the rest can be reached another way without scrolling sideways.',
+        failWhen:
+          'The content needs sideways scrolling inside its box, and it is not a table, code or a map that needs its layout, which fails RGAA test 10.11.1.',
+        facet: 'test-10-11-1'
+      },
+      WIDE_MEDIA: {
+        steps: [
+          "Make the browser window 320 CSS pixels wide, as in the developer tools' device toolbar, and find the element the report names.",
+          'Check whether it needs its size to be used or understood, as a map, a diagram or a game may. A photo or a video can be shown smaller.',
+          "If it needs its size, check that only it scrolls sideways, and the rest of the page doesn't."
+        ],
+        passWhen: 'It needs its size and only it scrolls sideways.',
+        failWhen:
+          'It could be shown smaller, or the whole page scrolls sideways with it, which fails RGAA test 10.11.1.',
+        facet: 'test-10-11-1'
+      },
+      WIDE_PREFORMATTED: {
+        steps: [
+          "Make the browser window 320 CSS pixels wide, as in the developer tools' device toolbar, and find the element the report names.",
+          'Read it and decide whether its lines must stay as they are to be understood, as for code or a poem whose layout carries meaning.',
+          "If they must, check that only this block scrolls sideways, and the rest of the page doesn't."
+        ],
+        passWhen: 'Its lines must stay as they are and only this block scrolls sideways.',
+        failWhen:
+          'Its lines could wrap, or the whole page scrolls sideways with it, which fails RGAA test 10.11.1.',
+        facet: 'test-10-11-1'
+      },
+      WIDE_TABLE: {
+        steps: [
+          "Make the browser window 320 CSS pixels wide, as in the developer tools' device toolbar, and find the element the report names.",
+          'Check whether it is a data table, whose rows and columns relate its cells, or a table used only to lay out the page.',
+          "For a data table, check that the table scrolls sideways on its own, and the rest of the page doesn't."
+        ],
+        passWhen: 'It is a data table, and only the table scrolls sideways.',
+        failWhen:
+          'It is a table used for layout, or the whole page scrolls sideways with it, which fails RGAA test 10.11.1.',
+        facet: 'test-10-11-1'
       }
     },
     'server-side-image-map-absent': {
@@ -2226,6 +2332,7 @@ const CORE_MANUAL_RULES = [
   'landmark-one-main',
   'landmark-unique',
   'link-name-quality',
+  'link-name-quality-link-only',
   'live-region-announcements',
   'manual-review',
   'media-alternative-transcript-evidence',
@@ -2240,6 +2347,7 @@ const CORE_MANUAL_RULES = [
   'page-zones-landmark',
   'password-paste-enabled',
   'presentation-role-conflict',
+  'reflow-horizontal-scroll',
   'region',
   'scope-attr-valid',
   'scrollable-region-focusable',
