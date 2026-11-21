@@ -132,11 +132,11 @@ module.exports = definePack({
   namespace: 'rgaa',
   // The standard is built from data with core's standardFromData, its
   // tests under its criteria and its law, and the pack uses skip-link's
-  // details.lean and the standard.review dictionary keys: experimental in
-  // core until 1.18.0, so a later minor may change them and the range takes
-  // none. 1.17 sends core's new hints to rgaa-valid-lang and asks
-  // page-zones-landmark, which the map links to 9.2.1.
-  core: '~1.17.0',
+  // details.lean and the standard.review dictionary keys: all stable from
+  // core 1.18.0, which skips a pack on a ~1.17 range, so the range takes
+  // 1.18 and any later 1.x. 1.18 asks reflow-horizontal-scroll, which the
+  // map links to 10.11.1.
+  core: '^1.18.0',
   description: 'RGAA 4.1.2, the French accessibility standard',
   rules,
   standard,

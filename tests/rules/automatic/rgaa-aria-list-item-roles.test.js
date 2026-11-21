@@ -191,10 +191,13 @@ test(`${RULE_ID}: widget findings of the ARIA container rules stay under WCAG 1.
   }
 });
 
-test(`${RULE_ID}: RGAA 9.3 and WCAG 1.3.1 both ask about <li> items in a role="list"`, () => {
+// Browsers expose an <li> in a role="list" as a list item, and core's ARIA
+// rules take it as one, so WCAG 1.3.1 passes what it checks; RGAA 9.3 wants
+// the items built with role="listitem" in such a list, and asks.
+test(`${RULE_ID}: RGAA 9.3 asks about <li> items in a role="list" that WCAG 1.3.1 passes`, () => {
   const result = runa11yCoreOnHtml(page(LI_LIST), RGAA);
   assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-9.3')), 'cantTell');
-  assert.equal(rollupOutcome(rollup(result, 'wcag-1.3.1-info-and-relationships')), 'cantTell');
+  assert.equal(rollupOutcome(rollup(result, 'wcag-1.3.1-info-and-relationships')), 'passedInPart');
 });
 
 test(`${RULE_ID}: RGAA 9.3 and WCAG 1.3.1 agree on a list built with role="listitem"`, () => {

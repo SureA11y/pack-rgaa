@@ -2,6 +2,25 @@
 
 All notable changes to this package are documented here. This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+Needs `@surea11y/core` 1.18 or a later 1.x (`^1.18.0`). For core 1.17, use 1.2.
+
+### Added
+
+- **Core's new `reflow-horizontal-scroll` counts toward 10.11.1.** At a viewport 320 CSS pixels wide or less, it asks about what makes the page scroll sideways, scrolls sideways in its own box, or is cut off: 10.11.1's question, with the window reduced to 320 px. A wide table, image, video or preformatted text is asked about too, since 10.11's particular cases exempt content that needs two dimensions. Its steps, in English and French, name 10.11.1. It never fails, and at a wider viewport it is not applicable, so a scan at the usual width leaves 10.11.1 to a person. A scan now gives results for 81 of RGAA's 106 criteria (168 of its 258 tests).
+
+### Changed
+
+- The pack's `core` range is `^1.18.0`: the core APIs it uses (laws, standard data, tests under criteria, `skip-link`'s `details.lean` and the `standard.review` dictionary keys) are stable from core 1.18.0, which skips a pack on a `~1.17` range, and `describePacks` lists no experimental API for the pack.
+- Core 1.18's `link-name-quality-link-only` (WCAG 2.4.9, AAA) counts toward no RGAA test: RGAA 4.1.2 restates only levels A and AA, and 6.1 accepts a link's context, so a generic link name its context explains is explicit. For the same reason, `link-name-quality`'s `GENERIC_LINK_TEXT_IN_CONTEXT` (with its setting `whenContextFound: 'ask'`) goes to no test, and has no RGAA steps.
+- Core 1.18's `listitem-parent-valid` fails an `<li>` in a list with a composite widget role and asks about one in a list with a landmark or structure role (`LIST_ROLE_OVERRIDDEN`): under RGAA both are still questions about 9.3.1 or 9.3.2, as 9.3's technical note says widget roles are not lists. An `<li>` in a `role="list"` is a list item to core's ARIA rules now, so WCAG 1.3.1 passes it while RGAA 9.3 still asks for `role="listitem"`.
+- The steps of core's reworded questions are regenerated in RGAA's terms, in English and French (`contrast-computable`'s `BACKGROUND_OVERLAP`, `p-as-heading`'s new `BOLD_SHORT_PARAGRAPH`).
+
+### Fixed
+
+- The review generator sent a reason code that a `findings` entry routes to no test (`tests: []`) to the row's tests, and gave it steps under them.
+
 ## [1.2.1] - 2026-11-14
 
 ### Fixed

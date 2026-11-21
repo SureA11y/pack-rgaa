@@ -105,12 +105,9 @@ test('the profile serves article 47, which results and describePacks name', () =
     described.standard.laws.map((l) => [l.id, l.profiles]),
     [['fr-article-47', ['rgaa-4.1.2']]]
   );
-  // The experimental APIs of core it uses, for which its range is ~1.17.0.
-  assert.deepEqual(described.experimental.map((e) => e.id).sort(), [
-    'ruleMappedStandard tests',
-    'skip-link details.lean',
-    'standard data',
-    'standard laws',
-    'standard.review dictionary keys'
-  ]);
+  // Laws, standard data, tests under criteria, skip-link's details.lean and
+  // the standard.review keys are stable in core 1.18, and the pack uses no
+  // experimental API, so describePacks lists none and its range is ^1.18.0.
+  assert.equal(described.experimental, undefined);
+  assert.equal(pack.core, '^1.18.0');
 });
