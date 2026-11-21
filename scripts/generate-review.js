@@ -44,10 +44,8 @@ const coreDictionary = (lang) => require(`@surea11y/core/procedures/${lang}`);
 function testsOfCode(row, code) {
   const route = row.reasonCodes && row.reasonCodes[code];
   if (route && Array.isArray(route.tests)) return route.tests;
-  const routed = (row.findings || []).flatMap((f) =>
-    f.when.reasonCode === code ? f.tests || row.tests : []
-  );
-  if (routed.length) return [...new Set(routed)];
+  const routes = (row.findings || []).filter((f) => f.when.reasonCode === code);
+  if (routes.length) return [...new Set(routes.flatMap((f) => f.tests || row.tests))];
   return [...row.tests, ...(row.asks || [])];
 }
 
