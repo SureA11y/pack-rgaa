@@ -107,12 +107,17 @@ test(`${RULE_ID}: the RGAA profile, the rgaa tag and the 10.4 rollup id run it`,
 });
 
 // Under the RGAA profile, 10.4 takes this rule's question, while WCAG 1.4.4 in
-// the same run keeps meta-viewport-zoom-enabled's failure.
+// the same run keeps meta-viewport-zoom-enabled's failure. Core's
+// resize-text-content-loss counts toward 10.4.1 too (not applicable at the
+// usual width).
 test(`${RULE_ID}: WCAG 1.4.4 fails user-scalable=no while RGAA 10.4 only asks`, () => {
   const result = runa11yCoreOnHtml(page('width=device-width, user-scalable=no'), RGAA);
   assert.equal(rollupOutcome(rollup(result, 'wcag-1.4.4-resize-text')), 'fail');
   assert.equal(rollupOutcome(rollup(result, 'rgaa-4.1.2-10.4')), 'cantTell');
-  assert.deepEqual(rollup(result, 'rgaa-4.1.2-10.4').data.details.checksIds, [RULE_ID]);
+  assert.deepEqual(rollup(result, 'rgaa-4.1.2-10.4').data.details.checksIds, [
+    'resize-text-content-loss',
+    RULE_ID
+  ]);
 });
 
 test(`${RULE_ID}: WCAG 1.4.4 and RGAA 10.4 agree when zoom is not restricted`, () => {

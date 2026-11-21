@@ -644,6 +644,10 @@ const RGAA_RULE_TESTS = {
         }
       }
     },
+    'form-group-name-present': {
+      tests: [],
+      note: 'Asks about radio buttons (leaning fail) or checkboxes sharing a name that sit in no <fieldset> with a <legend> and no named group or radiogroup. Not linked to 11.5.1: rgaa-radio-group-present and rgaa-same-name-checkboxes-review ask about the same groups under 11.5.1 with RGAA’s own thresholds (« si nécessaire », three checkboxes or more), so a link here would count the same group twice.'
+    },
     'form-control-programmatic-label-present': {
       tests: [],
       note: 'Fails input/select/textarea controls (not hidden/submit/reset/button/image) that have no associated <label>, aria-labelledby, aria-label, title or placeholder. It accepts a wrapping <label> and a placeholder, which 11.1.1 does not list, so a placeholder-only field passes here while it fails 11.1.1. Not mapped to 11.1.1: rgaa-field-label-listed-source reports 11.1.1 for every form field, from the sources 11.1.1 lists only.'
@@ -1387,6 +1391,10 @@ const RGAA_RULE_TESTS = {
         }
       }
     },
+    'resize-text-content-loss': {
+      tests: ['10.4.1'],
+      note: "Asks about text a box with hidden overflow cuts off (TEXT_CLIPPED_AT_640) or shortens with an ellipsis or a line clamp (TEXT_TRUNCATED_AT_640) in a page laid out at a viewport 640 CSS px wide or less, as the browser's zoom at 200 % shows a 1280 px window: 10.4.1, text enlarged to 200 % with the browser's graphic zoom losing no information. It never fails, and at a wider viewport it is not applicable, so a scan at the usual width leaves 10.4.1 to a person. Not linked to 10.4.2, which asks whether all the text can be enlarged, nor to the browser's text-only enlargement, which a scan can't apply."
+    },
     'scrollable-region-focusable': {
       tests: [],
       note: 'Flags containers with overflow auto/scroll that have no focusable descendant and are not focusable themselves (keyboard scrolling). No RGAA test covers keyboard scrolling of a plain CSS scroll region: 7.3 needs a script handler, 10.14/12.11 cover extra content shown on hover, focus or activation, and 12.9 covers keyboard traps.'
@@ -1463,6 +1471,10 @@ const RGAA_RULE_TESTS = {
     'rgaa-svg-role-img': {
       tests: ['1.1.5'],
       note: 'Fails an exposed outer <svg> named by aria-labelledby, aria-label or a <title> child but without role="img": 1.1.5 step 4 says the test is failed without the role. An <svg role="img"> named only by <title> passes: RGAA 4.1.2 added the content of <title> to the sources of 1.1.5 step 5. An unnamed <svg role="img"> is left to svg-text-alternative-present. An SVG with an alternative and no role="img" fails only when it certainly carries information (captioned, or focusable); otherwise it is asked about, since it fails 1.2.4 instead if it is decorative. An SVG that is the only content of a link or a button is left out: the glossary judges it as the control\'s label.'
+    },
+    'symbol-graphic-contrast': {
+      tests: ['3.3.2'],
+      note: 'Asks about text made only of symbols used as a graphic (★☆, ●○, arrows, check marks) whose colour is under 3:1 against the background next to it: 3.3.2, the colours of a graphic element needed to understand it against the contiguous background colour, at 3:1 or more. A question, since 3.3’s particular cases exempt graphics that carry no information or have an alternative, which a person judges.'
     },
     'svg-text-alternative-present': {
       tests: ['1.1.5'],

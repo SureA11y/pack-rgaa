@@ -1593,6 +1593,18 @@ const REVIEW = {
           'The title is a generic word that does not say what the page is about, which fails RGAA test 8.6.1.',
         facet: 'test-8-6-1'
       },
+      placeholderTitle: {
+        steps: [
+          'Read the page title the report gives; the browser shows it in the tab.',
+          'Find in the title the placeholder the report names, {{token|such as “undefined” or a word between braces}}.',
+          'Reload the page and wait for it to finish loading, then read the title again: a script may fill it in later.'
+        ],
+        passWhen:
+          'Once the page has loaded, the title says what the page is about, without the placeholder.',
+        failWhen:
+          'The title still holds the placeholder instead of words about the page, so it does not say what the page is about, which fails RGAA test 8.6.1.',
+        facet: 'test-8-6-1'
+      },
       templateLikeTitle: {
         steps: [
           'Read the page title the report gives; the browser shows it in the tab.',
@@ -1774,6 +1786,32 @@ const REVIEW = {
         facet: 'test-10-11-1'
       }
     },
+    'resize-text-content-loss': {
+      TEXT_CLIPPED_AT_640: {
+        steps: [
+          "Zoom a browser window 1280 CSS pixels wide to 200%, or make the window 640 CSS pixels wide in the developer tools' device toolbar, and find the element the report names.",
+          'Check whether all of its text shows: none of it is cut at an edge of the box or hidden below it, with no way to scroll to the rest.',
+          'If part of it is hidden, look for another way to read the full text that works with the keyboard, such as a button that opens the box, or the same text elsewhere on the page.'
+        ],
+        passWhen:
+          'At 200% the whole text shows, or the full text can be read another way that works with the keyboard.',
+        failWhen:
+          "At 200% part of the text is cut off and can't be read any other way, which fails RGAA test 10.4.1.",
+        facet: 'test-10-4-1'
+      },
+      TEXT_TRUNCATED_AT_640: {
+        steps: [
+          "Zoom a browser window 1280 CSS pixels wide to 200%, or make the window 640 CSS pixels wide in the developer tools' device toolbar, and find the element the report names.",
+          "Check whether the text ends in an ellipsis (…) or stops after a set number of lines, so that part of it isn't shown.",
+          'If it is shortened, look for another way to read the full text that works with the keyboard, such as a "read more" link or the same text on the page it leads to. A tooltip shown only on mouse hover doesn\'t count.'
+        ],
+        passWhen:
+          'At 200% the whole text shows, or the full text can be read another way that works with the keyboard.',
+        failWhen:
+          "At 200% the text is shortened and the full text can't be read any other way, which fails RGAA test 10.4.1.",
+        facet: 'test-10-4-1'
+      }
+    },
     'server-side-image-map-absent': {
       SERVER_SIDE_IMAGE_MAP: {
         steps: [
@@ -1826,6 +1864,20 @@ const REVIEW = {
         failWhen:
           'The graphic carries information and its alternative is wrong, vague (such as "image" or "icon") or does not match its information, which fails RGAA test 1.3.6; or it is a decorative image that is not hidden by aria-hidden="true" and keeps an alternative, which fails RGAA test 1.2.4.',
         facet: 'test-1-3-6'
+      }
+    },
+    'symbol-graphic-contrast': {
+      SYMBOLS_BELOW_GRAPHIC_THRESHOLD: {
+        steps: [
+          'Find the symbols the report names, {{symbols|such as rating stars}}, and note what they show, such as a rating or a status.',
+          'Check whether a text beside them, or read with them, says the same, such as “4 out of 5”.',
+          "Measure the symbols' colour against the colour right behind them with a contrast checker, in each state they are shown in."
+        ],
+        passWhen:
+          'The symbols reach 3:1, or they only decorate, or a visible text beside them gives the same information.',
+        failWhen:
+          'The symbols carry information a person needs and are under 3:1 against their background, which fails RGAA test 3.3.2.',
+        facet: 'test-3-3-2'
       }
     },
     'tab-name-present': {
@@ -2311,6 +2363,7 @@ const CORE_MANUAL_RULES = [
   'focus-order-semantics',
   'form-control-label-quality',
   'form-control-programmatic-label-quality',
+  'form-group-name-present',
   'heading-order',
   'heading-quality',
   'identical-links-same-purpose',
@@ -2349,10 +2402,12 @@ const CORE_MANUAL_RULES = [
   'presentation-role-conflict',
   'reflow-horizontal-scroll',
   'region',
+  'resize-text-content-loss',
   'scope-attr-valid',
   'scrollable-region-focusable',
   'skip-link',
   'svg-text-alternative-quality',
+  'symbol-graphic-contrast',
   'tabindex',
   'table-duplicate-name',
   'table-fake-caption',

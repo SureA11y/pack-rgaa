@@ -143,7 +143,7 @@ What a scan runs under each profile (`engineOptions.profile`): the rules its tag
 |---|---|---|---|---|---|---|
 | `rgaa-4.1.2` | `rgaa` | version 4.1.2 | — | — | — | 2.1 |
 
-## Rollups (81)
+## Rollups (82)
 
 Each groups rules into one result, as a WCAG rollup does; the standard's own report sections show them.
 
@@ -161,7 +161,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-10.11` | Pour chaque page web, les contenus peuvent-ils être présentés sans perte d’information ou de fonctionnalité et sans avoir recours soit à un défilement vertical pour une fenêtre ayant une hauteur de 256 px, soit à un défilement horizontal pour une fenêtre ayant une largeur de 320 px (hors cas particuliers) ? | `reflow-horizontal-scroll` |
 | `rgaa-4.1.2-10.12` | Dans chaque page web, les propriétés d’espacement du texte peuvent-elles être redéfinies par l’utilisateur sans perte de contenu ou de fonctionnalité (hors cas particuliers) ? | `avoid-inline-spacing`, `text-spacing-content-loss` |
 | `rgaa-4.1.2-10.13` | Dans chaque page web, les contenus additionnels apparaissant à la prise de focus ou au survol d’un composant d’interface sont-ils contrôlables par l’utilisateur (hors cas particuliers) ? | `rgaa-tooltip-review` |
-| `rgaa-4.1.2-10.4` | Dans chaque page web, le texte reste-t-il lisible lorsque la taille des caractères est augmentée jusqu’à 200 %, au moins (hors cas particuliers) ? | `rgaa-viewport-zoom-review` |
+| `rgaa-4.1.2-10.4` | Dans chaque page web, le texte reste-t-il lisible lorsque la taille des caractères est augmentée jusqu’à 200 %, au moins (hors cas particuliers) ? | `resize-text-content-loss`, `rgaa-viewport-zoom-review` |
 | `rgaa-4.1.2-10.5` | Dans chaque page web, les déclarations CSS de couleurs de fond d’élément et de police sont-elles correctement utilisées ? | `rgaa-css-colors-paired` |
 | `rgaa-4.1.2-10.6` | Dans chaque page web, chaque lien dont la nature n’est pas évidente est-il visible par rapport au texte environnant ? | `link-in-text-block`, `rgaa-link-state-colors-review` |
 | `rgaa-4.1.2-10.7` | Dans chaque page web, pour chaque élément recevant le focus, la prise de focus est-elle visible ? | `css-focus-indicator-suppressed`, `css-hidden-focus`, `manual-review`, `rgaa-focus-indicator-contrast` |
@@ -194,6 +194,7 @@ Each groups rules into one result, as a WCAG rollup does; the standard's own rep
 | `rgaa-4.1.2-2.2` | Pour chaque cadre ayant un titre de cadre, ce titre de cadre est-il pertinent ? | `rgaa-frame-title-relevant` |
 | `rgaa-4.1.2-3.1` | Dans chaque page web, l’information ne doit pas être donnée uniquement par la couleur. Cette règle est-elle respectée ? | `rgaa-color-reference-review` |
 | `rgaa-4.1.2-3.2` | Dans chaque page web, le contraste entre la couleur du texte et la couleur de son arrière-plan est-il suffisamment élevé (hors cas particuliers) ? | `contrast-computable`, `rgaa-contrast-minimum` |
+| `rgaa-4.1.2-3.3` | Dans chaque page web, les couleurs utilisées dans les composants d’interface ou les éléments graphiques porteurs d’informations sont-elles suffisamment contrastées (hors cas particuliers) ? | `symbol-graphic-contrast` |
 | `rgaa-4.1.2-4.1` | Chaque média temporel pré-enregistré a-t-il, si nécessaire, une transcription textuelle ou une audiodescription (hors cas particuliers) ? | `rgaa-embedded-player-review`, `rgaa-media-transcript-adjacent` |
 | `rgaa-4.1.2-4.10` | Chaque son déclenché automatiquement est-il contrôlable par l’utilisateur ? | `no-autoplay-audio`, `rgaa-embedded-player-review` |
 | `rgaa-4.1.2-4.11` | La consultation de chaque média temporel est-elle, si nécessaire, contrôlable par le clavier et tout dispositif de pointage ? | `rgaa-embedded-player-review`, `rgaa-moving-content-review` |
