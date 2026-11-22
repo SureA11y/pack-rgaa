@@ -1474,7 +1474,7 @@ const RGAA_RULE_TESTS = {
     },
     'symbol-graphic-contrast': {
       tests: ['3.3.2'],
-      note: 'Asks about text made only of symbols used as a graphic (★☆, ●○, arrows, check marks) whose colour is under 3:1 against the background next to it: 3.3.2, the colours of a graphic element needed to understand it against the contiguous background colour, at 3:1 or more. A question, since 3.3’s particular cases exempt graphics that carry no information or have an alternative, which a person judges.'
+      note: 'Asks about text made only of symbols used as a graphic (★☆, ●○, arrows, check marks) whose colour is under 3:1 against the background next to it: 3.3.2, the colours of a graphic element needed to understand it against the contiguous background colour, at 3:1 or more. A question, since 3.3’s particular cases exempt graphics that carry no information or have an alternative, which a person judges. RGAA 4.1.2 does not say whether such characters are text (3.2) or a graphic element (3.3): its glossary calls an « Élément graphique » « une représentation visuelle telle que des images, des pictogrammes ou des graphiques », and its « Contraste » entry says the measure « concerne le texte, le texte en image ». Reading a symbol used as a pictogram as a graphic element is the pack’s reading, not confirmed by RGAA.'
     },
     'svg-text-alternative-present': {
       tests: ['1.1.5'],
