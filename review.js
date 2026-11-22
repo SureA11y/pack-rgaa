@@ -2266,7 +2266,7 @@ const VARIANT_REVIEW = {
           'Repérez le sélecteur de contraste indiqué par le rapport et vérifiez qu’il est facile à trouver, en haut de la page ou sur chaque page, et accessible au clavier.',
         contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_step2: 'Activez le sélecteur.',
         contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_step3:
-          'Repérez le texte indiqué par le rapport et, avec la pipette de couleur des outils de développement du navigateur ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez-le par rapport à son arrière-plan en comparant à 4,5:1 (3:1 pour le texte de grande taille : au moins 24px, ou 18.5px en gras).',
+          'Repérez le texte indiqué par le rapport et, avec la pipette de couleur des outils de développement du navigateur ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez-le par rapport à son arrière-plan en comparant à 4,5:1 (3:1 pour le texte de grande taille : au moins 24px, ou 18,5px en gras).',
         contrastMinimumRgaa_review_CONTRAST_SWITCH_OFFERED_step4:
           'Passez à une autre page et vérifiez que le réglage est conservé.',
         contrastMinimumRgaa_review_ENGINE_EXCEPTION_fail:
@@ -2278,7 +2278,7 @@ const VARIANT_REVIEW = {
         contrastMinimumRgaa_review_ENGINE_EXCEPTION_step2:
           'Avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez la couleur du texte par rapport à l’arrière-plan situé juste derrière les lettres.',
         contrastMinimumRgaa_review_ENGINE_EXCEPTION_step3:
-          'Notez la taille et la graisse du texte et comparez le ratio à 4,5:1 (3:1 pour le texte de grande taille : au moins 24px, ou 18.5px en gras).',
+          'Notez la taille et la graisse du texte et comparez le ratio à 4,5:1 (3:1 pour le texte de grande taille : au moins 24px, ou 18,5px en gras).',
         contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_fail:
           'Le texte ne fait pas partie d’un logo ou d’un nom de marque et reste sous son ratio, ce qui ne respecte pas le critère RGAA 3.2.',
         contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_pass:
@@ -2288,7 +2288,7 @@ const VARIANT_REVIEW = {
         contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_step2:
           'Déterminez s’il fait partie d’un logo ou d’un nom de marque, comme le nom du site dans son traitement de logo, plutôt que d’un slogan, d’un élément de menu ou d’un autre texte.',
         contrastMinimumRgaa_review_LOGO_TEXT_BELOW_THRESHOLD_step3:
-          'S’il ne s’agit pas du texte d’un logo, avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez le texte par rapport à son arrière-plan et comparez à 4,5:1 (3:1 pour le texte de grande taille : au moins 24px, ou 18.5px en gras).',
+          'S’il ne s’agit pas du texte d’un logo, avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez le texte par rapport à son arrière-plan et comparez à 4,5:1 (3:1 pour le texte de grande taille : au moins 24px, ou 18,5px en gras).',
         contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_fail:
           'L’une des couleurs donne un ratio inférieur à celui qui lui est requis : le texte ne satisfait pas à la vérification.',
         contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_pass:
@@ -2300,7 +2300,7 @@ const VARIANT_REVIEW = {
         contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_step3:
           'Redimensionnez la fenêtre pour voir à quels mots la couleur de la première ligne s’applique selon la largeur.',
         contrastMinimumRgaa_review_PSEUDO_ELEMENT_COLOR_step4:
-          'Comparez chaque ratio à celui que le rapport indique comme requis pour cette couleur : 4,5:1 pour la plupart des textes, ou 3:1 pour le texte de grande taille (au moins 24px, ou 18.5px en gras).',
+          'Comparez chaque ratio à celui que le rapport indique comme requis pour cette couleur : 4,5:1 pour la plupart des textes, ou 3:1 pour le texte de grande taille (au moins 24px, ou 18,5px en gras).',
         contrastMinimumRgaa_review_SEMIBOLD_BELOW_THRESHOLD_fail:
           'Le texte ne se lit pas comme du gras : c’est donc un texte normal sous 4,5:1, ce qui ne respecte pas le critère RGAA 3.2.',
         contrastMinimumRgaa_review_SEMIBOLD_BELOW_THRESHOLD_pass:
@@ -2322,7 +2322,7 @@ const VARIANT_REVIEW = {
         contrastMinimumRgaa_review_TEXT_SHADOW_step3:
           'Avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez la couleur qui forme les lettres par rapport à l’arrière-plan.',
         contrastMinimumRgaa_review_TEXT_SHADOW_step4:
-          'Comparez le ratio à celui que le rapport indique comme requis : 4,5:1 pour la plupart des textes, ou 3:1 pour le texte de grande taille (au moins 24px, ou 18.5px en gras).',
+          'Comparez le ratio à celui que le rapport indique comme requis : 4,5:1 pour la plupart des textes, ou 3:1 pour le texte de grande taille (au moins 24px, ou 18,5px en gras).',
         contrastMinimumRgaa_review_TEXT_STROKE_fail:
           'La couleur qui forme les lettres donne un ratio inférieur au ratio requis : le texte ne satisfait pas à la vérification.',
         contrastMinimumRgaa_review_TEXT_STROKE_pass:
@@ -2334,7 +2334,7 @@ const VARIANT_REVIEW = {
         contrastMinimumRgaa_review_TEXT_STROKE_step3:
           'Avec la pipette de couleur des outils de développement du navigateur, ou un calculateur de contraste alimenté par des couleurs prélevées à la pipette, mesurez cette couleur par rapport à l’arrière-plan.',
         contrastMinimumRgaa_review_TEXT_STROKE_step4:
-          'Comparez le ratio à celui que le rapport indique comme requis : 4,5:1 pour la plupart des textes, ou 3:1 pour le texte de grande taille (au moins 24px, ou 18.5px en gras).'
+          'Comparez le ratio à celui que le rapport indique comme requis : 4,5:1 pour la plupart des textes, ou 3:1 pour le texte de grande taille (au moins 24px, ou 18,5px en gras).'
       }
     }
   },
