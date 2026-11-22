@@ -646,7 +646,7 @@ const RGAA_RULE_TESTS = {
     },
     'form-group-name-present': {
       tests: [],
-      note: 'Asks about radio buttons (leaning fail) or checkboxes sharing a name that sit in no <fieldset> with a <legend> and no named group or radiogroup. Not linked to 11.5.1: rgaa-radio-group-present and rgaa-same-name-checkboxes-review ask about the same groups under 11.5.1 with RGAA’s own thresholds (« si nécessaire », three checkboxes or more), so a link here would count the same group twice.'
+      note: 'Asks about radio buttons (leaning fail) or checkboxes sharing a name that sit in no <fieldset> with a <legend> and no named group or radiogroup. Not linked to 11.5.1: rgaa-radio-group-present and rgaa-same-name-checkboxes-review ask about these groups under 11.5.1, so a link here would count the same group twice. RGAA 11.5.1 asks for grouping « si nécessaire » and gives no number. rgaa-same-name-checkboxes-review asks about checkboxes only from three sharing a name: that threshold is the pack’s own heuristic, not RGAA’s, so two ungrouped checkboxes sharing a name get no question under the RGAA profile.'
     },
     'form-control-programmatic-label-present': {
       tests: [],
