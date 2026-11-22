@@ -193,7 +193,7 @@ test(`${RULE_ID}: messages follow the scan locale`, () => {
   );
   assert.equal(
     rule.occurrences[0].summary,
-    'L’indication de prise de focus de cet élément (outline, #cccccc) a un rapport de contraste de 1.61:1 avec les couleurs qui l’entourent, en dessous de 3:1.'
+    'L’indication de prise de focus de cet élément (outline, #cccccc) a un rapport de contraste de 1,61:1 avec les couleurs qui l’entourent, en dessous de 3:1.'
   );
 });
 
