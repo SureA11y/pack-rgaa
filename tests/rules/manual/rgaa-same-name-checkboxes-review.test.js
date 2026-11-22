@@ -63,6 +63,31 @@ test(`${RULE_ID}: two role="radio" elements in one parent outside any group are 
   assert.match(occ.summary, / Their labels: "Oui \| Non"\.$/);
 });
 
+// RGAA 11.5.1 says « si nécessaire » and gives no number: the rule asks from
+// two checkboxes, as core's form-group-name-present does, and the person
+// checking decides whether they need a group.
+test(`${RULE_ID}: two checkboxes sharing a name are asked about under the RGAA profile, one is not`, () => {
+  const PROFILE = { engineOptions: { profile: 'rgaa-4.1.2' } };
+  const two = cb('p', 'Midi', 'id="first"') + cb('p', 'Soir');
+  const rule = assertRule(runa11yCoreOnHtml(page(two), PROFILE), RULE_ID, 'cantTell', {
+    minOccurrences: 1,
+    maxOccurrences: 1
+  });
+  const occ = rule.occurrences[0];
+  assert.match(occ.html, /id="first"/);
+  assert.deepEqual(occ.data.details, {
+    reasonCode: 'ungroupedCheckboxes',
+    name: 'p',
+    count: 2,
+    labels: 'Midi | Soir'
+  });
+  assert.equal(
+    occ.summary,
+    'The 2 checkboxes named "p" are not grouped in a fieldset or role="group". Their labels: "Midi | Soir".'
+  );
+  assertRule(runa11yCoreOnHtml(page(cb('p', 'Midi')), PROFILE), RULE_ID, 'notApplicable');
+});
+
 test(`${RULE_ID}: a set with no labels keeps the summary without them`, () => {
   const body =
     '<input type="checkbox" name="u"><input type="checkbox" name="u"><input type="checkbox" name="u">';
@@ -88,11 +113,11 @@ test(`${RULE_ID}: grouped, small, hidden, native or split sets are not applicabl
     `<fieldset role="group"><legend>Intérêts</legend>${BOXES}</fieldset>`,
     `<div role="radiogroup" aria-label="Choix">${radio('Oui')}${radio('Non')}</div>`,
     `<fieldset><legend>Choix</legend><div>${radio('Oui')}${radio('Non')}</div></fieldset>`,
-    // Two checkboxes sharing a name, or three of which one is hidden.
-    cb('c', 'A') + cb('c', 'B'),
-    cb('c', 'A') + cb('c', 'B') + cb('c', 'C', 'style="display:none"'),
+    // A lone checkbox, or two sharing a name of which one is hidden.
+    cb('c', 'A'),
+    cb('c', 'A') + cb('c', 'B', 'style="display:none"'),
     // The same name in two forms is two sets.
-    `<form>${cb('c', 'A')}${cb('c', 'B')}</form><form>${cb('c', 'C')}</form>`,
+    `<form>${cb('c', 'A')}</form><form>${cb('c', 'B')}</form>`,
     // Native radio buttons are rgaa-radio-group-present's.
     '<label><input type="radio" name="r"> A</label><label><input type="radio" name="r"> B</label>',
     // One custom radio per parent, and a single one.
@@ -135,7 +160,7 @@ test(`${RULE_ID}: opt-in, so a default run does not include it`, () => {
 test(`${RULE_ID}: fixture coverage (tests/fixtures/${RULE_ID}-all-scenarios.html)`, () => {
   const fixturePath = path.join(__dirname, '../..', 'fixtures', `${RULE_ID}-all-scenarios.html`);
   const result = runa11yCoreOnHtml(fs.readFileSync(fixturePath, 'utf8'), RUN);
-  const rule = assertRule(result, RULE_ID, 'cantTell', { minOccurrences: 2, maxOccurrences: 2 });
+  const rule = assertRule(result, RULE_ID, 'cantTell', { minOccurrences: 3, maxOccurrences: 3 });
   const ids = rule.occurrences.map((o) => (o.html.match(/id="([^"]+)"/) || [])[1]);
-  assert.deepEqual(ids, ['snc_case_01', 'snc_case_02']);
+  assert.deepEqual(ids, ['snc_case_01', 'snc_case_05', 'snc_case_02']);
 });

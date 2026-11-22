@@ -1587,9 +1587,9 @@ Checks that each exposed element with role="img" (other than &lt;img&gt; and an 
 
 manual · no formal WCAG SC mapping · confidence medium · default severity moderate
 
-Flags three or more checkboxes sharing a name, or two or more role="radio" elements in one parent, that are not inside a fieldset or a role="group" (or, for radios, role="radiogroup"), for a person to decide whether they need grouping.
+Flags two or more checkboxes sharing a name, or two or more role="radio" elements in one parent, that are not inside a fieldset or a role="group" (or, for radios, role="radiogroup"), for a person to decide whether they need grouping.
 
-**Applies to.** Applies to sets of three or more visible &lt;input type="checkbox"&gt; with the same name in the same form (or outside any form), and to sets of two or more visible elements with role="radio" (native radio buttons left out) that share a parent element. A page where every such set is grouped, or with none, is notApplicable.
+**Applies to.** Applies to sets of two or more visible &lt;input type="checkbox"&gt; with the same name in the same form (or outside any form), and to sets of two or more visible elements with role="radio" (native radio buttons left out) that share a parent element. A page where every such set is grouped, or with none, is notApplicable.
 
 **Expectation.** RGAA 11.5.1: « Les champs de même nature sont regroupés dans une balise &lt;fieldset&gt; », « dans une balise possédant un attribut WAI-ARIA role="group" », and, for radios (role="radio" included), « dans une balise possédant un attribut WAI-ARIA role="radiogroup" ou role="group" », « si nécessaire ». The glossary « Champs de même nature » names « un ensemble de boutons radio ou de cases à cocher qui se rapportent à une question » and adds that they « doivent être regroupés lorsque les intitulés de label ne sont pas suffisants ». A set with no common group is asked about (ungroupedCheckboxes, ungroupedRadios), since only a person can tell whether its labels are enough.
 

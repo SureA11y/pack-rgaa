@@ -18,7 +18,7 @@
 
   <p class="note">
     Each target has a stable <code>id</code> of the form <code>snc_case_NN</code>.
-    Three or more checkboxes sharing a name, and two or more role="radio" in one parent, outside any fieldset or group, are asked about.
+    Two or more checkboxes sharing a name, and two or more role="radio" in one parent, outside any fieldset or group, are asked about.
   </p>
 
   <div class="case" id="case_01">
@@ -42,8 +42,13 @@
   </div>
 
   <div class="case" id="case_05">
-    <div class="case-title">05 — NOT APPLICABLE: two checkboxes sharing a name</div>
-    <form><label><input type="checkbox" name="cgu" id="snc_case_05"> J’accepte les conditions</label><label><input type="checkbox" name="cgu" > Je m’inscris à la lettre</label></form>
+    <div class="case-title">05 — CANTTELL: two checkboxes sharing a name, outside any group</div>
+    <form><p>Repas</p><label><input type="checkbox" name="repas" id="snc_case_05"> Midi</label><label><input type="checkbox" name="repas" > Soir</label></form>
+  </div>
+
+  <div class="case" id="case_06">
+    <div class="case-title">06 — NOT APPLICABLE: a lone checkbox</div>
+    <form><label><input type="checkbox" name="cgu" id="snc_case_06"> J’accepte les conditions</label></form>
   </div>
 </body>
 </html>

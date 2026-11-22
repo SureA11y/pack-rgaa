@@ -103,7 +103,7 @@ None — every rule has a fixture.
 | rgaa-radio-group-present | manual | `tests/fixtures/rgaa-radio-group-present-all-scenarios.html` | 6 | 0 | 0 | 0 | 6 |
 | rgaa-required-field-indication | automatic | `tests/fixtures/rgaa-required-field-indication-all-scenarios.html` | 8 | 2 | 3 | 2 | 1 |
 | rgaa-role-img-aria-name | automatic | `tests/fixtures/rgaa-role-img-aria-name-all-scenarios.html` | 9 | 3 | 3 | 0 | 3 |
-| rgaa-same-name-checkboxes-review | manual | `tests/fixtures/rgaa-same-name-checkboxes-review-all-scenarios.html` | 5 | 0 | 0 | 2 | 3 |
+| rgaa-same-name-checkboxes-review | manual | `tests/fixtures/rgaa-same-name-checkboxes-review-all-scenarios.html` | 6 | 0 | 0 | 3 | 3 |
 | rgaa-script-button-name-present | automatic | `tests/fixtures/rgaa-script-button-name-present-all-scenarios.html` | 3 | 1 | 1 | 0 | 1 |
 | rgaa-script-redirect-review | manual | `tests/fixtures/rgaa-script-redirect-review-all-scenarios.html` | 1 | 0 | 0 | 1 | 0 |
 | rgaa-scripted-components-review | manual | `tests/fixtures/rgaa-scripted-components-review-all-scenarios.html` | 12 | 0 | 0 | 0 | 12 |

@@ -646,7 +646,7 @@ const RGAA_RULE_TESTS = {
     },
     'form-group-name-present': {
       tests: [],
-      note: 'Asks about radio buttons (leaning fail) or checkboxes sharing a name that sit in no <fieldset> with a <legend> and no named group or radiogroup. Not linked to 11.5.1: rgaa-radio-group-present and rgaa-same-name-checkboxes-review ask about these groups under 11.5.1, so a link here would count the same group twice. RGAA 11.5.1 asks for grouping « si nécessaire » and gives no number. rgaa-same-name-checkboxes-review asks about checkboxes only from three sharing a name: that threshold is the pack’s own heuristic, not RGAA’s, so two ungrouped checkboxes sharing a name get no question under the RGAA profile.'
+      note: 'Asks about radio buttons (leaning fail) or checkboxes sharing a name that sit in no <fieldset> with a <legend> and no named group or radiogroup. Not linked to 11.5.1: rgaa-radio-group-present and rgaa-same-name-checkboxes-review ask about these groups under 11.5.1, so a link here would count the same group twice. RGAA 11.5.1 asks for grouping « si nécessaire » and gives no number: rgaa-same-name-checkboxes-review asks, as this rule does, from two checkboxes sharing a name, and the person checking decides whether a group is needed.'
     },
     'form-control-programmatic-label-present': {
       tests: [],
@@ -1359,7 +1359,7 @@ const RGAA_RULE_TESTS = {
     },
     'rgaa-same-name-checkboxes-review': {
       tests: ['11.5.1'],
-      note: 'Asks about three or more visible checkboxes with the same name in the same form, and two or more visible role="radio" elements (native radio buttons left out) in one parent, that are not all inside one <fieldset> or role="group" (or, for radios, role="radiogroup"), the ways 11.5.1 accepts. The glossary « Champs de même nature » names « un ensemble de boutons radio ou de cases à cocher qui se rapportent à une question », to be grouped « lorsque les intitulés de label ne sont pas suffisants », so a person decides (« si nécessaire »). Two checkboxes sharing a name are not asked about. Native radio buttons are rgaa-radio-group-present’s.'
+      note: 'Asks about two or more visible checkboxes with the same name in the same form, and two or more visible role="radio" elements (native radio buttons left out) in one parent, that are not all inside one <fieldset> or role="group" (or, for radios, role="radiogroup"), the ways 11.5.1 accepts. The glossary « Champs de même nature » names « un ensemble de boutons radio ou de cases à cocher qui se rapportent à une question », to be grouped « lorsque les intitulés de label ne sont pas suffisants », so a person decides (« si nécessaire »). RGAA gives no number, so the rule sets none of its own: two checkboxes sharing a name are asked about, a lone one is not. Native radio buttons are rgaa-radio-group-present’s.'
     },
     'scope-attr-valid': {
       tests: [],
