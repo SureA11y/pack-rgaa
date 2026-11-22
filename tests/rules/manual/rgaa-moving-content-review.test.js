@@ -42,7 +42,9 @@ test(`${RULE_ID}: a video with controls, a still marquee, a finite SVG animation
     '<video src="a.mp4"></video>',
     '<marquee scrollamount="0">Promotion</marquee>',
     '<svg width="10" height="10"><circle r="5"><animate attributeName="r" values="1;5" dur="1s" repeatCount="3"/></circle></svg>',
-    '<marquee hidden>Promotion</marquee>',
+    // A <marquee hidden> is still drawn (browsers give it display: inline-block), so only a
+    // marquee whose display is none is out.
+    '<marquee style="display: none">Promotion</marquee>',
     '<p>Texte</p>'
   ]) {
     assertRule(runa11yCoreOnHtml(page(body), RUN), RULE_ID, 'notApplicable');
