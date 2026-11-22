@@ -4,6 +4,8 @@ All notable changes to this package are documented here. This project adheres to
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-11-22
+
 Needs `@surea11y/core` 1.18 or a later 1.x (`^1.18.0`). For core 1.17, use 1.2.
 
 ### Added
