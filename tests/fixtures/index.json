@@ -1527,11 +1527,11 @@
       "testFile": "tests/rules/manual/rgaa-same-name-checkboxes-review.test.js",
       "hasFixture": true,
       "fixtureFile": "tests/fixtures/rgaa-same-name-checkboxes-review-all-scenarios.html",
-      "totalCases": 5,
+      "totalCases": 6,
       "caseCounts": {
         "PASS": 0,
         "FAIL": 0,
-        "CANTTELL": 2,
+        "CANTTELL": 3,
         "OTHER": 3
       }
     },

@@ -8,7 +8,7 @@
  * @summary Sets of checkboxes sharing a name, and sets of role="radio", are grouped if needed
  * @standard RGAA 4.1.2 (no WCAG Success Criterion)
  * @applicability
- *   Applies to sets of three or more visible <input type="checkbox"> with
+ *   Applies to sets of two or more visible <input type="checkbox"> with
  *   the same name in the same form (or outside any form), and to sets of
  *   two or more visible elements with role="radio" (native radio buttons
  *   left out) that share a parent element. A page where every such set is
@@ -28,8 +28,10 @@
  * @implementation-notes
  * - Manual (cantTell).
  * - Native radio buttons are left to rgaa-radio-group-present.
- * - Two checkboxes sharing a name are not asked about: a pair is often a
- *   field and its hidden twin, or two independent options.
+ * - Two checkboxes sharing a name are asked about, as in core's
+ *   form-group-name-present: 11.5.1 says « si nécessaire » and gives no
+ *   number, so the person checking decides whether a group is needed. A
+ *   lone checkbox is not asked about.
  * - One occurrence per set, reported on its first field.
  * - Opt-in (tag `rgaa`).
  */
@@ -39,7 +41,7 @@ const id = 'rgaa-same-name-checkboxes-review';
 const meta = {
   title: 'Sets of checkboxes and custom radio buttons are grouped if needed',
   description:
-    'Flags three or more checkboxes sharing a name, or two or more role="radio" elements in one parent, that are not inside a fieldset or a role="group" (or, for radios, role="radiogroup"), for a person to decide whether they need grouping.',
+    'Flags two or more checkboxes sharing a name, or two or more role="radio" elements in one parent, that are not inside a fieldset or a role="group" (or, for radios, role="radiogroup"), for a person to decide whether they need grouping.',
   i18n: {
     titleKey: 'sameNameCheckboxesReview_title',
     descriptionKey: 'sameNameCheckboxesReview_description'
@@ -194,7 +196,7 @@ function runInPage(ctx) {
     sets.get(key).push(box);
   }
   for (const set of sets.values()) {
-    if (set.length < 3 || hasCommonGroup(set, false)) continue;
+    if (set.length < 2 || hasCommonGroup(set, false)) continue;
     const name = String(dom.getAttribute(set[0], 'name'));
     ask(set, 'ungroupedCheckboxes', { count: String(set.length), name });
   }
